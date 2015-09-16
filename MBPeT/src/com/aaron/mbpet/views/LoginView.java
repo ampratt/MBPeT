@@ -34,8 +34,8 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     
 	@Override
     public void enter(ViewChangeEvent event) {
-        Notification.show("Welcome to the MBPeT design demo", 
-        			Notification.Type.TRAY_NOTIFICATION);
+//        Notification.show("Welcome to the MBPeT design demo", 
+//        			Notification.Type.TRAY_NOTIFICATION);
     }
 	
     public LoginView() {
@@ -140,11 +140,9 @@ final VerticalLayout loginPanel = new VerticalLayout();
         		new Button.ClickListener() {
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// TODO Auto-generated method stub
 						UI.getCurrent()
 		        			.getNavigator()
 		            			.navigateTo(RegistrationView.NAME);
-//						navigator.navigateTo(RegistrationView.NAME);
 					}
 				});
         registerButton.addStyleName("link");

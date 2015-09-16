@@ -38,7 +38,6 @@ public class MbpetUI extends UI {
 
 	@Override
     protected void init(VaadinRequest request) {
-		System.out.println("getting remote tracking branch to work.");
         addDetachListener(new DetachListener() { 
 
 			@Override
@@ -56,9 +55,9 @@ public class MbpetUI extends UI {
         new Navigator(this, this);	//navigator = 
         
         // Create and register the views
-        getNavigator().addView("", new LoginView());	//navigator
+        getNavigator().addView("", new LoginView());
+        getNavigator().addView(MainView.NAME, new MainView());
         getNavigator().addView(RegistrationView.NAME, new RegistrationView());
-        getNavigator().addView(MainView.NAME, new MainView());	//navigator
 //        navigator.navigateTo("");
         
         //
@@ -72,18 +71,27 @@ public class MbpetUI extends UI {
                 // Check if a user has logged in
                 boolean isLoggedIn = getSession().getAttribute("user") != null;
                 boolean isLoginView = event.getNewView() instanceof LoginView;
+                boolean isRegistrationView = event.getNewView() instanceof RegistrationView;
 
-                if (!isLoggedIn && !isLoginView) {
+                if (!isLoggedIn && !isLoginView && !isRegistrationView) {
                     // Redirect to login view always if a user has not yet
                     // logged in
+                	System.out.println("ELSE IF-request view was: " + event.getViewName());
                     getNavigator().navigateTo(LoginView.NAME);
                     return false;
 
-                } else if (isLoggedIn && isLoginView) {
+                } else if (isLoggedIn && (isLoginView || isRegistrationView)) {
                     // If someone tries to access to login view while logged in,
                     // then cancel
                     return false;
-                }
+                }    
+//                 else if (isRegistrationView) {
+//                	System.out.println("IF-request view was: " + event.getViewName() + " - " + isRegistrationView);
+//                	System.out.println("IF-isLoggedIn?: " + isLoggedIn);
+//                	System.out.println("IF-!isLoggedIn?: " + !isLoggedIn);
+//                	
+//                	return true;
+//                }
 
                 return true;
             }
