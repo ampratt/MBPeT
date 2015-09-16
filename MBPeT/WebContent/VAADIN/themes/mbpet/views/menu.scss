@@ -1,0 +1,53 @@
+@mixin mbpet-menu-view {
+	
+	.menu {
+		height: 100%;
+		width: 17%;
+		padding-top: 0px;
+		background-color: #F9FAFB; /* #4b4b4b */
+		left: 0;
+/*		bottom: 0;*/
+		border-right: 1px solid #cccdcd;
+		
+		.v-button {
+			display: block;
+		}
+	
+		.menu-title.menu-title {
+			background-color: white;
+			color: #4783ee;
+		}
+		
+		.h1,
+		.h2,
+		.h3,
+		.h4 {
+			color: black;
+			padding-top: 0px; 
+			text-align: center;
+		}
+		
+		.menu-button-left-align {
+			text-align: left;
+		}
+		
+		.user-menu, v-menubar-menuitem, v-menubar-menuitem-caption {
+			width: 100%;
+		}
+		
+		.menu-divider {
+			padding-left: 1em;
+		}
+
+	}
+	
+	
+	/*
+	.treemenu {
+		background-color:#ffffff;
+	}
+	*/
+
+
+}
+

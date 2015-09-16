@@ -1,0 +1,45 @@
+@import "addons.scss";
+@import "mbpet.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in mbpet.scss */
+.mbpet {
+  @include addons;
+  @include mbpet;
+}
+
+/*
+.menu {
+	padding-top: 0px;
+	background-color:#4b4b4b;
+	width: 20%;
+	left: 0;
+	bottom: 0;
+	
+	.v-button {
+		display: block;
+	}
+
+	.h1 {
+		color: white;
+		padding-top: 0px; 
+	}
+}
+*/
+
+.mbpet .v-required-field-indicator {
+	color: white;
+	padding: 0 0.2em;
+}
+
+.hide-required-asterisk {
+	/* Default settings on reindeer */
+	
+	color: white;
+	padding-left:2px;
+}
+
+
+.content {
+	height: 100%;
+}

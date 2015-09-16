@@ -1,0 +1,28 @@
+@mixin mbpet-content-view {
+
+
+	.content {
+		height: 100%;
+		width: 83%;
+		background-color: white;
+	
+		.equal-panel {
+			width: 75%;
+		}
+		
+		.test-case-title {
+			/*padding-left: 10px;*/
+		}
+		
+		.landing-page-title {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		
+		.topBar-layout-padding {
+			padding-left: 10px;
+			padding-right: 5px;
+		}
+	}
+	
+}
