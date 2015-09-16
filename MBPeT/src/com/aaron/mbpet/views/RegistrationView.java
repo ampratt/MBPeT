@@ -1,6 +1,5 @@
 package com.aaron.mbpet.views;
 
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
@@ -24,6 +23,10 @@ public class RegistrationView extends VerticalLayout implements View {
 //        addComponent(login);
 //        setComponentAlignment(login, Alignment.MIDDLE_CENTER);
 
+		UserFormView userform = new UserFormView();
+		addComponent(userform);
+		this.setComponentAlignment(userform, Alignment.MIDDLE_CENTER);
+        
         Button button = new Button("Create Account",
                 new Button.ClickListener() {
             private static final long serialVersionUID = -1809072471885383781L;
@@ -32,7 +35,7 @@ public class RegistrationView extends VerticalLayout implements View {
                 UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
             }
         });
-        addComponent(button);
+//        addComponent(button);
 //        setComponentAlignment(button, Alignment.MIDDLE_CENTER);
     }        
     
