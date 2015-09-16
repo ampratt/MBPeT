@@ -38,6 +38,7 @@ public class MbpetUI extends UI {
 
 	@Override
     protected void init(VaadinRequest request) {
+		System.out.println("getting remote tracking branch to work.");
         addDetachListener(new DetachListener() { 
 
 			@Override
