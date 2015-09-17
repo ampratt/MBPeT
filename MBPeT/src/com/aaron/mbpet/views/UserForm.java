@@ -4,6 +4,7 @@ import com.aaron.mbpet.domain.User;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 public class UserForm extends GridLayout {
@@ -18,10 +19,10 @@ public class UserForm extends GridLayout {
 	private TextField username = new TextField("Username");
 
 	@PropertyId("password")
-	private TextField password = new TextField("Password");
+	private PasswordField password = new PasswordField("Password");
 
 	@PropertyId("organization")
-	private TextField organization = new TextField("Organization");
+	private TextField organization = new TextField("optional");
 
 //	@PropertyId("email")
 //	private TextField email = new TextField("Email address");
@@ -47,17 +48,17 @@ public class UserForm extends GridLayout {
 		username.setWidth("100%");
 		password.setWidth("100%");
 		organization.setWidth("100%");
-		organization.setCaption("optional");
+//		organization.setCaption("optional");
 		
 		firstname.setValidationVisible(false);
 		lastname.setValidationVisible(false);
 		username.setValidationVisible(false);
 		password.setValidationVisible(false);
 
-		firstname.setNullRepresentation("");
-		lastname.setNullRepresentation("");
-		username.setNullRepresentation("");
-		password.setNullRepresentation("");
+//		firstname.setNullRepresentation("");
+//		lastname.setNullRepresentation("");
+//		username.setNullRepresentation("");
+//		password.setNullRepresentation("");
 		
 		addComponent(firstname);
 		addComponent(lastname);

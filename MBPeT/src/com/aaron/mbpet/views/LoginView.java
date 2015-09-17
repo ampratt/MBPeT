@@ -1,5 +1,6 @@
 package com.aaron.mbpet.views;
 
+import com.aaron.mbpet.domain.User;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -34,6 +35,10 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     
 	@Override
     public void enter(ViewChangeEvent event) {
+		// TODO get user by userId passed from parameters and fetch from db
+		String createdUser = event.getParameters();
+		username.setValue(createdUser);
+
 //        Notification.show("Welcome to the MBPeT design demo", 
 //        			Notification.Type.TRAY_NOTIFICATION);
     }
@@ -95,7 +100,7 @@ final VerticalLayout loginPanel = new VerticalLayout();
         username.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
-        username.setValue("Jim Halpert");
+//        username.setValue("Jim Halpert");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
         username.setInvalidAllowed(false);
@@ -192,8 +197,8 @@ final VerticalLayout loginPanel = new VerticalLayout();
         // Credentials were valid.
         // proceed to: Validate username and password with database here. For examples sake
         // I use a dummy username and password.
-        boolean isValid = usernameStr.equals("Jim Halpert")
-                && password.equals("passw0rd");	//passw0rd
+        boolean isValid = true;//usernameStr.equals("jim.halpert")
+//                && password.equals("passw0rd");	//passw0rd
 
         if (isValid) {
 

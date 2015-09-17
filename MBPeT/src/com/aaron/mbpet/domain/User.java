@@ -27,20 +27,21 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User implements Serializable {
+public class User {	//implements Serializable 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 30)
-    private String firstName;
+    @Size(min = 1, max = 40)
+    private String firstname;
     
-    @Size(min = 2, max = 30)
-    private String lastName;
+    @Size(min = 1, max = 40)
+    private String lastname;
     
     @NotNull
+    @Size(min = 6, max = 40)
     private String username;
     
     @NotNull
@@ -64,19 +65,19 @@ public class User implements Serializable {
     }
 
     public String getFirstName() {
-        return firstName;
+        return firstname;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstname = firstName;
     }
 
     public String getLastName() {
-        return lastName;
+        return lastname;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastname = lastName;
     }
 
     public String GetUsername() {
