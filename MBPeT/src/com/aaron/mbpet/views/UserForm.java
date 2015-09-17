@@ -55,10 +55,11 @@ public class UserForm extends GridLayout {
 		username.setValidationVisible(false);
 		password.setValidationVisible(false);
 
-//		firstname.setNullRepresentation("");
-//		lastname.setNullRepresentation("");
-//		username.setNullRepresentation("");
-//		password.setNullRepresentation("");
+		firstname.setNullRepresentation("");
+		lastname.setNullRepresentation("");
+		username.setNullRepresentation("");
+		password.setNullRepresentation("");
+		organization.setNullRepresentation("");
 		
 		addComponent(firstname);
 		addComponent(lastname);
