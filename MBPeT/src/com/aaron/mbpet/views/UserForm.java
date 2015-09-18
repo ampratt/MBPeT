@@ -45,15 +45,13 @@ public class UserForm extends GridLayout {
 		password.addValidator(new BeanValidator(User.class, "password"));
 //		email.addValidator(new BeanValidator(User.class, "email"));
 		
+		firstname.focus();
 		username.setWidth("100%");
 		password.setWidth("100%");
 		organization.setWidth("100%");
 //		organization.setCaption("optional");
 		
-		firstname.setValidationVisible(false);
-		lastname.setValidationVisible(false);
-		username.setValidationVisible(false);
-		password.setValidationVisible(false);
+		disableValidationMessages();
 
 		firstname.setNullRepresentation("");
 		lastname.setNullRepresentation("");
@@ -68,6 +66,13 @@ public class UserForm extends GridLayout {
 		addComponent(organization, 0,3,1,3);
 	}
 
+	public void disableValidationMessages() {
+		firstname.setValidationVisible(false);
+		lastname.setValidationVisible(false);
+		username.setValidationVisible(false);
+		password.setValidationVisible(false);		
+	}
+	
 	public void enableValidationMessages() {
 		firstname.setValidationVisible(true);
 		lastname.setValidationVisible(true);

@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.*;
 
 import com.aaron.mbpet.domain.User;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -46,7 +48,11 @@ public class DemoDataGenerator {
 //		EntityManager emjpa = JPAContainerFactory.
 //		    createEntityManagerForPersistenceUnit("MBPeT");
 		emjpa.getTransaction().begin();
-//		emjpa.createQuery("DELETE FROM Person p").executeUpdate();
+		try {
+			emjpa.createNativeQuery("DELETE FROM User").executeUpdate();
+		} catch (SecurityException | IllegalStateException e) {
+		    e.printStackTrace();
+		}	
 		emjpa.persist(new User("Jim", "Halpert", "jim.halpert", "passw0rd"));
 		emjpa.persist(new User("Pam", "Halpert", "pam.halpert", "passw0rd"));
 		emjpa.persist(new User("Dwight", "Schrute", "dwight.schrute", "passw0rd"));

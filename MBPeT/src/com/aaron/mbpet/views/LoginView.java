@@ -1,6 +1,13 @@
 package com.aaron.mbpet.views;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.ui.PersonEditor;
+import com.aaron.mbpet.ui.PersonEditor.EditorSavedEvent;
+import com.aaron.mbpet.ui.PersonEditor.EditorSavedListener;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -32,6 +39,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     TextField username;
     PasswordField password;
     Button loginButton;
+    private JPAContainer<User> persons;
     
 	@Override
     public void enter(ViewChangeEvent event) {
@@ -48,6 +56,8 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     	setSizeFull();
     	this.addStyleName("login-background-grey");
 
+        persons = JPAContainerFactory.make(User.class,
+        		MbpetUI.PERSISTENCE_UNIT);
 //        Component loginForm = buildLoginForm();
 //        addComponent(loginForm);
 //        setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
@@ -145,9 +155,22 @@ final VerticalLayout loginPanel = new VerticalLayout();
         		new Button.ClickListener() {
 					@Override
 					public void buttonClick(ClickEvent event) {
-						UI.getCurrent()
-		        			.getNavigator()
-		            			.navigateTo(RegistrationView.NAME);
+						//launch window to create user
+		                final BeanItem<User> newPersonItem = new BeanItem<User>(
+		                        new User());
+		                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account");
+		                personEditor.addListener(new EditorSavedListener() {
+		                    @Override
+		                    public void editorSaved(EditorSavedEvent event) {
+		                        persons.addEntity(newPersonItem.getBean());
+		                    }
+		                });
+		                UI.getCurrent().addWindow(personEditor);
+		                personEditor.center();
+			            
+			            //method 2 - separate registration page with fieldgroup
+//						UI.getCurrent().getNavigator()
+//		            			.navigateTo(RegistrationView.NAME);
 					}
 				});
         registerButton.addStyleName("link");

@@ -1,3 +1,18 @@
+/**
+ * Copyright 2009-2013 Oy Vaadin Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aaron.mbpet.ui;
 
 import java.io.Serializable;
@@ -5,24 +20,28 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.views.LoginView;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.AbstractTextField;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormFieldFactory;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
-public class UserEditor extends Panel implements Button.ClickListener,
+public class PersonEditor extends Window implements Button.ClickListener,
         FormFieldFactory {
 
     private final Item personItem;
@@ -30,37 +49,56 @@ public class UserEditor extends Panel implements Button.ClickListener,
     private Button saveButton;
     private Button cancelButton;
 
-    public UserEditor(Item pItem) {
-        this.personItem = pItem;
+    public PersonEditor(Item personItem, String lableText) {
+    	//layouting
+    	this.setModal(true);
+    	
+    	VerticalLayout layout = new VerticalLayout();
+    	layout.setMargin(true);  
+    	    	
+        this.personItem = personItem;
         editorForm = new Form();
         editorForm.setFormFieldFactory(this);
         editorForm.setBuffered(true);
-        editorForm.setImmediate(true);
+//        editorForm.setImmediate(true);
         editorForm.setItemDataSource(personItem, Arrays.asList("firstname",
                 "lastname", "username", "password", "organization"));
+        
 
+        //buttons        
         saveButton = new Button("Save", this);
         cancelButton = new Button("Cancel", this);
         saveButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
         
-        editorForm.getFooter().addComponent(saveButton);
-        editorForm.getFooter().addComponent(cancelButton);
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setWidth("100%");
+        buttons.addComponents(saveButton, cancelButton);
+        buttons.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
+        buttons.setComponentAlignment(cancelButton, Alignment.BOTTOM_RIGHT);
         
-        VerticalLayout layout = new VerticalLayout();
+//        editorForm.getFooter().addComponent(buttons);
+//        editorForm.getFooter().addComponent(cancelButton);
+        
+        layout.addComponent(new Label("<h3>" + lableText + "</h3>", 
+				ContentMode.HTML));
         layout.addComponent(editorForm);
+        layout.addComponent(buttons);
         
         setSizeUndefined();
-//        setCaption(buildCaption());
+        setContent(layout); //editorForm
         setCaption(buildCaption());
-        setContent(layout);
     }
 
     /**
      * @return the caption of the editor window
      */
     private String buildCaption() {
-        return String.format("%s %s", personItem.getItemProperty("firstname")
-                .getValue(), personItem.getItemProperty("lastname").getValue());
+    	if (!(personItem.getItemProperty("firstname").getValue() == null) ) {
+    		return String.format("%s %s", personItem.getItemProperty("firstname")
+    				.getValue(), personItem.getItemProperty("lastname").getValue());
+    	} else {
+    		return "";
+    	}
     }
 
     /*
@@ -76,9 +114,8 @@ public class UserEditor extends Panel implements Button.ClickListener,
             fireEvent(new EditorSavedEvent(this, personItem));
         } else if (event.getButton() == cancelButton) {
             editorForm.discard();
-            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);			
-
         }
+        close();
     }
 
     /*
@@ -94,13 +131,13 @@ public class UserEditor extends Panel implements Button.ClickListener,
 //        if ("department".equals(propertyId)) {
 //            field = new DepartmentSelector();
 //        } else 
-        if (field instanceof TextField) {
+    	if (field instanceof TextField) {
             ((TextField) field).setNullRepresentation("");
+//            ((TextField) field).setValidationVisible(false);
         }
 
-        field.addValidator(new BeanValidator(User.class, propertyId
-                .toString()));
-
+        field.addValidator(new BeanValidator(User.class, propertyId.toString()));
+		
         return field;
     }
 

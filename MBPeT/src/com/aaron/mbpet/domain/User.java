@@ -26,7 +26,7 @@ public class User implements Serializable { //
     private String lastname;
     
     @NotNull
-    @Size(min = 6, max = 40)
+    @Size(min = 4, max = 40)
     private String username;
     
     @NotNull
