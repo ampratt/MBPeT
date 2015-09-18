@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import javax.servlet.annotation.WebServlet;
 
+import com.aaron.mbpet.utils.DemoDataGenerator;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
@@ -28,7 +29,7 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("mbpet")
 public class MbpetUI extends UI {
 
-	public static final String PERSISTENCE_UNIT = "MBPeT";
+	public static final String PERSISTENCE_UNIT = "mbpet";
 
 	
 	@WebServlet(value = "/*", asyncSupported = true)
@@ -36,6 +37,10 @@ public class MbpetUI extends UI {
 	public static class Servlet extends VaadinServlet {
 	}
 
+//    static {
+//        DemoDataGenerator.create();
+//    }
+    
 	@Override
     protected void init(VaadinRequest request) {
         addDetachListener(new DetachListener() { 
@@ -47,6 +52,10 @@ public class MbpetUI extends UI {
         });
         
         getPage().setTitle("MBPeT Demo");
+        
+        //testing dummy data
+        DemoDataGenerator.create();
+
         
 		//
         // Create a new instance of the navigator. The navigator will attach

@@ -36,5 +36,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/MySQL JDBC Driver"/>
+	<classpathentry kind="lib" path="C:/hibernate-release-4.3.6.Final/jpa/hibernate-entitymanager-4.3.6.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/eclipselink/org.eclipse.persistence.jpa.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

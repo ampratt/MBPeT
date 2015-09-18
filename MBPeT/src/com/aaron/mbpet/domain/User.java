@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User implements Serializable { 
+public class User implements Serializable { //
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,7 +38,18 @@ public class User implements Serializable {
     private String organization;
 
     
-    /**
+    public User() {    	
+	}
+    
+    public User(String firstname, String lastname, String username, String password) {
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.username = username;
+		this. password = password;
+    	
+	}
+
+	/**
      * getters and setters
      */
 	public Long getId() {
