@@ -1,12 +1,21 @@
 package com.aaron.mbpet.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.ui.CreateTestCaseWindow;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
+import com.aaron.mbpet.ui.PersonEditor;
 import com.aaron.mbpet.utils.ExampleUtil;
 import com.vaadin.event.Action;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -44,7 +53,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	VerticalLayout menuLayout = new VerticalLayout(); //VerticalLayout
 //	final static Tree tree = new Tree("Test Cases:");
 	Tree tree;
-	String displayName = "default name";
+	static MenuBar userMenu;
+//	String displayName = "default name";
+	private JPAContainer<User> persons;
 	
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add child item");
@@ -71,11 +82,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //        }
 //    }
     
-	public MBPeTMenu(String usrname, Tree tree) {
+	public MBPeTMenu(Tree tree) {	//User sessUser, String usrname,
+//		this.sessionUser = sessUser;
 		this.tree = tree;
-		System.out.println("DISPLAY NAME WAS " + displayName);
-		displayName = usrname;
-		System.out.println("DISPLAY NAME WAS " + displayName);
+//		System.out.println("DISPLAY NAME WAS " + displayName);
+//		this.displayName = usrname;
+		System.out.println("DISPLAY NAME WAS " + MainView.displayName);
+
+        persons = JPAContainerFactory.make(User.class,
+        		MbpetUI.PERSISTENCE_UNIT);
+        
 //		setUserDisplayName(usrname);
 		setCompositionRoot(buildContent());
 	}
@@ -116,7 +132,14 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		        @Override
 		        public void menuSelected(final MenuItem selectedItem) {
 		        	if (selectedItem.getText().equals("Edit Profile")){
-		        		
+		                PersonEditor personEditor = new PersonEditor(
+		                		persons.getItem(MainView.sessionUser.getId()), 
+		                			"Edit User Account", true);
+
+		                personEditor.setModal(false);
+		                UI.getCurrent().addWindow(personEditor);
+		                personEditor.center();
+		                
 		        	} else if (selectedItem.getText().equals("Preferences")){
 		        		
 		        	} else if (selectedItem.getText().equals("Sign Out")){
@@ -140,22 +163,22 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
 			            return;
 		        	}
-		        	
-		            Notification.show("Action " + selectedItem.getText(),
-		                    Type.TRAY_NOTIFICATION);
 		        }
 		    };
 		    
  
-		MenuBar userMenu = new MenuBar();
+		userMenu = new MenuBar();
 		userMenu.addStyleName("user-menu");
 		
-		MenuItem user = userMenu.addItem(displayName, null);
+		MenuItem user = userMenu.addItem(MainView.displayName, null);
 		user.addItem("Edit Profile", menuCommand);
 		user.addItem("Preferences", menuCommand);
 		user.addSeparator();
 		user.addItem("Sign Out", menuCommand);
-	
+		
+		List<MenuItem> mitems = userMenu.getItems();
+		System.out.println("USER MENU ITEM: " + mitems.get(0).getText()); 	//getItems().toString());
+		
 		return userMenu;
 	}
 	
@@ -463,12 +486,19 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         }
     }
     
-//    public void setUserDisplayName(String name) {
-//    	displayName = name;
+//    public void setDisplayName(String name) {
+//    	MainView.displayName = name;
 //    }
 //    
-//    public String getUserDisplayName() {
-//    	return displayName;
+//    public String getDisplayName() {
+//    	return MainView.displayName;
 //    }
+    
+    public static void setMenuDisplayName(String newname) {
+		List<MenuItem> mitems = userMenu.getItems();
+		mitems.get(0).setText(newname);
+		
+		System.out.println("USER MENU new name: " + mitems.get(0).getText()); 	//getItems().toString());
+    }
 
 }

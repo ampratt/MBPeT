@@ -268,7 +268,7 @@ public class UserFormView extends HorizontalLayout implements Button.ClickListen
             public void buttonClick(ClickEvent event) {
                 final BeanItem<User> newPersonItem = new BeanItem<User>(
                         new User());
-                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account");
+                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account", false);
                 personEditor.addListener(new EditorSavedListener() {
                     @Override
                     public void editorSaved(EditorSavedEvent event) {
@@ -296,7 +296,9 @@ public class UserFormView extends HorizontalLayout implements Button.ClickListen
             @Override
             public void buttonClick(ClickEvent event) {
                 UI.getCurrent().addWindow(
-                        new PersonEditor(table.getItem(table.getValue()), "Edit User Account"));
+                        new PersonEditor(table.getItem(table.getValue()), "Edit User Account", true));
+                System.out.println("EDITED PERSON: " + persons.getItem(table.getValue()));
+
             }
         });
         editButton.setEnabled(false);

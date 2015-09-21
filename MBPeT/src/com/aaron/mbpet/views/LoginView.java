@@ -1,5 +1,12 @@
 package com.aaron.mbpet.views;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.PersonEditor;
@@ -7,6 +14,7 @@ import com.aaron.mbpet.ui.PersonEditor.EditorSavedEvent;
 import com.aaron.mbpet.ui.PersonEditor.EditorSavedListener;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
@@ -22,6 +30,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -110,10 +119,11 @@ final VerticalLayout loginPanel = new VerticalLayout();
         username.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
-//        username.setValue("Jim Halpert");
+//        username.setValue("jim.halpert");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
         username.setInvalidAllowed(false);
+        username.focus();
         
         password = new PasswordField("Password");
         password.setIcon(FontAwesome.LOCK);
@@ -158,13 +168,14 @@ final VerticalLayout loginPanel = new VerticalLayout();
 						//launch window to create user
 		                final BeanItem<User> newPersonItem = new BeanItem<User>(
 		                        new User());
-		                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account");
+		                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account", false);
 		                personEditor.addListener(new EditorSavedListener() {
 		                    @Override
 		                    public void editorSaved(EditorSavedEvent event) {
 		                        persons.addEntity(newPersonItem.getBean());
 		                    }
 		                });
+		                personEditor.setModal(true);
 		                UI.getCurrent().addWindow(personEditor);
 		                personEditor.center();
 			            
@@ -215,17 +226,70 @@ final VerticalLayout loginPanel = new VerticalLayout();
         }
 
         String usernameStr = username.getValue();
-        String password = this.password.getValue();
+        String passwordStr = this.password.getValue();
 
         // Credentials were valid.
         // proceed to: Validate username and password with database here. For examples sake
         // I use a dummy username and password.
-        boolean isValid = true;//usernameStr.equals("jim.halpert")
+        
+        // TODO DB validation
+        // 1) username and password must match against db
+        boolean isValid = false;
+        EntityManager em = Persistence
+					.createEntityManagerFactory("mbpet")
+					.createEntityManager();	
+        Query queryByUsername = em.createQuery(
+    		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username"
+    		);
+        queryByUsername.setParameter("username", username.getValue());
+        User personById = new User();
+        try {
+        	personById = (User) queryByUsername.getSingleResult();
+        	if (personById.getUsername().equals(usernameStr) && 
+        			personById.getPassword().equals(passwordStr)) {
+        		isValid = true;
+        		System.out.println("user associated with username is : " +
+        				personById.getFirstname() + personById.getLastname() );
+        	} else {
+        		Notification.show("Login Failure", "Password was incorrect. \nPlease try again.", Type.WARNING_MESSAGE);
+        		return;
+        	}
+        } catch (NoResultException e) {
+        	Notification.show("Login Failure", "No such user exists. \nPlease try your username/password again.", Type.WARNING_MESSAGE);
+        }
+//        boolean isValid = true;//usernameStr.equals("jim.halpert")
 //                && password.equals("passw0rd");	//passw0rd
-
+       
         if (isValid) {
 
-            // Store the current user in the service session
+        	//store current user in session attribute
+//        	Query queryByUsername = em.createQuery(
+//        		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username"
+//        		);
+//        	queryByUsername.setParameter("username", username.getValue());
+        	
+        	// User object to store session user
+//        	User personById = (User) queryByUsername.getSingleResult();	
+        	getSession().setAttribute("sessionUser", personById);
+        	
+        	// Item object to store session user
+        	BeanItem<User> personItemById = new BeanItem<User>((User) queryByUsername.getSingleResult());	
+        	getSession().setAttribute("sessionUserItem", personItemById);
+        	
+        	System.out.println("the query gave this: " +
+        			personById + "\n" + personById.getUsername() +
+    				"\n" + personById.getFirstname() +
+    				"\n" + personById.getLastname());
+        	
+        	System.out.println("session user object: " + getSession().getAttribute("sessionUser").toString());
+//        		Item personItem = persons.getItem(username);
+//        		Notification.show("the username gave this person item: " +
+//        				personItem + "\n" + personItem.getItemProperty("username") +
+//        				"\n" + personItem.getItemProperty("firstname") +
+//        				"\n" + personItem.getItemProperty("lastname"));
+//        		getSession().setAttribute("userItem", personItem);
+        	
+            // Store the current username in the service session
             getSession().setAttribute("user", usernameStr);
 
             // Navigate to main view

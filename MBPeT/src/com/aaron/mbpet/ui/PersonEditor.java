@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -37,6 +39,7 @@ import com.vaadin.ui.FormFieldFactory;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -48,10 +51,12 @@ public class PersonEditor extends Window implements Button.ClickListener,
     private Form editorForm;
     private Button saveButton;
     private Button cancelButton;
+    boolean editMode;
 
-    public PersonEditor(Item personItem, String lableText) {
-    	//layouting
-    	this.setModal(true);
+    public PersonEditor(Item personItem, String lableText, boolean mode) {
+    	this.editMode = mode;
+//    	this.setModal(true);
+    	this.setResizable(false);
     	
     	VerticalLayout layout = new VerticalLayout();
     	layout.setMargin(true);  
@@ -61,8 +66,10 @@ public class PersonEditor extends Window implements Button.ClickListener,
         editorForm.setFormFieldFactory(this);
         editorForm.setBuffered(true);
 //        editorForm.setImmediate(true);
-        editorForm.setItemDataSource(personItem, Arrays.asList("firstname",
-                "lastname", "username", "password", "organization"));
+       	editorForm.setItemDataSource(personItem, Arrays.asList("firstname",
+        			"lastname", "username", "password", "organization"));        	        	
+
+        
         
 
         //buttons        
@@ -112,6 +119,10 @@ public class PersonEditor extends Window implements Button.ClickListener,
         if (event.getButton() == saveButton) {
             editorForm.commit();
             fireEvent(new EditorSavedEvent(this, personItem));
+            if (editMode) {
+            	MBPeTMenu.setMenuDisplayName(String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
+            			String.valueOf(personItem.getItemProperty("lastname").getValue()));	//MainView.setDisplayName            	
+            }
         } else if (event.getButton() == cancelButton) {
             editorForm.discard();
         }
@@ -126,12 +137,20 @@ public class PersonEditor extends Window implements Button.ClickListener,
      */
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
-        Field field = DefaultFieldFactory.get().createField(item, propertyId,
-                uiContext);
+    	Field field = (TextField)DefaultFieldFactory.get().createField(item, propertyId,
+				 uiContext);
+
 //        if ("department".equals(propertyId)) {
 //            field = new DepartmentSelector();
 //        } else 
     	if (field instanceof TextField) {
+    		if ("firstname".equals(propertyId)) {
+    			field.focus();
+    		}
+    		if (editMode == true && 
+    				( "username".equals(propertyId) || "password".equals(propertyId))) {
+    			field.setEnabled(false);	//setReadOnly(true);
+    		}
             ((TextField) field).setNullRepresentation("");
 //            ((TextField) field).setValidationVisible(false);
         }
