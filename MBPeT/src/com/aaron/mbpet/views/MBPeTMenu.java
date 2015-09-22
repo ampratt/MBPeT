@@ -54,7 +54,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //	final static Tree tree = new Tree("Test Cases:");
 	Tree tree;
 	static MenuBar userMenu;
-//	String displayName = "default name";
 	private JPAContainer<User> persons;
 	
     // Actions for the context menu

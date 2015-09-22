@@ -147,8 +147,13 @@ public class MainView extends HorizontalLayout implements View {
 
     	if (displayName.equals("")) {	
 //    		displayName = String.valueOf(getSession().getAttribute("user"));
+    		
+    		String lname = sessionUser.getLastname();
+    		if (sessionUser.getLastname() == null) {
+    			lname = "";
+    		}
     		displayName = sessionUser.getFirstname() + " " +
-    						sessionUser.getLastname();
+    						lname;
 //    		setDisplayName(sessionUser.getFirstname() + " " +
 //					sessionUser.getLastname());
     		

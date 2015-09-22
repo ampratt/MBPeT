@@ -19,11 +19,17 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import javax.persistence.PersistenceException;
+
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.utils.PasswordValidator;
+import com.aaron.mbpet.utils.UsernameValidator;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.event.ListenerMethod.MethodException;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -38,6 +44,8 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.FormFieldFactory;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -65,7 +73,7 @@ public class PersonEditor extends Window implements Button.ClickListener,
         editorForm = new Form();
         editorForm.setFormFieldFactory(this);
         editorForm.setBuffered(true);
-//        editorForm.setImmediate(true);
+        editorForm.setImmediate(true);
        	editorForm.setItemDataSource(personItem, Arrays.asList("firstname",
         			"lastname", "username", "password", "organization"));        	        	
 
@@ -74,6 +82,7 @@ public class PersonEditor extends Window implements Button.ClickListener,
 
         //buttons        
         saveButton = new Button("Save", this);
+        saveButton.setClickShortcut(KeyCode.ENTER);
         cancelButton = new Button("Cancel", this);
         saveButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
         
@@ -117,11 +126,25 @@ public class PersonEditor extends Window implements Button.ClickListener,
     @Override
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
-            editorForm.commit();
-            fireEvent(new EditorSavedEvent(this, personItem));
-            if (editMode) {
-            	MBPeTMenu.setMenuDisplayName(String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
-            			String.valueOf(personItem.getItemProperty("lastname").getValue()));	//MainView.setDisplayName            	
+        	try {
+        		editorForm.commit();
+        		fireEvent(new EditorSavedEvent(this, personItem));
+
+        		// update display name efter edit
+        		if (editMode) {
+        			String lname = String.valueOf(personItem.getItemProperty("lastname").getValue());
+            		if (personItem.getItemProperty("lastname").getValue() == null) {
+            			lname = "";
+            		}
+        			MBPeTMenu.setMenuDisplayName(
+        					String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
+        					lname);	//MainView.setDisplayName            	        		
+        		}
+            } catch (MethodException | PersistenceException e) {
+//            	Field f = editorForm.getField("username");
+//            	f.addStyleName("invalid-value");
+            	Notification.show("Error:", "that username is not available", Type.WARNING_MESSAGE);
+            	return;
             }
         } else if (event.getButton() == cancelButton) {
             editorForm.discard();
@@ -129,7 +152,8 @@ public class PersonEditor extends Window implements Button.ClickListener,
         close();
     }
 
-    /*
+
+	/*
      * (non-Javadoc)
      * 
      * @see com.vaadin.ui.FormFieldFactory#createField(com.vaadin.data.Item,
@@ -146,6 +170,10 @@ public class PersonEditor extends Window implements Button.ClickListener,
     	if (field instanceof TextField) {
     		if ("firstname".equals(propertyId)) {
     			field.focus();
+    		} else if ("username".equals(propertyId)) {
+    			field.addValidator(new UsernameValidator());	
+    		} else if ("password".equals(propertyId)) {
+    			field.addValidator(new PasswordValidator());
     		}
     		if (editMode == true && 
     				( "username".equals(propertyId) || "password".equals(propertyId))) {

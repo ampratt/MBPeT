@@ -46,4 +46,11 @@
   @include mbpet-content-view;
   @include mbpet-windows-view;
 
+  
+  /* Insert your theme rules here */
+  
+  .invalid-value {
+  	border: solid 1px #ff0000; 
+  }
+  
 }

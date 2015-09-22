@@ -2,6 +2,7 @@ package com.aaron.mbpet.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.eclipse.persistence.annotations.Index;
+
 @Entity
+@Index(columnNames={"username", "password"})
 public class User implements Serializable { //
 
     @Id
@@ -22,15 +26,16 @@ public class User implements Serializable { //
     @Size(min = 1, max = 40)
     private String firstname;
     
-    @Size(min = 1, max = 40)
+    @Size(max = 40)
     private String lastname;
     
     @NotNull
-    @Size(min = 4, max = 40)
+    @Column(unique=true)
+    @Size(min = 4, max = 30)
     private String username;
     
     @NotNull
-    @Size(min = 4, max = 25)
+    @Size(min = 6, max = 30)
     private String password;
     
 //    @ManyToOne

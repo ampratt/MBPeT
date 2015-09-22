@@ -12,6 +12,8 @@ import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.PersonEditor;
 import com.aaron.mbpet.ui.PersonEditor.EditorSavedEvent;
 import com.aaron.mbpet.ui.PersonEditor.EditorSavedListener;
+import com.aaron.mbpet.utils.PasswordValidator;
+import com.aaron.mbpet.utils.UsernameValidator;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
@@ -117,12 +119,13 @@ final VerticalLayout loginPanel = new VerticalLayout();
         username = new TextField("Username");
         username.setIcon(FontAwesome.USER);
         username.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        username.addValidator(new UsernameValidator());
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
 //        username.setValue("jim.halpert");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
-        username.setInvalidAllowed(false);
+//        username.setInvalidAllowed(false);
         username.focus();
         
         password = new PasswordField("Password");
@@ -192,29 +195,6 @@ final VerticalLayout loginPanel = new VerticalLayout();
 	}
     
     
-    // Validator for validating the passwords
-    private static final class PasswordValidator extends
-            AbstractValidator<String> {
-
-        public PasswordValidator() {
-            super("The password provided is not valid");
-        }
-
-        @Override
-        protected boolean isValidValue(String value) {
-            // Password must be at least 8 characters long and contain at least one number
-            if (value != null
-                    && (value.length() < 8 || !value.matches(".*\\d.*"))) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public Class<String> getType() {
-            return String.class;
-        }
-    }
     
     @Override
     public void buttonClick(ClickEvent event) {
@@ -229,15 +209,13 @@ final VerticalLayout loginPanel = new VerticalLayout();
         String passwordStr = this.password.getValue();
 
         // Credentials were valid.
-        // proceed to: Validate username and password with database here. For examples sake
-        // I use a dummy username and password.
-        
-        // TODO DB validation
-        // 1) username and password must match against db
+        // proceed to: Validate username and password with database here. 
+        // username and password must match against db
         boolean isValid = false;
         EntityManager em = Persistence
 					.createEntityManagerFactory("mbpet")
 					.createEntityManager();	
+        
         Query queryByUsername = em.createQuery(
     		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username"
     		);
@@ -248,8 +226,8 @@ final VerticalLayout loginPanel = new VerticalLayout();
         	if (personById.getUsername().equals(usernameStr) && 
         			personById.getPassword().equals(passwordStr)) {
         		isValid = true;
-        		System.out.println("user associated with username is : " +
-        				personById.getFirstname() + personById.getLastname() );
+//        		System.out.println("user associated with username is : " +
+//        				personById.getFirstname() + personById.getLastname() );
         	} else {
         		Notification.show("Login Failure", "Password was incorrect. \nPlease try again.", Type.WARNING_MESSAGE);
         		return;
@@ -262,14 +240,7 @@ final VerticalLayout loginPanel = new VerticalLayout();
        
         if (isValid) {
 
-        	//store current user in session attribute
-//        	Query queryByUsername = em.createQuery(
-//        		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username"
-//        		);
-//        	queryByUsername.setParameter("username", username.getValue());
-        	
-        	// User object to store session user
-//        	User personById = (User) queryByUsername.getSingleResult();	
+        	// store current user in session attribute        	
         	getSession().setAttribute("sessionUser", personById);
         	
         	// Item object to store session user
@@ -282,13 +253,7 @@ final VerticalLayout loginPanel = new VerticalLayout();
     				"\n" + personById.getLastname());
         	
         	System.out.println("session user object: " + getSession().getAttribute("sessionUser").toString());
-//        		Item personItem = persons.getItem(username);
-//        		Notification.show("the username gave this person item: " +
-//        				personItem + "\n" + personItem.getItemProperty("username") +
-//        				"\n" + personItem.getItemProperty("firstname") +
-//        				"\n" + personItem.getItemProperty("lastname"));
-//        		getSession().setAttribute("userItem", personItem);
-        	
+       	
             // Store the current username in the service session
             getSession().setAttribute("user", usernameStr);
 
@@ -296,10 +261,9 @@ final VerticalLayout loginPanel = new VerticalLayout();
             UI.getCurrent().getNavigator().navigateTo(MainView.NAME + "/" + "landingPage");	//SimpleLoginMainView.NAME
 
         } else {
-
-            // Wrong password clear the password field and refocuses it
-            this.password.setValue(null);
-            this.password.focus();
+            // some error happened
+//            this.password.setValue(null);
+            username.focus();	//this.password
 
         }
     }
@@ -319,5 +283,30 @@ final VerticalLayout loginPanel = new VerticalLayout();
 //        notification.show(Page.getCurrent());
 	}
 
+	
+	
+//  // Validator for validating the passwords
+//  private static final class PasswordValidator extends
+//          AbstractValidator<String> {
+//
+//      public PasswordValidator() {
+//          super("The password provided is not valid");
+//      }
+//
+//      @Override
+//      protected boolean isValidValue(String value) {
+//          // Password must be at least 8 characters long and contain at least one number
+//          if (value != null
+//                  && (value.length() < 8 || !value.matches(".*\\d.*"))) {
+//              return false;
+//          }
+//          return true;
+//      }
+//
+//      @Override
+//      public Class<String> getType() {
+//          return String.class;
+//      }
+//  }
     
 }
