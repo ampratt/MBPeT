@@ -28,6 +28,7 @@ import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ListenerMethod.MethodException;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -75,7 +76,7 @@ public class PersonEditor extends Window implements Button.ClickListener,
         editorForm.setBuffered(true);
         editorForm.setImmediate(true);
        	editorForm.setItemDataSource(personItem, Arrays.asList("firstname",
-        			"lastname", "username", "password", "organization"));        	        	
+        			"lastname", "email", "username", "password", "organization"));        	        	
 
         
         
@@ -174,7 +175,10 @@ public class PersonEditor extends Window implements Button.ClickListener,
     			field.addValidator(new UsernameValidator());	
     		} else if ("password".equals(propertyId)) {
     			field.addValidator(new PasswordValidator());
-    		}
+    		} //else if ("email".equals(propertyId)) {
+//    			field.addValidator(new EmailValidator(
+//    	                "must be an email address"));
+//    		}
     		if (editMode == true && 
     				( "username".equals(propertyId) || "password".equals(propertyId))) {
     			field.setEnabled(false);	//setReadOnly(true);

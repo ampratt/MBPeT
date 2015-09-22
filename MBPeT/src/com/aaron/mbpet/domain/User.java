@@ -1,6 +1,7 @@
 package com.aaron.mbpet.domain;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,10 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.eclipse.persistence.annotations.Index;
+import org.hibernate.validator.constraints.Email;
 
 @Entity
 @Index(columnNames={"username", "password"})
@@ -29,7 +32,10 @@ public class User implements Serializable { //
     @Size(max = 40)
     private String lastname;
     
-    @NotNull
+	@Email
+	private String email;
+
+	@NotNull
     @Column(unique=true)
     @Size(min = 4, max = 30)
     private String username;
@@ -42,6 +48,9 @@ public class User implements Serializable { //
 //    @JoinColumn(name = "ORGANIZATION_ID")
     private String organization;
 
+    @OneToMany(mappedBy = "owner")
+    private Set<TestCase> cases;
+ 
     
     public User() {    	
 	}
@@ -81,6 +90,14 @@ public class User implements Serializable { //
 		this.lastname = lastname;
 	}
 
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

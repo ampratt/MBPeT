@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.ui.CreateTestCaseWindow;
@@ -52,9 +53,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //    public static final String NAME = "MBPeT";
 	VerticalLayout menuLayout = new VerticalLayout(); //VerticalLayout
 //	final static Tree tree = new Tree("Test Cases:");
-	Tree tree;
+	private Tree menutree;
 	static MenuBar userMenu;
 	private JPAContainer<User> persons;
+	private JPAContainer<TestCase> testcases;
+
 	
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add child item");
@@ -83,12 +86,13 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     
 	public MBPeTMenu(Tree tree) {	//User sessUser, String usrname,
 //		this.sessionUser = sessUser;
-		this.tree = tree;
-//		System.out.println("DISPLAY NAME WAS " + displayName);
+		this.menutree = tree;
+		
 //		this.displayName = usrname;
-		System.out.println("DISPLAY NAME WAS " + MainView.displayName);
 
         persons = JPAContainerFactory.make(User.class,
+        		MbpetUI.PERSISTENCE_UNIT);
+        testcases = JPAContainerFactory.make(TestCase.class,
         		MbpetUI.PERSISTENCE_UNIT);
         
 //		setUserDisplayName(usrname);
@@ -245,7 +249,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			public void buttonClick(ClickEvent event) {
 		        // open window to create item		        
 		        // Add it to the root component
-		        UI.getCurrent().addWindow(new CreateTestCaseWindow(tree));
+		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree));
 		        
 		        
 //	            // Create new item, set as parent, allow children (= leaf node)
@@ -292,48 +296,46 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	    	        new Object[]{"random", "01.02.15", "03.04.15", "04.05.15", "06.07.15"}
 		        };
 	    	        
-	    	
-	    	vc.addComponent(tree);
-	    	tree.addStyleName("tiny");
+	    	    
+	        menutree.setContainerDataSource(testcases);
+	        menutree.addStyleName("tiny");
+	        menutree.setItemCaptionPropertyId("title");
+	        menutree.setImmediate(true);		// Cause valueChange immediately when the user selects
+		    menutree.addActionHandler(this);	// Add actions (context menu)
+	        menutree.setSelectable(true);
 //	    	tree.addStyleName("treemenu");
 	    	
 	    	/* Add test cases as root items in the tree. */
-	    	for (int i=0; i<testCases.length; i++) {
-	    	    String testCase = (String) (testCases[i][0]);
-	    	    tree.addItem(testCase);
-	    	    
-	    	    if (testCases[i].length == 1) {
-	    	        // The test case has no instances so make it a leaf.
-	    	        tree.setChildrenAllowed(testCase, true);	//false
-	    	    } else {
-	    	        // Add children (instances) under the test cases.
-	    	        for (int j=1; j<testCases[i].length; j++) {
-	    	            String instance = (String) testCases[i][j];
-	    	            
-	    	            // Add the item as a regular item.
-	    	            tree.addItem(instance);
-	    	            
-	    	            // Set it to be a child.
-	    	            tree.setParent(instance, testCase);
-	    	            
-	    	            // Make the instance look like leaves.
-	    	            tree.setChildrenAllowed(instance, false);
-	    	        }
-	
-	    	        // Expand the subtree.
-	//	    	        tree.expandItemsRecursively(testCase);
-	    	    }
-	    	}
+//	    	for (int i=0; i<testCases.length; i++) {
+//	    	    String testCase = (String) (testCases[i][0]);
+//	    	    menutree.addItem(testCase);
+//	    	    
+//	    	    if (testCases[i].length == 1) {
+//	    	        // The test case has no instances so make it a leaf.
+//	    	        menutree.setChildrenAllowed(testCase, true);	//false
+//	    	    } else {
+//	    	        // Add children (instances) under the test cases.
+//	    	        for (int j=1; j<testCases[i].length; j++) {
+//	    	            String instance = (String) testCases[i][j];
+//	    	            
+//	    	            // Add the item as a regular item.
+//	    	            menutree.addItem(instance);
+//	    	            
+//	    	            // Set it to be a child.
+//	    	            menutree.setParent(instance, testCase);
+//	    	            
+//	    	            // Make the instance look like leaves.
+//	    	            menutree.setChildrenAllowed(instance, false);
+//	    	        }
+//	
+//	    	        // Expand the subtree.
+//	//	    	        tree.expandItemsRecursively(testCase);
+//	    	    }
+//	    	}
 	    	
 	    	
 	        // Contents from a (prefilled example) hierarchical container:
 	//	        tree.setContainerDataSource(ExampleUtil.getHardwareContainer());
-	 
-	        // Add actions (context menu)
-		    tree.addActionHandler(this);
-	 
-	        // Cause valueChange immediately when the user selects
-	        tree.setImmediate(true);
 	 
 	        // Set tree to show the 'name' property as caption for items
 	//	        sample.setItemCaptionPropertyId(ExampleUtil.hw_PROPERTY_NAME);
@@ -344,16 +346,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	//	            tree.expandItemsRecursively(id);
 	//	        }
 	 
-	        tree.addItemClickListener(new ItemClickListener() {
+	        menutree.addItemClickListener(new ItemClickListener() {
 				@Override
 				public void itemClick(ItemClickEvent event) {
 					// TODO Auto-generated method stub
 	            	String selected = (String) event.getItemId();
 	            	String path = selected;
 	            	System.out.println("this is the current ITEM selection: " + selected.toString());
-					if (!tree.isRoot(event.getItemId())) {
+					if (!menutree.isRoot(event.getItemId())) {
 	//						Object parent = tree.getParent(event.getItemId());
-						String parent = (String) tree.getParent(event.getItemId());
+						String parent = (String) menutree.getParent(event.getItemId());
 		            	path = parent+ "/" + selected;
 					}
 					
@@ -370,6 +372,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	//	    	                Type.HUMANIZED_MESSAGE); 
 				}
 			});
+
+	        vc.addComponent(menutree);
+	        
 	        
 //	        tree.addValueChangeListener(new ValueChangeListener(){
 //	            public void valueChange(ValueChangeEvent event){
@@ -415,11 +420,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
             final Object target) {
         if (action == ACTION_ADD) {
         	Object parent = target;
-        	if (!tree.isRoot(target)) {
-        		parent = tree.getParent(target);
+        	if (!menutree.isRoot(target)) {
+        		parent = menutree.getParent(target);
         	}
 	        // open window to create item
-			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(tree, parent.toString());
+			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());
 	        
 	        // Add it to the root component
 	        UI.getCurrent().addWindow(sub);
@@ -442,23 +447,23 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 ////            name.setValue("New Item");
  
         } else if (action == ACTION_DELETE) {
-            final Object parent = tree.getParent(target);
+            final Object parent = menutree.getParent(target);
             
             // if deleted parent item, return to landing page
-            if (tree.isRoot(target)) {
+            if (menutree.isRoot(target)) {
             	
             	//if attempted to delete root item that still has children items
-            	if (tree.hasChildren(target)) {
+            	if (menutree.hasChildren(target)) {
             		// ask user to confirm
         	        // open window to create item
-        			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(tree, target, 
+        			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
         							"<b>" + target.toString() + "</b> has child instances that will be deleted.<br />" +
 									"Delete <b>" + target.toString() + "</b> and all its instances?<br /><br />");
         	        
         	        // Add it to the root component
         	        UI.getCurrent().addWindow(confirm);
             	} else {
-           			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(tree, target, 
+           			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
 										"Are you sure you want to delete <b>" + target.toString() + "</b>?<br /><br />");
 	       	        UI.getCurrent().addWindow(confirm);
             	}
@@ -469,14 +474,14 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
             	return;
             }
         	
-            tree.removeItem(target);
+            menutree.removeItem(target);
 
         	// If the deleted object's parent has no more children collapse the item
-            if (parent != null && tree.getChildren(parent) == null) {
+            if (parent != null && menutree.getChildren(parent) == null) {
 //            	tree.setChildrenAllowed(parent, false);
-            	tree.collapseItem(parent);
+            	menutree.collapseItem(parent);
             }
-            tree.select(parent);
+            menutree.select(parent);
             //navigate to parent
             getUI()
 	            .getNavigator()
