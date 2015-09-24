@@ -1,8 +1,18 @@
 package com.aaron.mbpet.views;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.tabs.TabLayout;
 import com.aaron.mbpet.ui.AnimalViewer;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
+import com.aaron.mbpet.ui.TestSessionEditor;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
@@ -31,10 +41,14 @@ public class ContentViewer extends VerticalLayout {	//implements View
 	Panel equalPanel = new Panel("equal panel"); 
 	public static Label pageTitle = new Label("");
 	Tree tree;
-    
+    JPAContainer<TestCase> testcases;
+	
 	public ContentViewer(String title, Tree tree) {
 		setSizeFull();
 		this.addStyleName("content");
+		
+        testcases = JPAContainerFactory.make(TestCase.class,
+        		MbpetUI.PERSISTENCE_UNIT);
 		
 		this.tree = tree;
 		setPageTitle(title);
@@ -96,11 +110,27 @@ public class ContentViewer extends VerticalLayout {	//implements View
 		});		
 	    newUseCaseButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
+				//get currently selected TestCase
+				// add created item to tree (after retrieving db generated id)
+//                EntityManager em = Persistence
+//    					.createEntityManagerFactory("mbpet")
+//    					.createEntityManager();	
+//	            Query queryByTestSessionName = em.createQuery(
+//	        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
+//	        		);
+//	            queryByTestSessionName.setParameter("title", testcases.getI.getTitle());
+//	            TestSession queriedSession = (TestSession) queryByTestSessionName.getSingleResult();
+//	            System.out.println("the generated id is: " + queriedSession.getId());
+//	            Object id = queriedSession.getId();	// here is the id we need for tree
+	            
+	            
 		        // open window to create item
-				NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(tree, pageTitle.getValue());
-		        
-		        // Add it to the root component
-		        UI.getCurrent().addWindow(sub);
+		        UI.getCurrent().addWindow(new TestSessionEditor(tree, 
+		        				));	//testcases.getItem(parent).getEntity()
+
+//				NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(tree, pageTitle.getValue());
+//		        // Add it to the root component
+//		        UI.getCurrent().addWindow(sub);
 			}
 		});	
 	    

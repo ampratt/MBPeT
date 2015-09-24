@@ -2,6 +2,7 @@ package com.aaron.mbpet.views;
 
 
 import com.aaron.mbpet.ui.CreateTestCaseWindow;
+import com.aaron.mbpet.ui.TestCaseEditor;
 import com.vaadin.data.Item;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -56,10 +57,11 @@ public class LandingPage extends VerticalLayout {	//implements View
 			@Override
 			public void buttonClick(ClickEvent event) {
 		        // open window to create item
-				CreateTestCaseWindow sub = new CreateTestCaseWindow(tree);
-		        
+//				CreateTestCaseWindow sub = new CreateTestCaseWindow(tree);
+		        UI.getCurrent().addWindow(new TestCaseEditor(tree));
+
 		        // Add it to the root component
-		        UI.getCurrent().addWindow(sub);
+//		        UI.getCurrent().addWindow(sub);
 			}
 		});
 		hc.setComponentAlignment(createTestCase, Alignment.MIDDLE_CENTER);

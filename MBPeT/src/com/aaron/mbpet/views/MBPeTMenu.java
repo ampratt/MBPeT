@@ -1,30 +1,39 @@
 package com.aaron.mbpet.views;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.ui.CreateTestCaseWindow;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.ui.PersonEditor;
+import com.aaron.mbpet.ui.TestCaseEditor;
+import com.aaron.mbpet.ui.TestSessionEditor;
 import com.aaron.mbpet.utils.ExampleUtil;
+import com.aaron.mbpet.utils.HierarchicalDepartmentContainer;
 import com.vaadin.event.Action;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -57,10 +66,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	static MenuBar userMenu;
 	private JPAContainer<User> persons;
 	private JPAContainer<TestCase> testcases;
+	private JPAContainer<TestSession> sessions;
 
 	
     // Actions for the context menu
-    private static final Action ACTION_ADD = new Action("Add child item");
+    private static final Action ACTION_ADD = new Action("Add TestSession");
     private static final Action ACTION_DELETE = new Action("Delete");
     private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_DELETE };
     String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
@@ -94,6 +104,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		MbpetUI.PERSISTENCE_UNIT);
         testcases = JPAContainerFactory.make(TestCase.class,
         		MbpetUI.PERSISTENCE_UNIT);
+        sessions = JPAContainerFactory.make(TestSession.class,
+        		MbpetUI.PERSISTENCE_UNIT);
+        //new HierarchicalDepartmentContainer();
+//        		JPAContainerFactory.make(TestCase.class,
+//        		MbpetUI.PERSISTENCE_UNIT);
         
 //		setUserDisplayName(usrname);
 		setCompositionRoot(buildContent());
@@ -190,28 +205,28 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		final VerticalLayout buttons = new VerticalLayout();
 		
         // TESTING
-        final Label testlabel = new Label("i added this");
-        Button add = new Button("add", new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				buttons.addComponent(testlabel);
-			}
-		});
-        
-        Button remove = new Button("remove", new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				int labelindex = buttons.getComponentIndex(testlabel);
-				Notification.show("layout count" + buttons.getComponent(getComponentCount()).toString() + 
-									"index of testlabel" + buttons.getComponentIndex(testlabel));
-				
-			}
-		});
-        buttons.addComponent(add);
-//        buttons.addComponent(remove);
-        add.addStyleName("menu-button-left-align");
-        remove.addStyleName("menu-button-left-align");
-		buttons.setComponentAlignment(add, Alignment.MIDDLE_LEFT);
+//        final Label testlabel = new Label("i added this");
+//        Button add = new Button("add", new Button.ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				buttons.addComponent(testlabel);
+//			}
+//		});
+//        
+//        Button remove = new Button("remove", new Button.ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				int labelindex = buttons.getComponentIndex(testlabel);
+//				Notification.show("layout count" + buttons.getComponent(getComponentCount()).toString() + 
+//									"index of testlabel" + buttons.getComponentIndex(testlabel));
+//				
+//			}
+//		});
+//        buttons.addComponent(add);
+////        buttons.addComponent(remove);
+//        add.addStyleName("menu-button-left-align");
+//        remove.addStyleName("menu-button-left-align");
+//		buttons.setComponentAlignment(add, Alignment.MIDDLE_LEFT);
 //		buttons.setComponentAlignment(remove, Alignment.MIDDLE_LEFT);
 
         
@@ -249,7 +264,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			public void buttonClick(ClickEvent event) {
 		        // open window to create item		        
 		        // Add it to the root component
-		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree));
+//		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree, testcases));
+		        UI.getCurrent().addWindow(new TestCaseEditor(menutree));	//testcases
 		        
 		        
 //	            // Create new item, set as parent, allow children (= leaf node)
@@ -276,6 +292,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	}
 	
 	
+	@SuppressWarnings({ "serial", "deprecation" })
 	private VerticalLayout buildTreeMenu() {
 		// layout holder for menu items
 		VerticalLayout vc = new VerticalLayout();
@@ -288,23 +305,127 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		vc.addComponent(divider);
 		
 		// TREE MENU
-		   final Object[][] testCases = new Object[][]{
-	    	        new Object[]{"Dashboard", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
-	    	        new Object[]{"Panel", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
-	    	        new Object[]{"Portal", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
-	    	        new Object[]{"demo", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
-	    	        new Object[]{"random", "01.02.15", "03.04.15", "04.05.15", "06.07.15"}
-		        };
-	    	        
-	    	    
-	        menutree.setContainerDataSource(testcases);
+//		   final Object[][] testCases = new Object[][]{
+//	    	        new Object[]{"Dashboard", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
+//	    	        new Object[]{"Panel", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
+//	    	        new Object[]{"Portal", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
+//	    	        new Object[]{"demo", "01.02.15", "03.04.15", "04.05.15", "06.07.15"},
+//	    	        new Object[]{"random", "01.02.15", "03.04.15", "04.05.15", "06.07.15"}
+//		        };
+	        		   
+	    	
+//	        menutree.setContainerDataSource(testcases);
 	        menutree.addStyleName("tiny");
-	        menutree.setItemCaptionPropertyId("title");
+//	        menutree.setItemCaptionPropertyId("title");
 	        menutree.setImmediate(true);		// Cause valueChange immediately when the user selects
 		    menutree.addActionHandler(this);	// Add actions (context menu)
 	        menutree.setSelectable(true);
+//	        menutree.addContainerProperty(propertyId, type, defaultValue)
 //	    	tree.addStyleName("treemenu");
+	        
+//	        menutree.setChildrenAllowed("gen dashboard", true);
 	    	
+	     // Item captions must be defined explicitly
+	        menutree.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
+
+	        // Now fill the tree. iterate through all testCases
+//	        Collection<Object> sessids = sessions.getItemIds();
+//	        TestSession session = sessions.getItem(sessids).getEntity();
+	        for (Object caseid : testcases.getItemIds() ) {
+	        	TestCase testcase = testcases.getItem(caseid).getEntity();
+	        	menutree.addItem(caseid);
+	        	menutree.setItemCaption(caseid, testcase.getTitle());
+
+	        	// check for child sessions
+//		        Collection<TestSession> matchingsessions = new ArrayList<TestSession>();
+//		        for ( Object id : sessions.getItemIds()) {
+////		        	TestSession session = 
+//		        	if ( sessions.getItem(id).getItemProperty("parentcase").equals(caseid) ) {//  .getEntity().getParentcase().equals(caseid) ) {
+//		        		matchingsessions.add(sessions.getItem(id).getEntity());
+//		        	}
+//		        }
+//	        	sessids.contains(caseid);
+	        	System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
+	        	System.out.println("GetSESSIONS: " + testcase.getSessions());
+	             if ( testcase.getSessions().size() == 0 ){	// matchingsessions.isEmpty() 
+//	            	 menutree.setChildrenAllowed(testcase, false);
+	             } else {
+	                  // and fill the subtree
+	            	 
+	            	 // sort session elements
+	            	 List<TestSession> caseSessions = testcase.getSessions();
+	            	 List<Integer> sortedids = new ArrayList<Integer>(); 
+	            	 for (TestSession s : caseSessions){
+	            		 sortedids.add(s.getId());
+	            	 }
+	            	 Collections.sort(sortedids);
+	            	 System.out.println("SORTED ID's: " + sortedids);
+	            	 for (Object id : sortedids) {	//testcase.getSessions()	matchingsessions
+	                	  Object sessionid = sessions.getItem(id).getEntity().getId();
+	                	  menutree.addItem(sessionid);
+	                	  menutree.setItemCaption(sessionid, sessions.getItem(id).getEntity().getTitle());
+	                	  menutree.setParent(sessionid, caseid);
+	                	  menutree.setChildrenAllowed(sessionid, false);
+	                   }
+	             }
+
+	             menutree.expandItemsRecursively(testcase);
+
+	        }
+	        
+	        
+	        menutree.addItemClickListener(new ItemClickListener() {
+				@Override
+				public void itemClick(ItemClickEvent event) {
+	            	Object id = event.getItemId();
+	            	System.out.println("this is the current ITEM selection: " + id.toString());
+	            	
+	            	// get path to navigate to
+	            	String path = "";
+	            	// get testCase for parent item or Session for children
+	            	if ( menutree.isRoot(id) ){
+//	            		TestCase caseEntity = testcases.getItem(id).getEntity();
+	            		path = testcases.getItem(id).getEntity().getTitle();		//caseEntity.getTitle();
+	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + testcases.getItem(id).getEntity().getTitle());
+	            		
+	            	} else {	// a child (Session) was selected
+	            		// get selected child
+	            		path = sessions.getItem(id).getEntity().getTitle();
+	            		System.out.println("this is the current ENTITY (SESSION) selection's title: " + sessions.getItem(id).getEntity().getTitle());
+	            		
+	            		// get parent (CASE) for path
+	            		Object pid = menutree.getParent(id);
+//		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
+//						String parent = (String) menutree.getParent(id);
+		            	path = testcases.getItem(pid).getEntity().getTitle() + "/" + 
+	            				sessions.getItem(id).getEntity().getTitle();
+	            	}
+
+//					if (!menutree.isRoot(id)) {
+//						Object pid = menutree.getParent(id);
+//		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
+////						String parent = (String) menutree.getParent(id);
+//		            	path = parentEntity.getTitle() + "/" + caseEntity.getTitle();
+//
+//					}
+					System.out.println("path is : " + path);
+					
+					// navigate to corresponding item
+					getUI()
+		         		.getNavigator()
+		         			.navigateTo(MainView.NAME + "/" + path);
+					// update page title
+//					ContentView.setPageTitle(path);
+	
+	//					Notification.show("Value changed: ",
+	//	    	                path,	//event.getItem()),
+	//	    	                Type.HUMANIZED_MESSAGE); 
+				}
+			});
+
+	        vc.addComponent(menutree);
+	        
+	        
 	    	/* Add test cases as root items in the tree. */
 //	    	for (int i=0; i<testCases.length; i++) {
 //	    	    String testCase = (String) (testCases[i][0]);
@@ -342,38 +463,50 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	//	        tree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
 	 
 	        // Expand whole tree
-	//	        for (final Object id : tree.rootItemIds()) {
-	//	            tree.expandItemsRecursively(id);
-	//	        }
-	 
-	        menutree.addItemClickListener(new ItemClickListener() {
-				@Override
-				public void itemClick(ItemClickEvent event) {
-					// TODO Auto-generated method stub
-	            	String selected = (String) event.getItemId();
-	            	String path = selected;
-	            	System.out.println("this is the current ITEM selection: " + selected.toString());
-					if (!menutree.isRoot(event.getItemId())) {
-	//						Object parent = tree.getParent(event.getItemId());
-						String parent = (String) menutree.getParent(event.getItemId());
-		            	path = parent+ "/" + selected;
-					}
-					
-					// navigate to corresponding item
-					getUI()
-		         		.getNavigator()
-		         			.navigateTo(MainView.NAME + "/" + 
-		     							path);
-					// update page title
-//					ContentView.setPageTitle(path);
-	
-	//					Notification.show("Value changed: ",
-	//	    	                path,	//event.getItem()),
-	//	    	                Type.HUMANIZED_MESSAGE); 
-				}
-			});
+	        
+	        
+	        // generate button for all test cases in db
+//	        for (Object id : testcases.getItemIds()) {
+//				TestCase item = testcases.getItem(id).getEntity();
+//		        Button button = new Button(item.getTitle());
+//		        button.setIcon(FontAwesome.ANGLE_RIGHT);
+//		        button.addStyleName("menu-button-left-align");
+//		        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+//		        button.addStyleName(ValoTheme.BUTTON_SMALL); 
+//		        vc.addComponent(button);
+//	        }
+	        
+	        
+//	        vc.addComponent(new Button("select no. 5",	new Button.ClickListener() {
+//				@Override
+//				public void buttonClick(ClickEvent event) {
+//					Object item = testcases.getItem(5).getItemId();
+//					menutree.select(item);
+//					menutree.setChildrenAllowed(item, true);
+//				}
+//			}));
+//	        
+//	        vc.addComponent(new Button("show jpa contents",	new Button.ClickListener() {
+//				@Override
+//				public void buttonClick(ClickEvent event) {
+//
+//					for (final Object id : testcases.getItemIds()) {
+//						TestCase tcase = testcases.getItem(id).getEntity();
+//						System.out.println("TEST CASE no. " + tcase.getId() +
+//											" - " + tcase.getTitle());
+//					}
+//
+//					for (final Object id : menutree.rootItemIds()) {
+////			            tree.expandItemsRecursively(id);
+//						Object item = testcases.getItem(id).getItemId();
+////			        	menutree.setChildrenAllowed(item, true);
+//
+//			        }       
+//				}
+//			}));
+		         
+	        
 
-	        vc.addComponent(menutree);
 	        
 	        
 //	        tree.addValueChangeListener(new ValueChangeListener(){
@@ -392,6 +525,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	    	
 			return vc;
 		}
+	
 	
 //	private Component buildMenuItems() {
 //        Panel panel = new Panel();
@@ -420,14 +554,18 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
             final Object target) {
         if (action == ACTION_ADD) {
         	Object parent = target;
+        	// if wasn't a parent item select, move up to the parent
         	if (!menutree.isRoot(target)) {
         		parent = menutree.getParent(target);
         	}
-	        // open window to create item
-			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());
+        	System.out.println("parent is " + parent);
+	        // open window to create TestSession
+	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, testcases.getItem(parent).getEntity()));	//testcases
+
+//			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());	        
+//	        // Add it to the root component
+//	        UI.getCurrent().addWindow(sub);
 	        
-	        // Add it to the root component
-	        UI.getCurrent().addWindow(sub);
 //	        
 //            // Allow children for the target item, and expand it
 //            tree.setChildrenAllowed(target, true);

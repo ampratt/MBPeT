@@ -1,12 +1,16 @@
 package com.aaron.mbpet.domain;
 
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -18,22 +22,25 @@ import org.hibernate.validator.constraints.Email;
 public class TestCase {
 
     @Id
+    @Column(name="ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
 
     @NotNull
+    @Column(unique=true)
     @Size(min = 1, max = 40)
     private String title;
     
-    @Size(max = 40)
+    @Size(max = 60)
     private String description;
     
 //	@NotNull
 	@ManyToOne
 	private User owner;
 
-    @OneToMany(mappedBy = "parentcase")
-    private Set<TestSession> sessions;
+    @OneToMany(mappedBy = "parentcase", fetch=FetchType.EAGER)
+//    @JoinColumn(name="testcase_fk") //we need to duplicate the physical information
+    private List<TestSession> sessions;
 
 
     
@@ -47,15 +54,25 @@ public class TestCase {
 //		this.owner = owner;
 //		this.sessions = sessions;
 	}
+	public TestCase(String title, String description, User owner) {
+//		super();
+		this.title = title;
+		this.description = description;
+		this.owner = owner;
+//		this.sessions = sessions;
+	}
 
 	/*
      * getters and setters
      */
-	public Long getId() {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name="TESTCASE_ID")
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -83,11 +100,12 @@ public class TestCase {
 		this.owner = owner;
 	}
 
-	public Set<TestSession> getSessions() {
+//    @OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,mappedBy="parentcase")
+    public List<TestSession> getSessions() {
 		return sessions;
 	}
 
-	public void setSessions(Set<TestSession> sessions) {
+	public void setSessions(List<TestSession> sessions) {
 		this.sessions = sessions;
 	}
  

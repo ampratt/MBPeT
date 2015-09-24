@@ -1,7 +1,11 @@
 package com.aaron.mbpet.ui;
 
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.MainView;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
@@ -24,17 +28,23 @@ public class CreateTestCaseWindow extends Window {
 	 */
 	private static final long serialVersionUID = 5370960944210111329L;
 
-	public CreateTestCaseWindow(Tree tree) {
+	private Tree tree;
+	private JPAContainer<TestCase> testcases;
+	
+	public CreateTestCaseWindow(Tree tree, JPAContainer<TestCase> container) {
         super("Create a new Test Case"); // Set window caption
         center();
         setResizable(false);
         setClosable(false);
         setModal(true);
 
-        setContent(buildWindowContent(tree));
+        this.tree = tree;
+        this.testcases = container;
+        
+        setContent(buildWindowContent());
 	}
 	
-        private Component buildWindowContent(final Tree tree) {
+        private Component buildWindowContent() {
         	// Some basic content for the window
             VerticalLayout vc = new VerticalLayout();
             setContent(vc);
@@ -46,12 +56,12 @@ public class CreateTestCaseWindow extends Window {
             vc.addComponent(new Label("Fill in details for this Test Case"));
           
             // form
-            vc.addComponent(buildCreationForm(tree));
+            vc.addComponent(buildCreationForm());
             
             return vc;
         }
 
-		private Component buildCreationForm(final Tree tree) {
+		private Component buildCreationForm() {
 			FormLayout form = new FormLayout();
 //	        form.addStyleName("outlined");
 	        form.setSizeFull();
@@ -78,9 +88,12 @@ public class CreateTestCaseWindow extends Window {
             submit.addClickListener(new ClickListener() {
                 public void buttonClick(ClickEvent event) {
                 	title.setValidationVisible(true);
-                	if (title.getValue() == null
-                			|| title.getValue().isEmpty()) {
-                	} else {
+//                	if (title.getValue() == null
+//                			|| title.getValue().isEmpty()) {
+//                	} else {
+                	if (!(title.getValue() == null
+                			|| title.getValue().isEmpty())) {
+
 	                    // Create new item, set as parent, allow children (= leaf node)
 	                    final Object[] itemId = new Object[] {title.getValue()};
 	                    String treeItem = (String) itemId[0];

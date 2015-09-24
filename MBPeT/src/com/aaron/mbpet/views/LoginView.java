@@ -55,8 +55,8 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
 	@Override
     public void enter(ViewChangeEvent event) {
 		// TODO get user by userId passed from parameters and fetch from db
-		String createdUser = event.getParameters();
-		username.setValue(createdUser);
+//		String createdUser = event.getParameters();
+//		username.setValue(createdUser);
 
 //        Notification.show("Welcome to the MBPeT design demo", 
 //        			Notification.Type.TRAY_NOTIFICATION);
@@ -122,7 +122,7 @@ final VerticalLayout loginPanel = new VerticalLayout();
         username.addValidator(new UsernameValidator());
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
-//        username.setValue("jim.halpert");
+        username.setValue("jim.halpert");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
 //        username.setInvalidAllowed(false);

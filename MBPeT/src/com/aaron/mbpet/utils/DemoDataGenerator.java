@@ -15,7 +15,10 @@
  */
 package com.aaron.mbpet.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -23,8 +26,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.transaction.*;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 
 
@@ -36,7 +42,11 @@ public class DemoDataGenerator {
 	final static String[] lnames = { "Smith", "Gordon", "Simpson", "Brown",
 			"Clavel", "Simons", "Verne", "Scott", "Allison", "Gates",
 			"Rowling", "Barks", "Ross", "Schneider", "Tate" };
-
+	
+	static JPAContainer<User> persons = JPAContainerFactory.make(User.class,
+    		MbpetUI.PERSISTENCE_UNIT);
+	static JPAContainer<TestCase> testcases = JPAContainerFactory.make(TestCase.class,
+    		MbpetUI.PERSISTENCE_UNIT);
 
 	public static void create() {
 
@@ -61,15 +71,65 @@ public class DemoDataGenerator {
 		// TEST CASES
 		emjpa.getTransaction().begin();
 		try {
-			emjpa.createNativeQuery("DELETE FROM TestCase").executeUpdate();
+			emjpa.createNativeQuery("DELETE FROM Testcase").executeUpdate();
 		} catch (SecurityException | IllegalStateException e) {
 		    e.printStackTrace();
 		}	
-		emjpa.persist(new TestCase("gen dashboard", "dash decription")); 
-		emjpa.persist(new TestCase("gen portal", "portal decription")); 
-		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription")); 
-
+		Object userid = persons.firstItemId();//  .getItemIds();
+		User user = persons.getItem(userid).getEntity();
+		TestCase tc1 = new TestCase("gen dashboard", "dash decription", user);
+		TestCase tc2 = new TestCase("gen portal", "portal decription", user);
+		TestCase tc3 = new TestCase("gen talkpanel", "talkpanel decription", user);
+//		emjpa.persist(new TestCase("gen dashboard", "dash decription", user)); 
+//		emjpa.persist(new TestCase("gen portal", "portal decription", user)); 
+//		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription", user)); 
+		emjpa.persist(tc1);
+		emjpa.persist(tc2);
+		emjpa.persist(tc3);
 		emjpa.getTransaction().commit();
+		
+		
+		// TEST SESSIONS
+		emjpa.getTransaction().begin();
+		try {
+			emjpa.createNativeQuery("DELETE FROM Testsession").executeUpdate();
+		} catch (SecurityException | IllegalStateException e) {
+		    e.printStackTrace();
+		}	
+		Object caseid = testcases.firstItemId();//  .getItemIds();
+		Object lastcaseid = testcases.lastItemId();
+		TestCase testcase = testcases.getItem(caseid).getEntity();
+		TestCase lasttestcase = testcases.getItem(lastcaseid).getEntity();
+		
+		TestSession sess1 = new TestSession("dashboard session 1");
+		TestSession sess2 = new TestSession("dashboard session 2");
+		TestSession sess3 = new TestSession("dashboard session 3");
+		sess1.setParentcase(testcase);
+		sess2.setParentcase(testcase);
+		sess3.setParentcase(testcase);
+		emjpa.persist(sess1);
+		emjpa.persist(sess2);
+		emjpa.persist(sess3);
+		
+//		emjpa.persist(new TestSession("dashboard session 1", testcase)); 
+//		emjpa.persist(new TestSession("dashboard session 2", testcase)); 
+//		emjpa.persist(new TestSession("dashboard session 3", testcase)); 
+//
+//		emjpa.persist(new TestSession("talkpanel session 1", lasttestcase)); 
+//		emjpa.persist(new TestSession("talkpanel session 2", lasttestcase)); 
+//		emjpa.persist(new TestSession("talkpanel session 3", lasttestcase)); 
+		
+		emjpa.getTransaction().commit();
+		
+		emjpa.getTransaction().begin();
+		List<TestSession> list = new ArrayList<TestSession>();
+		list.add(sess1);
+		list.add(sess2);
+		list.add(sess3);
+		tc1.setSessions(list);
+		emjpa.persist(tc1);
+		emjpa.getTransaction().commit();
+		
 		
 		
 //		EntityManager em = Persistence
