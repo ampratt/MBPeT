@@ -50,28 +50,28 @@ public class DemoDataGenerator {
 
 	public static void create() {
 
-		EntityManager emjpa = Persistence
+		EntityManager em = Persistence
 			.createEntityManagerFactory("mbpet")
 			.createEntityManager();	
 		
 		// Let's have some data created with pure JPA
 		// USERS
-		emjpa.getTransaction().begin();
+		em.getTransaction().begin();
 		try {
-			emjpa.createNativeQuery("DELETE FROM User").executeUpdate();
+			em.createNativeQuery("DELETE FROM User").executeUpdate();
 		} catch (SecurityException | IllegalStateException e) {
 		    e.printStackTrace();
 		}	
-		emjpa.persist(new User("Jim", "Halpert", "jim.halpert", "passw0rd"));
-		emjpa.persist(new User("Pam", "Halpert", "pam.halpert", "passw0rd"));
-		emjpa.persist(new User("Dwight", "Schrute", "dwight.schrute", "passw0rd"));
-		emjpa.getTransaction().commit();
+		em.persist(new User("Jim", "Halpert", "jim.halpert", "passw0rd"));
+		em.persist(new User("Pam", "Halpert", "pam.halpert", "passw0rd"));
+		em.persist(new User("Dwight", "Schrute", "dwight.schrute", "passw0rd"));
+		em.getTransaction().commit();
 		
 		
 		// TEST CASES
-		emjpa.getTransaction().begin();
+		em.getTransaction().begin();
 		try {
-			emjpa.createNativeQuery("DELETE FROM Testcase").executeUpdate();
+			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
 		} catch (SecurityException | IllegalStateException e) {
 		    e.printStackTrace();
 		}	
@@ -83,16 +83,16 @@ public class DemoDataGenerator {
 //		emjpa.persist(new TestCase("gen dashboard", "dash decription", user)); 
 //		emjpa.persist(new TestCase("gen portal", "portal decription", user)); 
 //		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription", user)); 
-		emjpa.persist(tc1);
-		emjpa.persist(tc2);
-		emjpa.persist(tc3);
-		emjpa.getTransaction().commit();
+		em.persist(tc1);
+		em.persist(tc2);
+		em.persist(tc3);
+		em.getTransaction().commit();
 		
 		
 		// TEST SESSIONS
-		emjpa.getTransaction().begin();
+		em.getTransaction().begin();
 		try {
-			emjpa.createNativeQuery("DELETE FROM Testsession").executeUpdate();
+			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
 		} catch (SecurityException | IllegalStateException e) {
 		    e.printStackTrace();
 		}	
@@ -107,9 +107,9 @@ public class DemoDataGenerator {
 		sess1.setParentcase(testcase);
 		sess2.setParentcase(testcase);
 		sess3.setParentcase(testcase);
-		emjpa.persist(sess1);
-		emjpa.persist(sess2);
-		emjpa.persist(sess3);
+		em.persist(sess1);
+		em.persist(sess2);
+		em.persist(sess3);
 		
 //		emjpa.persist(new TestSession("dashboard session 1", testcase)); 
 //		emjpa.persist(new TestSession("dashboard session 2", testcase)); 
@@ -119,18 +119,28 @@ public class DemoDataGenerator {
 //		emjpa.persist(new TestSession("talkpanel session 2", lasttestcase)); 
 //		emjpa.persist(new TestSession("talkpanel session 3", lasttestcase)); 
 		
-		emjpa.getTransaction().commit();
+		em.getTransaction().commit();
 		
-		emjpa.getTransaction().begin();
-		List<TestSession> list = new ArrayList<TestSession>();
-		list.add(sess1);
-		list.add(sess2);
-		list.add(sess3);
-		tc1.setSessions(list);
-		emjpa.persist(tc1);
-		emjpa.getTransaction().commit();
+		em.getTransaction().begin();
+		em.refresh(tc1);
+//		List<TestSession> list = new ArrayList<TestSession>();
+//		list.add(sess1);
+//		list.add(sess2);
+//		list.add(sess3);
+//		tc1.setSessions(list);
+//		emjpa.persist(tc1);
+		em.getTransaction().commit();
 		
 		
+		em.getTransaction().begin();		
+		TestSession sess4 = new TestSession("dashboard session 4");
+		sess4.setParentcase(tc1);
+		em.persist(sess4);	
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+		em.refresh(tc1);
+		em.getTransaction().commit();
 		
 //		EntityManager em = Persistence
 //				.createEntityManagerFactory("MBPeT")

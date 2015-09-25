@@ -65,7 +65,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private Tree menutree;
 	static MenuBar userMenu;
 	private JPAContainer<User> persons;
-	private JPAContainer<TestCase> testcases;
+	private static JPAContainer<TestCase> testcases;
 	private JPAContainer<TestSession> sessions;
 
 	
@@ -75,35 +75,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_DELETE };
     String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
     
-    // Menu navigation button listener
-//    class ButtonListener implements Button.ClickListener {
-//        private static final long serialVersionUID = -4941184695301907995L;
-//
-//        String menuitem;
-//        public ButtonListener(String menuitem) {
-//            this.menuitem = menuitem;
-//        }
-//
-//        @Override
-//        public void buttonClick(ClickEvent event) {
-//            // Navigate to a specific state
-//        	UI.getCurrent()
-//        		.getNavigator()
-//            		.navigateTo(MainView.NAME + "/" + menuitem);
-//        	//            navigator.navigateTo(MainView.NAME + "/" + menuitem);
-//        }
-//    }
     
 	public MBPeTMenu(Tree tree) {	//User sessUser, String usrname,
 //		this.sessionUser = sessUser;
 		this.menutree = tree;
-		
 //		this.displayName = usrname;
 
         persons = JPAContainerFactory.make(User.class,
         		MbpetUI.PERSISTENCE_UNIT);
-        testcases = JPAContainerFactory.make(TestCase.class,
-        		MbpetUI.PERSISTENCE_UNIT);
+        setTestcases(JPAContainerFactory.make(TestCase.class,
+        		MbpetUI.PERSISTENCE_UNIT));
         sessions = JPAContainerFactory.make(TestSession.class,
         		MbpetUI.PERSISTENCE_UNIT);
         //new HierarchicalDepartmentContainer();
@@ -163,11 +144,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		        	} else if (selectedItem.getText().equals("Sign Out")){
 		        		// "Logout" the user
 			            getSession().setAttribute("user", null);
-
-			            // Refresh this view, should redirect to login view
-//			            UI.getCurrent()
-//			            	.getNavigator()
-//			            		.navigateTo(LoginView.NAME);
 			            
 			            //close the session
 			            UI.getCurrent().getSession().close();
@@ -203,35 +179,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	
 	private VerticalLayout menuButtons() {
 		final VerticalLayout buttons = new VerticalLayout();
-		
-        // TESTING
-//        final Label testlabel = new Label("i added this");
-//        Button add = new Button("add", new Button.ClickListener() {
-//			@Override
-//			public void buttonClick(ClickEvent event) {
-//				buttons.addComponent(testlabel);
-//			}
-//		});
-//        
-//        Button remove = new Button("remove", new Button.ClickListener() {
-//			@Override
-//			public void buttonClick(ClickEvent event) {
-//				int labelindex = buttons.getComponentIndex(testlabel);
-//				Notification.show("layout count" + buttons.getComponent(getComponentCount()).toString() + 
-//									"index of testlabel" + buttons.getComponentIndex(testlabel));
-//				
-//			}
-//		});
-//        buttons.addComponent(add);
-////        buttons.addComponent(remove);
-//        add.addStyleName("menu-button-left-align");
-//        remove.addStyleName("menu-button-left-align");
-//		buttons.setComponentAlignment(add, Alignment.MIDDLE_LEFT);
-//		buttons.setComponentAlignment(remove, Alignment.MIDDLE_LEFT);
-
-        
-        
-		
+			
 		// landing page button
 		@SuppressWarnings("serial")
 		Button landingButton = new Button("Start page", new Button.ClickListener() {
@@ -262,29 +210,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		createTestCase.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-		        // open window to create item		        
-		        // Add it to the root component
+		        // open window to create test case
+		        UI.getCurrent().addWindow(new TestCaseEditor(menutree));	//testcases        
 //		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree, testcases));
-		        UI.getCurrent().addWindow(new TestCaseEditor(menutree));	//testcases
-		        
-		        
-//	            // Create new item, set as parent, allow children (= leaf node)
-//	            final Object[] itemId = new Object[] {"New Item"};
-//	            String name = (String) itemId[0];
-//	            tree.addItem(itemId[0].toString());
-////	            final Object itemId = tree.addItem();
-////	            tree.setParent(itemId, target);
-//	            tree.setChildrenAllowed(itemId, true);
-//	 
-//	            // Set the name for this item (we use it as item caption)
-//	            final Item item = tree.getItem(itemId);
-////	            final Property name = item
-////	                    .getItemProperty(ExampleUtil.hw_PROPERTY_NAME);
-////	            name.setValue("New Item");
-//
-//	            // Allow children for the target item, and expand it
-////	            tree.setChildrenAllowed(target, true);
-////	            tree.expandItem(target);
 			}
 		});
 		
@@ -323,16 +251,15 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //	        menutree.addContainerProperty(propertyId, type, defaultValue)
 //	    	tree.addStyleName("treemenu");
 	        
-//	        menutree.setChildrenAllowed("gen dashboard", true);
 	    	
 	     // Item captions must be defined explicitly
 	        menutree.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
 
 	        // Now fill the tree. iterate through all testCases
-//	        Collection<Object> sessids = sessions.getItemIds();
-//	        TestSession session = sessions.getItem(sessids).getEntity();
-	        for (Object caseid : testcases.getItemIds() ) {
-	        	TestCase testcase = testcases.getItem(caseid).getEntity();
+			//	        Collection<Object> sessids = sessions.getItemIds();
+			//	        TestSession session = sessions.getItem(sessids).getEntity();
+	        for (Object caseid : getTestcases().getItemIds() ) {
+	        	TestCase testcase = getTestcases().getItem(caseid).getEntity();
 	        	menutree.addItem(caseid);
 	        	menutree.setItemCaption(caseid, testcase.getTitle());
 
@@ -350,7 +277,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	             if ( testcase.getSessions().size() == 0 ){	// matchingsessions.isEmpty() 
 //	            	 menutree.setChildrenAllowed(testcase, false);
 	             } else {
-	                  // and fill the subtree
+	                 // fill the subtree with sessions
 	            	 
 	            	 // sort session elements
 	            	 List<TestSession> caseSessions = testcase.getSessions();
@@ -385,8 +312,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            	// get testCase for parent item or Session for children
 	            	if ( menutree.isRoot(id) ){
 //	            		TestCase caseEntity = testcases.getItem(id).getEntity();
-	            		path = testcases.getItem(id).getEntity().getTitle();		//caseEntity.getTitle();
-	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + testcases.getItem(id).getEntity().getTitle());
+	            		path = getTestcases().getItem(id).getEntity().getTitle();		//caseEntity.getTitle();
+	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + getTestcases().getItem(id).getEntity().getTitle());
 	            		
 	            	} else {	// a child (Session) was selected
 	            		// get selected child
@@ -397,7 +324,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            		Object pid = menutree.getParent(id);
 //		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
 //						String parent = (String) menutree.getParent(id);
-		            	path = testcases.getItem(pid).getEntity().getTitle() + "/" + 
+		            	path = getTestcases().getItem(pid).getEntity().getTitle() + "/" + 
 	            				sessions.getItem(id).getEntity().getTitle();
 	            	}
 
@@ -414,12 +341,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 					getUI()
 		         		.getNavigator()
 		         			.navigateTo(MainView.NAME + "/" + path);
-					// update page title
-//					ContentView.setPageTitle(path);
-	
-	//					Notification.show("Value changed: ",
-	//	    	                path,	//event.getItem()),
-	//	    	                Type.HUMANIZED_MESSAGE); 
 				}
 			});
 
@@ -560,7 +481,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	}
         	System.out.println("parent is " + parent);
 	        // open window to create TestSession
-	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, testcases.getItem(parent).getEntity()));	//testcases
+	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, getTestcases().getItem(parent).getEntity()));	//testcases
 
 //			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());	        
 //	        // Add it to the root component
@@ -642,5 +563,15 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		
 		System.out.println("USER MENU new name: " + mitems.get(0).getText()); 	//getItems().toString());
     }
+
+
+	public static JPAContainer<TestCase> getTestcases() {
+		return testcases;
+	}
+
+
+	public void setTestcases(JPAContainer<TestCase> testcases) {
+		this.testcases = testcases;
+	}
 
 }

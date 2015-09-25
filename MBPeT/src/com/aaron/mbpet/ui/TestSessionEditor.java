@@ -1,5 +1,7 @@
 package com.aaron.mbpet.ui;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -9,6 +11,7 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
+import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.TestCaseForm;
 import com.aaron.mbpet.views.UserForm;
@@ -59,7 +62,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 	Field titlefield;
 	TextField title; 
 	
-	private JPAContainer<TestCase> testcases;
+//	private JPAContainer<TestCase> testcases;
 	private JPAContainer<TestSession> sessions;
 	BeanItem<TestSession> newSessionItem;
 	TestSession newsession;
@@ -68,10 +71,10 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 	TestCase parentCase;
 
 	
-	public TestSessionEditor(Tree tree) {		//JPAContainer<TestCase> container
-      this.tree = tree;
-      init();
-	}
+//	public TestSessionEditor(Tree tree) {		//JPAContainer<TestCase> container
+//      this.tree = tree;
+//      init();
+//	}
 	
 	public TestSessionEditor(Tree tree, TestCase parent) {		//JPAContainer<TestCase> container
         this.tree = tree;
@@ -92,8 +95,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //      this.tree = tree;
       sessions = JPAContainerFactory.make(TestSession.class,
       		MbpetUI.PERSISTENCE_UNIT);	//container;
-      testcases = JPAContainerFactory.make(TestCase.class,
-        		MbpetUI.PERSISTENCE_UNIT);      
+//      this.testcases = MBPeTMenu.testcases;
+//      testcases = JPAContainerFactory.make(TestCase.class,
+//        		MbpetUI.PERSISTENCE_UNIT);      
 //      setContent(buildWindowContent());
       
       setSizeUndefined();
@@ -197,42 +201,51 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //					form.enableValidationMessages();
 //					title.setValidationVisible(true);
 
-					// commit the fielgroup
+					// commit the fieldgroup
 					binder.commit();
 					
 					// add bean object to db through jpa container
 	                sessions.addEntity(newSessionItem.getBean());	//jpa container
 	                
-	                
 	                // add created item to tree (after retrieving db generated id)
-	                EntityManager em = Persistence
-	    					.createEntityManagerFactory("mbpet")
-	    					.createEntityManager();	
-		            Query queryByTestSessionName = em.createQuery(
+	                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+	    											.createEntityManager();	
+		            Query query = em.createQuery(
 		        		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
 		        		);
-		            queryByTestSessionName.setParameter("title", newsession.getTitle());
-		            TestSession queriedSession = (TestSession) queryByTestSessionName.getSingleResult();
+//		            query.setParameter("title", newsession.getTitle());
+		            TestSession queriedSession = 
+		            		(TestSession) query.setParameter("title", newsession.getTitle()).getSingleResult();
 		            System.out.println("the generated id is: " + queriedSession.getId());
 		            Object id = queriedSession.getId();	// here is the id we need for tree
 		            
+		            // add to tree
 		            tree.addItem(id);
 		            tree.setParent(id, parentCase.getId());
 	                tree.setChildrenAllowed(id, false);
-              	  	tree.setItemCaption(id, newsession.getTitle());		//sessions.getItem(id).getEntity()
+              	  	tree.setItemCaption(id, sessions.getItem(id).getEntity().getTitle());		//newsession.getTitle()
 	            	tree.expandItem(parentCase.getId());
               	  	tree.select(id);
-	            	
+              	  	
+              	  	// update parent Case to add Session to testCase List<Session> sessions
+              	  	List<TestSession> listofsessions = parentCase.getSessions();
+              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
+              	  	parentCase.setSessions(listofsessions);
+              	  	
+	            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
+	            	for (TestSession s : parentCase.getSessions()) {
+		            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
+	            	}
 	            	// nav to created test case
 	    			getUI().getNavigator()
 	         			.navigateTo(MainView.NAME + "/" + 
-     							parentCase.getTitle() + "/" + newsession.getTitle());		//sessions.getItem(id).getEntity()
+     							parentCase.getTitle() + "/" + queriedSession.getTitle());		//sessions.getItem(id).getEntity()
 	            	
 	            	
 		            Notification.show("TEST Session successfully created: " +
 		            		"\nid: " + queriedSession.getId() +
-		            		"\ntitle: " + newsession.getTitle() +
-		            		"\nparent case: " + newsession.getParentcase().getTitle(),
+		            		"\ntitle: " + queriedSession.getTitle() +
+		            		"\nparent case: " + queriedSession.getParentcase().getTitle(),
 		            		Type.TRAY_NOTIFICATION);
 		            
 					} catch (CommitException e) {
@@ -251,15 +264,15 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 	
 	
 	
-	    public void setTreeItemsExpanded() {
-	        // Expand whole tree
-	    	System.out.println(tree.getItemIds());
-	    	System.out.println(tree.rootItemIds());
-		    for (final Object id : tree.rootItemIds()) {
-		    	tree.expandItemsRecursively(id);
-		    	tree.setChildrenAllowed(id, true);
-	        } 
-	    }
+//	    public void setTreeItemsExpanded() {
+//	        // Expand whole tree
+//	    	System.out.println(tree.getItemIds());
+//	    	System.out.println(tree.rootItemIds());
+//		    for (final Object id : tree.rootItemIds()) {
+//		    	tree.expandItemsRecursively(id);
+//		    	tree.setChildrenAllowed(id, true);
+//	        } 
+//	    }
 	    
 
 }

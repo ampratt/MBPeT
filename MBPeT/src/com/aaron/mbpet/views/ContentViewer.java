@@ -47,8 +47,7 @@ public class ContentViewer extends VerticalLayout {	//implements View
 		setSizeFull();
 		this.addStyleName("content");
 		
-        testcases = JPAContainerFactory.make(TestCase.class,
-        		MbpetUI.PERSISTENCE_UNIT);
+        testcases = MBPeTMenu.getTestcases();
 		
 		this.tree = tree;
 		setPageTitle(title);
@@ -123,14 +122,32 @@ public class ContentViewer extends VerticalLayout {	//implements View
 //	            System.out.println("the generated id is: " + queriedSession.getId());
 //	            Object id = queriedSession.getId();	// here is the id we need for tree
 	            
-	            
 		        // open window to create item
-		        UI.getCurrent().addWindow(new TestSessionEditor(tree, 
-		        				));	//testcases.getItem(parent).getEntity()
+		        UI.getCurrent().addWindow(new TestSessionEditor(tree, getTestCaseByTitle() ));	//testcases.getItem(parent).getEntity()
+//		        UI.getCurrent().addWindow(new NewUseCaseInstanceWindow(tree, pageTitle.getValue()));
+			}
 
-//				NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(tree, pageTitle.getValue());
-//		        // Add it to the root component
-//		        UI.getCurrent().addWindow(sub);
+			private TestCase getTestCaseByTitle() {
+				String title = pageTitle.getValue();
+				if (title.contains("/")) {
+					title = title.substring(0, title.indexOf("/")); 
+				}
+				System.out.println("the parses test case title is: " + title);
+				
+				// add created item to tree (after retrieving db generated id)
+                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+    											.createEntityManager();	
+	            Query query = em.createQuery(
+	        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
+	        		);
+//	            query.setParameter("title", newsession.getTitle());
+	            TestCase queriedCase = 
+	            		(TestCase) query.setParameter("title", title).getSingleResult();
+	            System.out.println("retrieved TC fro db is : " 
+	            				+  queriedCase.getId() + " - " + queriedCase.getTitle());
+					            
+				return testcases.getItem(queriedCase.getId()).getEntity();
+				
 			}
 		});	
 	    
