@@ -11,6 +11,7 @@ import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.TestCaseForm;
 import com.aaron.mbpet.views.UserForm;
+import com.google.gwt.dev.util.Empty;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
@@ -50,7 +51,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	private JPAContainer<TestCase> testcases;
 	final BeanItem<TestCase> newCaseItem;
 	TestCase newcase;
-	private TestCaseForm form;
+	TestCaseForm form;
 	FieldGroup binder;
 
 	private Button createButton;
@@ -174,16 +175,18 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	         			.navigateTo(MainView.NAME + "/" + 
 	         					testcases.getItem(id).getEntity().getTitle());
 	            	
-	            	
-		            Notification.show("TEST CASE successfully created: " +
-		            		"\nid: " + queriedcase.getId() +
-		            		"\ntitle: " + newcase.getTitle() +
-		            		"\ndescription: " + newcase.getDescription() +
-		            		"\nowner: (" + newcase.getOwner() + ") " + newcase.getOwner().getUsername(),
-		            		Type.TRAY_NOTIFICATION);
+//		            Notification.show("TEST CASE successfully created: " +
+//		            		"\nid: " + queriedcase.getId() +
+//		            		"\ntitle: " + newcase.getTitle() +
+//		            		"\ndescription: " + newcase.getDescription() +
+//		            		"\nowner: (" + newcase.getOwner() + ") " + newcase.getOwner().getUsername(),
+//		            		Type.TRAY_NOTIFICATION);
 		            
 					} catch (CommitException e) {
 						e.printStackTrace();
+						binder.discard();
+						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
+						UI.getCurrent().addWindow(new TestCaseEditor(tree));
 					}
 	            
 	        } else if (event.getButton() == cancelButton) {

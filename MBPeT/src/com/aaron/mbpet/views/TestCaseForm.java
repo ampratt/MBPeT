@@ -32,7 +32,7 @@ public class TestCaseForm extends GridLayout {
 		description.setCaption("Decription (optional)");
 		description.addStyleName("caption-optional");
 		
-		disableValidationMessages();
+//		disableValidationMessages();
 
 		title.setNullRepresentation("");
 		description.setNullRepresentation("");

@@ -25,8 +25,8 @@ import org.hibernate.validator.constraints.Email;
 //		indexes = {@Index(name = "tc_title_index", columnList="title", unique=true)}) 
 public class TestCase {
 
+//    @Column(name="ID")
     @Id
-    @Column(name="ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
@@ -113,6 +113,29 @@ public class TestCase {
 		this.sessions = sessions;
 	}
  
+	
+	public void addSession(TestSession session) {
+  	  	// update parent TestCase to add Session(s) to existing list
+//  	  	List<TestSession> listofsessions = this.getSessions();
+  	  	this.sessions.add(session);		//sessions.getItem(id).getEntity()
+  	  	this.setSessions(this.sessions);
+	}
+
+	public void removeSession(TestSession session) {
+  	  	// update parent TestCase to add Session(s) to existing list
+//  	  	List<TestSession> listofsessions = this.getSessions();
+  	  	this.sessions.remove(session);		//sessions.getItem(id).getEntity()
+  	  	this.setSessions(this.sessions);
+	}
+	
+	public void addSessions(List<TestSession> sessions) {
+  	  	// update parent TestCase to add Session(s) to existing list
+//  	  	List<TestSession> listofsessions = this.getSessions();
+  	  	for (TestSession s : sessions) {
+  	  		this.sessions.add(s);		//sessions.getItem(id).getEntity()
+  	  	}
+  	  	this.setSessions(this.sessions);
+	}
 
 
 }

@@ -1,13 +1,14 @@
 package com.aaron.mbpet.views;
 
-import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
 
-public class TestSessionForm extends GridLayout {
+public class TestSessionForm extends FormLayout {
 
 	@PropertyId("title")
 	private TextField title = new TextField("Title");
@@ -17,10 +18,11 @@ public class TestSessionForm extends GridLayout {
 
 	
 	public TestSessionForm(){
-		super(2,2);
-		setSpacing(true);
+//		super(2,2);
+		this.setMargin(true);
+		this.setSpacing(true);
 		
-		title.addValidator(new BeanValidator(TestCase.class, "title"));
+		title.addValidator(new BeanValidator(TestSession.class, "title"));
 //		description.addValidator(new BeanValidator(TestCase.class, "description"));
 		
 		title.focus();
@@ -29,12 +31,12 @@ public class TestSessionForm extends GridLayout {
 //		description.setCaption("Decription (optional)");
 //		description.addStyleName("caption-optional");
 		
-		disableValidationMessages();
-
+		title.setValidationVisible(false);
+		
 		title.setNullRepresentation("");
 //		description.setNullRepresentation("");
 
-		addComponent(title, 0,0,1,0);
+		addComponent(title);	//, 0,0,1,0
 //		addComponent(description, 0,1,1,1);
 //		addComponent(owner, 0,1,1,1);
 	}

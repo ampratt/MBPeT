@@ -66,7 +66,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	static MenuBar userMenu;
 	private JPAContainer<User> persons;
 	private static JPAContainer<TestCase> testcases;
-	private JPAContainer<TestSession> sessions;
+	private static JPAContainer<TestSession> sessions;
 
 	
     // Actions for the context menu
@@ -481,7 +481,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	}
         	System.out.println("parent is " + parent);
 	        // open window to create TestSession
-	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, getTestcases().getItem(parent).getEntity()));	//testcases
+	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, testcases.getItem(parent).getEntity()));	//testcases
 
 //			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());	        
 //	        // Add it to the root component
@@ -506,46 +506,42 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 ////            name.setValue("New Item");
  
         } else if (action == ACTION_DELETE) {
-            final Object parent = menutree.getParent(target);
-            
-            // if deleted parent item, return to landing page
-            if (menutree.isRoot(target)) {
-            	
-            	//if attempted to delete root item that still has children items
+//            final Object parent = menutree.getParent(target);
+        	Object parentid = null;
+        	
+        	// session items are never root
+        	if (!menutree.isRoot(target)) {
+//       			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
+//									"Are you sure you want to delete <b>" + target.toString() + "</b>?<br /><br />");
+       	        UI.getCurrent().addWindow(
+       	        		new ConfirmDeleteMenuItemWindow(menutree, target, 
+						"Are you sure you want to delete <b>" + 
+						sessions.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
+//                return;
+                
+        	} else if (menutree.isRoot(target)) {            	
+            	// ask user if attempted to delete root item that still has children items
             	if (menutree.hasChildren(target)) {
             		// ask user to confirm
-        	        // open window to create item
-        			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
-        							"<b>" + target.toString() + "</b> has child instances that will be deleted.<br />" +
-									"Delete <b>" + target.toString() + "</b> and all its instances?<br /><br />");
-        	        
-        	        // Add it to the root component
-        	        UI.getCurrent().addWindow(confirm);
+        	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
+							"<b>" + testcases.getItem(target).getEntity().getTitle() + 
+								"</b> has Test Session instances that will all be deleted!<br />" +
+							"Are you sure you want to delete <b>" + testcases.getItem(target).getEntity().getTitle() + 
+								"</b> and all its Test Sessions?<br /><br />"));
             	} else {
-           			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
-										"Are you sure you want to delete <b>" + target.toString() + "</b>?<br /><br />");
-	       	        UI.getCurrent().addWindow(confirm);
+	       	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
+							"Are you sure you want to delete <b>" + 
+							testcases.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
             	}
-//            	tree.removeItem(target);
-//            	getUI()
-//	            	.getNavigator()
-//	            		.navigateTo(MainView.NAME + "/" + "landingPage");
+
             	return;
             }
-        	
-            menutree.removeItem(target);
-
+       
         	// If the deleted object's parent has no more children collapse the item
-            if (parent != null && menutree.getChildren(parent) == null) {
-//            	tree.setChildrenAllowed(parent, false);
-            	menutree.collapseItem(parent);
-            }
-            menutree.select(parent);
-            //navigate to parent
-            getUI()
-	            .getNavigator()
-	            	.navigateTo(MainView.NAME + "/" + 
-	            			parent);
+//            if (parentid != null && menutree.getChildren(parentid) == null) {
+////            	tree.setChildrenAllowed(parent, false);
+//            	menutree.collapseItem(parentid);
+//            }
         }
     }
     
@@ -569,9 +565,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		return testcases;
 	}
 
-
 	public void setTestcases(JPAContainer<TestCase> testcases) {
 		this.testcases = testcases;
+	}
+	
+	public static JPAContainer<TestSession> getTestsessions() {
+		return sessions;
+	}
+
+	public void setTestsessions(JPAContainer<TestSession> sessions) {
+		this.sessions = sessions;
 	}
 
 }

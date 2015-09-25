@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -18,6 +22,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -25,6 +30,10 @@ import com.vaadin.ui.Window;
 public class ConfirmDeleteMenuItemWindow extends Window {
 	private static final long serialVersionUID = 5408254248079275265L;
 
+	Tree menutree;
+	JPAContainer<TestCase> testcases;
+	JPAContainer<TestSession> sessions;
+	
 	public ConfirmDeleteMenuItemWindow(Tree tree, Object target, String message) {
         super("Heads Up!");
         center();
@@ -32,6 +41,9 @@ public class ConfirmDeleteMenuItemWindow extends Window {
         setClosable(false);
         setModal(true);
 
+        this.menutree = tree;
+        this.testcases = MBPeTMenu.getTestcases();
+        this.sessions = MBPeTMenu.getTestsessions();
         setContent(buildWindowContent(tree, target, message));
 	}
 	
@@ -43,6 +55,10 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             vc.setSpacing(true);
             setContent(vc);
           
+            this.menutree = tree;
+            this.testcases = MBPeTMenu.getTestcases();
+            this.sessions = MBPeTMenu.getTestsessions();
+
             
             // confirm deletion from menu
             Button delete = new Button("Delete");
@@ -52,25 +68,70 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 				private static final long serialVersionUID = -7778774800816407833L;
 
 				public void buttonClick(ClickEvent event) {
-//                	Tree tree = MBPeTMenu.tree;
-                	
-                	// delete any child items from parent
-                	if (tree.hasChildren(target)) {
-                		List<Object> children = new ArrayList<>(tree.getChildren(target));
-//                		Collection children = tree.getChildren(target);
-                		for (int i=0; i<children.size(); i++) {	//for (Object child : children) {
-                			tree.removeItem(children.get(i));
-                		}                    		
-                	}
-                	
-                	// delete the parent item and navigate to landing page
-                	tree.removeItem(target);
-                	getUI()
-    	            	.getNavigator()
-    	            		.navigateTo(MainView.NAME + "/" + "landingPage");
-                	close(); 
-                }
+		        	Object parentid = null;
 
+		        	// delete session. session items are never root
+		        	if (!menutree.isRoot(target)) {		       	        
+		        		parentid = menutree.getParent(target);
+		        		TestCase parentcase = testcases.getItem(parentid).getEntity();
+		        		System.out.println("\nparent OBJECT is: " + parentid);
+		        		System.out.println("\nparent TestCase is: " + parentcase);
+		        		
+		                // remove item from tree
+		                menutree.removeItem(target);
+		                                            
+		                // remove child from Case's list of Sessions
+		                parentcase.removeSession(sessions.getItem(target).getEntity());
+		                
+		                // delete session from container
+		                sessions.removeItem(target);
+		                
+		                menutree.select(parentid);
+		                //navigate to parent
+		                getUI()
+		    	            .getNavigator()
+		    	            	.navigateTo(MainView.NAME + "/" + 
+		    	            			parentcase.getTitle());
+		        	
+		        	} else {
+		        		TestCase testcase = testcases.getItem(target).getEntity();
+		        		// 1) delete any child sessions first 
+		        		if (menutree.hasChildren(target)) {
+		        			for (int i=0; i<testcase.getSessions().size(); i++) { 		//for (TestSession s : testcase.getSessions()) {
+				                // get session to remove
+		        				TestSession s = testcase.getSessions().get(i);
+		        				// remove item from tree
+				                menutree.removeItem(s.getId());
+				                                            
+				                // remove child from Case's list of Sessions
+				                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
+				                
+				                // delete session from container
+				                sessions.removeItem(s.getId());
+		        			}
+//		        			List<Object> children = new ArrayList<>(menutree.getChildren(target));
+////                		Collection children = tree.getChildren(target);
+//		        			for (int i=0; i<children.size(); i++) {	//for (Object child : children) {
+//		        				menutree.removeItem(children.get(i));
+			
+		        		}
+		        		// 2) delete test case itself
+		                // remove item from tree
+		                menutree.removeItem(target);
+		                                            
+		                // TODO remove test case from user's list of cases?
+//		                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
+		                
+		                // delete TestCase from container
+		                testcases.removeItem(target);
+	        		
+		        		// navigate to landing page
+	                	getUI()
+	    	            	.getNavigator()
+	    	            		.navigateTo(MainView.NAME + "/" + "landingPage");
+		        	}		        	
+		        	close(); 		        		
+                }
             });
             
             
