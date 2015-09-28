@@ -24,7 +24,7 @@ public class TestSession {
     @Size(min = 1, max = 40)
     private String title;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne	//(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentcase", referencedColumnName = "ID")
 //    @JoinColumn(name="testcase_fk", insertable=false, updatable=false)
     private TestCase parentcase;

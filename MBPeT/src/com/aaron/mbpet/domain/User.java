@@ -1,6 +1,8 @@
 package com.aaron.mbpet.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -28,8 +30,8 @@ public class User implements Serializable { //
     @NotNull
     @Size(min = 1, max = 40)
     private String firstname;
-    
-    @Size(max = 40)
+
+	@Size(max = 40)
     private String lastname;
     
 	@Email
@@ -49,7 +51,7 @@ public class User implements Serializable { //
     private String organization;
 
     @OneToMany(mappedBy = "owner")
-    private Set<TestCase> cases;
+    private List<TestCase> cases;
  
     
     public User() {    	
@@ -122,7 +124,64 @@ public class User implements Serializable { //
 		this.organization = organization;
 	}
 
-    
+//  @OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,mappedBy="parentcase")
+    public List<TestCase> getCases() {
+		return cases;
+	}
+
+	public void setCases(List<TestCase> cases) {
+		this.cases = cases;
+	}
+	
+	
+	
+	public void addCase(TestCase tcase) {
+  	  	this.cases.add(tcase);		
+//  	  	setSessions(this.sessions);
+	}
+
+	public void removeCase(TestCase thiscase) {
+		System.out.println("CASES LIST before removing: " + getCases().size());
+		
+		// copy all wanted items to new list and leave behind 'removed' items
+		List<TestCase> newList = new ArrayList<TestCase>();
+		for (TestCase c : cases) {
+			if (c.getId() == thiscase.getId()) {
+				// do nothing
+			} else {
+				// add to new list
+				newList.add(c);
+				System.out.println("NEW LIST size: " + newList.size());				
+			}
+		}
+		this.cases.clear();
+		System.out.println("CASE LIST after clear: " + getCases().size());
+		
+		setCases(newList);
+		System.out.println("CASE LIST after removing: " + getCases().size());
+		
+	}
+
+	
+	
+	public void updateCaseData(TestCase tc) {
+		System.out.println("BEFORE UPDATE");
+		for (TestCase c : cases) {			
+			System.out.println("container title: " + c.getTitle());
+		}
+		// get index before renaming/removing
+		removeCase(tc);
+		
+		// add renamed session back at same index
+//		sessions.add(index, session);
+		addCase(tc);
+		
+		System.out.println("AFTER UPDATE");
+//		sortSessions();
+		for (TestCase c: cases) {			
+			System.out.println("container title: " + c.getTitle());
+		}
+	}
 
 
 }

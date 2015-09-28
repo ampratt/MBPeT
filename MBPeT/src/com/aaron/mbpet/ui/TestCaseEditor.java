@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
@@ -50,12 +51,14 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	private Tree tree;
 	private JPAContainer<TestCase> testcases;
 	final BeanItem<TestCase> newCaseItem;
-	TestCase newcase;
+	TestCase testcase;
 	TestCaseForm form;
 	FieldGroup binder;
 
 	private Button createButton;
 	private Button cancelButton;
+	
+	boolean editmode = false;
 
 	public TestCaseEditor(Tree tree) {		//JPAContainer<TestCase> container
 //        super("Create a new Test Case"); // Set window caption
@@ -64,8 +67,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
         setClosable(true);
         setModal(true);
 
-        newcase = new TestCase(); 
-        this.newCaseItem = new BeanItem<TestCase>(newcase);
+        testcase = new TestCase(); 
+        this.newCaseItem = new BeanItem<TestCase>(testcase);
         this.tree = tree;
         this.testcases = JPAContainerFactory.make(TestCase.class,
         		MbpetUI.PERSISTENCE_UNIT);	//container;
@@ -77,12 +80,39 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
         setCaption(buildCaption());
 	}
 	
+	public TestCaseEditor(Tree tree, Object caseId) {		//JPAContainer<TestCase> container
+//      super("Create a new Test Case"); // Set window caption
+      center();
+      setResizable(false);
+      setClosable(true);
+      setModal(true);
+
+      this.editmode = true;
+      
+//      testcase = new TestCase(); 
+      this.tree = tree;
+      this.testcases = JPAContainerFactory.make(TestCase.class,
+      		MbpetUI.PERSISTENCE_UNIT);	//container;
+      this.testcase = testcases.getItem(caseId).getEntity();
+      this.newCaseItem = new BeanItem<TestCase>(testcase);
+
+      
+//      setContent(buildWindowContent());
+      
+      setSizeUndefined();
+      setContent(ManualLayoutDesign()); //editorForm
+      setCaption(buildCaption());
+	}
+	
 	
     /**
      * @return the caption of the editor window
      */
     private String buildCaption() {
-    	return "Create a new Test Case";
+    	if (editmode) {
+    		return String.format("Edit Test Case: %s", 
+    				testcase.getTitle());
+    	} else return "Create a new Test Case";
 //    	if (!(personItem.getItemProperty("firstname").getValue() == null) ) {
 //    		return String.format("%s %s", personItem.getItemProperty("firstname")
 //    				.getValue(), personItem.getItemProperty("lastname").getValue());
@@ -104,8 +134,10 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 //		layout.addComponent(new Label("<h2>Create new user account.</h2>", 
 //				ContentMode.HTML));
 		
-		// set owner to current logged in user    	
-		newcase.setOwner(MainView.sessionUser);
+		// set owner to current logged in user 
+		if (!editmode) {
+			testcase.setOwner(MainView.sessionUser);
+		}
 
 		// CREATE FIELDS MANUALLY
 		form = new TestCaseForm();
@@ -125,6 +157,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		layout.addComponent(buttons);
 		
 		createButton = new Button("Create", this);
+		if (editmode) createButton.setCaption("Save Edit");
 		createButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		createButton.setClickShortcut(KeyCode.ENTER);
 		
@@ -150,31 +183,58 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 					binder.commit();
 					
 					// add bean object to db through jpa container
-	                testcases.addEntity(newCaseItem.getBean());	//jpa container
-	                
-	                
-	                // add created item to tree (after retrieving db generated id)
-	                EntityManager em = Persistence
-	    					.createEntityManagerFactory("mbpet")
-	    					.createEntityManager();	
-		            Query queryByTestCaseName = em.createQuery(
-		        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
-		        		);
-		            queryByTestCaseName.setParameter("title", newcase.getTitle());
-		            TestCase queriedcase = (TestCase) queryByTestCaseName.getSingleResult();
-		            System.out.println("the generated id is: " + queriedcase.getId());
-		            Object id = queriedcase.getId();	// here is the id we need for tree
-		            
-		            tree.addItem(id);
-	                tree.setChildrenAllowed(id, true);
-              	  	tree.setItemCaption(id, testcases.getItem(id).getEntity().getTitle());
-	            	tree.select(id);
-	            	
-	            	// nav to created test case
-	    			getUI().getNavigator()
-	         			.navigateTo(MainView.NAME + "/" + 
-	         					testcases.getItem(id).getEntity().getTitle());
-	            	
+					if (editmode == false) {
+						// add to container
+		                testcases.addEntity(newCaseItem.getBean());	//jpa container
+		                
+		                // add created item to tree (after retrieving db generated id)
+		                EntityManager em = Persistence
+		    					.createEntityManagerFactory("mbpet")
+		    					.createEntityManager();	
+			            Query queryByTestCaseName = em.createQuery(
+			        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
+			        		);
+			            queryByTestCaseName.setParameter("title", testcase.getTitle());
+			            TestCase queriedcase = (TestCase) queryByTestCaseName.getSingleResult();
+			            System.out.println("the generated id is: " + queriedcase.getId());
+			            Object id = queriedcase.getId();	// here is the id we need for tree
+			            
+			            // add to tree
+			            tree.addItem(id);
+		                tree.setChildrenAllowed(id, true);
+	              	  	tree.setItemCaption(id, testcases.getItem(id).getEntity().getTitle());
+		            	tree.select(id);
+		            	
+		            	// update user to add Case List<TestCase>
+		            	MainView.sessionUser.addCase(queriedcase);
+	              	  	
+		            	// nav to created test case
+		    			getUI().getNavigator()
+		         			.navigateTo(MainView.NAME + "/" + 
+		         					testcases.getItem(id).getEntity().getTitle());
+					} else {
+		            	System.out.println("\nWHAT IS NEW LIST OF CASES (before update): " + MainView.sessionUser.getCases()); // testing purposes
+
+	              	  	//1 UPDATE user's reference ???
+		            	MainView.sessionUser.updateCaseData(testcases.getItem(testcase.getId()).getEntity());
+						System.out.println("Test Case is now: " + testcase.getTitle());
+//						System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+
+						// 2 UPDATE container
+						testcases.addEntity(newCaseItem.getBean());
+						System.out.println("Entity is now: " + testcases.getItem(testcase.getId()).getEntity().getTitle());
+
+						// 3 UPDATE tree title
+	              	  	tree.setItemCaption(testcase.getId(), testcases.getItem(testcase.getId()).getEntity().getTitle());
+
+	              	  	// TESTING
+	              	  	//list all Cases
+		            	System.out.println("\nWHAT IS NEW LIST OF CASES: " + MainView.sessionUser.getCases()); // testing purposes
+		            	for (TestCase c : MainView.sessionUser.getCases()) {
+			            	System.out.println(c.getId() + " - " + c.getTitle()); // testing purposes	            		
+		            	}
+	              	  	
+					}
 //		            Notification.show("TEST CASE successfully created: " +
 //		            		"\nid: " + queriedcase.getId() +
 //		            		"\ntitle: " + newcase.getTitle() +

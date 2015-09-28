@@ -71,8 +71,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add TestSession");
+    private static final Action ACTION_EDIT = new Action("Edit");
     private static final Action ACTION_DELETE = new Action("Delete");
-    private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_DELETE };
+    private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_DELETE };
     String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
     
     
@@ -293,7 +294,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	                	  menutree.setItemCaption(sessionid, sessions.getItem(id).getEntity().getTitle());
 	                	  menutree.setParent(sessionid, caseid);
 	                	  menutree.setChildrenAllowed(sessionid, false);
-	                   }
+	            	 }
 	             }
 
 	             menutree.expandItemsRecursively(testcase);
@@ -486,25 +487,18 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());	        
 //	        // Add it to the root component
 //	        UI.getCurrent().addWindow(sub);
-	        
-//	        
-//            // Allow children for the target item, and expand it
-//            tree.setChildrenAllowed(target, true);
-//            tree.expandItem(target);
-// 
-//            // Create new item, set parent, disallow children (= leaf node)
-//            final Object[] itemId = new Object[]{"New Item"};
-//    	    String itemName = (String) (itemId[0]);
-//            tree.addItem(itemName);
-//            tree.setParent(itemName, target);
-//            tree.setChildrenAllowed(itemName, false);
-// 
-//            // Set the name for this item (we use it as item caption)
-//            final Item item = tree.getItem(itemName);
-////            final Property name = item
-////                    .getItemProperty(ExampleUtil.hw_PROPERTY_NAME);
-////            name.setValue("New Item");
  
+        } else if (action == ACTION_EDIT) {
+        	Object parent = target;
+        	// edit sessions
+        	if (!menutree.isRoot(target)) {
+//        		parent = menutree.getParent(target);
+    	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, target, testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
+        		
+        	} else if (menutree.isRoot(target)){
+    	        UI.getCurrent().addWindow(new TestCaseEditor(menutree, target));	//testcases.getItem(parent).getEntity()        		
+        	}
+        	
         } else if (action == ACTION_DELETE) {
 //            final Object parent = menutree.getParent(target);
         	Object parentid = null;
