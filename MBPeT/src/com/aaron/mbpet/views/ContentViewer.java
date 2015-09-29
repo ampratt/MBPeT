@@ -28,6 +28,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
@@ -94,6 +95,7 @@ public class ContentViewer extends VerticalLayout {	//implements View
 		topBar.setExpandRatio(newUseCaseButton, 2);
 		topBar.setExpandRatio(saveButton, 0);	
 		topBar.setExpandRatio(startButton, 0);
+		
 		
 	    saveButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {

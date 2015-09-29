@@ -66,7 +66,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	static MenuBar userMenu;
 	private JPAContainer<User> persons;
 	private static JPAContainer<TestCase> testcases;
-	private static JPAContainer<TestSession> sessions;
+	public static JPAContainer<TestSession> sessions;
+	private User currentuser = MainView.sessionUser;
 
 	
     // Actions for the context menu
@@ -74,16 +75,15 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     private static final Action ACTION_EDIT = new Action("Edit");
     private static final Action ACTION_DELETE = new Action("Delete");
     private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_DELETE };
-    String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
+//    String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
     
     
-	public MBPeTMenu(Tree tree) {	//User sessUser, String usrname,
+	public MBPeTMenu(JPAContainer<User> persons, Tree tree) {	//User sessUser, String usrname,
 //		this.sessionUser = sessUser;
 		this.menutree = tree;
 //		this.displayName = usrname;
 
-        persons = JPAContainerFactory.make(User.class,
-        		MbpetUI.PERSISTENCE_UNIT);
+        this.persons = persons;	//JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);
         setTestcases(JPAContainerFactory.make(TestCase.class,
         		MbpetUI.PERSISTENCE_UNIT));
         sessions = JPAContainerFactory.make(TestSession.class,
@@ -133,7 +133,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		        public void menuSelected(final MenuItem selectedItem) {
 		        	if (selectedItem.getText().equals("Edit Profile")){
 		                PersonEditor personEditor = new PersonEditor(
-		                		persons.getItem(MainView.sessionUser.getId()), 
+		                		persons.getItem(currentuser.getId()), 
 		                			"Edit User Account", true);
 
 		                personEditor.setModal(false);
@@ -151,11 +151,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			            UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
 			            UI.getCurrent().close();
 			            
-			            UI.getCurrent().getPage().setLocation(
-			        			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
+//			            UI.getCurrent().getPage().setLocation(
+//			        			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
 			         
 			            // Refresh this view, should redirect to login view
-//			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
+			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
 			            return;
 		        	}
 		        }
@@ -256,49 +256,54 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	     // Item captions must be defined explicitly
 	        menutree.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
 
-	        // Now fill the tree. iterate through all testCases
+	        // Now fill the tree. iterate through all testCases by owner
 			//	        Collection<Object> sessids = sessions.getItemIds();
 			//	        TestSession session = sessions.getItem(sessids).getEntity();
-	        for (Object caseid : getTestcases().getItemIds() ) {
-	        	TestCase testcase = getTestcases().getItem(caseid).getEntity();
-	        	menutree.addItem(caseid);
-	        	menutree.setItemCaption(caseid, testcase.getTitle());
+	        
+	        // check if owner has existing cases
+	        System.out.println(currentuser.getId() + " - " + currentuser.getFirstname());
+	        if (currentuser.getCases().size() > 0) {
+	        	
+	        	// load all test cases owned by user
+	        	for (TestCase testcase : currentuser.getCases()) {
+	        		menutree.addItem(testcase.getId());
+	        		menutree.setItemCaption(testcase.getId(), testcase.getTitle());
 
-	        	// check for child sessions
-//		        Collection<TestSession> matchingsessions = new ArrayList<TestSession>();
-//		        for ( Object id : sessions.getItemIds()) {
-////		        	TestSession session = 
-//		        	if ( sessions.getItem(id).getItemProperty("parentcase").equals(caseid) ) {//  .getEntity().getParentcase().equals(caseid) ) {
-//		        		matchingsessions.add(sessions.getItem(id).getEntity());
-//		        	}
-//		        }
-//	        	sessids.contains(caseid);
-	        	System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
-	        	System.out.println("GetSESSIONS: " + testcase.getSessions());
-	             if ( testcase.getSessions().size() == 0 ){	// matchingsessions.isEmpty() 
+//	        	}
+	        	
+//	        	for (Object caseid : getTestcases().getItemIds() ) {
+//	        		TestCase testcase = getTestcases().getItem(caseid).getEntity();
+//	        		menutree.addItem(caseid);
+//	        		menutree.setItemCaption(caseid, testcase.getTitle());
+	        		
+	        		// load any child sessions
+	        		System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
+	        		System.out.println("GetSESSIONS: " + testcase.getSessions());
+	        		if ( testcase.getSessions().size() > 0 ){	// matchingsessions.isEmpty() 
 //	            	 menutree.setChildrenAllowed(testcase, false);
-	             } else {
-	                 // fill the subtree with sessions
-	            	 
-	            	 // sort session elements
-	            	 List<TestSession> caseSessions = testcase.getSessions();
-	            	 List<Integer> sortedids = new ArrayList<Integer>(); 
-	            	 for (TestSession s : caseSessions){
-	            		 sortedids.add(s.getId());
-	            	 }
-	            	 Collections.sort(sortedids);
-	            	 System.out.println("SORTED ID's: " + sortedids);
-	            	 for (Object id : sortedids) {	//testcase.getSessions()	matchingsessions
-	                	  Object sessionid = sessions.getItem(id).getEntity().getId();
-	                	  menutree.addItem(sessionid);
-	                	  menutree.setItemCaption(sessionid, sessions.getItem(id).getEntity().getTitle());
-	                	  menutree.setParent(sessionid, caseid);
-	                	  menutree.setChildrenAllowed(sessionid, false);
-	            	 }
-	             }
-
-	             menutree.expandItemsRecursively(testcase);
-
+//	             } else {
+	        			// fill the subtree with sessions
+	        			
+	        			// sort session elements
+	        			List<TestSession> caseSessions = testcase.getSessions();
+	        			List<Integer> sortedids = new ArrayList<Integer>(); 
+	        			for (TestSession s : caseSessions){
+	        				sortedids.add(s.getId());
+	        			}
+	        			Collections.sort(sortedids);
+	        			Collections.reverse(sortedids);
+	        			System.out.println("SORTED ID's: " + sortedids);
+	        			for (Object id : sortedids) {	//testcase.getSessions()	matchingsessions
+	        				Object sessionid = sessions.getItem(id).getEntity().getId();
+	        				menutree.addItem(sessionid);
+	        				menutree.setItemCaption(sessionid, sessions.getItem(id).getEntity().getTitle());
+	        				menutree.setParent(sessionid, testcase.getId());
+	        				menutree.setChildrenAllowed(sessionid, false);
+	        			}
+	        		}
+	        		
+	        		menutree.expandItemsRecursively(testcase);
+	        	}
 	        }
 	        
 	        

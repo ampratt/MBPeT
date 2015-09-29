@@ -58,44 +58,80 @@ public class DemoDataGenerator {
 		// USERS
 		em.getTransaction().begin();
 		try {
+//			em.createNativeQuery("DROP Testsession").executeUpdate();
+//			em.createNativeQuery("DROP Testcase").executeUpdate();
+//			em.createNativeQuery("DROP User").executeUpdate();
+			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
+			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
 			em.createNativeQuery("DELETE FROM User").executeUpdate();
 		} catch (SecurityException | IllegalStateException e) {
 		    e.printStackTrace();
 		}	
-		em.persist(new User("Jim", "Halpert", "jim.halpert", "passw0rd"));
-		em.persist(new User("Pam", "Halpert", "pam.halpert", "passw0rd"));
-		em.persist(new User("Dwight", "Schrute", "dwight.schrute", "passw0rd"));
+		User user = new User("Jim", "Halpert", "jim.halpert", "passw0rd");
+		User u2 = new User("Pam", "Halpert", "pam.halpert", "passw0rd");
+		User u3 = new User("Dwight", "Schrute", "dwight.schrute", "passw0rd");
+		em.persist(user);
+		em.persist(u2);
+		em.persist(u3);
 		em.getTransaction().commit();
 		
 		
 		// TEST CASES
 		em.getTransaction().begin();
-		try {
-			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
-		} catch (SecurityException | IllegalStateException e) {
-		    e.printStackTrace();
-		}	
-		Object userid = persons.firstItemId();//  .getItemIds();
-		User user = persons.getItem(userid).getEntity();
+//		try {
+//			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
+//		} catch (SecurityException | IllegalStateException e) {
+//		    e.printStackTrace();
+//		}	
+//		Object userid = persons.firstItemId();//  .getItemIds();
+//		User user = persons.getItem(userid).getEntity();
+//		User u2 = persons.getItem(persons.getIdByIndex(1)).getEntity();
+//		User u3 = persons.getItem(persons.getIdByIndex(2)).getEntity();
+
 		TestCase tc1 = new TestCase("gen dashboard", "dash decription", user);
 		TestCase tc2 = new TestCase("gen portal", "portal decription", user);
 		TestCase tc3 = new TestCase("gen talkpanel", "talkpanel decription", user);
+		tc1.setOwner(user);
+		tc2.setOwner(user);
+		tc3.setOwner(user);
+
+		TestCase tc4 = new TestCase("u2 talkpanel", "talkpanel decription", u2);
+		TestCase tc5 = new TestCase("u2 portal", "talkpanel decription", u2);
+		tc4.setOwner(u2);
+		tc5.setOwner(u2);
+
+		TestCase tc6 = new TestCase("u3 talkpanel", "talkpanel decription", u3);
+		TestCase tc7 = new TestCase("u3 portal", "talkpanel decription", u3);
+		tc6.setOwner(u3);
+		tc7.setOwner(u3);
+
 //		emjpa.persist(new TestCase("gen dashboard", "dash decription", user)); 
 //		emjpa.persist(new TestCase("gen portal", "portal decription", user)); 
 //		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription", user)); 
 		em.persist(tc1);
 		em.persist(tc2);
 		em.persist(tc3);
+		em.persist(tc4);
+		em.persist(tc5);
+		em.persist(tc6);
+		em.persist(tc7);
+		
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+		em.refresh(user);
+		em.refresh(u2);
+		em.refresh(u3);
 		em.getTransaction().commit();
 		
 		
 		// TEST SESSIONS
 		em.getTransaction().begin();
-		try {
-			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
-		} catch (SecurityException | IllegalStateException e) {
-		    e.printStackTrace();
-		}	
+//		try {
+//			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
+//		} catch (SecurityException | IllegalStateException e) {
+//		    e.printStackTrace();
+//		}	
 		Object caseid = testcases.firstItemId();//  .getItemIds();
 		Object lastcaseid = testcases.lastItemId();
 		TestCase testcase = testcases.getItem(caseid).getEntity();

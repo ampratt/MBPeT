@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.AnimalViewer;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Item;
 import com.vaadin.event.SelectionEvent;
@@ -40,6 +43,7 @@ public class MainView extends HorizontalLayout implements View {
     public static String displayName = "";
     public static User sessionUser;
     public static Item sessionUserItem;
+    JPAContainer<User> persons;
 //    private Item sessionUser;
     
     VerticalLayout menuLayout = new VerticalLayout();
@@ -69,6 +73,9 @@ public class MainView extends HorizontalLayout implements View {
     
     
 	public MainView() {
+		
+		persons = JPAContainerFactory.make(User.class,
+        		MbpetUI.PERSISTENCE_UNIT);
 		
 //		tree = new Tree("Test Cases:");
 //		landingPage = new LandingPageView(tree);
@@ -121,7 +128,7 @@ public class MainView extends HorizontalLayout implements View {
 		tree = new Tree("Test Cases:");
 
 		// add menu to main view
-    	menu = new MBPeTMenu(tree);	//sessionUser, displayName,
+    	menu = new MBPeTMenu(persons, tree);	//sessionUser, displayName,
     	menuLayout.addComponent(menu);
 //    	setExpandRatio(menu, 1.7f);		
 	}
@@ -142,7 +149,9 @@ public class MainView extends HorizontalLayout implements View {
     public void enter(ViewChangeEvent event) {
 
     	// Get the user name from the session
-    	sessionUser = (User) getSession().getAttribute("sessionUser");
+//    	sessionUser = (User) getSession().getAttribute("sessionUser");
+    	User su = (User) getSession().getAttribute("sessionUser");
+    	sessionUser = persons.getItem(su.getId()).getEntity();
     	sessionUserItem = (Item) getSession().getAttribute("sessionUserItem");
 
     	if (displayName.equals("")) {	

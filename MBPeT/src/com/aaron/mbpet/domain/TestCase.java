@@ -25,9 +25,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
-@Entity
 //@Table(name = "testcase",
 //		indexes = {@Index(name = "tc_title_index", columnList="title", unique=true)}) 
+@Entity
 public class TestCase {
 
 //    @Column(name="ID")

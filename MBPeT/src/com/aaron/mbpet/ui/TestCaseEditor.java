@@ -157,7 +157,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		layout.addComponent(buttons);
 		
 		createButton = new Button("Create", this);
-		if (editmode) createButton.setCaption("Save Edit");
+		if (editmode) createButton.setCaption("Save");
 		createButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		createButton.setClickShortcut(KeyCode.ENTER);
 		
@@ -208,6 +208,13 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		            	// update user to add Case List<TestCase>
 		            	MainView.sessionUser.addCase(queriedcase);
 	              	  	
+	              	  	// TESTING
+	              	  	//list all Cases
+		            	System.out.println("\nWHAT IS NEW LIST OF CASES: " + MainView.sessionUser.getCases()); // testing purposes
+		            	for (TestCase c : MainView.sessionUser.getCases()) {
+			            	System.out.println(c.getId() + " - " + c.getTitle()); // testing purposes	            		
+		            	}
+		            	
 		            	// nav to created test case
 		    			getUI().getNavigator()
 		         			.navigateTo(MainView.NAME + "/" + 

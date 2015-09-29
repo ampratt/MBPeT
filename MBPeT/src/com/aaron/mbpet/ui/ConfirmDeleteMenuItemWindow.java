@@ -77,13 +77,13 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 		        		System.out.println("\nparent OBJECT is: " + parentid);
 		        		System.out.println("\nparent TestCase is: " + parentcase);
 		        		
-		                // remove item from tree
+		                // 1. remove item from tree
 		                menutree.removeItem(target);
 		                                            
-		                // remove child from Case's list of Sessions
+		                // 2. remove child from Case's list of Sessions
 		                parentcase.removeSession(sessions.getItem(target).getEntity());
 		                
-		                // delete session from container
+		                // 3. delete session from container
 		                sessions.removeItem(target);
 		                
 		                menutree.select(parentid);
@@ -116,13 +116,14 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 			
 		        		}
 		        		// 2) delete test case itself
-		                // remove item from tree
+		        		
+		                // 2.1 remove item from tree
 		                menutree.removeItem(target);
 		                                            
-		                // TODO remove test case from user's list of cases?
-//		                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
+		                // 2.2 remove test case from user's list of cases?
+		                MainView.sessionUser.removeCase(testcases.getItem(target).getEntity());
 		                
-		                // delete TestCase from container
+		                // 2.3 delete TestCase from container
 		                testcases.removeItem(target);
 	        		
 		        		// navigate to landing page
