@@ -1,4 +1,4 @@
-package com.aaron.mbpet.utils;
+package com.aaron.mbpet.components;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

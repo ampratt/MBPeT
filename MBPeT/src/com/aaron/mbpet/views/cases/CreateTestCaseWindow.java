@@ -1,4 +1,4 @@
-package com.aaron.mbpet.ui;
+package com.aaron.mbpet.views.cases;
 
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.User;

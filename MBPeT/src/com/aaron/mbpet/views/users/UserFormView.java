@@ -1,10 +1,8 @@
-package com.aaron.mbpet.views;
+package com.aaron.mbpet.views.users;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.ui.PersonEditor;
-import com.aaron.mbpet.ui.PersonEditor.EditorSavedEvent;
-import com.aaron.mbpet.ui.PersonEditor.EditorSavedListener;
+import com.aaron.mbpet.views.LoginView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Property;
@@ -268,15 +266,15 @@ public class UserFormView extends HorizontalLayout implements Button.ClickListen
             public void buttonClick(ClickEvent event) {
                 final BeanItem<User> newPersonItem = new BeanItem<User>(
                         new User());
-                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account", false);
-                personEditor.addListener(new EditorSavedListener() {
-                    @Override
-                    public void editorSaved(EditorSavedEvent event) {
-                        persons.addEntity(newPersonItem.getBean());
-                    }
-                });
-                UI.getCurrent().addWindow(personEditor);
-                personEditor.center();
+//                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account", false);
+//                personEditor.addListener(new EditorSavedListener() {
+//                    @Override
+//                    public void editorSaved(EditorSavedEvent event) {
+//                        persons.addEntity(newPersonItem.getBean());
+//                    }
+//                });
+//                UI.getCurrent().addWindow(personEditor);
+//                personEditor.center();
             }
         });
 
@@ -296,7 +294,7 @@ public class UserFormView extends HorizontalLayout implements Button.ClickListen
             @Override
             public void buttonClick(ClickEvent event) {
                 UI.getCurrent().addWindow(
-                        new PersonEditor(table.getItem(table.getValue()), "Edit User Account", true));
+                        new UserEditor(table.getItem(table.getValue()), "Edit User Account", true));
                 System.out.println("EDITED PERSON: " + persons.getItem(table.getValue()));
 
             }

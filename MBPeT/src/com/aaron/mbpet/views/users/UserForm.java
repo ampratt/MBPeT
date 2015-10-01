@@ -1,4 +1,4 @@
-package com.aaron.mbpet.views;
+package com.aaron.mbpet.views.users;
 
 import com.aaron.mbpet.domain.User;
 import com.vaadin.data.fieldgroup.PropertyId;

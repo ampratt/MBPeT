@@ -2,9 +2,10 @@ package com.aaron.mbpet.views;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.ui.UserEditor;
-import com.aaron.mbpet.ui.UserEditor.EditorSavedEvent;
-import com.aaron.mbpet.ui.UserEditor.EditorSavedListener;
+import com.aaron.mbpet.views.users.UserEditorNotImplemented;
+import com.aaron.mbpet.views.users.UserFormView;
+import com.aaron.mbpet.views.users.UserEditorNotImplemented.EditorSavedEvent;
+import com.aaron.mbpet.views.users.UserEditorNotImplemented.EditorSavedListener;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.util.BeanItem;

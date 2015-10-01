@@ -6,7 +6,8 @@ import java.util.Iterator;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.ui.AnimalViewer;
+import com.aaron.mbpet.views.cases.CaseViewer;
+import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.annotations.DesignRoot;
@@ -177,9 +178,15 @@ public class MainView extends HorizontalLayout implements View {
        		contentLayout.setContent(new LandingPage(tree));
             
               return;
+        } else if (!event.getParameters().contains("/")){
+        	// navigate to TestCase home page
+    		contentLayout.setContent(new CaseViewer(
+    				event.getParameters(), tree));
+
         } else {
+        	// navigate to Session page
 //        	try {
-    		contentLayout.setContent(new ContentViewer(
+    		contentLayout.setContent(new SessionViewer(
     				event.getParameters(), tree));
         		// update page title
 //        		ContentView.setPageTitle(event.getParameters());

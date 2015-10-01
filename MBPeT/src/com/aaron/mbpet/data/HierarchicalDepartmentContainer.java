@@ -1,4 +1,4 @@
-package com.aaron.mbpet.utils;
+package com.aaron.mbpet.data;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;

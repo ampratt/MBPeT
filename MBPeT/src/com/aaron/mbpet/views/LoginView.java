@@ -8,12 +8,12 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.components.PasswordValidator;
+import com.aaron.mbpet.components.UsernameValidator;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.ui.PersonEditor;
-import com.aaron.mbpet.ui.PersonEditor.EditorSavedEvent;
-import com.aaron.mbpet.ui.PersonEditor.EditorSavedListener;
-import com.aaron.mbpet.utils.PasswordValidator;
-import com.aaron.mbpet.utils.UsernameValidator;
+import com.aaron.mbpet.views.users.UserEditor;
+import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
+import com.aaron.mbpet.views.users.UserEditor.EditorSavedListener;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
@@ -171,16 +171,16 @@ final VerticalLayout loginPanel = new VerticalLayout();
 						//launch window to create user
 		                final BeanItem<User> newPersonItem = new BeanItem<User>(
 		                        new User());
-		                PersonEditor personEditor = new PersonEditor(newPersonItem, "Create New User Account", false);
-		                personEditor.addListener(new EditorSavedListener() {
+		                UserEditor userEditor = new UserEditor(newPersonItem, "Create New User Account", false);
+		                userEditor.addListener(new EditorSavedListener() {
 		                    @Override
 		                    public void editorSaved(EditorSavedEvent event) {
 		                        persons.addEntity(newPersonItem.getBean());
 		                    }
 		                });
-		                personEditor.setModal(true);
-		                UI.getCurrent().addWindow(personEditor);
-		                personEditor.center();
+		                userEditor.setModal(true);
+		                UI.getCurrent().addWindow(userEditor);
+		                userEditor.center();
 			            
 			            //method 2 - separate registration page with fieldgroup
 //						UI.getCurrent().getNavigator()

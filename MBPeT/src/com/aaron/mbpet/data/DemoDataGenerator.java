@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aaron.mbpet.utils;
+package com.aaron.mbpet.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,20 +132,38 @@ public class DemoDataGenerator {
 //		} catch (SecurityException | IllegalStateException e) {
 //		    e.printStackTrace();
 //		}	
-		Object caseid = testcases.firstItemId();//  .getItemIds();
-		Object lastcaseid = testcases.lastItemId();
-		TestCase testcase = testcases.getItem(caseid).getEntity();
-		TestCase lasttestcase = testcases.getItem(lastcaseid).getEntity();
+//		Object caseid = testcases.firstItemId();//  .getItemIds();
+//		Object lastcaseid = testcases.lastItemId();
+//		TestCase testcase = testcases.getItem(caseid).getEntity();
+//		TestCase lasttestcase = testcases.getItem(lastcaseid).getEntity();
 		
 		TestSession sess1 = new TestSession("dashboard session 1");
 		TestSession sess2 = new TestSession("dashboard session 2");
 		TestSession sess3 = new TestSession("dashboard session 3");
-		sess1.setParentcase(testcase);
-		sess2.setParentcase(testcase);
-		sess3.setParentcase(testcase);
+		TestSession sess4 = new TestSession("dashboard session 4");
+		
+		TestSession portal1 = new TestSession("portal session 1");
+		TestSession portal2 = new TestSession("portal session 2");
+		TestSession portal3 = new TestSession("portal session 3");
+		TestSession portal4 = new TestSession("portal session 4");
+
+		sess1.setParentcase(tc1);
+		sess2.setParentcase(tc1);
+		sess3.setParentcase(tc1);
+		sess4.setParentcase(tc1);
+		portal1.setParentcase(tc2);
+		portal2.setParentcase(tc2);
+		portal3.setParentcase(tc2);
+		portal4.setParentcase(tc2);
+
 		em.persist(sess1);
 		em.persist(sess2);
 		em.persist(sess3);
+		em.persist(sess4);
+		em.persist(portal1);
+		em.persist(portal2);
+		em.persist(portal3);
+		em.persist(portal4);
 		
 //		emjpa.persist(new TestSession("dashboard session 1", testcase)); 
 //		emjpa.persist(new TestSession("dashboard session 2", testcase)); 
@@ -159,6 +177,7 @@ public class DemoDataGenerator {
 		
 		em.getTransaction().begin();
 		em.refresh(tc1);
+		em.refresh(tc2);
 //		List<TestSession> list = new ArrayList<TestSession>();
 //		list.add(sess1);
 //		list.add(sess2);
@@ -169,9 +188,15 @@ public class DemoDataGenerator {
 		
 		
 		em.getTransaction().begin();		
-		TestSession sess4 = new TestSession("dashboard session 4");
-		sess4.setParentcase(tc1);
-		em.persist(sess4);	
+		TestSession sess5 = new TestSession("dashboard session 5");
+		TestSession sess6 = new TestSession("dashboard session 6");
+		TestSession sess7 = new TestSession("dashboard session 7");
+		sess5.setParentcase(tc1);
+		sess5.setParentcase(tc1);
+		sess7.setParentcase(tc1);
+		em.persist(sess5);	
+		em.persist(sess6);	
+		em.persist(sess7);	
 		em.getTransaction().commit();
 		
 		em.getTransaction().begin();

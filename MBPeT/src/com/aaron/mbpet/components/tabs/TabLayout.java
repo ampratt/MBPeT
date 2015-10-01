@@ -1,4 +1,4 @@
-package com.aaron.mbpet.tabs;
+package com.aaron.mbpet.components.tabs;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;

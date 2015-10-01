@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aaron.mbpet.ui;
+package com.aaron.mbpet.views.users;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -21,9 +21,9 @@ import java.util.Arrays;
 
 import javax.persistence.PersistenceException;
 
+import com.aaron.mbpet.components.PasswordValidator;
+import com.aaron.mbpet.components.UsernameValidator;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.utils.PasswordValidator;
-import com.aaron.mbpet.utils.UsernameValidator;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.data.Item;
@@ -53,7 +53,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
-public class PersonEditor extends Window implements Button.ClickListener,
+public class UserEditor extends Window implements Button.ClickListener,
         FormFieldFactory {
 
     private final Item personItem;
@@ -62,7 +62,7 @@ public class PersonEditor extends Window implements Button.ClickListener,
     private Button cancelButton;
     boolean editMode;
 
-    public PersonEditor(Item personItem, String lableText, boolean mode) {
+    public UserEditor(Item personItem, String lableText, boolean mode) {
     	this.editMode = mode;
 //    	this.setModal(true);
     	this.setResizable(false);

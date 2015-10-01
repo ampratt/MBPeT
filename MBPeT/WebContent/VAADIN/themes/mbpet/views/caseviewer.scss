@@ -1,0 +1,113 @@
+@mixin mbpet-caseviewer-view {
+
+  .dashboard-view.dashboard-view {
+    padding: $view-padding; 
+	padding-top: 0;
+    overflow: visible;
+	
+	.v-horizontallayout-topBar-layout-padding-white {
+		padding: 0 5px 0 10px;
+		background-color: white;
+	}
+
+	.panel-caption {
+		
+		.v-panel-caption {
+			background-color: white;
+		}
+	}
+	
+	.v-horizontallayout-panel-style-layout-header {
+		padding: 5px 5px 5px 15px;
+		background-color: white;
+		/*border-bottom: 1px solid #DFDFDF; */
+	}
+	
+    .dashboard-panel-toolbar {
+      padding: 1px 0 1px round($v-unit-size / 1.8);
+      height: $v-unit-size + 2px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+	
+    .dashboard-panels {
+      padding: 5px 10px 5px 10px;
+      display: block;
+      height: 100%;
+      margin: 0 round($view-padding / -3);
+
+      .card {
+        height: 250px; 	/*100%;*/
+        overflow: hidden;
+        padding: $v-unit-size + 2px round($view-padding / 2) 0;
+        position: relative;
+
+        .v-table, .v-table-table {
+          background: transparent;
+        }
+      }
+
+      .sessions-table {
+        .card {
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        .v-table-table {
+          @include box-shadow(none);
+        }
+
+        .v-table-cell-wrapper {
+          padding-left: round($view-padding / 2);
+          padding-right: round($view-padding / 2);
+        }
+
+        .v-table-cell-content {
+          border-color: first-color(valo-border($strength: 0.3));
+        }
+
+        .v-table-cell-content-rowheader {
+          color: valo-font-color($v-app-background-color, 0.4);
+
+          .v-table-cell-wrapper {
+            padding-right: 0;
+          }
+        }
+      }
+
+      .dashboard-panel-slot {
+        padding: round($view-padding / 3);
+        min-height: 220px;
+		width: 75% !important; /* 50 */
+      }
+
+      .dashboard-panel-slot.max {
+        width: 100% !important;
+        height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .notes {
+        .card {
+          padding: $v-unit-size + 2px 0 0;
+        }
+
+        .v-textarea {
+          border-top: valo-border($strength: 0.5);
+          padding: 20px 20px 0;
+          line-height: 20px;
+          font-size: 13px;
+          background: #fffdf2 url(../img/notes-bg.png) repeat;
+          background-attachment: local;
+          color: #545145;
+          overflow: auto;
+        }
+      }
+    }
+	
+  }
+
+	
+}

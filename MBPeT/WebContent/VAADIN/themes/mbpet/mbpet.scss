@@ -33,8 +33,7 @@
 @import "views/menu";
 @import "views/content";
 @import "views/windows";
-/*
-*/
+@import "views/caseviewer";
 
 
 @mixin mbpet {
@@ -45,6 +44,7 @@
   @include mbpet-menu-view;
   @include mbpet-content-view;
   @include mbpet-windows-view;
+  @include mbpet-caseviewer-view;
 
   
   /* Insert your theme rules here */

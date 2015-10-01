@@ -1,4 +1,4 @@
-package com.aaron.mbpet.ui;
+package com.aaron.mbpet.views.cases;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -10,8 +10,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.TestCaseForm;
-import com.aaron.mbpet.views.UserForm;
+import com.aaron.mbpet.views.users.UserForm;
 import com.google.gwt.dev.util.Empty;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;

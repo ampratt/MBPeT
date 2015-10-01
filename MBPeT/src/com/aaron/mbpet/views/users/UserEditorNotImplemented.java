@@ -1,4 +1,4 @@
-package com.aaron.mbpet.ui;
+package com.aaron.mbpet.views.users;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public class UserEditor extends Panel implements Button.ClickListener,
+public class UserEditorNotImplemented extends Panel implements Button.ClickListener,
         FormFieldFactory {
 
     private final Item personItem;
@@ -30,7 +30,7 @@ public class UserEditor extends Panel implements Button.ClickListener,
     private Button saveButton;
     private Button cancelButton;
 
-    public UserEditor(Item pItem) {
+    public UserEditorNotImplemented(Item pItem) {
         this.personItem = pItem;
         editorForm = new Form();
         editorForm.setFormFieldFactory(this);

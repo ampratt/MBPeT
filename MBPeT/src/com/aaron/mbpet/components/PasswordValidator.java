@@ -1,4 +1,4 @@
-package com.aaron.mbpet.utils;
+package com.aaron.mbpet.components;
 
 import com.vaadin.data.validator.AbstractValidator;
 

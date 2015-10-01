@@ -1,6 +1,6 @@
 package com.aaron.mbpet.ui;
 
-import com.aaron.mbpet.tabs.TabLayout;
+import com.aaron.mbpet.components.tabs.TabLayout;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Resource;

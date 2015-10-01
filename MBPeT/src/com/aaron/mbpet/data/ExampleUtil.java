@@ -1,4 +1,4 @@
-package com.aaron.mbpet.utils;
+package com.aaron.mbpet.data;
 
 import java.text.NumberFormat;
 import java.util.Locale;

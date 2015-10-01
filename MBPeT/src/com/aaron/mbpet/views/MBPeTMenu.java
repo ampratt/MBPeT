@@ -6,24 +6,28 @@ import java.util.Collections;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.data.ExampleUtil;
+import com.aaron.mbpet.data.HierarchicalDepartmentContainer;
+import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
-import com.aaron.mbpet.ui.CreateTestCaseWindow;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
-import com.aaron.mbpet.ui.PersonEditor;
-import com.aaron.mbpet.ui.TestCaseEditor;
-import com.aaron.mbpet.ui.TestSessionEditor;
-import com.aaron.mbpet.utils.ExampleUtil;
-import com.aaron.mbpet.utils.HierarchicalDepartmentContainer;
+import com.aaron.mbpet.views.cases.CreateTestCaseWindow;
+import com.aaron.mbpet.views.cases.TestCaseEditor;
+import com.aaron.mbpet.views.sessions.TestSessionEditor;
+import com.aaron.mbpet.views.users.UserEditor;
 import com.vaadin.event.Action;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -68,7 +72,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private static JPAContainer<TestCase> testcases;
 	public static JPAContainer<TestSession> sessions;
 	private User currentuser = MainView.sessionUser;
-
+	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add TestSession");
@@ -96,7 +100,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		setCompositionRoot(buildContent());
 	}
 	
-	
+
+
 	public Component buildContent() {
 //		VerticalLayout menuLayout = new VerticalLayout(); //VerticalLayout
     	menuLayout.addStyleName("menu");
@@ -132,7 +137,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		        @Override
 		        public void menuSelected(final MenuItem selectedItem) {
 		        	if (selectedItem.getText().equals("Edit Profile")){
-		                PersonEditor personEditor = new PersonEditor(
+		                UserEditor personEditor = new UserEditor(
 		                		persons.getItem(currentuser.getId()), 
 		                			"Edit User Account", true);
 
@@ -193,8 +198,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			}
 		});
 		landingButton.addStyleName("menu-button-left-align");
-//		button.addStyleName("tiny");
-		landingButton.addStyleName("borderless");
+		landingButton.addStyleName("borderless-colored");
+//		landingButton.addStyleName("tiny");
+		landingButton.setIcon(FontAwesome.HOME);
+//		landingButton.addStyleName("borderless");
 		buttons.addComponent(landingButton);
 		buttons.setComponentAlignment(landingButton, Alignment.MIDDLE_LEFT);
 		
@@ -202,8 +209,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		// create test case button
 		Button createTestCase = new Button("Create new test case");
 		createTestCase.addStyleName("menu-button-left-align");
+		createTestCase.addStyleName("borderless-colored");
 //		createTestCase.addStyleName("tiny");
-		createTestCase.addStyleName("borderless");
+		createTestCase.setIcon(FontAwesome.PLUS);
 		buttons.addComponent(createTestCase);
 		buttons.setComponentAlignment(createTestCase, Alignment.MIDDLE_LEFT);
 		
@@ -334,13 +342,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            				sessions.getItem(id).getEntity().getTitle();
 	            	}
 
-//					if (!menutree.isRoot(id)) {
-//						Object pid = menutree.getParent(id);
-//		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
-////						String parent = (String) menutree.getParent(id);
-//		            	path = parentEntity.getTitle() + "/" + caseEntity.getTitle();
-//
-//					}
 					System.out.println("path is : " + path);
 					
 					// navigate to corresponding item
@@ -498,7 +499,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	// edit sessions
         	if (!menutree.isRoot(target)) {
 //        		parent = menutree.getParent(target);
-    	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, target, testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
+    	        UI.getCurrent().addWindow(new TestSessionEditor(
+    	        		menutree, 
+    	        		target, 
+    	        		testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
         		
         	} else if (menutree.isRoot(target)){
     	        UI.getCurrent().addWindow(new TestCaseEditor(menutree, target));	//testcases.getItem(parent).getEntity()        		

@@ -1,4 +1,4 @@
-package com.aaron.mbpet.tabs;
+package com.aaron.mbpet.components.tabs;
 
 import javax.servlet.annotation.WebServlet;
 

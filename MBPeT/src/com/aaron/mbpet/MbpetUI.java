@@ -4,7 +4,7 @@ import java.util.logging.Level;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.aaron.mbpet.utils.DemoDataGenerator;
+import com.aaron.mbpet.data.DemoDataGenerator;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;

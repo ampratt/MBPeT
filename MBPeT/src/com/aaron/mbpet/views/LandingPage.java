@@ -1,8 +1,8 @@
 package com.aaron.mbpet.views;
 
 
-import com.aaron.mbpet.ui.CreateTestCaseWindow;
-import com.aaron.mbpet.ui.TestCaseEditor;
+import com.aaron.mbpet.views.cases.CreateTestCaseWindow;
+import com.aaron.mbpet.views.cases.TestCaseEditor;
 import com.vaadin.data.Item;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
