@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.tools.ant.types.FileList.FileName;
+import org.vaadin.aceeditor.AceEditor;
 
 
+import com.aaron.mbpet.components.aceeditor.AceEditorLayout;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FileResource;
@@ -33,7 +35,7 @@ import com.vaadin.ui.Notification.Type;
 
 public class TestAdapterTab extends VerticalLayout {
 
-//	AceEditor editor = new AceEditor();
+	AceEditor editor;
 	private TextField textualInput = new TextField();
 	private Button generateButton = new Button("Submit Data to Graph");
 	
@@ -43,12 +45,18 @@ public class TestAdapterTab extends VerticalLayout {
 	
 	    addComponent(new Label("<h3><i>Upload file or write code below to send adapter settings to master</i></h3>", ContentMode.HTML));	//layout.
 		browseForFile();
-//	    buildAceEditor();
+	    
+		editor = new AceEditor();
+		addComponent(new AceEditorLayout(editor));
 
 	    //initDiagram();
 	}
 	
-
+	private void buildAceEditor(){
+		editor = new AceEditor();
+		AceEditorLayout acelayout = new AceEditorLayout(editor);
+	}
+	
 //	private void buildAceEditor() {
 //		// Ace Editor
 //		editor.setValue("Hello world!\nif:\n\tthen \ndo that\n...");

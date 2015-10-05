@@ -2,6 +2,7 @@ package com.aaron.mbpet.views.cases;
 
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -39,6 +40,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	private Button editButton;
 	private Button cloneButton;
 	private Button newSessionButton;
+	private Button deleteButton;
 	private Table sessionsTable;
     private String sessionsFilter;
 
@@ -58,7 +60,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 //		final Panel panel = new Panel();
 //		panel.addStyleName("panel-caption");
 //		panel.setSizeFull();
-        this.setHeight("250px");
+        this.setHeight("325px");
 
 		
 		VerticalLayout layout = new VerticalLayout();
@@ -115,6 +117,15 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	    newSessionButton.addStyleName("icon-only");
 	    newSessionButton.setDescription("create new session");
 	    
+	    deleteButton = new Button("", this);
+	    deleteButton.setIcon(FontAwesome.TRASH_O);
+	    deleteButton.addStyleName("borderless-colored");
+	    deleteButton.addStyleName("small");
+	    deleteButton.addStyleName("icon-only");
+	    deleteButton.setDescription("create new session");
+	    deleteButton.setEnabled(false);
+
+	    
 //	    MenuBar dropdown = new MenuBar();
 //	    dropdown.addStyleName("borderless");
 //	    dropdown.addStyleName("small");
@@ -126,7 +137,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 //	    addItem.addItem("Sign Out", null);
 
 	    panelHeader.addComponent(label);
-	    panelHeader.addComponents(searchField, editButton, cloneButton, newSessionButton);
+	    panelHeader.addComponents(searchField, editButton, cloneButton, newSessionButton, deleteButton);
 //	    panelHeader.addComponent(dropdown);
 	    panelHeader.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
 	    panelHeader.setComponentAlignment(searchField, Alignment.MIDDLE_RIGHT);
@@ -161,6 +172,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
         	private void setModificationsEnabled(boolean b) {
                 editButton.setEnabled(b);
                 cloneButton.setEnabled(b);
+                deleteButton.setEnabled(b);
             }
 
         });
@@ -223,6 +235,11 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
         				sessionsTable,
         				true)
 	        );
+
+        } else if (event.getButton() == deleteButton) {
+			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
+	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(tree, session.getId(), 
+	        		"Are you sure you want to delete <b>" + session.getTitle() + "</b>?<br /><br />"));
 
         }
     }

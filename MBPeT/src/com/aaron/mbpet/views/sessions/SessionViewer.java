@@ -107,7 +107,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
 		HorizontalLayout buttons = new HorizontalLayout();
 		buttons.setSpacing(true);
-		buttons.addComponents(newSessionButton, saveButton, startButton, stopButton); 
+		buttons.addComponents(saveButton, startButton, stopButton);	//newSessionButton 
 		
 		topBar.addComponents(pageTitle, buttons); //(pageTitle);
 //		topBar.addComponent(newUseCaseButton);

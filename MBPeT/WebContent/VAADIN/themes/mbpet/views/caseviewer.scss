@@ -5,11 +5,12 @@
 	padding-top: 0;
     overflow: visible;
 	
+	
 	.v-horizontallayout-topBar-layout-padding-white {
-		padding: 0 5px 0 10px;
-		background-color: white;
+		padding: 0 10px 0 10px;
+		background-color: #FAFAFA;
 	}
-
+ 
 	.panel-caption {
 		
 		.v-panel-caption {
@@ -23,13 +24,21 @@
 		/*border-bottom: 1px solid #DFDFDF; */
 	}
 	
-    .dashboard-panel-toolbar {
-      padding: 1px 0 1px round($v-unit-size / 1.8);
-      height: $v-unit-size + 2px;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+	.dashboard-view .v-table .v-table-body-background-white {
+		background-color: white;
+	}
+	.v-table-background-white {
+		background-color: white;
+	}
+
+
+	.dashboard-panel-toolbar {
+	  padding: 1px 0 1px round($v-unit-size / 1.8);
+	  height: $v-unit-size + 2px;
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	}
 	
     .dashboard-panels {
       padding: 5px 10px 5px 10px;

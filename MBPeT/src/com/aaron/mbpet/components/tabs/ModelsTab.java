@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.io.IOException;
 import java.net.URL;
 
+import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.label.ContentMode;
 
 import org.apache.tools.ant.taskdefs.Length;
+import org.vaadin.aceeditor.AceEditor;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -31,14 +33,15 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-@JavaScript("http://cdn.alloyui.com/2.5.0/aui/aui-min.js")
-@StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
+//@JavaScript("http://cdn.alloyui.com/2.5.0/aui/aui-min.js")
+//@StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
 public class ModelsTab extends VerticalLayout {
 
-    final VerticalLayout layout = new VerticalLayout();
+//    final VerticalLayout layout = new VerticalLayout();
 //    private DiagramBuilder diagramBuilder = new DiagramBuilder();
-    Button stateButton;
-    List<String> nName = new ArrayList<String>();
+//    Button stateButton;
+//    List<String> nName = new ArrayList<String>();
+	private AceEditor editor;
 	
 	public ModelsTab() {
     	// set main content
@@ -46,16 +49,26 @@ public class ModelsTab extends VerticalLayout {
         //layout.setMargin(true);
         //layout.setSpacing(true);
         //setContent(layout);
-		setSizeFull();
+		
+//		setSizeFull();
 		setMargin(true);
 		setSpacing(true);
 
         addComponent(new Label("<h3><i>Graphical editing of models with the DiagramBuilder will happen here</i></h3>", ContentMode.HTML));	//layout.
 
         //initDiagram();
-    }
+		buildDiagramAceCombo();
 
-    
+	}
+	
+	private void buildDiagramAceCombo(){
+		editor = new AceEditor();
+		DiagramAceLayout diagramAceLayout = new DiagramAceLayout(editor);
+		addComponent(diagramAceLayout);
+
+//		editor = new AceEditor();
+//		AceEditorLayout acelayout = new AceEditorLayout(editor);
+	}
 //    private void initDiagram()
 //    {
 //

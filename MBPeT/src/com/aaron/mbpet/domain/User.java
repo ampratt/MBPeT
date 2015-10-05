@@ -25,7 +25,7 @@ public class User implements Serializable { //
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
 
     @NotNull
     @Size(min = 1, max = 40)
@@ -68,11 +68,11 @@ public class User implements Serializable { //
 	/**
      * getters and setters
      */
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

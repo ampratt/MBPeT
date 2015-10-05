@@ -2,6 +2,10 @@ package com.aaron.mbpet.components.tabs;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.vaadin.aceeditor.AceEditor;
+
+import com.aaron.mbpet.components.aceeditor.AceEditorLayout;
+import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -19,6 +23,7 @@ public class RampTab extends VerticalLayout {
 	private TextField textualInput = new TextField();
 	private Button generateButton = new Button("Submit Data to Graph");
 	private String data = new String();
+//	private AceEditor editor;
 	//private FlotChart flot = new FlotChart();
 
 	public RampTab() {
@@ -26,14 +31,25 @@ public class RampTab extends VerticalLayout {
 		setMargin(true);
 		setSpacing(true);
 
+        addComponent(new Label("<h3><i>This will have a graph for the ramp function</i></h3>", ContentMode.HTML));	//layout.
+        addComponent(new Label("Give graph data in format: '[[0,0], [10,30], [20,50]]'"));
+
+//		buildDiagramAceCombo();
         initRamp();
 
 	}
 	
-	private void initRamp() {
+//	private void buildDiagramAceCombo(){
+//		editor = new AceEditor();
+//		DiagramAceLayout diagramAceLayout = new DiagramAceLayout(editor);
+//		addComponent(diagramAceLayout);
+//
+////		editor = new AceEditor();
+////		AceEditorLayout acelayout = new AceEditorLayout(editor);
+//	}
 
-        addComponent(new Label("<h3><i>This will have a graph for the ramp function</i></h3>", ContentMode.HTML));	//layout.
-        addComponent(new Label("Give graph data in format: '[[0,0], [10,30], [20,50]]'"));
+	
+	private void initRamp() {
 		
         // horizontal layout
         inputLayout.setWidth("100%");

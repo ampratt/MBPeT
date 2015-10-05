@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="com/aaron/mbpet/js/alloy-ui-master/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
@@ -38,5 +38,6 @@
 	<classpathentry kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/MySQL JDBC Driver"/>
 	<classpathentry kind="lib" path="C:/hibernate-release-4.3.6.Final/jpa/hibernate-entitymanager-4.3.6.Final.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/eclipselink/org.eclipse.persistence.jpa.jar"/>
+	<classpathentry kind="lib" path="src/com/aaron/mbpet/js/alloy-ui-master"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

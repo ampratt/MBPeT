@@ -23,4 +23,11 @@
     -->
     <!-- <set-configuration-property name="devModeRedirectEnabled" value="true" /> -->
 
+
+    
+
+
+    <inherits name="org.vaadin.aceeditor.AceEditorWidgetSet" />
+
+    <inherits name="org.vaadin.diagrambuilder.WidgetSet" />
 </module>

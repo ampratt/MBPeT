@@ -8,6 +8,8 @@ import com.aaron.mbpet.data.DemoDataGenerator;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
+import com.vaadin.annotations.JavaScript;
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -25,6 +27,23 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+@JavaScript({//"http://cdn.alloyui.com/3.0.1/aui/aui-min.js",
+//	"js/alloy-ui-master/.*",
+	"js/alloy-ui-master/cdn.alloyui.com_3.0.1_aui_aui-min.js",
+//	"js/cdn.alloyui.com_2.5.0_aui_aui-min.js"
+//	"js/aui-diagram-builder/js/aui-diagram-builder.js",
+//	"js/aui-diagram-builder/js/aui-diagram-builder-connector.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-condition.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-end.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-fork.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-join.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-manager-base.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-start.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-state.js",
+//	"js/aui-diagram-builder/js/aui-diagram-node-task.js",
+	})
+@StyleSheet("http://cdn.alloyui.com/3.0.1/aui-css/css/bootstrap.min.css")
 @SuppressWarnings("serial")
 @Theme("mbpet")
 public class MbpetUI extends UI {
@@ -33,7 +52,7 @@ public class MbpetUI extends UI {
 
 	
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class)
+	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
 

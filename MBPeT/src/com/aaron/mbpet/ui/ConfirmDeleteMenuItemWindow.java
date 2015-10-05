@@ -11,6 +11,8 @@ import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -20,6 +22,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
@@ -34,7 +37,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 	JPAContainer<TestCase> testcases;
 	JPAContainer<TestSession> sessions;
 	
-	public ConfirmDeleteMenuItemWindow(Tree tree, Object target, String message) {
+	public ConfirmDeleteMenuItemWindow(Tree tree, Object targetId, String message) {
         super("Heads Up!");
         center();
         setResizable(false);
@@ -44,7 +47,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
         this.menutree = tree;
         this.testcases = MBPeTMenu.getTestcases();
         this.sessions = MBPeTMenu.getTestsessions();
-        setContent(buildWindowContent(tree, target, message));
+        setContent(buildWindowContent(tree, targetId, message));
 	}
 	
         private Component buildWindowContent(final Tree tree, final Object target, String message) {
@@ -53,12 +56,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             vc.addComponent(new Label(message, ContentMode.HTML));
             vc.setMargin(true);
             vc.setSpacing(true);
-            setContent(vc);
-          
-            this.menutree = tree;
-            this.testcases = MBPeTMenu.getTestcases();
-            this.sessions = MBPeTMenu.getTestsessions();
-
+            
             
             // confirm deletion from menu
             Button delete = new Button("Delete");
@@ -77,6 +75,9 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 		        		System.out.println("\nparent OBJECT is: " + parentid);
 		        		System.out.println("\nparent TestCase is: " + parentcase);
 		        		
+		        		// for notification
+		        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
+		        		
 		                // 1. remove item from tree
 		                menutree.removeItem(target);
 		                                            
@@ -92,6 +93,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 		    	            .getNavigator()
 		    	            	.navigateTo(MainView.NAME + "/" + 
 		    	            			parentcase.getTitle());
+		                confirmNotification(deleteditem);
 		        	
 		        	} else {
 		        		TestCase testcase = testcases.getItem(target).getEntity();
@@ -115,6 +117,9 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 //		        				menutree.removeItem(children.get(i));
 			
 		        		}
+		        		// for notification
+		        		String deleteditem = testcases.getItem(target).getEntity().getTitle();
+		        		
 		        		// 2) delete test case itself
 		        		
 		                // 2.1 remove item from tree
@@ -130,6 +135,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
 	                	getUI()
 	    	            	.getNavigator()
 	    	            		.navigateTo(MainView.NAME + "/" + "landingPage");
+		                confirmNotification(deleteditem);
 		        	}		        	
 		        	close(); 		        		
                 }
@@ -162,5 +168,17 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             
             return vc;
         }     
+        
+    	private void confirmNotification(String deletedItem) {
+            // welcome notification
+            Notification notification = new Notification(deletedItem);
+            notification
+                    .setDescription("<span>was deleted.</span>");
+            notification.setHtmlContentAllowed(true);
+            notification.setStyleName("tray dark small closable login-help");
+            notification.setPosition(Position.BOTTOM_RIGHT);
+            notification.setDelayMsec(10000);
+            notification.show(Page.getCurrent());
+    	}
 
 }

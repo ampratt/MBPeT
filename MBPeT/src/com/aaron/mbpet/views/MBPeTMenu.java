@@ -71,8 +71,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private JPAContainer<User> persons;
 	private static JPAContainer<TestCase> testcases;
 	public static JPAContainer<TestSession> sessions;
+	public static JPAContainer<Model> models;
 	private User currentuser = MainView.sessionUser;
-	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
+//	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add TestSession");
@@ -92,7 +93,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		MbpetUI.PERSISTENCE_UNIT));
         sessions = JPAContainerFactory.make(TestSession.class,
         		MbpetUI.PERSISTENCE_UNIT);
-        //new HierarchicalDepartmentContainer();
+        models = JPAContainerFactory.make(Model.class,
+        		MbpetUI.PERSISTENCE_UNIT);        //new HierarchicalDepartmentContainer();
 //        		JPAContainerFactory.make(TestCase.class,
 //        		MbpetUI.PERSISTENCE_UNIT);
         
@@ -580,4 +582,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		this.sessions = sessions;
 	}
 
+	public static JPAContainer<Model> getModels() {
+		return models;
+	}
+
+	public void setModels(JPAContainer<Model> models) {
+		this.models = models;
+	}
 }

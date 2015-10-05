@@ -1,8 +1,10 @@
 package com.aaron.mbpet.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+//@Table(name = "testcase",
+//indexes = {@Index(name = "tc_title_index", columnList="title", unique=true)}) 
 @Entity
 public class TestSession {
 
@@ -23,6 +27,7 @@ public class TestSession {
     private int id;
 
     @NotNull
+//    @Column(unique=true)
     @Size(min = 1, max = 40)
     private String title;
     
@@ -31,10 +36,11 @@ public class TestSession {
 //    @JoinColumn(name="testcase_fk", insertable=false, updatable=false)
     private TestCase parentcase;
 
-    @ManyToMany
-    private List<Model> model;
-    
-    private String parameters;
+    @OneToMany(mappedBy = "parentsession")
+    private List<Model> models;
+
+
+	private String parameters;
     
     
     public TestSession() {
@@ -89,5 +95,74 @@ public class TestSession {
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
+
+	
+    public List<Model> getModels() {
+		return models;
+	}
+
+	public void setModels(List<Model> models) {
+		this.models = models;
+	}
+	
+	
+	
+	public void addModel(Model model) {
+  	  	this.models.add(model);		
+//  	  	setSessions(this.sessions);
+	}
+	
+	public void removeModel(Model model) {
+		System.out.println("MODEL LIST before removing: " + getModels().size());
+		
+		// copy all wanted items to new list and leave behind 'removed' items
+		List<Model> newList = new ArrayList<Model>();
+		for (Model m : models) {
+			if (m.getId() == model.getId()) {
+				// do nothing
+			} else {
+				// add to new list
+				newList.add(m);
+				System.out.println("NEW LIST size: " + newList.size());				
+			}
+		}
+		this.models.clear();
+		System.out.println("MODEL LIST after clear: " + getModels().size());
+		
+		setModels(newList);
+		System.out.println("MODEL LIST after removing: " + getModels().size());
+		
+	}
+	
+	
+	public void addModels(List<Model> models) {
+  	  	// update parent TestCase to add Session(s) to existing list
+//  	  	List<TestSession> listofsessions = this.getSessions();
+  	  	for (Model m : models) {
+  	  		this.models.add(m);		//sessions.getItem(id).getEntity()
+  	  	}
+  	  	this.setModels(this.models);
+	}
+	
+	public void updateModelData(Model model) {
+		System.out.println("BEFORE UPDATE");
+		for (Model m : models) {			
+			System.out.println("container title: " + m.getTitle());
+		}
+		// get index before renaming/removing
+		removeModel(model);
+		
+		// add renamed session back at same index
+//		sessions.add(index, session);
+		addModel(model);
+		
+		System.out.println("AFTER UPDATE");
+//		sortSessions();
+		for (Model m : models) {			
+			System.out.println("container title: " + m.getTitle());
+		}
+	}
+	
+	
 
 }

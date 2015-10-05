@@ -52,9 +52,13 @@ public class TestCase {
 //    @JoinColumn(name="testcase_fk") //we need to duplicate the physical information
     private List<TestSession> sessions;
 
+    @OneToMany(mappedBy = "parentsut")	//, fetch=FetchType.EAGER
+//  @JoinColumn(name="testcase_fk") //we need to duplicate the physical information
+    private List<Model> models;
 
-    
-    public TestCase() {
+   
+
+	public TestCase() {
     }
     	
 	public TestCase(String title, String description) {	//User owner
@@ -72,6 +76,8 @@ public class TestCase {
 //		this.sessions = sessions;
 	}
 
+	
+	
 	/*
      * getters and setters
      */
@@ -119,6 +125,16 @@ public class TestCase {
 		this.sessions = sessions;
 	}
  
+    public List<Model> getModels() {
+		return models;
+	}
+
+	public void setModels(List<Model> models) {
+		this.models = models;
+	}
+	
+	
+	
 	
 	public void addSession(TestSession session) {
   	  	this.sessions.add(session);		
@@ -204,6 +220,52 @@ public class TestCase {
 	}
 	
 	
+	
+	public void addModel(Model model) {
+  	  	this.models.add(model);		
+//  	  	setSessions(this.sessions);
+	}
+	
+	public void removeModel(Model model) {
+		System.out.println("MODEL LIST before removing: " + getModels().size());
+		
+		// copy all wanted items to new list and leave behind 'removed' items
+		List<Model> newList = new ArrayList<Model>();
+		for (Model m : models) {
+			if (m.getId() == model.getId()) {
+				// do nothing
+			} else {
+				// add to new list
+				newList.add(m);
+				System.out.println("NEW LIST size: " + newList.size());				
+			}
+		}
+		this.models.clear();
+		System.out.println("MODEL LIST after clear: " + getModels().size());
+		
+		setModels(newList);
+		System.out.println("MODEL LIST after removing: " + getModels().size());
+		
+	}
+	
+	public void updateModelData(Model model) {
+		System.out.println("BEFORE UPDATE");
+		for (Model m : models) {			
+			System.out.println("container title: " + m.getTitle());
+		}
+		// get index before renaming/removing
+		removeModel(model);
+		
+		// add renamed session back at same index
+//		sessions.add(index, session);
+		addModel(model);
+		
+		System.out.println("AFTER UPDATE");
+//		sortSessions();
+		for (Model m : models) {			
+			System.out.println("container title: " + m.getTitle());
+		}
+	}
 //	public void sortSessions() {
 //	   	 // get session id's and sort them numerically
 ////	   	 List mylist = new ArrayList(getSessions());

@@ -13,12 +13,14 @@ import com.vaadin.ui.themes.ValoTheme;
 @StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
 public class TabLayout extends TabSheet {   
 	
+//	ConfigurationTab configTab = new ConfigurationTab();
+	MonitoringTab monitoringTab = new MonitoringTab();
+	final ModelsTab models = new ModelsTab();
+	final ReportsTab reportsTab = new ReportsTab();
 	final ModelsTab graph = new ModelsTab();
 	final RampTab ramp = new RampTab();
 	final SettingsTab settings = new SettingsTab();
 	final TestAdapterTab adapter = new TestAdapterTab();
-	MonitoringTab monitoringTab = new MonitoringTab();
-	ReportsTab reportsTab = new ReportsTab();
 	
     public TabLayout() {
         setSizeFull();
@@ -53,6 +55,7 @@ public class TabLayout extends TabSheet {
 //		confTabs.addTab(graph, "User Profiles / Models");
 		//graphTab.addComponent(MbpetDemoUI.graph);
 		
+		confTabs.addTab(models, "Models");
 		confTabs.addTab(ramp, "Ramp Function");
 		confTabs.addTab(settings, "Settings");
 		confTabs.addTab(adapter, "Test Adapter");

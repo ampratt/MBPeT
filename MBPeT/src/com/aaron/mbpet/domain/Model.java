@@ -8,14 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
 public class Model {
-
+ 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -25,12 +24,19 @@ public class Model {
     private String title;
     
     @Column(columnDefinition="TEXT")
-    private String schema;
+    private String dotschema;
     
-    @ManyToMany	//(fetch = FetchType.EAGER)
-    @JoinColumn(name = "parentsession", referencedColumnName = "ID")
+//    @ManyToMany	//(fetch = FetchType.EAGER)
 //    @JoinColumn(name="testcase_fk", insertable=false, updatable=false)
-    private List<TestSession> parentsession;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "parentsession", referencedColumnName = "ID")
+    private TestSession parentsession;
+    
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "parentsut", referencedColumnName = "ID")
+    private TestCase parentsut;
     
     
 	public Model() {
@@ -40,12 +46,21 @@ public class Model {
 //		super();
 		this.title = title;
 	}
-	
-	public Model(String title, List<TestSession> parentsession) {	//User owner
+
+	public Model(String title, TestSession parentsession) {	//User owner
 //		super();
 		this.title = title;
 		this.parentsession = parentsession;
 	}
+	
+	public Model(String title, TestSession parentsession, TestCase parentsut) {	//User owner
+//		super();
+		this.title = title;
+		this.parentsession = parentsession;
+		this.parentsut = parentsut;
+	}
+	
+	
 	
 	/*
 	 * getters and setters
@@ -66,20 +81,29 @@ public class Model {
 		this.title = title;
 	}
 
-	public String getSchema() {
-		return schema;
+	public String getDotschema() {
+		return dotschema;
 	}
 
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setDotschema(String dotschema) {
+		this.dotschema = dotschema;
 	}
 
-	public List<TestSession> getParentsession() {
+
+	public TestSession getParentsession() {
 		return parentsession;
 	}
 
-	public void setParentsession(List<TestSession> parentsession) {
+	public void setParentsession(TestSession parentsession) {
 		this.parentsession = parentsession;
+	}
+	
+	public TestCase getParentsut() {
+		return parentsut;
+	}
+
+	public void setParentsut(TestCase parentsut) {
+		this.parentsut = parentsut;
 	}
 
 	

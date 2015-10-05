@@ -408,11 +408,11 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 	            				parentCase.getTitle() + "/" + clone.getTitle());
 		            	} else if (navToCasePage) {
 		            		// 4 UPDATE table title
-		            		table.setItemCaption(testsession.getId(), testsession.getTitle());
+//		            		table.setItemCaption(testsession.getId(), testsession.getTitle());
 		            		
-		            		getUI().getNavigator()
-		            			.navigateTo(MainView.NAME + "/" + 
-		            				parentCase.getTitle());		//sessions.getItem(id).getEntity()		            		
+//		            		getUI().getNavigator()
+//		            			.navigateTo(MainView.NAME + "/" + 
+//		            				parentCase.getTitle());		//sessions.getItem(id).getEntity()		            		
 		            	
 		            	} else {
 		            		getUI().getNavigator()

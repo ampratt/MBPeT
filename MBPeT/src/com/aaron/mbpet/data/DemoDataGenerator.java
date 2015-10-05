@@ -27,6 +27,7 @@ import javax.persistence.Persistence;
 import javax.transaction.*;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
@@ -61,6 +62,7 @@ public class DemoDataGenerator {
 //			em.createNativeQuery("DROP Testsession").executeUpdate();
 //			em.createNativeQuery("DROP Testcase").executeUpdate();
 //			em.createNativeQuery("DROP User").executeUpdate();
+			em.createNativeQuery("DELETE FROM Model").executeUpdate();
 			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
 			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
 			em.createNativeQuery("DELETE FROM User").executeUpdate();
@@ -88,11 +90,11 @@ public class DemoDataGenerator {
 //		User u2 = persons.getItem(persons.getIdByIndex(1)).getEntity();
 //		User u3 = persons.getItem(persons.getIdByIndex(2)).getEntity();
 
-		TestCase tc1 = new TestCase("gen dashboard", "dash decription", user);
-		TestCase tc2 = new TestCase("gen portal", "portal decription", user);
+		TestCase tcdashboard = new TestCase("gen dashboard", "dash decription", user);
+		TestCase tcportal = new TestCase("gen portal", "portal decription", user);
 		TestCase tc3 = new TestCase("gen talkpanel", "talkpanel decription", user);
-		tc1.setOwner(user);
-		tc2.setOwner(user);
+		tcdashboard.setOwner(user);
+		tcportal.setOwner(user);
 		tc3.setOwner(user);
 
 		TestCase tc4 = new TestCase("u2 talkpanel", "talkpanel decription", u2);
@@ -108,8 +110,8 @@ public class DemoDataGenerator {
 //		emjpa.persist(new TestCase("gen dashboard", "dash decription", user)); 
 //		emjpa.persist(new TestCase("gen portal", "portal decription", user)); 
 //		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription", user)); 
-		em.persist(tc1);
-		em.persist(tc2);
+		em.persist(tcdashboard);
+		em.persist(tcportal);
 		em.persist(tc3);
 		em.persist(tc4);
 		em.persist(tc5);
@@ -147,14 +149,14 @@ public class DemoDataGenerator {
 		TestSession portal3 = new TestSession("portal session 3");
 		TestSession portal4 = new TestSession("portal session 4");
 
-		sess1.setParentcase(tc1);
-		sess2.setParentcase(tc1);
-		sess3.setParentcase(tc1);
-		sess4.setParentcase(tc1);
-		portal1.setParentcase(tc2);
-		portal2.setParentcase(tc2);
-		portal3.setParentcase(tc2);
-		portal4.setParentcase(tc2);
+		sess1.setParentcase(tcdashboard);
+		sess2.setParentcase(tcdashboard);
+		sess3.setParentcase(tcdashboard);
+		sess4.setParentcase(tcdashboard);
+		portal1.setParentcase(tcportal);
+		portal2.setParentcase(tcportal);
+		portal3.setParentcase(tcportal);
+		portal4.setParentcase(tcportal);
 
 		em.persist(sess1);
 		em.persist(sess2);
@@ -176,8 +178,8 @@ public class DemoDataGenerator {
 		em.getTransaction().commit();
 		
 		em.getTransaction().begin();
-		em.refresh(tc1);
-		em.refresh(tc2);
+		em.refresh(tcdashboard);
+		em.refresh(tcportal);
 //		List<TestSession> list = new ArrayList<TestSession>();
 //		list.add(sess1);
 //		list.add(sess2);
@@ -191,16 +193,52 @@ public class DemoDataGenerator {
 		TestSession sess5 = new TestSession("dashboard session 5");
 		TestSession sess6 = new TestSession("dashboard session 6");
 		TestSession sess7 = new TestSession("dashboard session 7");
-		sess5.setParentcase(tc1);
-		sess5.setParentcase(tc1);
-		sess7.setParentcase(tc1);
+		sess5.setParentcase(tcdashboard);
+		sess6.setParentcase(tcdashboard);
+		sess7.setParentcase(tcdashboard);
 		em.persist(sess5);	
 		em.persist(sess6);	
 		em.persist(sess7);	
 		em.getTransaction().commit();
 		
 		em.getTransaction().begin();
-		em.refresh(tc1);
+		em.refresh(tcdashboard);
+		em.getTransaction().commit();
+		
+		
+		// MODELS
+		em.getTransaction().begin();
+		
+		Model m1 = new Model("passive user", sess1, tcdashboard);
+		Model m2 = new Model("active user", sess1, tcdashboard);
+		Model m3 = new Model("aggressive user", sess1, tcdashboard);
+		Model m4 = new Model("nonexistent user", sess1, tcdashboard);
+
+		Model m21 = new Model("passive user", sess2, tcdashboard);
+		Model m22 = new Model("active user", sess2, tcdashboard);
+		Model m23 = new Model("aggressive user", sess2, tcdashboard);
+		
+		Model m31 = new Model("nonexistent user", portal1, tcportal);
+		Model m32 = new Model("you get the point user", portal1, tcportal);
+		em.persist(m1);
+		em.persist(m2);
+		em.persist(m3);
+		em.persist(m4);
+		
+		em.persist(m21);
+		em.persist(m22);
+		em.persist(m23);
+		
+		em.persist(m31);
+		em.persist(m32);
+		em.getTransaction().commit();
+
+		em.getTransaction().begin();
+		em.refresh(sess1);
+		em.refresh(sess2);
+		em.refresh(portal1);
+		em.refresh(tcdashboard);
+		em.refresh(tcportal);
 		em.getTransaction().commit();
 		
 //		EntityManager em = Persistence
