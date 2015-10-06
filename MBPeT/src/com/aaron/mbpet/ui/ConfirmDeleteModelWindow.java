@@ -19,6 +19,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -127,16 +128,17 @@ public class ConfirmDeleteModelWindow extends Window {
             return vc;
         }     
         
-    	private void confirmNotification(String deletedItem) {
-            // welcome notification
-            Notification notification = new Notification(deletedItem);
-            notification
-                    .setDescription("<span>was deleted.</span>");
-            notification.setHtmlContentAllowed(true);
-            notification.setStyleName("tray dark small closable login-help");
-            notification.setPosition(Position.BOTTOM_RIGHT);
-            notification.setDelayMsec(10000);
-            notification.show(Page.getCurrent());
-    	}
+    	
+		private void confirmNotification(String deletedItem) {
+	        // welcome notification
+	        Notification notification = new Notification(deletedItem, Type.TRAY_NOTIFICATION);
+	        notification
+	        		.setDescription("<span>was deleted.</span>");
+	        notification.setHtmlContentAllowed(true);
+	        notification.setStyleName("dark small");	//tray  closable login-help
+	        notification.setPosition(Position.BOTTOM_RIGHT);
+	        notification.setDelayMsec(5000);
+	        notification.show(Page.getCurrent());
+		}
 
 }

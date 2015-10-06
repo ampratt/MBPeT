@@ -28,7 +28,6 @@ public class Model {
     
 //    @ManyToMany	//(fetch = FetchType.EAGER)
 //    @JoinColumn(name="testcase_fk", insertable=false, updatable=false)
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "parentsession", referencedColumnName = "ID")
     private TestSession parentsession;

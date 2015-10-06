@@ -99,7 +99,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	    editButton.addStyleName("borderless-colored");
 	    editButton.addStyleName("small");
 	    editButton.addStyleName("icon-only");
-	    editButton.setDescription("edit selected session");
+	    editButton.setDescription("edit selected Session");
 	    editButton.setEnabled(false);
 
 	    cloneButton = new Button("", this);
@@ -107,7 +107,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	    cloneButton.addStyleName("borderless-colored");
 	    cloneButton.addStyleName("small");
 	    cloneButton.addStyleName("icon-only");
-	    cloneButton.setDescription("clone session");
+	    cloneButton.setDescription("clone Session");
 	    cloneButton.setEnabled(false);
 	    
 	    newSessionButton = new Button("", this);
@@ -115,14 +115,14 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	    newSessionButton.addStyleName("borderless-colored");
 	    newSessionButton.addStyleName("small");
 	    newSessionButton.addStyleName("icon-only");
-	    newSessionButton.setDescription("create new session");
+	    newSessionButton.setDescription("create new Session");
 	    
 	    deleteButton = new Button("", this);
 	    deleteButton.setIcon(FontAwesome.TRASH_O);
 	    deleteButton.addStyleName("borderless-colored");
 	    deleteButton.addStyleName("small");
 	    deleteButton.addStyleName("icon-only");
-	    deleteButton.setDescription("create new session");
+	    deleteButton.setDescription("delete Session");
 	    deleteButton.setEnabled(false);
 
 	    
@@ -239,7 +239,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
         } else if (event.getButton() == deleteButton) {
 			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
 	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(tree, session.getId(), 
-	        		"Are you sure you want to delete <b>" + session.getTitle() + "</b>?<br /><br />"));
+	        		"Are you sure you want to delete <b>" + session.getTitle() + "</b> ?<br /><br />"));
 
         }
     }

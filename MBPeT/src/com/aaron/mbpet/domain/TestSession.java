@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -39,8 +40,8 @@ public class TestSession {
     @OneToMany(mappedBy = "parentsession")
     private List<Model> models;
 
-
-	private String parameters;
+//	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
+//	private Parameters parameters;
     
     
     public TestSession() {
@@ -88,13 +89,13 @@ public class TestSession {
 		this.parentcase = parentcase;
 	}
 
-	public String getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
+//	public Parameters getParameters() {
+//		return parameters;
+//	}
+//
+//	public void setParameters(Parameters parameters) {
+//		this.parameters = parameters;
+//	}
 
 	
     public List<Model> getModels() {

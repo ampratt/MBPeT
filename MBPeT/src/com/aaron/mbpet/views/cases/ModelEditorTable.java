@@ -5,18 +5,12 @@ import org.eclipse.persistence.internal.sessions.factories.SessionsFactory;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.models.ModelEditor;
-import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -24,11 +18,8 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
@@ -37,15 +28,13 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 
 public class ModelEditorTable extends Panel implements Button.ClickListener {
 
 	Tree tree; 
-	TestCase testcase;
-	TestSession testsession;
+	TestCase parentcase;
+	TestSession parentsession;
 	
 	private TextField searchField;
 	private Button editButton;
@@ -66,9 +55,9 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 //		buildModelsPanel();
 //	}
 	
-	public ModelEditorTable(Tree tree, TestCase testcase) {
+	public ModelEditorTable(Tree tree, TestCase parentcase) {
 		this.tree = tree;
-		this.testcase = testcase;
+		this.parentcase = parentcase;
 //		this.testsession = testsession;
 		this.models = MBPeTMenu.models;
 		
@@ -129,7 +118,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	    editButton.addStyleName("borderless-colored");
 	    editButton.addStyleName("small");
 	    editButton.addStyleName("icon-only");
-	    editButton.setDescription("edit selected session");
+	    editButton.setDescription("edit selected Model");
 	    editButton.setEnabled(false);
 
 	    cloneButton = new Button("", this);
@@ -137,7 +126,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	    cloneButton.addStyleName("borderless-colored");
 	    cloneButton.addStyleName("small");
 	    cloneButton.addStyleName("icon-only");
-	    cloneButton.setDescription("clone session");
+	    cloneButton.setDescription("clone Model");
 	    cloneButton.setEnabled(false);
 	    
 	    newModelButton = new Button("", this);
@@ -145,14 +134,14 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	    newModelButton.addStyleName("borderless-colored");
 	    newModelButton.addStyleName("small");
 	    newModelButton.addStyleName("icon-only");
-	    newModelButton.setDescription("create new session");
+	    newModelButton.setDescription("create new Model");
 	    
 	    deleteButton = new Button("", this);
 	    deleteButton.setIcon(FontAwesome.TRASH_O);
 	    deleteButton.addStyleName("borderless-colored");
 	    deleteButton.addStyleName("small");
 	    deleteButton.addStyleName("icon-only");
-	    deleteButton.setDescription("create new session");
+	    deleteButton.setDescription("delete Model");
 	    deleteButton.setEnabled(false);
 	    
 //	    MenuBar dropdown = new MenuBar();
@@ -267,30 +256,30 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	public void buttonClick(ClickEvent event) {
         if (event.getButton() == newModelButton) {
 	        // open window to create item
-	        UI.getCurrent().addWindow(new ModelEditor(testcase ));	//testcases.getItem(parent).getEntity()
+	        UI.getCurrent().addWindow(new ModelEditor(parentcase, true));	//testcases.getItem(parent).getEntity()
 
         } else if (event.getButton() == editButton) {
-//			TestSession session = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
-//	        UI.getCurrent().addWindow(new ModelEditor(
-//	        			tree, 
-//	        			session.getId(), 
-//	        			testsession,
-//        				modelsTable)
-//	        );
+			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
+	        UI.getCurrent().addWindow(new ModelEditor(
+	        			model.getId(),
+	        			model.getParentsession(),
+	        			parentcase,
+        				modelsTable)
+	        );
         } else if (event.getButton() == cloneButton) {
-//			TestSession session = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
-//	        UI.getCurrent().addWindow(new ModelEditor(
-//	        			tree, 
-//	        			session.getId(), 
-//	        			testsession,
-//        				modelsTable,
-//        				true)
-//	        );
+			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
+	        UI.getCurrent().addWindow(new ModelEditor(
+	        			model.getId(),
+	        			model.getParentsession(),
+	        			parentcase,
+        				modelsTable,
+        				true)
+	        );
 
         } else if (event.getButton() == deleteButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
 	        UI.getCurrent().addWindow(new ConfirmDeleteModelWindow(model, 
-	        		"Are you sure you want to delete <b>" + model.getTitle() + "</b>?<br /><br />"));
+	        		"Are you sure you want to delete <b>" + model.getTitle() + "</b> ?<br /><br />"));
 
         }
     }
@@ -300,7 +289,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
     private void setFilterByTestCase() {
     	models.removeAllContainerFilters();
 //    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
-    	Equal casefilter = new Equal("parentsut", testcase);//  ("parentcase", getTestCaseByTitle(), true, false);
+    	Equal casefilter = new Equal("parentsut", parentcase);//  ("parentcase", getTestCaseByTitle(), true, false);
     	
     	models.addContainerFilter(casefilter);
     }

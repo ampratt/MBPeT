@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
@@ -17,6 +18,7 @@ import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
+import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.aaron.mbpet.views.users.UserForm;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -33,8 +35,10 @@ import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -96,29 +100,35 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	/*
 	 * Create new Model
 	 */
-	public ModelEditor(TestCase parentcase) {		//JPAContainer<TestCase> container
+	public ModelEditor(TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
+		this.models = MBPeTMenu.models;
 		model = new Model(); 
 		this.newModelItem = new BeanItem<Model>(model);
 		this.parentsession = new TestSession();
+		
+		this.navToCasePage = navToCasePage;
 		
 		init(parentsession, parentcase);
 	}
 	public ModelEditor(TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
+		this.models = MBPeTMenu.models;
 		model = new Model(); 
 		this.newModelItem = new BeanItem<Model>(model);
 		
 		init(parentsession, parentcase);
 	}
+	
 	/*
 	 * Edit Mode
 	 */
-	public ModelEditor(Object testsessionid, TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
+	public ModelEditor(Object modelid, TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
 		this.editmode = true;
 		this.navToCasePage = false;
         
-        this.model = models.getItem(testsessionid).getEntity();
+		this.models = MBPeTMenu.models;
+        this.model = models.getItem(modelid).getEntity();
         this.newModelItem = new BeanItem<Model>(model);
 
         init(parentsession, parentcase);
@@ -132,6 +142,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = true;
 		this.table = table;
 		
+		this.models = MBPeTMenu.models;
 		this.model = models.getItem(modelid).getEntity();
 		this.newModelItem = new BeanItem<Model>(model);
 		
@@ -141,15 +152,17 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	/*
 	 * Clone existing Model to new one
 	 */
-	public ModelEditor(Object testsessionid, TestSession parentsession, TestCase parentcase,
+	public ModelEditor(Object modelId, TestSession parentsession, TestCase parentcase,
 			Table table, boolean clonemode) {		//JPAContainer<TestCase> container
 		this.clonemode = clonemode;
 		this.table = table;
 		
-		this.model = models.getItem(testsessionid).getEntity();
+		this.models = MBPeTMenu.models;
+		this.model = models.getItem(modelId).getEntity();
 		
 		this.clone = new Model();
 		clone.setTitle("(clone) " + model.getTitle());
+		clone.setDotschema(model.getDotschema());
 		clone.setParentsession(model.getParentsession());
 		clone.setParentsut(model.getParentsut());
 
@@ -170,7 +183,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 
 		this.parentcase = parentcase;
 		this.parentsession = parentsession;
-		this.models = MBPeTMenu.models;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+//		this.models = MBPeTMenu.models;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.sessions = MBPeTMenu.sessions;
 		
         setSizeUndefined();
@@ -186,13 +199,15 @@ public class ModelEditor extends Window implements Button.ClickListener {
     	if (clonemode==true) {
     		return String.format("Clone Model: %s", 
     				model.getTitle());
-    	} else if (editmode) {
+    	} else if (editmode==true) {
     		return String.format("Edit Model: %s", 
     				model.getTitle());
-    	} else if (!(parentsession == null) ) {		//.getItemProperty("firstname").getValue()
-    		return String.format("Add Model to: %s", 
-    				parentsession.getTitle());		//testcases.getItem(parentCase.getId()).getItemProperty("title")
-    	} else {
+    	} 
+//    	else if (!(parentsession == null) ) {		//.getItemProperty("firstname").getValue()
+//    		return String.format("Add Model to: %s", 
+//    				parentsession.getTitle());		//testcases.getItem(parentCase.getId()).getItemProperty("title")
+//    	} 
+    	else {
     		return "Create a new Model";
     	}
     }
@@ -207,8 +222,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		
 //		layout.addComponent(new Label("<h4>Add Test Session</h4>", ContentMode.HTML));
 	
-		// set parent Test Case manually without a field
-		if (editmode == false && !(clonemode==true)) {
+		// set parent Test Case and Session manually without a field
+		if (editmode == false && (clonemode==false)) {
 //			model.setParentsession(parentsession);	
 			model.setParentsut(parentcase);
 		}
@@ -239,21 +254,22 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		title.setNullRepresentation("");
 		
 		sessionCombobox = new ComboBox("Select parent Session");
-		binder.bind(sessionCombobox, "parentsession");
+//		binder.bind(sessionCombobox, "parentsession");
 		sessionCombobox.setWidth(22, Unit.EM);
 		sessionCombobox.setNullSelectionAllowed(false);
-		sessionCombobox.setFilteringMode(FilteringMode.CONTAINS);
+//		sessionCombobox.setFilteringMode(FilteringMode.CONTAINS);
 		sessionCombobox.setImmediate(true);
-		sessionCombobox.addValidator(new BeanValidator(Model.class, "parentsession"));
+//		sessionCombobox.addValidator(new BeanValidator(Model.class, "parentsession"));
 //		title.setValidationVisible(false);
 //		sessionCombobox.setNullRepresentation("");
+//		sessionCombobox.setContainerDataSource(sessions);
 		updateFilters();
-		
+
 		ic = new IndexedContainer();
 		ic.addContainerProperty("id", Integer.class, "");
 		ic.addContainerProperty("title", String.class, "");
 		
-//		// set null option
+		// set null option
 //		String nullitem = "-- none --";
 //		sessionCombobox.addItem(nullitem);
 //		sessionCombobox.setNullSelectionItemId(nullitem);
@@ -268,17 +284,42 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			item.getItemProperty("title").setValue(sessions.getItem(id).getEntity().getTitle());
 			
 		}
-		sessionCombobox.select(ic.getIdByIndex(ic.size()-1));
+		sessionCombobox.setContainerDataSource(ic);
+		sessionCombobox.setItemCaptionPropertyId("title");
+		
+		if (editmode==true || clonemode==true) {
+			for ( Object itemId : ic.getItemIds()) {
+//				System.out.println("\nIC ITEM: " + ic.getItem(itemId).getItemProperty("id").getValue().toString() +" "+ ic.getItem(itemId).getItemProperty("title").getValue().toString());
+//				System.out.println("\nPrentsession ITEM: " + parentsession.getTitle());
+				if ( ic.getItem(itemId).getItemProperty("title").getValue().toString().equals(parentsession.getTitle()) ) {
+					System.out.println("\n\nSELECTED PARENTSESSION IC ITEM: " + ic.getItem(itemId).getItemProperty("title").getValue().toString());
+					sessionCombobox.select(itemId);// getIdByIndex(ic.size()-1));
+//					Object capid = sessionCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
+					Item item = ic.getItem(itemId);
+					model.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
+					
+				}
+			}
+
+		} else {
+			sessionCombobox.select(ic.getIdByIndex(ic.size()-1));
+			Object capid = sessionCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
+			Item item = ic.getItem(capid);
+			model.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
+		}
+		
 		sessionCombobox.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
 //				Notification.show("selected: " + event.getProperty().getValue().toString());
-				System.out.println("binder field value: " + binder.getField("parentsession").getValue().toString());
+//				System.out.println("binder field value: " + binder.getField("parentsession").getValue().toString());
 				System.out.println("combobox value: " + sessionCombobox.getValue().toString());
 
-				Item item = ic.getItem(binder.getField("parentsession").getValue());
-				System.out.println("binder field prop id(session): " + item.getItemProperty("id").getValue().toString());
+//				Item item = ic.getItem(binder.getField("parentsession").getValue());
+				Object capid = sessionCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
+				Item item = ic.getItem(capid);
+				System.out.println("sessionCombobox prop id(session): " + item.getItemProperty("id").getValue().toString());
 				parentsession = sessions.getItem(item.getItemProperty("id").getValue()).getEntity();
 				System.out.println(parentsession.getTitle());	// setValue(parentsession);
 				model.setParentsession(parentsession);	
@@ -294,8 +335,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 //			sessionCombobox.setItemCaption(itemid, sessions.getItem(id).getEntity().getTitle());
 //		}
 		
-		sessionCombobox.setContainerDataSource(ic);
-		sessionCombobox.setItemCaptionPropertyId("title");
+//		sessionCombobox.setItemCaptionPropertyId("title");
 //		sessionCombobox.select(parentsession);
 		
 		layout.addComponent(title);
@@ -329,12 +369,15 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	        if (event.getButton() == createButton) {
 //	            editorForm.commit();
 //	            fireEvent(new EditorSavedEvent(this, personItem));
+	        	
+	        	Model queriedModel = null;
+	        	
 					try {
 //						form.enableValidationMessages();
 	//					title.setValidationVisible(true);
 						
 						// add NEW bean object to db through jpa container
-						if (editmode == false && !(clonemode == true)) {
+						if (editmode == false && clonemode == false) {
 							// commit the fieldgroup
 							binder.commit();
 							
@@ -348,8 +391,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title"
 				        		);
 		//		            query.setParameter("title", newsession.getTitle());
-				            Model queriedModel = 
-				            		(Model) query.setParameter("title", model.getTitle()).getSingleResult();
+				            queriedModel = (Model) query.setParameter("title", model.getTitle()).getSingleResult();
 				            System.out.println("the generated id is: " + queriedModel.getId());
 				            Object id = queriedModel.getId();	// here is the id we need for tree
 				            		        			
@@ -388,7 +430,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							// commit the fieldgroup
 							binder.commit();
 							
-		              	  	//1 UPDATE parentcase reference
+		              	  	//1 UPDATE parent Case and Session reference
 //							parentCase.removeSession(sessions.getItem(testsession.getId()).getEntity());
 //							parentCase.addSession(sessions.getItem(testsession.getId()).getEntity());
 							parentsession.updateModelData(models.getItem(model.getId()).getEntity());
@@ -408,43 +450,24 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							// CLONE 
 				           System.out.println("\n\nWE ARE IN CLONE MODE!!!!!!!!!\n\n");
 
-//							TestSession clone = newSessionItem.getBean();
-							// commit the fieldgroup
+							// 1 commit the fieldgroup
 							binder.commit();
 							
-							// add to container
+							// 2 add to container
 							models.addEntity(newModelItem.getBean());	//jpa container	
 							
-			                // add created item to tree (after retrieving db generated id)
+			                // 3 retrieve generated id from db
 			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 			    											.createEntityManager();	
 				            Query query = em.createQuery(
-				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title"
-				        		);
-		//		            query.setParameter("title", newsession.getTitle());
-				            Model queriedModel = 
-				            		(Model) query.setParameter("title", clone.getTitle()).getSingleResult();
+				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title");
+				            queriedModel = (Model) query.setParameter("title", clone.getTitle()).getSingleResult();
 				            System.out.println("the generated id is: " + queriedModel.getId());
 				            Object id = queriedModel.getId();	// here is the id we need for tree				            
 		        			
-//				            // add to tree in right order
-//				            if ( tree.hasChildren(parentsession.getId()) ) {
-//				            	sortAddToTree(id);				            	
-//				            } else {
-//				            	tree.addItem(id);
-//				            	tree.setParent(id, parentsession.getId());
-//				            	tree.setChildrenAllowed(id, false);
-//				            	tree.setItemCaption(id, models.getItem(id).getEntity().getTitle());		//newsession.getTitle()
-//				            	tree.expandItem(parentsession.getId());
-//				            	tree.select(id);				            	
-//				            }
-		        				              	  			              	  	
-		              	  	// update parent Case to add Session to testCase List<Session> sessions
+				            // 4 update parent Case to add Session to testCase List<Session> sessions
 		              	  	parentsession.addModel(queriedModel);
 		              	  	parentcase.addModel(queriedModel);
-		//              	  	List<TestSession> listofsessions = parentCase.getSessions();
-		//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
-		//              	  	parentCase.setSessions(listofsessions);
 		              	  	
 			            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentsession.getModels()); // testing purposes
 			            	for (Model m : parentsession.getModels()) {
@@ -459,18 +482,20 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
 		            	}
 		            	
-		            	if (clonemode == true) {
-		            		getUI().getNavigator()
-	            			.navigateTo(MainView.NAME + "/" + 
-	            				parentsession.getTitle() + "/" + clone.getTitle());
-		            	} else if (navToCasePage == true) {
-		            		// 4 UPDATE table title
-//		            		table.setItemCaption(model.getId(), model.getTitle());
-//		            		
-//		            		getUI().getNavigator()
-//		            			.navigateTo(MainView.NAME + "/" + 
-//		            				parentsession.getTitle());		//sessions.getItem(id).getEntity()		            		
+	            		if ( clonemode==true ) {
+		            		confirmNotification(queriedModel.getTitle(), "was created");
+		            		close();	            			
+	            			
+	            		} else if ( navToCasePage==true && editmode==false ) {
+		            		// UPDATE table title
+		            		table.select(model.getId());
+		            		confirmNotification(model.getTitle(), "was created");
+		            		close();
 		            	
+		            	} else if ( navToCasePage==true && editmode==true ) {
+		            		confirmNotification(model.getTitle(), "was edited");
+		            		close();
+		            		
 		            	} else {
 		            		getUI().getNavigator()
 		            			.navigateTo(MainView.NAME + "/" + 
@@ -479,14 +504,20 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		            
 					} catch (CommitException e) {
 						binder.discard();
-						Notification.show("'Title' cannot be empty", Type.ERROR_MESSAGE);
+						Notification.show("'Title' cannot be empty " + e.getMessage().toString() , Type.ERROR_MESSAGE);
 //						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
-					} catch (NullPointerException e) {
+					} catch (NonUniqueResultException e) {
 						binder.discard();
-						Notification.show("'Parent Session' cannot be empty", Type.ERROR_MESSAGE);
-//						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
+						Notification.show("'Title' must be a unique name.\n'" +
+											queriedModel.getTitle() + 
+											"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
+					}
+					catch (NullPointerException e) {
+						binder.discard();
+//						Notification.show("'Parent Session' cannot be empty " + e.getMessage().toString(), Type.ERROR_MESSAGE);
+//						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
 					}
 	            
 	        } else if (event.getButton() == cancelButton) {
@@ -510,7 +541,18 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	    }
 	
 	
-	
+		private void confirmNotification(String deletedItem, String message) {
+	        // welcome notification
+	        Notification notification = new Notification(deletedItem, Type.TRAY_NOTIFICATION);
+	        notification
+	                .setDescription(message);
+	        notification.setHtmlContentAllowed(true);
+	        notification.setStyleName("dark small");	//tray  closable login-help
+	        notification.setPosition(Position.BOTTOM_RIGHT);
+	        notification.setDelayMsec(5000);
+	        notification.show(Page.getCurrent());
+		}
+		
 //	    public void setTreeItemsExpanded() {
 //	        // Expand whole tree
 //	    	System.out.println(tree.getItemIds());
