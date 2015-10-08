@@ -37,6 +37,8 @@ public class Parameters {
 	private int test_duration;				
 	// in seconds
 	
+		private String ramp_object_name; 
+	
 	@Column(name = "ramp_list", columnDefinition="BLOB")	//, columnDefinition="BLOB"
 	private ArrayList<ArrayList<Integer>> ramp_list;	//int[][]
 
@@ -59,6 +61,16 @@ public class Parameters {
 	
 	public Parameters() {
 		
+	}
+	
+	public Parameters(String ip, int test_duration,int monitoring_interval, 
+			int mean_user_think_time, double d, TestSession ownersession) {
+		this.ip = ip;
+		this.test_duration = test_duration;
+		this.monitoring_interval = monitoring_interval;
+		this.mean_user_think_time = mean_user_think_time;
+		this.standard_deviation = d;
+		this.ownersession = ownersession;
 	}
 	
 	public Parameters(String ip, int test_duration, ArrayList<ArrayList<Integer>> ramp_list, 

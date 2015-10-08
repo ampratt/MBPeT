@@ -1,26 +1,20 @@
-/**
- * Copyright 2009-2013 Oy Vaadin Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.aaron.mbpet.data;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +34,6 @@ import com.aaron.mbpet.domain.AverageMax;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
-import com.mysql.jdbc.Blob;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 
@@ -262,43 +255,49 @@ public class DemoDataGenerator {
 		
 		arl.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
 		
-		Parameters p1 = new Parameters("google.com", 30, arl, 3, 3, 0.0, sess7);
-		Parameters p2 = new Parameters("facebook.com", 60, arl, 3, 3, 0.5, sess7);
-		Parameters p3 = new Parameters("twitter.com", 90, arl, 3, 3, 1.5,sess6);
-		Parameters p4 = new Parameters("apple.com", 120, arl, 3, 3, 0.8, sess6);
+		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
+		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
+		Parameters p3 = new Parameters("twitter.com", 90, 3, 3, 1.5,sess6);
+		Parameters p4 = new Parameters("apple.com", 120, 3, 3, 0.8, sess6);
 		em.persist(p1);
 		em.persist(p2);
 		em.persist(p3);
 		em.persist(p4);
 		
-		// Response times	
-		HashMap<String, Double> map = new HashMap<String, Double>();
-		map.put("average", 0.5);
-		map.put("max", 1.0);
-		map.put("average", 0.7);
-		map.put("max", 1.2);
-//		AverageMax<String, Double> rt1 = new AverageMax<String, Double>(map);
-//		Map<String, AverageMax<String, Double>> tr = new HashMap<String, AverageMax<String,Double>>();
-		
-		Map<String, HashMap<String, Double>> tr = new HashMap<String, HashMap<String,Double>>();
+//		// Response times	
+//		HashMap<String, Double> map = new HashMap<String, Double>();
+//		map.put("average", 0.5);
+//		map.put("max", 1.0);
+//		map.put("average", 0.7);
+//		map.put("max", 1.2);
+////		AverageMax<String, Double> rt1 = new AverageMax<String, Double>(map);
+////		Map<String, AverageMax<String, Double>> tr = new HashMap<String, AverageMax<String,Double>>();
+//		
+//		Map<String, HashMap<String, Double>> tr = new HashMap<String, HashMap<String,Double>>();
+////		tr.put("search_on_google(car)", map);
+//		
+//		// Iterate all key/value pairs
+////		for (Entry<String, Double> entry  : map.entrySet()) {
+////			System.out.println(entry.getKey() + " - " + entry.getValue());
+////			tr.put("search_on_google(car)", (Map<String, Double>) entry);
+////			
+////		}
 //		tr.put("search_on_google(car)", map);
-		
-		// Iterate all key/value pairs
-//		for (Entry<String, Double> entry  : map.entrySet()) {
-//			System.out.println(entry.getKey() + " - " + entry.getValue());
-//			tr.put("search_on_google(car)", (Map<String, Double>) entry);
-//			
-//		}
-		tr.put("search_on_google(car)", map);
-		p1.setTargetResponsTime(tr);
-//		rt1.setResponsetimes(map)
-//		ResponseTimes<String, Double> rt1 = new ResponseTimes<K, V>(map);
+//		p1.setTargetResponsTime(tr);
+
 		
 		//		em.persist(rt1);
 		em.persist(p1);
 		em.getTransaction().commit();
 		
 		em.getTransaction().begin();
+		// ramp list
+		//Long objectId = 
+		SaveObject2Database.commitToDb(arl, p1);				
+//		System.out.println("JPA gen id =? PrepState id:-> " + p1.getId() + " = " + p1.getId());
+		List<Object> dataListFromDB = SaveObject2Database.readFromDb(p1.getId());
+		
+		em.refresh(p1);
 		em.refresh(sess7);
 		em.refresh(sess6);
 		em.getTransaction().commit();
@@ -306,84 +305,287 @@ public class DemoDataGenerator {
 	}
 	
 	
+//    /** SERIALIZING - This method will help to convert any object into byte array*/            
+//    private static byte[] convertObjectToByteArray(Object obj) throws IOException {
+//            ByteArrayOutputStream byteos = new ByteArrayOutputStream();
+//            ObjectOutputStream objectout = new ObjectOutputStream(byteos);
+//            objectout.writeObject(obj);
+//            
+////            byte[] blob = byteos.toByteArray();
+//            
+//            return byteos.toByteArray();
+//    }
+	
+	
+	
+	
+	public static class SaveObject2Database {
+
+		private static void commitToDb(ArrayList<ArrayList<Integer>> arraylist, Parameters parameters) {
+            Connection connection = null;
+            int persistObjectID = -1;
+            
+            try {
+                connection = SaveObject2Database.getConnection();
+
+//                List<Object> listToSaveInDB = new ArrayList<Object>();
+//                listToSaveInDB.add(arraylist);
+//                
+//	        		ArrayList<ArrayList<Integer>> array = new ArrayList<ArrayList<Integer>>();
+//	        		ArrayList<Integer> internal = new ArrayList<Integer>();
+//	        		internal.addAll(Arrays.asList(0,0));
+//	        		array.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
+//                listToSaveInDB.add(array);
+
+                // commit to db
+                //persistObjectID = 
+                saveBlob(connection, arraylist, parameters);
+                System.out.println(arraylist + " Object is saved sucessfully\n");
+            }catch (Exception e) {
+                e.printStackTrace();
+		    } finally {
+		        try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		    }
+            
+//            return persistObjectID;
+		}
+		
+		private static List<Object> readFromDb(int persistObjectID) {
+            byte[] serializedRetrievedArrayObject = null;
+            List<Object> dataListFromDB = null;
+            Connection connection = null;
+            try {
+                connection = SaveObject2Database.getConnection();
+				// retrieve from db
+	            serializedRetrievedArrayObject = getBlob(connection, persistObjectID);
+	
+	            ObjectInputStream objectInputStream = null;
+	            if (serializedRetrievedArrayObject != null)
+	                objectInputStream = new ObjectInputStream(
+	                                            new ByteArrayInputStream(
+	                                            		serializedRetrievedArrayObject));
+	
+	//            Object retrievingObject = objectInputStream.readObject();
+	//            List<Object> dataListFromDB = (List<Object>) retrievingObject;
+	            
+	            dataListFromDB = (List<Object>) objectInputStream.readObject();
+	            System.out.println("Retrieved ArrayList :-> " + dataListFromDB.toString());
+	            
+	            for (Object object : dataListFromDB) {
+	            	System.out.println("Retrieved Data is :-> " + object.toString());
+	            }
+	
+	            System.out.println("Successfully retrieved java Object from Database");
+	
+		        } catch (Exception e) {
+		                    e.printStackTrace();
+		        } finally {
+		            try {
+						connection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
+            
+            return dataListFromDB;
+		}
+           	
+		
+		
+        /** This method will help to get mysql connection from database*/   
+        private static Connection getConnection() throws Exception {
+                String driver = "com.mysql.jdbc.Driver";
+                String url = "jdbc:mysql://localhost:3306/mbpetwampdb";
+                String username = "root";
+                String password = "";
+                Class.forName(driver);
+                Connection con = DriverManager.getConnection(url, username, password);
+                
+                return con;
+        }
+
+        /** SERIALIZING - This method will help to convert any object into byte array*/            
+        private static byte[] convertObjectToByteArray(Object obj) throws IOException {
+                ByteArrayOutputStream byteos = new ByteArrayOutputStream();
+                ObjectOutputStream objectout = new ObjectOutputStream(byteos);
+                objectout.writeObject(obj);
+                
+//                byte[] blob = byteos.toByteArray();
+                
+                return byteos.toByteArray();
+        }
+
+
+        /** This method will help to save java objects into database*/             
+         private static void saveBlob(Connection con, Object javaObject2Persist, Parameters parameters) {
+
+                byte[] byteArray = null;
+                PreparedStatement preparedStatement = null;
+                String SQLQUERY_TO_SAVE_JAVAOBJECT = "Update parameters " +
+                											"SET ramp_list = ?, " +
+            													"ramp_object_name = ? " +
+        														"WHERE id = ?"; 	
+                		//"INSERT INTO parameters(ramp_list) VALUES (?)";
+                int persistedObjectID = -1;
+                try {
+
+                    byteArray = convertObjectToByteArray(javaObject2Persist);
+                    preparedStatement = con.prepareStatement(
+                                            SQLQUERY_TO_SAVE_JAVAOBJECT,
+                                            PreparedStatement.RETURN_GENERATED_KEYS);
+                    preparedStatement.setBytes(1, byteArray);
+                    preparedStatement.setString(2, javaObject2Persist.getClass().getName());
+                    preparedStatement.setInt(3, parameters.getId());
+                    preparedStatement.executeUpdate();
+
+                    System.out.println("Query - " + SQLQUERY_TO_SAVE_JAVAOBJECT + 
+                                       " is successfully executed for Java object serialization ");
+
+                    //Trying to get the Generated Key
+                    ResultSet rs = preparedStatement.getGeneratedKeys();
+
+                    if (rs.next()) {
+                        persistedObjectID = rs.getInt(1);
+                        System.out.println("Object ID while saving the binary object is -> "
+                                           + persistedObjectID);
+                    }
+
+                    preparedStatement.close();
+                    
+                } catch (SQLException e) {
+                            e.printStackTrace();
+                } catch (Exception e) {
+                            e.printStackTrace();
+                }
+                
+//                return persistedObjectID;
+        }
+         
+
+         
+		/** DESERIALIZING - This method will help to read java objects from database*/                
+		private static byte[] getBlob(Connection con, int objectId) {
+                String SQLQUERY_TO_READ_JAVAOBJECT= "SELECT ramp_list FROM parameters WHERE id = ?;";
+                PreparedStatement pstmt = null;
+                ResultSet resultSet = null;
+                Blob blob = null;
+                byte[] serializedBytes = null;
+
+                try {         
+                    pstmt = con.prepareStatement(SQLQUERY_TO_READ_JAVAOBJECT);
+                    System.out.println("Reading the saved Object from the database where the object Id is: -> " + objectId);
+                    pstmt.setInt(1, objectId);
+
+                    resultSet = pstmt.executeQuery();
+                    while (resultSet.next()) {
+                        blob = resultSet.getBlob(1);
+                    }
+                    serializedBytes = blob.getBytes(1, (int) (blob.length()));
+
+                } catch (SQLException e) {
+                            e.printStackTrace();
+                } catch (Exception e) {
+                            e.printStackTrace();
+                }
+                
+                return serializedBytes;
+        }
+
+		
+//		
+//		private static void init(String name, Double iq){
+//            Connection connection = null;
+//            byte[] serializedRetrievedArrayObject = null;
+//            try {
+//                connection = SaveObject2Database.getConnection();
 //
-//	   /** SERIALIZING This method will help to convert any object into byte array*/            
-//	   private static byte[] convertObjectToByteArray(Object obj) throws IOException {
-//	        ByteArrayOutputStream byteos = new ByteArrayOutputStream();
-//	        ObjectOutputStream objectout = new ObjectOutputStream(byteos);
-//	        objectout.writeObject(obj);
-//	        return byteos.toByteArray();
-//	   }
-//	
-//	
-//        /** This method will help to save java objects into database*/             
-//         private static long saveBlob(Connection con, Object javaObject2Persist) {
+//                List<Object> listToSaveInDB = new ArrayList<Object>();
+//                listToSaveInDB.add(new Date());
+//                listToSaveInDB.add(new String(name));
+//                listToSaveInDB.add(new Double(iq));
 //
-//	        byte[] byteArray = null;
-//	        PreparedStatement preparedStatement = null;
-//	        String SQLQUERY_TO_SAVE_JAVAOBJECT = "INSERT INTO persist_java_objects(object_name, java_object) VALUES (?, ?)";
-//	        int persistObjectID = -1;
-//	        try {
-//	
-//	                    byteArray = convertObjectToByteArray(javaObject2Persist);
-//	                    preparedStatement = con.prepareStatement(
-//	                                            SQLQUERY_TO_SAVE_JAVAOBJECT,
-//	                                            PreparedStatement.RETURN_GENERATED_KEYS);
-//	                    preparedStatement.setString(1, javaObject2Persist.getClass()
-//	                                            .getName());
-//	                    preparedStatement.setBytes(2, byteArray);
-//	                    preparedStatement.executeUpdate();
-//	
-//	                    System.out
-//	                                            .println("Query - "
-//	                                                                    + SQLQUERY_TO_SAVE_JAVAOBJECT
-//	                                                                    + " is successfully executed for Java object serialization ");
-//	
-//	                    //Trying to get the Generated Key
-//	                    ResultSet rs = preparedStatement.getGeneratedKeys();
-//	
-//	                    if (rs.next()) {
-//	                                persistObjectID = rs.getInt(1);
-//	                                System.out
-//	                                                        .println("Object ID while saving the binary object is->"
-//	                                                                                + persistObjectID);
-//	                    }
-//	
-//	                    preparedStatement.close();
-//	        } catch (SQLException e) {
-//	                    e.printStackTrace();
-//	        } catch (Exception e) {
-//	                    e.printStackTrace();
-//	        }
-//	        return persistObjectID;
-//     }
-//	
-//	/** DESERIALIZING This method will help to read java objects from database*/                
-//	private static byte[] getBlob(Connection con, long objectId) {
-//	        String SQLQUERY_TO_READ_JAVAOBJECT= "SELECT java_object FROM persist_java_objects WHERE object_id = ?;";
-//	        PreparedStatement pstmt = null;
-//	        ResultSet resultSet = null;
-//	        Blob blob = null;
-//	        byte[] bytes = null;
-//	
-//	        try {
-//	                    pstmt = con.prepareStatement(SQLQUERY_TO_READ_JAVAOBJECT);
-//	                    System.out.println("Reading the saved Object from the database where the object Id is:->" + objectId);
-//	                    pstmt.setLong(1, objectId);
-//	
-//	                    resultSet = pstmt.executeQuery();
-//	                    while (resultSet.next()) {
-//	                                blob = resultSet.getBlob(1);
-//	                    }
-//	                    bytes = blob.getBytes(1, (int) (blob.length()));
-//	
-//	        } catch (SQLException e) {
-//	                    e.printStackTrace();
-//	        } catch (Exception e) {
-//	                    e.printStackTrace();
-//	        }
-//	        return bytes;
-//	}
+//                // commit to db
+//                long persistObjectID = saveBlob(connection, listToSaveInDB);
+//                System.out.println(listToSaveInDB + " Object is saved sucessfully\n");
+//
+//                // retrieve from db
+//                serializedRetrievedArrayObject = getBlob(connection, persistObjectID);
+//
+//                ObjectInputStream objectInputStream = null;
+//                if (serializedRetrievedArrayObject != null)
+//                    objectInputStream = new ObjectInputStream(
+//                                                new ByteArrayInputStream(
+//                                                		serializedRetrievedArrayObject));
+//
+////                Object retrievingObject = objectInputStream.readObject();
+////                List<Object> dataListFromDB = (List<Object>) retrievingObject;
+//                
+//                List<Object> dataListFromDB = (List<Object>) objectInputStream.readObject();
+//                
+//                for (Object object : dataListFromDB) {
+//                	System.out.println("Retrieved Data is :-> " + object.toString());
+//                }
+//
+//                System.out.println("Successfully retrieved java Object from Database");
+//
+//            } catch (Exception e) {
+//                        e.printStackTrace();
+//            } finally {
+//                try {
+//					connection.close();
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//            }
+//		}
+//		
+//        @SuppressWarnings("unchecked")
+//        public void main(String args[]) throws Exception {
+//                Connection connection = null;
+//                byte[] serializedRetrievedArrayObject = null;
+//                try {
+//                    connection = getConnection();
+//
+//                    List<Object> listToSaveInDB = new ArrayList<Object>();
+//                    listToSaveInDB.add(new Date());
+//                    listToSaveInDB.add(new String("KUMAR GAURAV"));
+//                    listToSaveInDB.add(new Integer(55));
+//
+//                    long persistObjectID = saveBlob(connection, listToSaveInDB);
+//                    System.out.println(listToSaveInDB + " Object is saved sucessfully");
+//
+//                    serializedRetrievedArrayObject = getBlob(connection, persistObjectID);
+//
+//                    ObjectInputStream objectInputStream = null;
+//                    if (serializedRetrievedArrayObject != null)
+//                        objectInputStream = new ObjectInputStream(
+//                                                    new ByteArrayInputStream(
+//                                                    		serializedRetrievedArrayObject));
+//
+//                    Object retrievingObject = objectInputStream.readObject();
+//
+//                    List<Object> dataListFromDB = (List<Object>) retrievingObject;
+//                    for (Object object : dataListFromDB) {
+//                    	System.out.println("Retrieved Data is :-> " + object.toString());
+//                    }
+//
+//                    System.out.println("Successfully retrieved java Object from Database");
+//
+//                } catch (Exception e) {
+//                            e.printStackTrace();
+//                } finally {
+//                            connection.close();
+//                }
+//        }
+	            
+	}
+	
 
 
 }

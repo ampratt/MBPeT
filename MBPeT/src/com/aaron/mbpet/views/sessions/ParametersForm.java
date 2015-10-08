@@ -38,27 +38,27 @@ public class ParametersForm extends FormLayout {
 
 		ip.addValidator(new BeanValidator(Parameters.class, "ip"));
 		test_duration.addValidator(new BeanValidator(Parameters.class, "test_duration"));
-		ramp_list.addValidator(new BeanValidator(Parameters.class, "ramp_list"));
-		TargetResponseTime.addValidator(new BeanValidator(Parameters.class, "TargetResponseTime"));
-		monitoring_interval.addValidator(new BeanValidator(Parameters.class, "monitoring_interval"));
-		mean_user_think_time.addValidator(new BeanValidator(Parameters.class, "mean_user_think_time"));
-		standard_deviation.addValidator(new BeanValidator(Parameters.class, "standard_deviation"));
+//		ramp_list.addValidator(new BeanValidator(Parameters.class, "ramp_list"));
+//		TargetResponseTime.addValidator(new BeanValidator(Parameters.class, "TargetResponseTime"));
+//		monitoring_interval.addValidator(new BeanValidator(Parameters.class, "monitoring_interval"));
+//		mean_user_think_time.addValidator(new BeanValidator(Parameters.class, "mean_user_think_time"));
+//		standard_deviation.addValidator(new BeanValidator(Parameters.class, "standard_deviation"));
 		
-		ip.setNullRepresentation("");
-		test_duration.setNullRepresentation("");
-		ramp_list.setNullRepresentation("");
-		TargetResponseTime.setNullRepresentation("");
-		monitoring_interval.setNullRepresentation("");
-		mean_user_think_time.setNullRepresentation("");
-		standard_deviation.setNullRepresentation("");
+//		ip.setNullRepresentation("");
+//		test_duration.setNullRepresentation("");
+//		ramp_list.setNullRepresentation("");
+//		TargetResponseTime.setNullRepresentation("");
+//		monitoring_interval.setNullRepresentation("");
+//		mean_user_think_time.setNullRepresentation("");
+//		standard_deviation.setNullRepresentation("");
 		
 		disableValidationMessages();
 
 
 		addComponent(ip);
 		addComponent(test_duration);
-//		addComponent(ramp_list);
-//		addComponent(TargetResponseTime);
+		addComponent(ramp_list);
+		addComponent(TargetResponseTime);
 		addComponent(monitoring_interval);
 		addComponent(mean_user_think_time);
 		addComponent(standard_deviation);

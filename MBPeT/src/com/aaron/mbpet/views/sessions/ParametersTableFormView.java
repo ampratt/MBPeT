@@ -3,6 +3,8 @@ package com.aaron.mbpet.views.sessions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aaron.mbpet.data.DemoDataGenerator.SaveObject2Database;
+import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
@@ -13,6 +15,8 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.ReverseConverter;
+import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.event.ItemClickEvent;
@@ -22,6 +26,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -43,7 +48,6 @@ public class ParametersTableFormView extends VerticalLayout implements Component
 	private ParametersForm form;
 	private BeanItem<Parameters> beanItem;
 	private TestSession currsession;
-	private BeanItem beanParamItem;
 	
 	
 	public ParametersTableFormView(TestSession currsession){
@@ -57,7 +61,7 @@ public class ParametersTableFormView extends VerticalLayout implements Component
 //		tablelayout.addComponent(TablePersonDisplay());
 		
 		// form
-		addComponent(buildParametersFormView());
+		addComponent(GeneratedLayoutForm());	//(buildParametersFormView());
 //		VerticalLayout tablayout = new VerticalLayout();
 //		tablayout.setHeight("80%");
 //		tablayout.addComponent(TabDisplay());
@@ -110,13 +114,15 @@ public class ParametersTableFormView extends VerticalLayout implements Component
 		    @Override
 		    public void itemClick(ItemClickEvent event) {
 		    	form.setEnabled(true);
+		    	
 		        Item item = sessionsTable.getItem(event.getItemId());
-		        Parameters p = parameters.getItem(item.getItemProperty("id").getValue()).getEntity();
-		        beanItem = new BeanItem<Parameters>(p);
+		        currentparams = parameters.getItem(item.getItemProperty("id").getValue()).getEntity();
+		        beanItem = new BeanItem<Parameters>(currentparams);
+		        
 		        Notification.show("Event Item Id: " + event.getItemId().toString() +
 		        				"\nTable Item: " + item.getItemProperty("id") + item.getItemProperty("ip"), Type.TRAY_NOTIFICATION);
 
-		        binder.setItemDataSource(item);
+		        binder.setItemDataSource(beanItem);	//(item);
 				binder.bindMemberFields(form);	// link to layout	
 //				binder.bindMemberFields(addressForm);	// link to layout	
 //				binder.bindMemberFields(skillsForm);
@@ -126,6 +132,127 @@ public class ParametersTableFormView extends VerticalLayout implements Component
 		return sessionsTable;
 	}
 
+	
+	
+	private Component GeneratedLayoutForm() {
+		final VerticalLayout layout = new VerticalLayout();
+		layout.setSpacing(true);
+		layout.setMargin(true);
+		
+		
+//		layout.addComponent(new Label("<h4>Add Test Session</h4>", ContentMode.HTML));
+	
+		// set parent Test Case manually without a field
+//		if (editmode == false && (clonemode==false)) {
+//			testsession.setParentcase(parentCase);			
+//		}
+		
+
+		currentparams = parameters.getItem(parameters.getIdByIndex(0)).getEntity();
+//		currentparams.setIp("blank.com");
+//		currentparams.setTest_duration(10);
+			
+		// empty bean for testing
+//		person = new Person();
+//		person.setAddress(new Address());
+		
+		// CREATE FIELDS MANUALLY
+//		form = new ParametersForm();
+//		layout.addComponent(form);
+		
+		
+		
+		
+		binder = new FieldGroup();
+		beanItem = new BeanItem<Parameters>(currentparams);	
+//		BeanItem<Person> item = new BeanItem<Person>(person);		// takes item as argument
+//		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
+//		item.addNestedProperty("address.zip");
+//		item.addNestedProperty("address.city");
+		
+		binder.setItemDataSource(beanItem); 	// link to data model to binder
+		
+//		binder.bindMemberFields(form);	// link to layout
+	
+		// GENERATE FIELDS
+		
+		for (Object propertyId : beanItem.getItemPropertyIds()) {
+			TextField field = null;
+			if("ownersession".equals(propertyId)) {
+//				field = binder.buildAndBind(currsession.getTitle());
+			
+			} else if("standard_deviation".equals(propertyId)) {
+				field = new TextField("standard_deviation");
+//				field.setValue(currentparams.getStandard_deviation().toString());
+				field.setConverter(new ReverseConverter(new StringToDoubleConverter()));
+				field = (TextField) binder.buildAndBind(propertyId);
+				layout.addComponent(field);
+
+			} else if(!"ramp_list".equals(propertyId)) {
+				field = (TextField) binder.buildAndBind(propertyId);
+				layout.addComponent(field);
+
+			} else {
+				ArrayList<ArrayList<Integer>> dataListFromDB = DbUtils.readFromDb((int) beanItem.getItemProperty("id").getValue());
+				currentparams.setRamp_list(dataListFromDB);
+//				field = (TextField) binder.buildAndBind(propertyId);
+				field = new TextField("ramp_list");
+				field.setValue(dataListFromDB.toString());
+				layout.addComponent(field);
+			}
+		}
+
+		
+		// using buildAndBind()
+//		titlefield = binder.buildAndBind("title");
+//		titlefield.setWidth(18, Unit.EM);
+//		titlefield.focus();
+//		titlefield.setRequired(true);
+////		titlefield.setRequiredError("'Title' cannot be empty.");
+////		((TextField) titlefield).setValidationVisible(false);
+//		titlefield.addValidator(new BeanValidator(TestSession.class, "title"));
+//		((TextField) titlefield).setValidationVisible(true);
+////		titlefield.addValidator(new StringLengthValidator("Title must be between 1 and 40 characters", 
+////					1, 40, false));
+//		((TextField) titlefield).setNullRepresentation("");
+////		
+//		layout.addComponent(titlefield);
+		
+		// using bind() to determine what type of field is created yourself...
+//		title = new TextField();
+//		binder.bind(title, "title");
+//		title.setWidth(22, Unit.EM);
+//		title.setCaption("Title");
+//		title.focus();
+//		title.setImmediate(true);
+//		title.addValidator(new BeanValidator(TestSession.class, "title"));
+////		title.setValidationVisible(false);
+//		title.setNullRepresentation("");
+//		layout.addComponent(title);
+//		
+//		binder.setBuffered(true);
+//		
+//		// button layout
+//		HorizontalLayout buttons = new HorizontalLayout();
+//		buttons.setWidth("100%");
+//		buttons.addStyleName("buttons-margin-top");
+//		layout.addComponent(buttons);
+//		
+//		createButton = new Button("Create", this);
+//		if (editmode) createButton.setCaption("Save");
+//		createButton.addStyleName(ValoTheme.BUTTON_PRIMARY);
+//		createButton.setClickShortcut(KeyCode.ENTER);
+//		
+//		cancelButton = new Button("Cancel", this);
+//		
+//		buttons.addComponents(createButton, cancelButton);
+//		buttons.setComponentAlignment(createButton, Alignment.MIDDLE_LEFT);
+//		buttons.setComponentAlignment(cancelButton, Alignment.MIDDLE_RIGHT);
+		
+		return layout;
+	}
+	
+	
 	
 	private Component buildParametersFormView() {
 		final VerticalLayout layout = new VerticalLayout();
