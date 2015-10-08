@@ -15,10 +15,17 @@
  */
 package com.aaron.mbpet.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -28,9 +35,12 @@ import javax.transaction.*;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.Parameters;
+import com.aaron.mbpet.domain.AverageMax;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.mysql.jdbc.Blob;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 
@@ -241,46 +251,139 @@ public class DemoDataGenerator {
 		em.refresh(tcportal);
 		em.getTransaction().commit();
 		
-//		EntityManager em = Persistence
-//				.createEntityManagerFactory("MBPeT")
-//				.createEntityManager();		
-//		
-//		em.getTransaction().begin();
-//		Random r = new Random(0);
-//		for (String o : officeNames) {
-//			Department geoGroup = new Department();
-//			geoGroup.setName(o);
-//			for (String g : groupsNames) {
-//				Department group = new Department();
-//				group.setName(g);
-//				Set<Person> gPersons = new HashSet<Person>();
-//				
-//				int amount = r.nextInt(15) + 1;
-//				for (int i = 0; i < amount; i++) {
-//					Person p = new Person();
-//					p.setFirstName(fnames[r.nextInt(fnames.length)]);
-//					p.setLastName(lnames[r.nextInt(lnames.length)]);
-//					p.setCity(cities[r.nextInt(cities.length)]);
-//					p.setPhoneNumber("+358 02 555 " + r.nextInt(10) + r.nextInt(10)
-//							+ r.nextInt(10) + r.nextInt(10));
-//					int n = r.nextInt(100000);
-//					if (n < 10000) {
-//						n += 10000;
-//					}
-//					p.setZipCode("" + n);
-//					p.setStreet(streets[r.nextInt(streets.length)]);
-//					p.setDepartment(group);
-//					gPersons.add(p);
-//					em.persist(p);
-//				}
-//				group.setParent(geoGroup);
-//				group.setPersons(gPersons);
-//				em.persist(group);
-//			}
-//			em.persist(geoGroup);
+		
+		// PARAMETERS - ResponseTimes
+		em.getTransaction().begin();
+		int[][] r1 = {{0,0},{250,400}};
+		
+		ArrayList<ArrayList<Integer>> arl = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> internal = new ArrayList<Integer>();
+		internal.addAll(Arrays.asList(0,0));
+		
+		arl.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
+		
+		Parameters p1 = new Parameters("google.com", 30, arl, 3, 3, 0.0, sess7);
+		Parameters p2 = new Parameters("facebook.com", 60, arl, 3, 3, 0.5, sess7);
+		Parameters p3 = new Parameters("twitter.com", 90, arl, 3, 3, 1.5,sess6);
+		Parameters p4 = new Parameters("apple.com", 120, arl, 3, 3, 0.8, sess6);
+		em.persist(p1);
+		em.persist(p2);
+		em.persist(p3);
+		em.persist(p4);
+		
+		// Response times	
+		HashMap<String, Double> map = new HashMap<String, Double>();
+		map.put("average", 0.5);
+		map.put("max", 1.0);
+		map.put("average", 0.7);
+		map.put("max", 1.2);
+//		AverageMax<String, Double> rt1 = new AverageMax<String, Double>(map);
+//		Map<String, AverageMax<String, Double>> tr = new HashMap<String, AverageMax<String,Double>>();
+		
+		Map<String, HashMap<String, Double>> tr = new HashMap<String, HashMap<String,Double>>();
+//		tr.put("search_on_google(car)", map);
+		
+		// Iterate all key/value pairs
+//		for (Entry<String, Double> entry  : map.entrySet()) {
+//			System.out.println(entry.getKey() + " - " + entry.getValue());
+//			tr.put("search_on_google(car)", (Map<String, Double>) entry);
+//			
 //		}
-//
-//		em.getTransaction().commit();
+		tr.put("search_on_google(car)", map);
+		p1.setTargetResponsTime(tr);
+//		rt1.setResponsetimes(map)
+//		ResponseTimes<String, Double> rt1 = new ResponseTimes<K, V>(map);
+		
+		//		em.persist(rt1);
+		em.persist(p1);
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+		em.refresh(sess7);
+		em.refresh(sess6);
+		em.getTransaction().commit();
+		
 	}
+	
+	
+//
+//	   /** SERIALIZING This method will help to convert any object into byte array*/            
+//	   private static byte[] convertObjectToByteArray(Object obj) throws IOException {
+//	        ByteArrayOutputStream byteos = new ByteArrayOutputStream();
+//	        ObjectOutputStream objectout = new ObjectOutputStream(byteos);
+//	        objectout.writeObject(obj);
+//	        return byteos.toByteArray();
+//	   }
+//	
+//	
+//        /** This method will help to save java objects into database*/             
+//         private static long saveBlob(Connection con, Object javaObject2Persist) {
+//
+//	        byte[] byteArray = null;
+//	        PreparedStatement preparedStatement = null;
+//	        String SQLQUERY_TO_SAVE_JAVAOBJECT = "INSERT INTO persist_java_objects(object_name, java_object) VALUES (?, ?)";
+//	        int persistObjectID = -1;
+//	        try {
+//	
+//	                    byteArray = convertObjectToByteArray(javaObject2Persist);
+//	                    preparedStatement = con.prepareStatement(
+//	                                            SQLQUERY_TO_SAVE_JAVAOBJECT,
+//	                                            PreparedStatement.RETURN_GENERATED_KEYS);
+//	                    preparedStatement.setString(1, javaObject2Persist.getClass()
+//	                                            .getName());
+//	                    preparedStatement.setBytes(2, byteArray);
+//	                    preparedStatement.executeUpdate();
+//	
+//	                    System.out
+//	                                            .println("Query - "
+//	                                                                    + SQLQUERY_TO_SAVE_JAVAOBJECT
+//	                                                                    + " is successfully executed for Java object serialization ");
+//	
+//	                    //Trying to get the Generated Key
+//	                    ResultSet rs = preparedStatement.getGeneratedKeys();
+//	
+//	                    if (rs.next()) {
+//	                                persistObjectID = rs.getInt(1);
+//	                                System.out
+//	                                                        .println("Object ID while saving the binary object is->"
+//	                                                                                + persistObjectID);
+//	                    }
+//	
+//	                    preparedStatement.close();
+//	        } catch (SQLException e) {
+//	                    e.printStackTrace();
+//	        } catch (Exception e) {
+//	                    e.printStackTrace();
+//	        }
+//	        return persistObjectID;
+//     }
+//	
+//	/** DESERIALIZING This method will help to read java objects from database*/                
+//	private static byte[] getBlob(Connection con, long objectId) {
+//	        String SQLQUERY_TO_READ_JAVAOBJECT= "SELECT java_object FROM persist_java_objects WHERE object_id = ?;";
+//	        PreparedStatement pstmt = null;
+//	        ResultSet resultSet = null;
+//	        Blob blob = null;
+//	        byte[] bytes = null;
+//	
+//	        try {
+//	                    pstmt = con.prepareStatement(SQLQUERY_TO_READ_JAVAOBJECT);
+//	                    System.out.println("Reading the saved Object from the database where the object Id is:->" + objectId);
+//	                    pstmt.setLong(1, objectId);
+//	
+//	                    resultSet = pstmt.executeQuery();
+//	                    while (resultSet.next()) {
+//	                                blob = resultSet.getBlob(1);
+//	                    }
+//	                    bytes = blob.getBytes(1, (int) (blob.length()));
+//	
+//	        } catch (SQLException e) {
+//	                    e.printStackTrace();
+//	        } catch (Exception e) {
+//	                    e.printStackTrace();
+//	        }
+//	        return bytes;
+//	}
+
 
 }

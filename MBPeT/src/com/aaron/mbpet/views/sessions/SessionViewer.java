@@ -47,6 +47,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	public static Label pageTitle = new Label("");
 	Tree tree;
     JPAContainer<TestCase> testcases;
+    JPAContainer<TestSession> sessions;
 
 	private Button saveButton;
 	private Button stopButton;
@@ -58,6 +59,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		this.addStyleName("content");
 		
         testcases = MBPeTMenu.getTestcases();
+        sessions = MBPeTMenu.getTestsessions();
 		
 		this.tree = tree;
 		setPageTitle(title);
@@ -69,7 +71,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //    	setExpandRatio(contentLayout, 1);
     	
 //		VerticalLayout tabs = new VerticalLayout();
-		TabLayout tabs = new TabLayout();
+		TabLayout tabs = new TabLayout(getTestSessionByTitle());
 		addComponent(tabs);
     	setExpandRatio(tabs, 1);
 	}
@@ -182,6 +184,29 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return pageTitle.getValue();
 	}
 
+	
+	private TestSession getTestSessionByTitle() {
+		String title = pageTitle.getValue();
+		if (title.contains("/")) {
+			title = title.substring((title.indexOf("/")+1), title.length()); 
+		}
+		System.out.println("the parses test case title is: " + title);
+		
+		// add created item to tree (after retrieving db generated id)
+        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+										.createEntityManager();	
+        Query query = em.createQuery(
+    		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
+    		);
+//        query.setParameter("title", newsession.getTitle());
+        TestSession queriedSession = 
+        		(TestSession) query.setParameter("title", title).getSingleResult();
+        System.out.println("retrieved SESSION fro db is : " 
+        				+  queriedSession.getId() + " - " + queriedSession.getTitle());
+			            
+		return sessions.getItem(queriedSession.getId()).getEntity();
+		
+	}
 //    @Override
 //    public void enter(ViewChangeEvent event) {
 //        if (event.getParameters() == null

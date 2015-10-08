@@ -135,7 +135,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		this.clone = new TestSession();
 		clone.setTitle("(clone) " + testsession.getTitle());
-		clone.setParameters(testsession.getParameters());
+//		clone.setParameters(testsession.getParameters());
 		clone.setParentcase(testsession.getParentcase());
 
 		this.newSessionItem = new BeanItem<TestSession>(clone);

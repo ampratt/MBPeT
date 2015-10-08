@@ -9,6 +9,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.data.ExampleUtil;
 import com.aaron.mbpet.data.HierarchicalDepartmentContainer;
 import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
@@ -72,6 +73,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private static JPAContainer<TestCase> testcases;
 	public static JPAContainer<TestSession> sessions;
 	public static JPAContainer<Model> models;
+	public static JPAContainer<Parameters> parameters;
 	private User currentuser = MainView.sessionUser;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
@@ -95,6 +97,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		MbpetUI.PERSISTENCE_UNIT);
         models = JPAContainerFactory.make(Model.class,
         		MbpetUI.PERSISTENCE_UNIT);        //new HierarchicalDepartmentContainer();
+        parameters = JPAContainerFactory.make(Parameters.class,
+        		MbpetUI.PERSISTENCE_UNIT); 
 //        		JPAContainerFactory.make(TestCase.class,
 //        		MbpetUI.PERSISTENCE_UNIT);
         

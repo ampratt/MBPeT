@@ -40,8 +40,8 @@ public class TestSession {
     @OneToMany(mappedBy = "parentsession")
     private List<Model> models;
 
-//	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
-//	private Parameters parameters;
+	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
+	private Parameters parameters;
     
     
     public TestSession() {
@@ -89,13 +89,13 @@ public class TestSession {
 		this.parentcase = parentcase;
 	}
 
-//	public Parameters getParameters() {
-//		return parameters;
-//	}
-//
-//	public void setParameters(Parameters parameters) {
-//		this.parameters = parameters;
-//	}
+	public Parameters getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(Parameters parameters) {
+		this.parameters = parameters;
+	}
 
 	
     public List<Model> getModels() {

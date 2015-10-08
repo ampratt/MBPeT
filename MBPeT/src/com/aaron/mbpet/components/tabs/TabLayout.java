@@ -1,5 +1,6 @@
 package com.aaron.mbpet.components.tabs;
 
+import com.aaron.mbpet.domain.TestSession;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
@@ -14,17 +15,22 @@ import com.vaadin.ui.themes.ValoTheme;
 public class TabLayout extends TabSheet {   
 	
 //	ConfigurationTab configTab = new ConfigurationTab();
+	TabSheet confTabs;
 	MonitoringTab monitoringTab = new MonitoringTab();
-	final ModelsTab models = new ModelsTab();
 	final ReportsTab reportsTab = new ReportsTab();
-	final ModelsTab graph = new ModelsTab();
-	final RampTab ramp = new RampTab();
-	final SettingsTab settings = new SettingsTab();
-	final TestAdapterTab adapter = new TestAdapterTab();
+//	final ModelsTab graph = new ModelsTab();
+	ModelsTab models;// = new ModelsTab();
+	RampTab ramp;// = new RampTab();
+	SettingsTab settings;// = new SettingsTab();
+	TestAdapterTab adapter;// = new TestAdapterTab();
 	
-    public TabLayout() {
+	TestSession currsession;
+	
+    public TabLayout(TestSession currsession) {
         setSizeFull();
 
+        this.currsession = currsession;
+        
         setHeight(100.0f, Unit.PERCENTAGE);
         addStyleName(ValoTheme.TABSHEET_FRAMED);
         addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
@@ -48,12 +54,16 @@ public class TabLayout extends TabSheet {
     }
 
 	private TabSheet buildConfigTabs(){
-		TabSheet confTabs = new TabSheet();
+		confTabs = new TabSheet();
 		confTabs.setSizeFull();
 		confTabs.addStyleName(ValoTheme.TABSHEET_CENTERED_TABS);	//TABSHEET_EQUAL_WIDTH_TABS);
 
 //		confTabs.addTab(graph, "User Profiles / Models");
 		//graphTab.addComponent(MbpetDemoUI.graph);
+		models = new ModelsTab();
+		ramp = new RampTab();
+		settings = new SettingsTab(currsession);
+		adapter = new TestAdapterTab();
 		
 		confTabs.addTab(models, "Models");
 		confTabs.addTab(ramp, "Ramp Function");

@@ -22,7 +22,7 @@ public class ConfigurationTab extends VerticalLayout {
 	TabSheet confTabs;
 	final ModelsTab models = new ModelsTab();
 	final RampTab ramp = new RampTab();
-	final SettingsTab settings = new SettingsTab();
+//	final SettingsTab settings = new SettingsTab();
 	final TestAdapterTab adapter = new TestAdapterTab();
 			
 	VerticalLayout vert = new VerticalLayout();
@@ -52,7 +52,7 @@ public class ConfigurationTab extends VerticalLayout {
 		
 		confTabs.addTab(models, "Models");
 		confTabs.addTab(ramp, "Ramp Function");
-		confTabs.addTab(settings, "Settings");
+//		confTabs.addTab(settings, "Settings");
 		confTabs.addTab(adapter, "Test Adapter");
 		
 		return confTabs;
