@@ -28,6 +28,7 @@ import javax.persistence.Persistence;
 import javax.transaction.*;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.AverageMax;
@@ -247,60 +248,94 @@ public class DemoDataGenerator {
 		
 		// PARAMETERS - ResponseTimes
 		em.getTransaction().begin();
-		int[][] r1 = {{0,0},{250,400}};
-		
-		ArrayList<ArrayList<Integer>> arl = new ArrayList<ArrayList<Integer>>();
-		ArrayList<Integer> internal = new ArrayList<Integer>();
-		internal.addAll(Arrays.asList(0,0));
-		
-		arl.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
-		
-		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
-		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
-		Parameters p3 = new Parameters("twitter.com", 90, 3, 3, 1.5,sess6);
-		Parameters p4 = new Parameters("apple.com", 120, 3, 3, 0.8, sess6);
+
+		Parameters p7 = new Parameters(sess7);
+		Parameters p6 = new Parameters(sess6);
+		Parameters p5 = new Parameters(sess5);
+		Parameters p4 = new Parameters(sess4);
+		Parameters p3 = new Parameters(sess3);
+		Parameters p2 = new Parameters(sess2);
+		Parameters p1 = new Parameters(sess1);
+
+//		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
+//		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
+//		Parameters p3 = new Parameters("twitter.com", 90, 3, 3, 1.5,sess6);
+//		Parameters p4 = new Parameters("apple.com", 120, 3, 3, 0.8, sess6);
 		em.persist(p1);
 		em.persist(p2);
 		em.persist(p3);
 		em.persist(p4);
-		
-//		// Response times	
+		em.persist(p5);
+		em.persist(p6);
+		em.persist(p7);
+	
+		// Response times	
 //		HashMap<String, Double> map = new HashMap<String, Double>();
 //		map.put("average", 0.5);
 //		map.put("max", 1.0);
-//		map.put("average", 0.7);
-//		map.put("max", 1.2);
+////		map.put("average", 0.7);
+////		map.put("max", 1.2);
 ////		AverageMax<String, Double> rt1 = new AverageMax<String, Double>(map);
 ////		Map<String, AverageMax<String, Double>> tr = new HashMap<String, AverageMax<String,Double>>();
 //		
 //		Map<String, HashMap<String, Double>> tr = new HashMap<String, HashMap<String,Double>>();
 ////		tr.put("search_on_google(car)", map);
-//		
-//		// Iterate all key/value pairs
-////		for (Entry<String, Double> entry  : map.entrySet()) {
-////			System.out.println(entry.getKey() + " - " + entry.getValue());
-////			tr.put("search_on_google(car)", (Map<String, Double>) entry);
-////			
-////		}
+		
+		// Iterate all key/value pairs
+//		for (Entry<String, Double> entry  : map.entrySet()) {
+//			System.out.println(entry.getKey() + " - " + entry.getValue());
+//			tr.put("search_on_google(car)", (Map<String, Double>) entry);
+//			
+//		}
 //		tr.put("search_on_google(car)", map);
 //		p1.setTargetResponsTime(tr);
 
 		
 		//		em.persist(rt1);
-		em.persist(p1);
+//		em.persist(p1);
 		em.getTransaction().commit();
+		
 		
 		em.getTransaction().begin();
-		// ramp list
-		//Long objectId = 
-		SaveObject2Database.commitToDb(arl, p1);				
-//		System.out.println("JPA gen id =? PrepState id:-> " + p1.getId() + " = " + p1.getId());
-		List<Object> dataListFromDB = SaveObject2Database.readFromDb(p1.getId());
-		
-		em.refresh(p1);
 		em.refresh(sess7);
 		em.refresh(sess6);
+		em.refresh(sess5);
+		em.refresh(sess4);
+		em.refresh(sess3);
+		em.refresh(sess2);
+		em.refresh(sess1);
 		em.getTransaction().commit();
+		
+//		// ramp list
+//		int[][] r1 = {{0,0},{250,400}};
+//		ArrayList<ArrayList<Integer>> arl = new ArrayList<ArrayList<Integer>>();
+//		ArrayList<Integer> internal = new ArrayList<Integer>();
+//		internal.addAll(Arrays.asList(0,0));
+//		arl.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
+//		//Long objectId = 
+////		SaveObject2Database.commitToDb(arl, p1);
+//		DbUtils.commitUpdateToDb(arl, p1, "ramp_list");	
+//		
+//		// target response times
+//		HashMap<String, Double> map = new HashMap<String, Double>();
+//		map.put("average", 0.5);
+//		map.put("max", 1.0);
+////		map.put("average", 0.7);
+////		map.put("max", 1.2);
+////		AverageMax<String, Double> rt1 = new AverageMax<String, Double>(map);
+////		Map<String, AverageMax<String, Double>> tr = new HashMap<String, AverageMax<String,Double>>();
+//		Map<String, HashMap<String, Double>> tr = new HashMap<String, HashMap<String,Double>>();
+//		tr.put("search_on_google(car)", map);
+////		DbUtils.commitUpdateToDb(tr, p1, "TargetResponseTime");	
+//
+//		
+//		// read back from db to confirm
+////		List<Object> dataListFromDB = SaveObject2Database.readFromDb(p1.getId());
+//		
+//		em.refresh(p1);
+//		em.refresh(sess7);
+//		em.refresh(sess6);
+//		em.getTransaction().commit();
 		
 	}
 	

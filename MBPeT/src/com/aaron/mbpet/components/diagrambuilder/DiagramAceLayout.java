@@ -21,7 +21,7 @@ import org.vaadin.diagrambuilder.DiagramStateEvent;
 import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.Transition;
 
-import com.aaron.mbpet.components.aceeditor.AceEditorLayout;
+import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -80,7 +80,7 @@ public class DiagramAceLayout extends VerticalLayout {
 
 		// AceEditor
 		editor = new AceEditor();
-		addComponent(new AceEditorLayout(editor));
+		addComponent(new AceEditorLayoutDirectory(editor));
 //		initAceLayout(editor);	
 		
 		// Diagram Builder

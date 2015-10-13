@@ -20,6 +20,7 @@ public class TabLayout extends TabSheet {
 	final ReportsTab reportsTab = new ReportsTab();
 //	final ModelsTab graph = new ModelsTab();
 	ModelsTab models;// = new ModelsTab();
+	ParametersTab parameters;
 	RampTab ramp;// = new RampTab();
 	SettingsTab settings;// = new SettingsTab();
 	TestAdapterTab adapter;// = new TestAdapterTab();
@@ -62,12 +63,14 @@ public class TabLayout extends TabSheet {
 		//graphTab.addComponent(MbpetDemoUI.graph);
 		models = new ModelsTab();
 		ramp = new RampTab();
-		settings = new SettingsTab(currsession);
+		parameters = new ParametersTab(currsession);
+//		settings = new SettingsTab(currsession);
 		adapter = new TestAdapterTab();
 		
 		confTabs.addTab(models, "Models");
 		confTabs.addTab(ramp, "Ramp Function");
-		confTabs.addTab(settings, "Settings");
+		confTabs.addTab(parameters, "Test Parameters");
+//		confTabs.addTab(settings, "Settings");
 		confTabs.addTab(adapter, "Test Adapter");
 		return confTabs;
        		

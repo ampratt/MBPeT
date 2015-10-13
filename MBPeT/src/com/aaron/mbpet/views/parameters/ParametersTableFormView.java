@@ -1,7 +1,9 @@
-package com.aaron.mbpet.views.sessions;
+package com.aaron.mbpet.views.parameters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.aaron.mbpet.data.DemoDataGenerator.SaveObject2Database;
 import com.aaron.mbpet.domain.DbUtils;
@@ -15,6 +17,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.converter.ReverseConverter;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.filter.Compare.Equal;
@@ -177,29 +180,42 @@ public class ParametersTableFormView extends VerticalLayout implements Component
 		// GENERATE FIELDS
 		
 		for (Object propertyId : beanItem.getItemPropertyIds()) {
-			TextField field = null;
 			if("ownersession".equals(propertyId)) {
 //				field = binder.buildAndBind(currsession.getTitle());
 			
 			} else if("standard_deviation".equals(propertyId)) {
-				field = new TextField("standard_deviation");
+				TextField field = new TextField("standard_deviation");
 //				field.setValue(currentparams.getStandard_deviation().toString());
 				field.setConverter(new ReverseConverter(new StringToDoubleConverter()));
 				field = (TextField) binder.buildAndBind(propertyId);
 				layout.addComponent(field);
 
-			} else if(!"ramp_list".equals(propertyId)) {
-				field = (TextField) binder.buildAndBind(propertyId);
-				layout.addComponent(field);
-
-			} else {
-				ArrayList<ArrayList<Integer>> dataListFromDB = DbUtils.readFromDb((int) beanItem.getItemProperty("id").getValue());
+			} else if("ramp_list".equals(propertyId)) {
+				ArrayList<ArrayList<Integer>> dataListFromDB = 
+						(ArrayList<ArrayList<Integer>>) DbUtils.readFromDb((int) beanItem.getItemProperty("id").getValue());
+				
 				currentparams.setRamp_list(dataListFromDB);
 //				field = (TextField) binder.buildAndBind(propertyId);
-				field = new TextField("ramp_list");
+				TextField field = new TextField("ramp_list");
 				field.setValue(dataListFromDB.toString());
 				layout.addComponent(field);
-			}
+
+			} else if(!"TargetResponseTime".equals(propertyId)) {
+//				Map<String, HashMap<String, Double>> responsetimesHashMap = (
+//						Map<String, HashMap<String, Double>>) DbUtils.readFromDb((int) beanItem.getItemProperty("id").getValue());
+//				
+//				currentparams.setTargetResponsTime(responsetimesHashMap);
+////				field = (TextField) binder.buildAndBind(propertyId);
+//				TextField field = new TextField("TargetResponseTime");
+//				field.setValue(responsetimesHashMap);
+//				layout.addComponent(field);
+				TextField field = (TextField) binder.buildAndBind(propertyId);
+				layout.addComponent(field);
+			} 
+//			else {
+//				TextField field = (TextField) binder.buildAndBind(propertyId);
+//				layout.addComponent(field);
+//			}
 		}
 
 		

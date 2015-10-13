@@ -1,4 +1,4 @@
-package com.aaron.mbpet.views.sessions;
+package com.aaron.mbpet.views.parameters;
 
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;

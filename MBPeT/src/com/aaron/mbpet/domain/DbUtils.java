@@ -12,32 +12,53 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.aaron.mbpet.data.DemoDataGenerator.SaveObject2Database;
+import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
 
 public class DbUtils {
 
-	private static void commitToDb(ArrayList<ArrayList<Integer>> arraylist, Parameters parameters) {
+	static String[] propIds = new String[] {"settings_file", "ramp_list", "TargetResponseTime"};
+	static Map<String, String> jObjectTitleFields = ImmutableMap.of(
+							"ramp_list", "ramp_object_name", 
+							"TargetResponseTime", "responseTime_object_name");
+	
+	public static void commitUpdateToDb(Object javaObject, Parameters parameters, String targetDbField) {
         Connection connection = null;
         int persistObjectID = -1;
         
         try {
             connection = getConnection();
 
-//                List<Object> listToSaveInDB = new ArrayList<Object>();
-//                listToSaveInDB.add(arraylist);
-//                
-//	        		ArrayList<ArrayList<Integer>> array = new ArrayList<ArrayList<Integer>>();
 //	        		ArrayList<Integer> internal = new ArrayList<Integer>();
 //	        		internal.addAll(Arrays.asList(0,0));
 //	        		array.addAll((Collection<? extends ArrayList<Integer>>) Arrays.asList(internal,Arrays.asList(250,400), Arrays.asList(400, 600)));
 //                listToSaveInDB.add(array);
-
+            
+            if (targetDbField.equals(propIds[0])){
+            	String settings = (String) javaObject;
+            	System.out.println("Jav object: " + settings.getClass() + "\ntarget db field: " + targetDbField);  
+            	updateBlob(connection, settings, parameters, targetDbField);
+//            	System.out.println(settings + " Object is saved sucessfully\n");  
+            	
+            } else if (targetDbField.equals(propIds[1])){
+            	ArrayList<ArrayList<Integer>> arraylist = (ArrayList<ArrayList<Integer>>) javaObject;
+            	System.out.println("Jav object: " + arraylist.toString() + "\ntarget db field: " + targetDbField);  
+            	updateBlob(connection, arraylist, parameters, targetDbField);
+            	System.out.println(arraylist + " Object is saved sucessfully\n");  
+            	
+            } else if(targetDbField.equals(propIds[2])){
+            	Map<String, HashMap<String, Double>> responsetimesHashMap = 
+            				(Map<String, HashMap<String, Double>>) javaObject;
+            	System.out.println("Jav object: " + responsetimesHashMap.toString() + "\ntarget db field: " + targetDbField);  
+            	updateBlob(connection, responsetimesHashMap, parameters, targetDbField);
+            	System.out.println(responsetimesHashMap + " Object is saved sucessfully\n");            	
+            } 
             // commit to db
             //persistObjectID = 
-            updateBlob(connection, arraylist, parameters);
-            System.out.println(arraylist + " Object is saved sucessfully\n");
         }catch (Exception e) {
             e.printStackTrace();
 	    } finally {
@@ -51,10 +72,11 @@ public class DbUtils {
 //            return persistObjectID;
 	}
 	
-	public static ArrayList<ArrayList<Integer>> readFromDb(int persistObjectID) {
+	public static Object readFromDb(int persistObjectID) {	//ArrayList<ArrayList<Integer>>
         byte[] serializedRetrievedArrayObject = null;
         ArrayList<ArrayList<Integer>> dataListFromDB = null;
         Connection connection = null;
+        Object javaObject = null;
         try {
             connection = getConnection();
 			// retrieve from db
@@ -69,12 +91,23 @@ public class DbUtils {
 //            Object retrievingObject = objectInputStream.readObject();
 //            List<Object> dataListFromDB = (List<Object>) retrievingObject;
             
-            dataListFromDB = (ArrayList<ArrayList<Integer>>) objectInputStream.readObject();
-            System.out.println("Retrieved ArrayList :-> " + dataListFromDB.toString());
-            
-            for (Object object : dataListFromDB) {
-            	System.out.println("Retrieved Data is :-> " + object.toString());
-            }
+            javaObject = objectInputStream.readObject();
+//            if (targetDbField.equals(propIds[0])) {
+//            	// ramp_list
+//            	dataListFromDB = (ArrayList<ArrayList<Integer>>) objectInputStream.readObject();
+//            	System.out.println("Retrieved ArrayList :-> " + dataListFromDB.toString());            	
+//            	
+//            } else if (targetDbField.equals(propIds[1])){
+//            	// TargetResponseTime
+//            	Map<String, HashMap<String, Double>> responsetimesHashMap = 
+//            			(Map<String, HashMap<String, Double>>) objectInputStream.readObject();
+//            }
+//
+//
+//            
+//            for (Object object : dataListFromDB) {
+//            	System.out.println("Retrieved Data is :-> " + object.toString());
+//            }
 
             System.out.println("Successfully retrieved java Object from Database");
 
@@ -89,7 +122,7 @@ public class DbUtils {
 				}
 	        }
         
-        return dataListFromDB;
+        return javaObject;	//dataListFromDB;
 	}
        	
 	
@@ -119,14 +152,16 @@ public class DbUtils {
 
 
     /** This method will help to save java objects into database*/             
-     private static void updateBlob(Connection con, Object javaObject2Persist, Parameters parameters) {
+     private static void updateBlob(Connection con, Object javaObject2Persist, Parameters parameters, 
+    		 				String targetDbField) {
 
             byte[] byteArray = null;
             PreparedStatement preparedStatement = null;
-            String SQLQUERY_TO_SAVE_JAVAOBJECT = "Update parameters " +
-            											"SET ramp_list = ?, " +
-        													"ramp_object_name = ? " +
-    														"WHERE id = ?"; 	
+            String SQLQUERY_TO_SAVE_JAVAOBJECT = String.format("Update parameters " +
+            											"SET %s = ? " +//        													", %s = ? " +
+    														"WHERE id = ?", 
+    														targetDbField); //, jObjectTitleFields.get(targetDbField)); 	
+//            "Update parameters SET ramp_list = ?, ramp_object_name = ? WHERE id = ?"; 
             		//"INSERT INTO parameters(ramp_list) VALUES (?)";
             int persistedObjectID = -1;
             try {
@@ -135,9 +170,12 @@ public class DbUtils {
                 preparedStatement = con.prepareStatement(
                                         SQLQUERY_TO_SAVE_JAVAOBJECT,
                                         PreparedStatement.RETURN_GENERATED_KEYS);
+//                preparedStatement.setString(1, targetDbField);
                 preparedStatement.setBytes(1, byteArray);
-                preparedStatement.setString(2, javaObject2Persist.getClass().getName());
-                preparedStatement.setInt(3, parameters.getId());
+//                preparedStatement.setString(2, jObjectTitleFields.get(targetDbField));
+//                preparedStatement.setString(2, javaObject2Persist.getClass().getName());
+                preparedStatement.setInt(2, parameters.getId());
+                System.out.println("Prep state:-> " + preparedStatement.toString());
                 preparedStatement.executeUpdate();
 
                 System.out.println("Query - " + SQLQUERY_TO_SAVE_JAVAOBJECT + 
@@ -167,7 +205,7 @@ public class DbUtils {
      
 	/** DESERIALIZING - This method will help to read java objects from database*/                
 	private static byte[] getBlob(Connection con, int objectId) {
-            String SQLQUERY_TO_READ_JAVAOBJECT= "SELECT ramp_list FROM parameters WHERE id = ?;";
+            String SQLQUERY_TO_READ_JAVAOBJECT= "SELECT settings_file FROM parameters WHERE id = ?;";	//"SELECT ramp_list FROM parameters WHERE id = ?;";
             PreparedStatement pstmt = null;
             ResultSet resultSet = null;
             Blob blob = null;

@@ -30,6 +30,9 @@ public class Parameters {
     @JoinColumn(name = "ownersession", referencedColumnName = "ID")
     private TestSession ownersession;
 
+	@Column(name = "settings_file", columnDefinition="BLOB")	//, columnDefinition="BLOB"
+	private String settings_file;
+	
 	@Column(name = "ip")
 	private String ip;
 
@@ -42,6 +45,8 @@ public class Parameters {
 	@Column(name = "ramp_list", columnDefinition="BLOB")	//, columnDefinition="BLOB"
 	private ArrayList<ArrayList<Integer>> ramp_list;	//int[][]
 
+		private String responseTime_object_name;
+		
 	@Column(name = "TargetResponseTime", columnDefinition="BLOB")
 	private Map<String, HashMap<String, Double>> TargetResponseTime;
 	
@@ -61,6 +66,9 @@ public class Parameters {
 	
 	public Parameters() {
 		
+	}
+	public Parameters(TestSession ownersession) {
+		this.ownersession = ownersession;
 	}
 	
 	public Parameters(String ip, int test_duration,int monitoring_interval, 
@@ -105,6 +113,19 @@ public class Parameters {
 		this.ownersession = ownersession;
 	}
 
+	public String getSettings_file() {
+		return settings_file;
+	}
+
+	public void setSettings_file(String settings_file) {
+		this.settings_file = settings_file;
+	}
+	
+	
+	
+	
+	
+	
 	public String getIp() {
 		return ip;
 	}

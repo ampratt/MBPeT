@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
@@ -17,6 +18,7 @@ import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
+import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.users.UserForm;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -135,7 +137,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		this.clone = new TestSession();
 		clone.setTitle("(clone) " + testsession.getTitle());
-//		clone.setParameters(testsession.getParameters());
+		clone.setParameters(testsession.getParameters());
 		clone.setParentcase(testsession.getParentcase());
 
 		this.newSessionItem = new BeanItem<TestSession>(clone);
@@ -302,6 +304,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            System.out.println("the generated id is: " + queriedSession.getId());
 				            id = queriedSession.getId();	// here is the id we need for tree
 				            
+				            // create empty parameters object
+				            new ParametersEditor(new Parameters(), queriedSession, "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'");
 		        			
 				            // add to tree in right order
 				            if ( tree.hasChildren(parentCase.getId()) ) {
@@ -365,8 +369,17 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            System.out.println("the generated id is: " + queriedSession.getId());
 				            id = queriedSession.getId();	// here is the id we need for tree
 				            
+				            // 4 clone parameters
+				            String cloneParams = "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'";
+				            if (!(testsession.getParameters().getSettings_file() == null)) {
+				            	cloneParams = testsession.getParameters().getSettings_file();
+				            }
+				            System.out.println("\n\n the cloned parameters are:\n" + 
+				            		cloneParams + "\n\n");
+				            new ParametersEditor(queriedSession, cloneParams);
+
 		        			
-				            // 4 add to tree in right order
+				            // 5 add to tree in right order
 				            if ( tree.hasChildren(parentCase.getId()) ) {
 				            	sortAddToTree(id);				            	
 				            } else {
@@ -379,7 +392,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            }
 		        			
 		              	  			              	  	
-		              	  	// 5 update parent Case to add Session to testCase List<Session> sessions
+		              	  	// 6 update parent Case to add Session to testCase List<Session> sessions
 		              	  	parentCase.addSession(queriedSession);
 		//              	  	List<TestSession> listofsessions = parentCase.getSessions();
 		//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()

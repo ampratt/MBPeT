@@ -8,7 +8,7 @@ import org.apache.tools.ant.types.FileList.FileName;
 import org.vaadin.aceeditor.AceEditor;
 
 
-import com.aaron.mbpet.components.aceeditor.AceEditorLayout;
+import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FileResource;
@@ -47,14 +47,14 @@ public class TestAdapterTab extends VerticalLayout {
 		browseForFile();
 	    
 		editor = new AceEditor();
-		addComponent(new AceEditorLayout(editor));
+		addComponent(new AceEditorLayoutDirectory(editor));
 
 	    //initDiagram();
 	}
 	
 	private void buildAceEditor(){
 		editor = new AceEditor();
-		AceEditorLayout acelayout = new AceEditorLayout(editor);
+		AceEditorLayoutDirectory acelayout = new AceEditorLayoutDirectory(editor);
 	}
 	
 //	private void buildAceEditor() {

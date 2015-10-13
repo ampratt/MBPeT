@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
-import com.aaron.mbpet.views.sessions.ParametersTableFormView;
+import com.aaron.mbpet.views.parameters.ParametersTableFormView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 //import org.vaadin.aceeditor.AceEditor;
 //import org.vaadin.aceeditor.AceMode;
