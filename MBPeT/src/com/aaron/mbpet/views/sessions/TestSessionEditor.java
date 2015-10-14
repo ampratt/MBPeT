@@ -137,7 +137,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		this.clone = new TestSession();
 		clone.setTitle("(clone) " + testsession.getTitle());
-		clone.setParameters(testsession.getParameters());
+//		clone.setParameters(testsession.getParameters());
 		clone.setParentcase(testsession.getParentcase());
 
 		this.newSessionItem = new BeanItem<TestSession>(clone);
@@ -305,7 +305,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            id = queriedSession.getId();	// here is the id we need for tree
 				            
 				            // create empty parameters object
-				            new ParametersEditor(queriedSession);
+				            new ParametersEditor(sessions.getItem(id).getEntity());
 		        			
 				            // add to tree in right order
 				            if ( tree.hasChildren(parentCase.getId()) ) {
@@ -514,7 +514,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
         notification.setHtmlContentAllowed(true);
         notification.setStyleName("dark small");	//tray  closable login-help
         notification.setPosition(Position.BOTTOM_RIGHT);
-        notification.setDelayMsec(5000);
+        notification.setDelayMsec(500);
         notification.show(Page.getCurrent());
 	}
 	

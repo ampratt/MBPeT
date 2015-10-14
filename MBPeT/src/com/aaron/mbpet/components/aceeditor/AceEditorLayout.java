@@ -20,6 +20,7 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
+import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -61,7 +62,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
     Parameters currParameters;
     JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
     
-	public AceEditorLayout(AceEditor editor, String fileFormat, TestSession currsession) {
+	public AceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
 		setSizeFull();
 		setMargin(new MarginInfo(false, true, true, true));
 //		setMargin(true);
@@ -69,8 +70,10 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
-		this.currsession = currsession;
-		this.currParameters = parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
+		this.currsession = SessionViewer.currsession;
+		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
+		System.out.println("Current parameters from session is ->" + currsession.getParameters().getId() +
+							" - owned by session ->" + currsession.getId() + "-" + currsession.getTitle());
 //		currParameters.setSettings_file((String) DbUtils.readFromDb(currParameters.getId()));
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
@@ -115,11 +118,13 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
         
         saveButton = new Button("Save", this);
         saveButton.setIcon(FontAwesome.SAVE);
-//        saveButton.addStyleName("borderless-colored");	//borderless-
-        saveButton.addStyleName("small");
+        saveButton.addStyleName("borderless-colored");	//borderless-
+//        saveButton.addStyleName("small");
         saveButton.addStyleName("icon-only");
 //        saveButton.addStyleName("primary");
+//        saveButton.removeStyleName("borderless-colored");
         saveButton.setDescription("save parameters");
+        saveButton.setEnabled(false);
 	    
 		loadButton = new Button("Load", this);
 		loadButton.setIcon(FontAwesome.CLIPBOARD);
@@ -143,7 +148,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 	private AceEditor buildAceEditor() {
 		// Ace Editor
 		if (currParameters.getSettings_file() == null) {
-			editor.setValue("Hello world!\nif:\n\tthen \ndo that\n...");			
+			editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
 		} else {
 			editor.setValue(currParameters.getSettings_file());
 		}
@@ -153,7 +158,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 //			editor.setWorkerPath("/static/ace");
 		editor.setWidth("100%");
 		editor.setHeight("400px");
-		editor.setReadOnly(false);
+		editor.setReadOnly(false); 
 		setEditorMode(fileFormat);
 //		editor.setMode(AceMode.python);
 //		editor.setUseWorker(true);
@@ -168,6 +173,9 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		    @Override
 		    public void textChange(TextChangeEvent event) {
 //		        Notification.show("Text: " + event.getText());
+//		    	saveButton.addStyleName("borderless-colored");
+		        saveButton.setEnabled(true);
+
 		    }
 		});
 		
@@ -175,7 +183,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		    @Override
 		    public void selectionChanged(SelectionChangeEvent e) {
 		        int cursor = e.getSelection().getCursorPosition();
-		        //Notification.show("Cursor at: " + cursor);
+//		        Notification.show("Cursor at: " + cursor);
 		    }
 		});
 		
@@ -192,6 +200,8 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			new ParametersEditor(currParameters, currsession, s);
 			currParameters = parameters.getItem(currParameters.getId()).getEntity();
+	        saveButton.setEnabled(false);
+
 //			Notification.show(s, Type.WARNING_MESSAGE);
 			
         } else if (event.getButton() == loadButton) {

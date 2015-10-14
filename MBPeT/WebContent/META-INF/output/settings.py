@@ -1,1 +1,1 @@
-(String) DbUtils.readFromDb(currParameters.getId());
+edited and loaded

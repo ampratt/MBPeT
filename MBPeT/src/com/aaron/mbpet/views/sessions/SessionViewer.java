@@ -47,7 +47,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	public static Label pageTitle = new Label("");
 	Tree tree;
     JPAContainer<TestCase> testcases;
-    JPAContainer<TestSession> sessions;
+    static JPAContainer<TestSession> sessions;
+    public static TestSession currsession;
 
 	private Button saveButton;
 	private Button stopButton;
@@ -60,10 +61,12 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		
         testcases = MBPeTMenu.getTestcases();
         sessions = MBPeTMenu.getTestsessions();
-		
+        
 		this.tree = tree;
 		setPageTitle(title);
 		
+		currsession = getTestSessionByTitle();
+	
 		addComponent(buildTopBar());
 
 //		Component contentLayout = buildContentLayout();
@@ -71,7 +74,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //    	setExpandRatio(contentLayout, 1);
     	
 //		VerticalLayout tabs = new VerticalLayout();
-		TabLayout tabs = new TabLayout(getTestSessionByTitle());
+		TabLayout tabs = new TabLayout();
 		addComponent(tabs);
     	setExpandRatio(tabs, 1);
 	}
@@ -185,7 +188,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	}
 
 	
-	private TestSession getTestSessionByTitle() {
+	private static TestSession getTestSessionByTitle() {
 		String title = pageTitle.getValue();
 		if (title.contains("/")) {
 			title = title.substring((title.indexOf("/")+1), title.length()); 

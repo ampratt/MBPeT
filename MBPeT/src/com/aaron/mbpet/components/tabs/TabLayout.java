@@ -1,6 +1,7 @@
 package com.aaron.mbpet.components.tabs;
 
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
@@ -25,12 +26,12 @@ public class TabLayout extends TabSheet {
 	SettingsTab settings;// = new SettingsTab();
 	TestAdapterTab adapter;// = new TestAdapterTab();
 	
-	TestSession currsession;
+//	TestSession currsession;
 	
-    public TabLayout(TestSession currsession) {
+    public TabLayout() {	//TestSession currsession
         setSizeFull();
 
-        this.currsession = currsession;
+//        this.currsession = SessionViewer.currsession;
         
         setHeight(100.0f, Unit.PERCENTAGE);
         addStyleName(ValoTheme.TABSHEET_FRAMED);
@@ -63,7 +64,7 @@ public class TabLayout extends TabSheet {
 		//graphTab.addComponent(MbpetDemoUI.graph);
 		models = new ModelsTab();
 		ramp = new RampTab();
-		parameters = new ParametersTab(currsession);
+		parameters = new ParametersTab();		//currsession
 //		settings = new SettingsTab(currsession);
 		adapter = new TestAdapterTab();
 		

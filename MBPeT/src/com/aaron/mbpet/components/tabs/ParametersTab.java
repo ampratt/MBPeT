@@ -17,6 +17,7 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.parameters.ParametersTableFormView;
+import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
@@ -47,19 +48,19 @@ import com.vaadin.ui.themes.ValoTheme;
 public class ParametersTab extends VerticalLayout {
 
 	AceEditor editor;
-	private TestSession currsession;
+//	private TestSession currsession;
 	
-	public ParametersTab(TestSession currsession) {
+	public ParametersTab() {		//TestSession currsession
 		setSizeFull();
 		setMargin(true);
 		setSpacing(true);
 	
-		this.currsession = currsession;
+//		this.currsession = SessionViewer.currsession;
 		
 //	    addComponent(new Label("<h3><i>Edit test parameters</i></h3>", ContentMode.HTML));	//layout.
 		
 		editor = new AceEditor();
-		addComponent(new AceEditorLayout(editor, "python", currsession));
+		addComponent(new AceEditorLayout(editor, "python"));		//currsession
 //		editor.setValue(newFieldValue)
 		
 //	    addComponent(buildParametersTable());

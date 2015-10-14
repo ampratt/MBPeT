@@ -165,11 +165,11 @@ public class TestSession {
 	}
 	
 	
-	public void updateParamsData(Parameters param) {
-		
-//		removeParameters(param);
-		setParameters(param);
-	}
+//	public void updateParamsData(Parameters param) {
+//		
+////		removeParameters(param);
+//		setParameters(param);
+//	}
 	
 //	public void addParams(Parameters param) {
 //  	  	this.models.add(param);		

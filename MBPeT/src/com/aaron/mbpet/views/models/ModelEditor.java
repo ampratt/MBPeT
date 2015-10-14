@@ -549,7 +549,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	        notification.setHtmlContentAllowed(true);
 	        notification.setStyleName("dark small");	//tray  closable login-help
 	        notification.setPosition(Position.BOTTOM_RIGHT);
-	        notification.setDelayMsec(5000);
+	        notification.setDelayMsec(500);
 	        notification.show(Page.getCurrent());
 		}
 		

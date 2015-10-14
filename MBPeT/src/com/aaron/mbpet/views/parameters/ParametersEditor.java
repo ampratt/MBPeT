@@ -130,7 +130,7 @@ public class ParametersEditor {
 				
 				// add NEW bean object to db through jpa container
 				if (editmode == false && clonemode==false) {
-					
+
 					// 1. add to container
 					parameters.addEntity(beanItem.getBean());	//jpa container	
 
@@ -142,17 +142,19 @@ public class ParametersEditor {
 		        		    "SELECT OBJECT(p) FROM Parameters p WHERE p.ownersession = :ownersession"
 		        		);
 		            queriedParams = (Parameters) query.setParameter("ownersession", currentParams.getOwnersession()).getSingleResult();
-		            System.out.println("the generated id is: " + queriedParams.getId());
+		            Parameters p = parameters.getItem(queriedParams.getId()).getEntity();
+		            System.out.println("the generated id is: " + p.getId());
 		            id = queriedParams.getId();
               	  	
 		            // Option 2. serialize blob to db
 //		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
 		            // 3. update parent Session to link Parameters
-              	  	parentsession.setParameters(queriedParams);
-	            	
+              	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
+              	  	MBPeTMenu.sessions.addEntity(parentsession);
+
 				} else if (editmode == true){
-					
+
 					// 1 UPDATE container
 					parameters.addEntity(beanItem.getBean());
 					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
@@ -177,17 +179,31 @@ public class ParametersEditor {
 		        		    "SELECT OBJECT(p) FROM Parameters p WHERE p.ownersession = :ownersession"
 		        		);
 		            queriedParams = (Parameters) query.setParameter("ownersession", currentParams.getOwnersession()).getSingleResult();
-		            System.out.println("the generated id is: " + queriedParams.getId());
+		            Parameters p = parameters.getItem(queriedParams.getId()).getEntity();
+		            System.out.println("the generated id is: " + p.getId() + " with parent session: " + p.getOwnersession().getId());
 		            id = queriedParams.getId();
               	  	
 		            // Option 2. serialize blob to db
 //		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
-              	  	// 3. update parent Session to link Parameters
-              	  	parentsession.setParameters(queriedParams);
-	            	
+              	  	// 3. update parent Session to link Parameters !AND RECOMMIT SESSION TO CONTAINER!
+              	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
+              	  	MBPeTMenu.sessions.addEntity(parentsession);
 				}
 
+				System.out.println("\n\nALL TEST SESSIONS AND THEIR PARAMS");
+				for (Object o : MBPeTMenu.sessions.getItemIds()) {
+					TestSession s = MBPeTMenu.sessions.getItem(o).getEntity();
+					if (s.getParameters() != null) {
+						System.out.println(s.getId() + " " + s.getParameters().getId());						
+					}
+				}
+				System.out.println("\n\nALL PARAMETERS IN CONTAINER");
+				for (Object o : parameters.getItemIds()) {
+					Parameters p = parameters.getItem(o).getEntity();
+					System.out.println("parameter: " + p.getId() + " -> owner: " + p.getOwnersession());						
+
+				}
             	
 //		            	if (clonemode == true) {
 //		            		confirmNotification(sessions.getItem(id).getEntity().getTitle(), "was created");
@@ -198,11 +214,11 @@ public class ParametersEditor {
 //		            	} else 
  
         		if (editmode==true) {
-	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was edited");	//String.valueOf(currentParams.getId())
+	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters edited");	//String.valueOf(currentParams.getId())
             	} else if (clonemode==true) {
-	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was cloned");	//String.valueOf(currentParams.getId())
+//	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters cloned");	//String.valueOf(currentParams.getId())
             	} else {
-	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was created");	//String.valueOf(currentParams.getId())
+	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters created");	//String.valueOf(currentParams.getId())
             	} 
             
 //			} catch (CommitException e) {
@@ -230,7 +246,7 @@ public class ParametersEditor {
         notification.setHtmlContentAllowed(true);
         notification.setStyleName("dark small");	//tray  closable login-help
         notification.setPosition(Position.BOTTOM_RIGHT);
-        notification.setDelayMsec(5000);
+        notification.setDelayMsec(500);
         notification.show(Page.getCurrent());
 	}
 
