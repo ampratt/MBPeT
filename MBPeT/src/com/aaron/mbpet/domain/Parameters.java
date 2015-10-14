@@ -30,7 +30,7 @@ public class Parameters {
     @JoinColumn(name = "ownersession", referencedColumnName = "ID")
     private TestSession ownersession;
 
-	@Column(name = "settings_file", columnDefinition="BLOB")	//, columnDefinition="BLOB"
+	@Column(name = "settings_file", columnDefinition="MEDIUMTEXT")	//, columnDefinition="BLOB"
 	private String settings_file;
 	
 	@Column(name = "ip")

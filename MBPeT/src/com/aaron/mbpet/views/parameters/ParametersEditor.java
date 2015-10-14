@@ -62,12 +62,12 @@ import com.vaadin.ui.Window;
 public class ParametersEditor {
 
 	
-	private JPAContainer<Parameters> parameters;
+	private JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
 	BeanItem<Parameters> beanItem;
 	Parameters currentParams;// = new Parameters();
 	
 	TestSession parentsession;
-	Parameters clone;
+//	Parameters clone;
 	
 	boolean editmode = false;
 	boolean clonemode = false;
@@ -79,10 +79,10 @@ public class ParametersEditor {
 	 */
 	public ParametersEditor(TestSession parentsession) {		//JPAContainer<TestCase> container
 		this.parentsession = parentsession;
-		parameters = MBPeTMenu.parameters;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 
-		currentParams = new Parameters(); 
-		currentParams.setOwnersession(this.parentsession);
+		this.currentParams = new Parameters(); 
+		this.currentParams.setOwnersession(this.parentsession);
+		this.currentParams.setSettings_file("Fill in parameters for Test Session '" + parentsession.getTitle() + "'");
 		this.beanItem = new BeanItem<Parameters>(currentParams);
 
         saveParameters();
@@ -95,8 +95,7 @@ public class ParametersEditor {
 		editmode = true;
 		this.parentsession = parentsession;
 		
-		parameters = MBPeTMenu.parameters;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
-        this.currentParams = parameters.getItem(currentParams.getId()).getEntity();
+        this.currentParams = currentParams; //parameters.getItem(currentParams.getId()).getEntity();
         this.currentParams.setSettings_file(settings);
         this.beanItem = new BeanItem<Parameters>(this.currentParams);
 
@@ -112,13 +111,10 @@ public class ParametersEditor {
 		this.clonemode = true;
 		this.parentsession = parentsession;
 		
-		parameters = MBPeTMenu.parameters;	
-		
-		this.clone = new Parameters();
-		clone.setOwnersession(parentsession);
-		clone.setSettings_file(settings);
-
-		this.beanItem = new BeanItem<Parameters>(clone);
+		this.currentParams = new Parameters();
+		this.currentParams.setOwnersession(parentsession);
+		this.currentParams.setSettings_file(settings);
+        this.beanItem = new BeanItem<Parameters>(this.currentParams);
 
         saveParameters();
 	}
@@ -157,21 +153,22 @@ public class ParametersEditor {
 	            	
 				} else if (editmode == true){
 					
-//              	  	//1 UPDATE parentcase reference
-//					parentsession.updateSessionData(parameters.getItem(currentParams.getId()).getEntity());
-//					System.out.println("Parameters are now: " + currentParams);
-
 					// 1 UPDATE container
 					parameters.addEntity(beanItem.getBean());
-//					System.out.println("Entity is now: " + parameters.getItem(currentParams.getId()).getEntity().getSettings_file());
+					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
+							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
+
+					// 2 UPDATE parentcase reference
+					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
+					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
 
 					// Option 2. serialize blob to db
-					DbUtils.commitUpdateToDb(currentParams.getSettings_file(), currentParams, "settings_file");
+//					DbUtils.commitUpdateToDb(currentParams.getSettings_file(), currentParams, "settings_file");
 
 				} else if (clonemode==true) {
 
 					// 1. add to container
-					parameters.addEntity(beanItem.getBean());	//jpa container	
+					parameters.addEntity(beanItem.getBean());
 					
 	                // 2. retrieving db generated id
 	                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
@@ -179,12 +176,12 @@ public class ParametersEditor {
 		            Query query = em.createQuery(
 		        		    "SELECT OBJECT(p) FROM Parameters p WHERE p.ownersession = :ownersession"
 		        		);
-		            queriedParams = (Parameters) query.setParameter("ownersession", clone.getOwnersession()).getSingleResult();
+		            queriedParams = (Parameters) query.setParameter("ownersession", currentParams.getOwnersession()).getSingleResult();
 		            System.out.println("the generated id is: " + queriedParams.getId());
 		            id = queriedParams.getId();
               	  	
 		            // Option 2. serialize blob to db
-		            DbUtils.commitUpdateToDb(clone.getSettings_file(), queriedParams, "settings_file");
+//		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
               	  	// 3. update parent Session to link Parameters
               	  	parentsession.setParameters(queriedParams);
@@ -197,12 +194,15 @@ public class ParametersEditor {
 //		            		close();
 ////		            		getUI().getNavigator()
 ////	            				.navigateTo(MainView.NAME + "/" + 
-////	            						parentCase.getTitle() + "/" + clone.getTitle());
+////	            						parentCase.getTitle() + "/" + currentParams.getTitle());
 //		            	} else 
  
-        		if (editmode==true ) {
-	        		confirmNotification(String.valueOf(currentParams.getId()), "was edited");
-            		
+        		if (editmode==true) {
+	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was edited");	//String.valueOf(currentParams.getId())
+            	} else if (clonemode==true) {
+	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was cloned");	//String.valueOf(currentParams.getId())
+            	} else {
+	        		confirmNotification(String.valueOf(currentParams.getId()), "Model was created");	//String.valueOf(currentParams.getId())
             	} 
             
 //			} catch (CommitException e) {
@@ -224,7 +224,7 @@ public class ParametersEditor {
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification
-        Notification notification = new Notification(deletedItem, Type.TRAY_NOTIFICATION);
+        Notification notification = new Notification("",Type.TRAY_NOTIFICATION);
         notification
                 .setDescription(message);
         notification.setHtmlContentAllowed(true);

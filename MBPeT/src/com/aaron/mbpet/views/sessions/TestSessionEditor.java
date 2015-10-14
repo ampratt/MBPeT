@@ -305,7 +305,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            id = queriedSession.getId();	// here is the id we need for tree
 				            
 				            // create empty parameters object
-				            new ParametersEditor(new Parameters(), queriedSession, "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'");
+				            new ParametersEditor(queriedSession);
 		        			
 				            // add to tree in right order
 				            if ( tree.hasChildren(parentCase.getId()) ) {
@@ -371,7 +371,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            
 				            // 4 clone parameters
 				            String cloneParams = "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'";
-				            if (!(testsession.getParameters().getSettings_file() == null)) {
+				            if (!(testsession.getParameters().getSettings_file() == null) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
 				            	cloneParams = testsession.getParameters().getSettings_file();
 				            }
 				            System.out.println("\n\n the cloned parameters are:\n" + 

@@ -21,6 +21,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.google.gwt.thirdparty.guava.common.io.Files;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -58,6 +59,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
     
     TestSession currsession;
     Parameters currParameters;
+    JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
     
 	public AceEditorLayout(AceEditor editor, String fileFormat, TestSession currsession) {
 		setSizeFull();
@@ -68,8 +70,8 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
 		this.currsession = currsession;
-		this.currParameters = currsession.getParameters();
-		currParameters.setSettings_file((String) DbUtils.readFromDb(currParameters.getId()));
+		this.currParameters = parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
+//		currParameters.setSettings_file((String) DbUtils.readFromDb(currParameters.getId()));
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
 		addComponent(buildButtons());	
@@ -187,15 +189,15 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
 			String s = editor.getValue();
-			saveToFile(s, testDir);	//+aceOutFileField.getValue());
+//			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			new ParametersEditor(currParameters, currsession, s);
-			currParameters = MBPeTMenu.parameters.getItem(currParameters.getId()).getEntity();
+			currParameters = parameters.getItem(currParameters.getId()).getEntity();
 //			Notification.show(s, Type.WARNING_MESSAGE);
 			
         } else if (event.getButton() == loadButton) {
 			// load file to editor
-        	String settings = (String) DbUtils.readFromDb(currParameters.getId());
-			editor.setValue(settings );	//currParameters.getSettings_file()
+//        	String settings = (String) DbUtils.readFromDb(currParameters.getId());
+			editor.setValue(currParameters.getSettings_file());	//settings currParameters.getSettings_file()
 //			editor.setValue( loadFile(testDir)); //+aceInFileField.getValue()) );
 			
 			// set code style mode to match file type

@@ -165,5 +165,37 @@ public class TestSession {
 	}
 	
 	
+	public void updateParamsData(Parameters param) {
+		
+//		removeParameters(param);
+		setParameters(param);
+	}
+	
+//	public void addParams(Parameters param) {
+//  	  	this.models.add(param);		
+////  	  	setSessions(this.sessions);
+//	}
+	
+//	public void removeParameters(Parameters param) {		
+//		// copy all wanted items to new list and leave behind 'removed' items
+//		List<Model> newList = new ArrayList<Model>();
+//		for (Model m : models) {
+//			if (m.getId() == param.getId()) {
+//				// do nothing
+//			} else {
+//				// add to new list
+//				newList.add(m);
+//				System.out.println("NEW LIST size: " + newList.size());				
+//			}
+//		}
+//		this.models.clear();
+//		System.out.println("MODEL LIST after clear: " + getModels().size());
+//		
+//		setModels(newList);
+//		System.out.println("MODEL LIST after removing: " + getModels().size());
+//		
+//	}
+	
+	
 
 }
