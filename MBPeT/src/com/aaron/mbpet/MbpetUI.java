@@ -1,5 +1,6 @@
 package com.aaron.mbpet;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
 import javax.servlet.annotation.WebServlet;
@@ -73,7 +74,12 @@ public class MbpetUI extends UI {
         getPage().setTitle("MBPeT Demo");
         
         //testing dummy data
-        DemoDataGenerator.create();
+        try {
+			DemoDataGenerator.create();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         
 		//

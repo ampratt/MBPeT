@@ -19,7 +19,8 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
-import com.aaron.mbpet.views.models.ModelTableEditorView;
+import com.aaron.mbpet.views.models.ModelDBuilderWindow;
+import com.aaron.mbpet.views.models.ModelTableAceView;
 import com.aaron.mbpet.views.models.ModelUtils;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.sessions.SessionViewer;
@@ -32,6 +33,8 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
@@ -41,6 +44,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
@@ -95,7 +99,8 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         titleField.addTextChangeListener(new TextChangeListener() {	
 			@Override
 			public void textChange(TextChangeEvent event) {
-				saveButton.setEnabled(true);		
+				saveButton.setEnabled(true);
+				launchDBuilderButton.setEnabled(false);
 			}
 		});
         
@@ -128,12 +133,13 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         saveButton.setEnabled(false);
 	    
 		launchDBuilderButton = new Button("Draw Model", this);
-//		launchDBuilderButton.setIcon(FontAwesome.);
-//		loadButton.addStyleName("colored");	//borderless-
+		launchDBuilderButton.setIcon(FontAwesome.EXTERNAL_LINK);
 		launchDBuilderButton.addStyleName("tiny");
+//		loadButton.addStyleName("colored");	//borderless-
 //		launchDBuilderButton.addStyleName("icon-only");
 		launchDBuilderButton.setDescription("load parameters");
-        
+		launchDBuilderButton.setEnabled(false);
+		
 		h.addComponents(titleField, modeBox, saveButton, launchDBuilderButton);
 		h.setComponentAlignment(titleField, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
@@ -171,7 +177,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		    public void textChange(TextChangeEvent event) {
 //		        Notification.show("Text: " + event.getText());
 		        saveButton.setEnabled(true);
-
+				launchDBuilderButton.setEnabled(false);
 		    }
 		});
 		
@@ -204,15 +210,18 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			}
 			
 			
-			ModelTableEditorView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+			ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
 			toggleEditorFields(true);
-			setPropertyDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
+			setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
 			editor.focus();
+
+			launchDBuilderButton.setEnabled(true);
 
 //	        saveButton.setEnabled(false);
 
         } else if (event.getButton() == launchDBuilderButton) {
         	// open diagram builder window
+//        	UI.getCurrent().addWindow(new ModelDBuilderWindow(currmodel, editor));
         }
 //         else if (event.getButton() == loadButton) {
 //			// load file to editor
@@ -287,7 +296,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 	}
 
 	
-	public void setPropertyDataSource(Model currmodel) {
+	public void setFieldsDataSource(Model currmodel) {
 		this.currmodel = currmodel;
 		
 		binder = new FieldGroup();
@@ -310,7 +319,8 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		titleField.setEnabled(b);
 		modeBox.setEnabled(b);
 		editor.setEnabled(b);	
-		
+		launchDBuilderButton.setEnabled(b);
+
 		titleField.focus();
 	}
 	
@@ -320,7 +330,10 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 
 	public void cloneModel(boolean b) {
 		createNewModel = b;
-		Notification.show("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
+		Notification not = new Notification("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
+		not.setPosition(Position.MIDDLE_RIGHT);
+		not.setStyleName("success");
+		not.show(Page.getCurrent());
 		saveButton.setEnabled(true);
 		saveButton.focus();
 	}

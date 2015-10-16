@@ -1,3 +1,8 @@
+/**
+ * Model Tab of Session view page
+ * @author Aaron
+ *
+ */
 package com.aaron.mbpet.views.models;
 
 import java.util.ArrayList;
@@ -43,7 +48,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-public class ModelTableEditorView extends HorizontalSplitPanel implements Button.ClickListener{
+public class ModelTableAceView extends HorizontalSplitPanel implements Button.ClickListener{
 
     JPAContainer<Model> models;
     TestSession currsession;
@@ -59,6 +64,7 @@ public class ModelTableEditorView extends HorizontalSplitPanel implements Button
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
 	ModelAceEditorLayout editorLayout;
+	ModelDBuilderNOTWINDOW dbuilderLayout;
 //    final TextField aceOutFileField = new TextField();
 //    final TextField aceInFileField = new TextField();
 //    ComboBox modeBox;
@@ -66,7 +72,7 @@ public class ModelTableEditorView extends HorizontalSplitPanel implements Button
     
     
 	
-	public ModelTableEditorView() {	//AceEditor editor TestSession currsession
+	public ModelTableAceView() {	//AceEditor editor TestSession currsession
 		setSizeFull();
 		setSplitPosition(30, Unit.PERCENTAGE);
 //		setSpacing(true);
@@ -184,7 +190,11 @@ public class ModelTableEditorView extends HorizontalSplitPanel implements Button
 					
 					// add model to editor view
 					editorLayout.toggleEditorFields(true);
-					editorLayout.setPropertyDataSource(models.getItem(event.getProperty().getValue()).getEntity());
+					editorLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
+					
+					// add model to dbuilder
+					dbuilderLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
+					
 //					models.getItem(modelsTable.getValue());					
 					setModificationsEnabled(event.getProperty().getValue() != null);
 	        	} else {
@@ -206,21 +216,27 @@ public class ModelTableEditorView extends HorizontalSplitPanel implements Button
 	}
 
 	private Component buildRightSide() {
+		VerticalLayout rightlayout = new VerticalLayout();
+		rightlayout.setSizeFull();
+		
 		editorLayout = new ModelAceEditorLayout(editor, "dot");
 		editorLayout.toggleEditorFields(false);
 		
-		return editorLayout;
+		dbuilderLayout = new ModelDBuilderNOTWINDOW(editor);
+		
+		rightlayout.addComponents(editorLayout, dbuilderLayout);
+		
+		return rightlayout;	// editorLayout;
 	}
 
 
-	
 	public void buttonClick(ClickEvent event) {
         if (event.getButton() == newModelButton) {
         	// enable editing
         	editorLayout.toggleEditorFields(true);
         	
         	editorLayout.createNewModel(true);
-			editorLayout.setPropertyDataSource(new Model());
+			editorLayout.setFieldsDataSource(new Model());
 
         } else if (event.getButton() == cloneButton) {
 //			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
@@ -233,7 +249,7 @@ public class ModelTableEditorView extends HorizontalSplitPanel implements Button
         	m.setParentsession(selected.getParentsession());
         	m.setParentsut(selected.getParentsut());
         	
-			editorLayout.setPropertyDataSource(m);
+			editorLayout.setFieldsDataSource(m);
 			editorLayout.cloneModel(true);
 
         } else if (event.getButton() == deleteButton) {

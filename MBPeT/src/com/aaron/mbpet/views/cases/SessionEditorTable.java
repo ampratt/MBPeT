@@ -1,3 +1,6 @@
+/**
+ * Panel table list of Sessions on SUT home page
+ */
 package com.aaron.mbpet.views.cases;
 
 import com.aaron.mbpet.domain.TestCase;

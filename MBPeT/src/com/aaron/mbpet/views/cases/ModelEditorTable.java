@@ -1,3 +1,6 @@
+/**
+ * Panel table list of Models on SUT home page
+ */
 package com.aaron.mbpet.views.cases;
 
 import org.eclipse.persistence.internal.sessions.factories.SessionsFactory;

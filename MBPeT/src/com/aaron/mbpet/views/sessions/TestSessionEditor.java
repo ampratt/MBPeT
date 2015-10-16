@@ -401,18 +401,20 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 				            
 				            // 4 clone models
 				            EntityManager em2 = Persistence.createEntityManagerFactory("mbpet").createEntityManager();	
-				            Query query2 = em2.createQuery("SELECT OBJECT(t) FROM Model t WHERE t.title = :title");
+				            Query query2 = em2.createQuery("SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
 				            for (Model m : testsession.getModels()) {
 				            	// copy over model values
-				            	Model newmodel = new Model("(clone) " + m.getTitle(), queriedSession, m.getParentsut());
+				            	Model newmodel = new Model(m.getTitle(), queriedSession, m.getParentsut()); //"(clone) " + 
 				            	newmodel.setDotschema(m.getDotschema());
 				            	
 								// add to container
 								models.addEntity(newmodel);	//jpa container	
 								
 				                // retrieve generated id from db
-					            Model queriedModel = (Model) query2.setParameter("title", newmodel.getTitle()).getSingleResult();
-					            System.out.println("the generated id is: " + queriedModel.getId());
+					            query2.setParameter("title", newmodel.getTitle());
+					            query2.setParameter("parentsession", queriedSession);
+					            Model queriedModel = (Model) query2.getSingleResult();
+					            System.out.println("the generated MODEL id is: " + queriedModel.getId() + " of session ->" + queriedSession.getId());
 			        			
 					            // update parent Case to add Session to testCase List<Session> sessions
 					            parentCase.addModel(queriedModel);

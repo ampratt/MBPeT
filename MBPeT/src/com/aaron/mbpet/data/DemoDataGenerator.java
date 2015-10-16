@@ -2,9 +2,14 @@ package com.aaron.mbpet.data;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,11 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
+
+import javassist.bytecode.stackmap.BasicBlock.Catch;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.transaction.*;
+
+import org.apache.commons.io.IOUtils;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.DbUtils;
@@ -47,13 +57,16 @@ public class DemoDataGenerator {
 	final static String[] lnames = { "Smith", "Gordon", "Simpson", "Brown",
 			"Clavel", "Simons", "Verne", "Scott", "Allison", "Gates",
 			"Rowling", "Barks", "Ross", "Schneider", "Tate" };
+
+	
+
 	
 	static JPAContainer<User> persons = JPAContainerFactory.make(User.class,
     		MbpetUI.PERSISTENCE_UNIT);
 	static JPAContainer<TestCase> testcases = JPAContainerFactory.make(TestCase.class,
     		MbpetUI.PERSISTENCE_UNIT);
 
-	public static void create() {
+	public static void create() throws FileNotFoundException {
 
 		EntityManager em = Persistence
 			.createEntityManagerFactory("mbpet")
@@ -66,6 +79,7 @@ public class DemoDataGenerator {
 //			em.createNativeQuery("DROP Testsession").executeUpdate();
 //			em.createNativeQuery("DROP Testcase").executeUpdate();
 //			em.createNativeQuery("DROP User").executeUpdate();
+			em.createNativeQuery("DELETE FROM Parameters").executeUpdate();
 			em.createNativeQuery("DELETE FROM Model").executeUpdate();
 			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
 			em.createNativeQuery("DELETE FROM Testcase").executeUpdate();
@@ -213,17 +227,44 @@ public class DemoDataGenerator {
 		// MODELS
 		em.getTransaction().begin();
 		
-		Model m1 = new Model("passive user", sess1, tcdashboard);
-		Model m2 = new Model("active user", sess1, tcdashboard);
-		Model m3 = new Model("aggressive user", sess1, tcdashboard);
-		Model m4 = new Model("nonexistent user", sess1, tcdashboard);
+		Model m1 = new Model("passive_user", sess1, tcdashboard);
+		Model m2 = new Model("active_user", sess1, tcdashboard);
+		Model m3 = new Model("aggressive_user", sess1, tcdashboard);
+		Model m4 = new Model("nonexistent_user", sess1, tcdashboard);
 
-		Model m21 = new Model("passive user", sess2, tcdashboard);
-		Model m22 = new Model("active user", sess2, tcdashboard);
-		Model m23 = new Model("aggressive user", sess2, tcdashboard);
+		Model m21 = new Model("passive_user", sess2, tcdashboard);
+		Model m22 = new Model("active_user", sess2, tcdashboard);
+		Model m23 = new Model("aggressive_user", sess2, tcdashboard);
 		
-		Model m31 = new Model("nonexistent user", portal1, tcportal);
-		Model m32 = new Model("you get the point user", portal1, tcportal);
+		Model m31 = new Model("nonexistent_user", portal1, tcportal);
+		Model m32 = new Model("you_get_the_point_user", portal1, tcportal);
+		
+//		String dotmodel = "";
+//		try{
+//			dotmodel = FileUtils.readFileToString(
+//					new File("C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/dot-output.dot"), 
+//					Charset.defaultCharset());
+//			System.out.println(dotmodel);
+//		} catch(IOException e) {
+//			
+//		}
+		File file = new File("C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/dot-output.dot");
+		String dotmodel = "";
+//		try {
+//			dotmodel = new Scanner(file).useDelimiter("\\A").next();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		InputStream is = new FileInputStream(file);
+		try {
+			dotmodel = IOUtils.toString(is, Charset.defaultCharset());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		m1.setDotschema(dotmodel);
 		em.persist(m1);
 		em.persist(m2);
 		em.persist(m3);

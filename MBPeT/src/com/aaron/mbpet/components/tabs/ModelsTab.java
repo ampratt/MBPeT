@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
-import com.aaron.mbpet.views.models.ModelTableEditorView;
+import com.aaron.mbpet.views.models.ModelTableAceView;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +52,7 @@ public class ModelsTab extends VerticalLayout {
 //        addComponent(new Label("<h3><i>Graphical editing of models with the DiagramBuilder will happen here</i></h3>", ContentMode.HTML));	//layout.
 
 //		editor = new AceEditor();
-		addComponent(new ModelTableEditorView());
+		addComponent(new ModelTableAceView());
 //		buildDiagramAceCombo();
         //initDiagram();
 		

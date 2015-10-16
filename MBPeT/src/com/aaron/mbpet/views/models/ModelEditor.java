@@ -1,3 +1,6 @@
+/**
+ * Window for Create/Edit Model title ... called from SUT page panel->table
+ */
 package com.aaron.mbpet.views.models;
 
 import java.util.ArrayList;
@@ -467,6 +470,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		        			
 				            // 4 update parent Case to add Session to testCase List<Session> sessions
 		              	  	parentsession.addModel(queriedModel);
+		              	  	sessions.addEntity(parentsession);
 		              	  	parentcase.addModel(queriedModel);
 		              	  	
 			            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentsession.getModels()); // testing purposes
@@ -504,14 +508,17 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		            
 					} catch (CommitException e) {
 						binder.discard();
-						Notification.show("'Title' cannot be empty " + e.getMessage().toString() , Type.ERROR_MESSAGE);
-//						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
+						Notification not = new Notification("'Title' cannot be empty.", Type.ERROR_MESSAGE);
+						not.setStyleName("failure small");
+						not.show(Page.getCurrent());
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
 					} catch (NonUniqueResultException e) {
 						binder.discard();
-						Notification.show("'Title' must be a unique name.\n'" +
-											queriedModel.getTitle() + 
+						Notification not = new Notification("'Title' must be a unique name.\n'",
+											modelBeanItem.getBean().getTitle() +	//queriedModel.getTitle() + 
 											"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
+						not.setStyleName("failure small");
+						not.show(Page.getCurrent());
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
 					}
 					catch (NullPointerException e) {
