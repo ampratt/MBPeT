@@ -81,8 +81,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
 	private JPAContainer<TestSession> sessions;
-	BeanItem<Model> newModelItem;
-	Model model;
+	BeanItem<Model> modelBeanItem;
+	Model currmodel;
 	
 	private ModelForm form;
 	FieldGroup binder;
@@ -103,8 +103,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	public ModelEditor(TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
 		this.models = MBPeTMenu.models;
-		model = new Model(); 
-		this.newModelItem = new BeanItem<Model>(model);
+		currmodel = new Model(); 
+		this.modelBeanItem = new BeanItem<Model>(currmodel);
 		this.parentsession = new TestSession();
 		
 		this.navToCasePage = navToCasePage;
@@ -114,8 +114,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	public ModelEditor(TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
 		this.models = MBPeTMenu.models;
-		model = new Model(); 
-		this.newModelItem = new BeanItem<Model>(model);
+		currmodel = new Model(); 
+		this.modelBeanItem = new BeanItem<Model>(currmodel);
 		
 		init(parentsession, parentcase);
 	}
@@ -128,8 +128,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = false;
         
 		this.models = MBPeTMenu.models;
-        this.model = models.getItem(modelid).getEntity();
-        this.newModelItem = new BeanItem<Model>(model);
+        this.currmodel = models.getItem(modelid).getEntity();
+        this.modelBeanItem = new BeanItem<Model>(currmodel);
 
         init(parentsession, parentcase);
 	}
@@ -143,8 +143,8 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.table = table;
 		
 		this.models = MBPeTMenu.models;
-		this.model = models.getItem(modelid).getEntity();
-		this.newModelItem = new BeanItem<Model>(model);
+		this.currmodel = models.getItem(modelid).getEntity();
+		this.modelBeanItem = new BeanItem<Model>(currmodel);
 		
 		init(parentsession, parentcase);
 	}
@@ -158,15 +158,15 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.table = table;
 		
 		this.models = MBPeTMenu.models;
-		this.model = models.getItem(modelId).getEntity();
+		this.currmodel = models.getItem(modelId).getEntity();
 		
 		this.clone = new Model();
-		clone.setTitle("(clone) " + model.getTitle());
-		clone.setDotschema(model.getDotschema());
-		clone.setParentsession(model.getParentsession());
-		clone.setParentsut(model.getParentsut());
+		clone.setTitle("(clone) " + currmodel.getTitle());
+		clone.setDotschema(currmodel.getDotschema());
+		clone.setParentsession(currmodel.getParentsession());
+		clone.setParentsut(currmodel.getParentsut());
 
-		this.newModelItem = new BeanItem<Model>(clone);
+		this.modelBeanItem = new BeanItem<Model>(clone);
 		
 //		testsession = new TestSession(); 
 //		this.newSessionItem = new BeanItem<TestSession>(testsession);
@@ -198,10 +198,10 @@ public class ModelEditor extends Window implements Button.ClickListener {
     private String buildCaption() {
     	if (clonemode==true) {
     		return String.format("Clone Model: %s", 
-    				model.getTitle());
+    				currmodel.getTitle());
     	} else if (editmode==true) {
     		return String.format("Edit Model: %s", 
-    				model.getTitle());
+    				currmodel.getTitle());
     	} 
 //    	else if (!(parentsession == null) ) {		//.getItemProperty("firstname").getValue()
 //    		return String.format("Add Model to: %s", 
@@ -225,7 +225,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		// set parent Test Case and Session manually without a field
 		if (editmode == false && (clonemode==false)) {
 //			model.setParentsession(parentsession);	
-			model.setParentsut(parentcase);
+			currmodel.setParentsut(parentcase);
 		}
 		
 		// create fields manually
@@ -238,7 +238,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 //		item.addNestedProperty("address.zip");
 //		item.addNestedProperty("address.city");
 		
-		binder.setItemDataSource(newModelItem); 	// link to data model to binder
+		binder.setItemDataSource(modelBeanItem); 	// link to data model to binder
 		
 //		binder.bindMemberFields(form);	// link to layout
 		
@@ -296,7 +296,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 					sessionCombobox.select(itemId);// getIdByIndex(ic.size()-1));
 //					Object capid = sessionCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
 					Item item = ic.getItem(itemId);
-					model.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
+					currmodel.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
 					
 				}
 			}
@@ -305,7 +305,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			sessionCombobox.select(ic.getIdByIndex(ic.size()-1));
 			Object capid = sessionCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
 			Item item = ic.getItem(capid);
-			model.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
+			currmodel.setParentsession(sessions.getItem(item.getItemProperty("id").getValue()).getEntity());			
 		}
 		
 		sessionCombobox.addValueChangeListener(new ValueChangeListener() {
@@ -322,7 +322,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 				System.out.println("sessionCombobox prop id(session): " + item.getItemProperty("id").getValue().toString());
 				parentsession = sessions.getItem(item.getItemProperty("id").getValue()).getEntity();
 				System.out.println(parentsession.getTitle());	// setValue(parentsession);
-				model.setParentsession(parentsession);	
+				currmodel.setParentsession(parentsession);	
 			}
 		});
 		
@@ -382,7 +382,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							binder.commit();
 							
 							// add to container
-							models.addEntity(newModelItem.getBean());	//jpa container	
+							models.addEntity(modelBeanItem.getBean());	//jpa container	
 							
 			                // add created item to tree (after retrieving db generated id)
 			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
@@ -391,7 +391,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title"
 				        		);
 		//		            query.setParameter("title", newsession.getTitle());
-				            queriedModel = (Model) query.setParameter("title", model.getTitle()).getSingleResult();
+				            queriedModel = (Model) query.setParameter("title", currmodel.getTitle()).getSingleResult();
 				            System.out.println("the generated id is: " + queriedModel.getId());
 				            Object id = queriedModel.getId();	// here is the id we need for tree
 				            		        			
@@ -433,15 +433,15 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		              	  	//1 UPDATE parent Case and Session reference
 //							parentCase.removeSession(sessions.getItem(testsession.getId()).getEntity());
 //							parentCase.addSession(sessions.getItem(testsession.getId()).getEntity());
-							parentsession.updateModelData(models.getItem(model.getId()).getEntity());
-							parentcase.updateModelData(models.getItem(model.getId()).getEntity());
+							parentsession.updateModelData(models.getItem(currmodel.getId()).getEntity());
+							parentcase.updateModelData(models.getItem(currmodel.getId()).getEntity());
 							
-							System.out.println("Test session is now: " + model.getTitle());
+							System.out.println("Test session is now: " + currmodel.getTitle());
 //							System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
 
 							// 2 UPDATE container
-							models.addEntity(newModelItem.getBean());
-							System.out.println("Entity is now: " + models.getItem(model.getId()).getEntity().getTitle());
+							models.addEntity(modelBeanItem.getBean());
+							System.out.println("Entity is now: " + models.getItem(currmodel.getId()).getEntity().getTitle());
 
 							// 3 UPDATE tree title
 //		              	  	tree.setItemCaption(model.getId(), models.getItem(model.getId()).getEntity().getTitle());
@@ -454,7 +454,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							binder.commit();
 							
 							// 2 add to container
-							models.addEntity(newModelItem.getBean());	//jpa container	
+							models.addEntity(modelBeanItem.getBean());	//jpa container	
 							
 			                // 3 retrieve generated id from db
 			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
@@ -488,18 +488,18 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	            			
 	            		} else if ( navToCasePage==true && editmode==false ) {
 		            		// UPDATE table title
-		            		table.select(model.getId());
-		            		confirmNotification(model.getTitle(), "was created");
+		            		table.select(currmodel.getId());
+		            		confirmNotification(currmodel.getTitle(), "was created");
 		            		close();
 		            	
 		            	} else if ( navToCasePage==true && editmode==true ) {
-		            		confirmNotification(model.getTitle(), "was edited");
+		            		confirmNotification(currmodel.getTitle(), "was edited");
 		            		close();
 		            		
 		            	} else {
 		            		getUI().getNavigator()
 		            			.navigateTo(MainView.NAME + "/" + 
-		            				parentsession.getTitle() + "/" + model.getTitle());		//sessions.getItem(id).getEntity()		            		
+		            				parentsession.getTitle() + "/" + currmodel.getTitle());		//sessions.getItem(id).getEntity()		            		
 		            	}
 		            
 					} catch (CommitException e) {

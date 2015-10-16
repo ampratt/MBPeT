@@ -80,8 +80,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     // Actions for the context menu
     private static final Action ACTION_ADD = new Action("Add TestSession");
     private static final Action ACTION_EDIT = new Action("Edit");
+    private static final Action ACTION_CLONE = new Action("Clone");
     private static final Action ACTION_DELETE = new Action("Delete");
-    private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_DELETE };
+    private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_CLONE, ACTION_DELETE };
 //    String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
     
     
@@ -514,6 +515,22 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     	        UI.getCurrent().addWindow(new TestCaseEditor(menutree, target));	//testcases.getItem(parent).getEntity()        		
         	}
         	
+        } else if (action == ACTION_CLONE) {
+        	Object parent = target;
+        	// if wasn't a parent item select, move up to the parent
+        	if (menutree.isRoot(target)) {
+//        		parent = menutree.getParent(target);
+        	} else {      		
+        		TestSession session = sessions.getItem(target).getEntity();	//.getBean();
+        		UI.getCurrent().addWindow(new TestSessionEditor(
+        				menutree, 
+        				target, //session.getId(), 
+        				session.getParentcase(),
+//        				sessionsTable,
+        				true)
+        				);        		
+        	}
+ 
         } else if (action == ACTION_DELETE) {
 //            final Object parent = menutree.getParent(target);
         	Object parentid = null;

@@ -40,12 +40,16 @@ public class ConfirmDeleteModelWindow extends Window {
 	JPAContainer<TestSession> sessions;
 	JPAContainer<Model> models;
 	
-	public ConfirmDeleteModelWindow(Model model, String message) {
+	boolean navtohomepage = false;
+	
+	public ConfirmDeleteModelWindow(Model model, String message, boolean navtohomepage) {
         super("Heads Up!");
         center();
         setResizable(false);
         setClosable(false);
         setModal(true);
+        
+        this.navtohomepage = navtohomepage;
 
         this.testcases = MBPeTMenu.getTestcases();
         this.sessions = MBPeTMenu.getTestsessions();
@@ -90,10 +94,9 @@ public class ConfirmDeleteModelWindow extends Window {
 	                
 //	                menutree.select(parentid);
 	                //navigate to parent
-	                getUI()
-	    	            .getNavigator()
-	    	            	.navigateTo(MainView.NAME + "/" + 
-	    	            			parentcase.getTitle());
+	                if (navtohomepage == true) {
+	                	getUI().getNavigator().navigateTo(MainView.NAME + "/" + parentcase.getTitle());	                	
+	                }
 	                confirmNotification(deleteditem);
 		        	
 		        	close(); 		        		

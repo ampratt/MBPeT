@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
+import com.aaron.mbpet.views.models.ModelTableEditorView;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,28 +38,24 @@ import com.vaadin.ui.VerticalLayout;
 //@StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
 public class ModelsTab extends VerticalLayout {
 
-//    final VerticalLayout layout = new VerticalLayout();
 //    private DiagramBuilder diagramBuilder = new DiagramBuilder();
 //    Button stateButton;
 //    List<String> nName = new ArrayList<String>();
+	
 	private AceEditor editor;
 	
-	public ModelsTab() {
-    	// set main content
-        //final VerticalLayout layout = new VerticalLayout();
-        //layout.setMargin(true);
-        //layout.setSpacing(true);
-        //setContent(layout);
-		
-//		setSizeFull();
+	public ModelsTab() {		
+		setSizeFull();
 		setMargin(true);
 		setSpacing(true);
 
-        addComponent(new Label("<h3><i>Graphical editing of models with the DiagramBuilder will happen here</i></h3>", ContentMode.HTML));	//layout.
+//        addComponent(new Label("<h3><i>Graphical editing of models with the DiagramBuilder will happen here</i></h3>", ContentMode.HTML));	//layout.
 
+//		editor = new AceEditor();
+		addComponent(new ModelTableEditorView());
+//		buildDiagramAceCombo();
         //initDiagram();
-		buildDiagramAceCombo();
-
+		
 	}
 	
 	private void buildDiagramAceCombo(){

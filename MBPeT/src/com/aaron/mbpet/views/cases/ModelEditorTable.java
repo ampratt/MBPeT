@@ -279,7 +279,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
         } else if (event.getButton() == deleteButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
 	        UI.getCurrent().addWindow(new ConfirmDeleteModelWindow(model, 
-	        		"Are you sure you want to delete <b>" + model.getTitle() + "</b> ?<br /><br />"));
+	        		"Are you sure you want to delete <b>" + model.getTitle() + "</b> ?<br /><br />", true));
 
         }
     }

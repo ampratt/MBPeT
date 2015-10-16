@@ -15,66 +15,68 @@ import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 
-import com.aaron.mbpet.domain.DbUtils;
+import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.models.ModelTableEditorView;
+import com.aaron.mbpet.views.models.ModelUtils;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.sessions.SessionViewer;
-import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 
-@SuppressWarnings("serial")
-public class AceEditorLayout extends VerticalLayout implements Button.ClickListener {
+public class ModelAceEditorLayout extends VerticalLayout implements Button.ClickListener{
 
 	AceEditor editor;// = new AceEditor();
+	TextField titleField;
 	ComboBox modeBox;
 	Button saveButton;
-	Button loadButton;
+	Button launchDBuilderButton;
 //    final TextField aceOutFileField = new TextField();
 //    final TextField aceInFileField = new TextField();
     
     String fileFormat = "dot";
     List<String> modeList;
-    String[] modes = {"dot", "python", "gv"};
+    String[] modes = {"dot", "gv", "python"};
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
     
+    JPAContainer<Model> models = MBPeTMenu.models;
+    Model currmodel;
     TestSession currsession;
-    Parameters currParameters;
-    JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
-    
-	public AceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
+	FieldGroup binder;
+	BeanItem<Model> modelBeanItem;
+	
+	private boolean createNewModel = false;
+
+	public ModelAceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
 		setSizeFull();
-		setMargin(new MarginInfo(false, true, true, true));
+		setMargin(new MarginInfo(false, true, false, true));
 //		setMargin(true);
 //		setSpacing(true);
 		
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
 		this.currsession = SessionViewer.currsession;
-		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
-		System.out.println("Current parameters from session is ->" + currsession.getParameters().getId() +
-							" - owned by session ->" + currsession.getId() + "-" + currsession.getTitle());
-//		currParameters.setSettings_file((String) DbUtils.readFromDb(currParameters.getId()));
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
 		addComponent(buildButtons());	
@@ -83,11 +85,22 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 
 	private Component buildButtons() {
         // Horizontal Layout
-        HorizontalLayout h = new HorizontalLayout();        
+        HorizontalLayout h = new HorizontalLayout(); 
+        h.setWidth("100%");
         h.setSpacing(true);    
 
+        titleField = new TextField("Title:");
+        titleField.addStyleName("tiny");
+        titleField.setImmediate(true);
+        titleField.addTextChangeListener(new TextChangeListener() {	
+			@Override
+			public void textChange(TextChangeEvent event) {
+				saveButton.setEnabled(true);		
+			}
+		});
+        
         modeList = Arrays.asList(modes);
-        modeBox = new ComboBox("Select source code style", modeList);
+        modeBox = new ComboBox("code style:", modeList);
 //        modeBox.setContainerDataSource(modes);
 //        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
         modeBox.addStyleName("tiny");
@@ -103,41 +116,31 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
                 setEditorMode(event.getProperty().getValue().toString());
             }
         });
-
-//		aceOutFileField.setCaption("Give file name");
-//		aceOutFileField.setWidth("20em");
-//        aceOutFileField.setInputPrompt("settings.py");	//("C:/dev/output/ace-editor-output.dot");
-//        aceOutFileField.setValue("settings.py");
-//        h.addComponent(aceOutFileField);
-	
-//		aceInFileField.setCaption("Give file name");
-//		aceInFileField.setWidth("20em");
-//		aceInFileField.setInputPrompt("settings.py");	//("C:/dev/output/ace-editor-output.dot");
-//		aceInFileField.setValue("settings.py");
-//		h.addComponent(aceInFileField);
         
         saveButton = new Button("Save", this);
         saveButton.setIcon(FontAwesome.SAVE);
-        saveButton.addStyleName("borderless-colored");	//borderless-
-//        saveButton.addStyleName("small");
-        saveButton.addStyleName("icon-only");
-//        saveButton.addStyleName("primary");
+//        saveButton.addStyleName("borderless-colored");	//borderless-
+        saveButton.addStyleName("tiny");
+		saveButton.addStyleName("primary");
+//        saveButton.addStyleName("icon-only");
 //        saveButton.removeStyleName("borderless-colored");
-        saveButton.setDescription("save parameters");
+        saveButton.setDescription("save model");
         saveButton.setEnabled(false);
 	    
-		loadButton = new Button("Load", this);
-		loadButton.setIcon(FontAwesome.CLIPBOARD);
+		launchDBuilderButton = new Button("Draw Model", this);
+//		launchDBuilderButton.setIcon(FontAwesome.);
 //		loadButton.addStyleName("colored");	//borderless-
-		loadButton.addStyleName("small");
-		loadButton.addStyleName("icon-only");
-		loadButton.setDescription("load parameters");
+		launchDBuilderButton.addStyleName("tiny");
+//		launchDBuilderButton.addStyleName("icon-only");
+		launchDBuilderButton.setDescription("load parameters");
         
-		h.addComponent(modeBox);
-		h.addComponent(saveButton);
-		h.addComponent(loadButton);
+		h.addComponents(titleField, modeBox, saveButton, launchDBuilderButton);
+		h.setComponentAlignment(titleField, Alignment.BOTTOM_LEFT);
+		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(loadButton, Alignment.BOTTOM_LEFT);
+		h.setComponentAlignment(launchDBuilderButton, Alignment.BOTTOM_RIGHT);
+		h.setExpandRatio(saveButton, 1);
+//		h.setExpandRatio(launchDBuilderButton, 0);
 		
 		return h;
 		
@@ -146,18 +149,12 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 	
 
 	private AceEditor buildAceEditor() {
-		// Ace Editor
-		if (currParameters.getSettings_file() == null) {
-			editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
-		} else {
-			editor.setValue(currParameters.getSettings_file());
-		}
 			// use static hosted files for theme, mode, worker
 //			editor.setThemePath("/static/ace");
 //			editor.setModePath("/static/ace");
 //			editor.setWorkerPath("/static/ace");
 		editor.setWidth("100%");
-		editor.setHeight("400px");
+		editor.setHeight("425px");
 		editor.setReadOnly(false); 
 		setEditorMode(fileFormat);
 //		editor.setMode(AceMode.python);
@@ -173,7 +170,6 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		    @Override
 		    public void textChange(TextChangeEvent event) {
 //		        Notification.show("Text: " + event.getText());
-//		    	saveButton.addStyleName("borderless-colored");
 		        saveButton.setEnabled(true);
 
 		    }
@@ -198,23 +194,37 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
         if (event.getButton() == saveButton) {
 			String s = editor.getValue();
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
-			new ParametersEditor(currParameters, currsession, s);
-			currParameters = parameters.getItem(currParameters.getId()).getEntity();
-	        saveButton.setEnabled(false);
+			
+			Model editedmodel = null;
+			if ( createNewModel == true ) {
+				editedmodel = ModelUtils.createNewModel(currmodel, currsession, binder); //currmodel.getParentsession(),
+				createNewModel = false;
+			} else {
+				editedmodel = ModelUtils.editModel(currmodel, currsession, binder); //currmodel.getParentsession(),				
+			}
+			
+			
+			ModelTableEditorView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+			toggleEditorFields(true);
+			setPropertyDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
+			editor.focus();
 
-//			Notification.show(s, Type.WARNING_MESSAGE);
-			
-        } else if (event.getButton() == loadButton) {
-			// load file to editor
-//        	String settings = (String) DbUtils.readFromDb(currParameters.getId());
-			editor.setValue(currParameters.getSettings_file());	//settings currParameters.getSettings_file()
-//			editor.setValue( loadFile(testDir)); //+aceInFileField.getValue()) );
-			
-			// set code style mode to match file type
-//			setEditorMode(Files.getFileExtension(modeBox.getValue().toString()));
-//			String extension = Files.getFileExtension(aceInFileField.getValue());	//FilenameUtils.getExtension(filename);
-//			setEditorMode(Files.getFileExtension(aceInFileField.getValue()));
+//	        saveButton.setEnabled(false);
+
+        } else if (event.getButton() == launchDBuilderButton) {
+        	// open diagram builder window
         }
+//         else if (event.getButton() == loadButton) {
+//			// load file to editor
+////        	String settings = (String) DbUtils.readFromDb(currParameters.getId());
+//			editor.setValue(currParameters.getSettings_file());	//settings currParameters.getSettings_file()
+////			editor.setValue( loadFile(testDir)); //+aceInFileField.getValue()) );
+//			
+//			// set code style mode to match file type
+////			setEditorMode(Files.getFileExtension(modeBox.getValue().toString()));
+////			String extension = Files.getFileExtension(aceInFileField.getValue());	//FilenameUtils.getExtension(filename);
+////			setEditorMode(Files.getFileExtension(aceInFileField.getValue()));
+//        }
 
     }
 
@@ -235,6 +245,7 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
         //show confirmation to user
         Notification.show("dot file was saved at: " + fileName, Notification.Type.TRAY_NOTIFICATION);;
 	}
+	
 	
 	public void setEditorMode(String mode) {
 //		String file = filename.replace("C:/", "");
@@ -275,5 +286,43 @@ public class AceEditorLayout extends VerticalLayout implements Button.ClickListe
 		return input;
 	}
 
+	
+	public void setPropertyDataSource(Model currmodel) {
+		this.currmodel = currmodel;
+		
+		binder = new FieldGroup();
+		modelBeanItem = new BeanItem<Model>(currmodel);		// takes item as argument
+		binder.setItemDataSource(modelBeanItem);
+		binder.bind(titleField, "title");
+		binder.bind(editor, "dotschema");
+		
+		titleField.setNullRepresentation("");
+		
+//		titleField.setValue(currmodel.getTitle());
+//		editor.setValue(currmodel.getDotschema());
+		
+		saveButton.setEnabled(false);
+//		titleField.setPropertyDataSource(this.currmodel.getTitle());
+//		editor.setPropertyDataSource(this.currmodel.getDotschema());
+	}
+	
+	public void toggleEditorFields(boolean b) {
+		titleField.setEnabled(b);
+		modeBox.setEnabled(b);
+		editor.setEnabled(b);	
+		
+		titleField.focus();
+	}
+	
+	public void createNewModel(boolean b) {
+		createNewModel = b;
+	}
+
+	public void cloneModel(boolean b) {
+		createNewModel = b;
+		Notification.show("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
+		saveButton.setEnabled(true);
+		saveButton.focus();
+	}
 
 }

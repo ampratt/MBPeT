@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
@@ -30,12 +32,21 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
-public class ConfirmDeleteMenuItemWindow extends Window {
+public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickListener {
 	private static final long serialVersionUID = 5408254248079275265L;
 
 	Tree menutree;
+	Button delete;
+	Button cancel;
+	
 	JPAContainer<TestCase> testcases;
 	JPAContainer<TestSession> sessions;
+	JPAContainer<Model> models;
+	JPAContainer<Parameters> parameters;
+	
+	private Object target;
+	private String message;
+
 	
 	public ConfirmDeleteMenuItemWindow(Tree tree, Object targetId, String message) {
         super("Heads Up!");
@@ -47,10 +58,17 @@ public class ConfirmDeleteMenuItemWindow extends Window {
         this.menutree = tree;
         this.testcases = MBPeTMenu.getTestcases();
         this.sessions = MBPeTMenu.getTestsessions();
-        setContent(buildWindowContent(tree, targetId, message));
+        this.models = MBPeTMenu.models;
+        this.parameters = MBPeTMenu.parameters;
+        
+        this.target = targetId; 
+        this.message = message;
+        
+        setContent(buildWindowContent(tree));
 	}
 	
-        private Component buildWindowContent(final Tree tree, final Object target, String message) {
+	
+        private Component buildWindowContent(final Tree tree) {	//, final Object target, String message
         	// Some basic content for the window
             VerticalLayout vc = new VerticalLayout();
             vc.addComponent(new Label(message, ContentMode.HTML));
@@ -59,103 +77,15 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             
             
             // confirm deletion from menu
-            Button delete = new Button("Delete");
+            delete = new Button("Delete", this);
             delete.addStyleName("danger");
 //            submit.setClickShortcut(KeyCode.ENTER);
-            delete.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = -7778774800816407833L;
-
-				public void buttonClick(ClickEvent event) {
-		        	Object parentid = null;
-
-		        	// delete session. session items are never root
-		        	if (!menutree.isRoot(target)) {		       	        
-		        		parentid = menutree.getParent(target);
-		        		TestCase parentcase = testcases.getItem(parentid).getEntity();
-		        		System.out.println("\nparent OBJECT is: " + parentid);
-		        		System.out.println("\nparent TestCase is: " + parentcase);
-		        		
-		        		// for notification
-		        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
-		        		
-		                // 1. remove item from tree
-		                menutree.removeItem(target);
-		                                            
-		                // 2. remove child from Case's list of Sessions
-		                parentcase.removeSession(sessions.getItem(target).getEntity());
-		                
-		                // 3. delete session from container
-		                sessions.removeItem(target);
-		                
-		                menutree.select(parentid);
-		                //navigate to parent
-		                getUI()
-		    	            .getNavigator()
-		    	            	.navigateTo(MainView.NAME + "/" + 
-		    	            			parentcase.getTitle());
-		                confirmNotification(deleteditem);
-		        	
-		        	} else {
-		        		TestCase testcase = testcases.getItem(target).getEntity();
-		        		// 1) delete any child sessions first 
-		        		if (menutree.hasChildren(target)) {
-		        			for (int i=0; i<testcase.getSessions().size(); i++) { 		//for (TestSession s : testcase.getSessions()) {
-				                // get session to remove
-		        				TestSession s = testcase.getSessions().get(i);
-		        				// remove item from tree
-				                menutree.removeItem(s.getId());
-				                                            
-				                // remove child from Case's list of Sessions
-				                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
-				                
-				                // delete session from container
-				                sessions.removeItem(s.getId());
-		        			}
-//		        			List<Object> children = new ArrayList<>(menutree.getChildren(target));
-////                		Collection children = tree.getChildren(target);
-//		        			for (int i=0; i<children.size(); i++) {	//for (Object child : children) {
-//		        				menutree.removeItem(children.get(i));
-			
-		        		}
-		        		// for notification
-		        		String deleteditem = testcases.getItem(target).getEntity().getTitle();
-		        		
-		        		// 2) delete test case itself
-		        		
-		                // 2.1 remove item from tree
-		                menutree.removeItem(target);
-		                                            
-		                // 2.2 remove test case from user's list of cases?
-		                MainView.sessionUser.removeCase(testcases.getItem(target).getEntity());
-		                
-		                // 2.3 delete TestCase from container
-		                testcases.removeItem(target);
-	        		
-		        		// navigate to landing page
-	                	getUI()
-	    	            	.getNavigator()
-	    	            		.navigateTo(MainView.NAME + "/" + "landingPage");
-		                confirmNotification(deleteditem);
-		        	}		        	
-		        	close(); 		        		
-                }
-            });
             
             
             // cancel changes and close window
-            Button cancel = new Button("Cancel");
+            cancel = new Button("Cancel");
 //            addStyleName("danger");
-            cancel.addClickListener(new ClickListener() {
-                /**
-				 * 
-				 */
-				private static final long serialVersionUID = -53528761196259133L;
 
-				public void buttonClick(ClickEvent event) {
-                    close(); // Close the sub-window
-                }
-
-            });
 
             HorizontalLayout buttons = new HorizontalLayout();
             buttons.setWidth("100%");
@@ -169,6 +99,99 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             return vc;
         }     
         
+        
+        public void buttonClick(ClickEvent event) {
+        	if (event.getButton() == delete) {
+        		
+	        	Object parentid = null;
+
+	        	// delete session. session items are never root
+	        	if (!menutree.isRoot(target)) {		       	        
+	        		parentid = menutree.getParent(target);
+	        		TestCase parentcase = testcases.getItem(parentid).getEntity();
+	        		System.out.println("\nparent OBJECT is: " + parentid);
+	        		System.out.println("\nparent TestCase is: " + parentcase);
+	        		
+	        		// for notification
+	        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
+	        		
+        		
+	        		
+	                // 1. remove item from tree
+	                menutree.removeItem(target);
+
+	                // pre 1. delete child models and parameters
+	                TestSession currsession = sessions.getItem(target).getEntity();
+	                for (Model m : currsession.getModels()) {
+	                	models.removeItem(m.getId());
+	                }
+	                parameters.removeItem(currsession.getParameters().getId());
+	                                            
+	                // 2. remove child from Case's list of Sessions
+	                parentcase.removeSession(sessions.getItem(target).getEntity());
+	                
+	                // 3. delete session from container
+	                sessions.removeItem(target);
+	                
+	                menutree.select(parentid);
+	                
+	                //navigate to parent
+	                getUI()
+	    	            .getNavigator()
+	    	            	.navigateTo(MainView.NAME + "/" + 
+	    	            			parentcase.getTitle());
+	                
+	                confirmNotification(deleteditem);
+	        	
+	        	} else {
+	        		TestCase testcase = testcases.getItem(target).getEntity();
+	        		// 1) delete any child sessions first 
+	        		if (menutree.hasChildren(target)) {
+	        			for (int i=0; i<testcase.getSessions().size(); i++) { 		//for (TestSession s : testcase.getSessions()) {
+			                // get session to remove
+	        				TestSession s = testcase.getSessions().get(i);
+	        				// remove item from tree
+			                menutree.removeItem(s.getId());
+			                                            
+			                // remove child from Case's list of Sessions
+			                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
+			                
+			                // delete session from container
+			                sessions.removeItem(s.getId());
+	        			}
+//	        			List<Object> children = new ArrayList<>(menutree.getChildren(target));
+////            		Collection children = tree.getChildren(target);
+//	        			for (int i=0; i<children.size(); i++) {	//for (Object child : children) {
+//	        				menutree.removeItem(children.get(i));
+		
+	        		}
+	        		// for notification
+	        		String deleteditem = testcases.getItem(target).getEntity().getTitle();
+	        		
+	        		// 2) delete test case itself
+	        		
+	                // 2.1 remove item from tree
+	                menutree.removeItem(target);
+	                                            
+	                // 2.2 remove test case from user's list of cases?
+	                MainView.sessionUser.removeCase(testcases.getItem(target).getEntity());
+	                
+	                // 2.3 delete TestCase from container
+	                testcases.removeItem(target);
+        		
+	        		// navigate to landing page
+                	getUI()
+    	            	.getNavigator()
+    	            		.navigateTo(MainView.NAME + "/" + "landingPage");
+	                confirmNotification(deleteditem);
+	        	}		        	
+	        	close();
+	        	
+        	} else if (event.getButton() == delete) {
+                close(); // Close the sub-window
+        	}
+        }
+        
     	private void confirmNotification(String deletedItem) {
             // welcome notification
             Notification notification = new Notification(deletedItem);
@@ -177,7 +200,7 @@ public class ConfirmDeleteMenuItemWindow extends Window {
             notification.setHtmlContentAllowed(true);
             notification.setStyleName("tray dark small closable login-help");
             notification.setPosition(Position.BOTTOM_RIGHT);
-            notification.setDelayMsec(10000);
+            notification.setDelayMsec(500);
             notification.show(Page.getCurrent());
     	}
 

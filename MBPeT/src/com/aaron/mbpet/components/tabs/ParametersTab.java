@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.aceeditor.AceEditor;
 
-import com.aaron.mbpet.components.aceeditor.AceEditorLayout;
+import com.aaron.mbpet.components.aceeditor.ParametersAceEditorLayout;
 import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
@@ -60,7 +60,7 @@ public class ParametersTab extends VerticalLayout {
 //	    addComponent(new Label("<h3><i>Edit test parameters</i></h3>", ContentMode.HTML));	//layout.
 		
 		editor = new AceEditor();
-		addComponent(new AceEditorLayout(editor, "python"));		//currsession
+		addComponent(new ParametersAceEditorLayout(editor, "python"));		//currsession
 //		editor.setValue(newFieldValue)
 		
 //	    addComponent(buildParametersTable());

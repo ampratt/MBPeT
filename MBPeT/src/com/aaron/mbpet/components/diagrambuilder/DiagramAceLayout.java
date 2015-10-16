@@ -72,22 +72,21 @@ public class DiagramAceLayout extends VerticalLayout {
     
     
 	public DiagramAceLayout(AceEditor editor) {
-    	// set main content
-        //setContent(layout);
 		setSizeFull();
 		setMargin(true);
 		setSpacing(true);
 
+		addComponent(new Label("<h3>Diagram Ace Combo example</h3>", ContentMode.HTML));
+
 		// AceEditor
 		editor = new AceEditor();
-		addComponent(new AceEditorLayoutDirectory(editor));
+		initAceLayout(editor);	//addComponent(new AceEditorLayoutDirectory(editor));
 //		initAceLayout(editor);	
 		
 		// Diagram Builder
 		addComponent(new DBuilderLayout());
 //		initDiagramLayout(editor);
 		
-//        addComponent(new Label("<h3><i>Graphical editing of models with the DiagramBuilder will happen here</i></h3>", ContentMode.HTML));	//layout.
 	}
 
 	public DiagramAceLayout(Component... children) {
@@ -100,14 +99,6 @@ public class DiagramAceLayout extends VerticalLayout {
 	 * Ace Editor Components
 	 */
 	private void initAceLayout(final AceEditor editor) {
-		// set main content
-//		layout.setMargin(true);
-//		layout.setSpacing(true);
-////		layout.setSizeFull();
-//		setContent(layout);
-        
-        //layout.
-        addComponent(new Label("<h2>Diagram Ace Combo example</h2>", ContentMode.HTML));
 
         String[] modes = {"dot", "python", "gv"};
         modeList = Arrays.asList(modes);
