@@ -13,6 +13,7 @@ import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
 import com.aaron.mbpet.components.diagrambuilder.DBuilderUtils;
+import com.aaron.mbpet.components.tabs.ModelsTab;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -50,6 +51,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
     Button saveButton;	// = new Button("Save to .dot file");
     Button loadButton;	// = new Button("Load .dot file");
     Button renameNodesButton;	// = new Button("Rename Nodes");
+    Button openAceButton;
 //    Button aceLoaderButton = new Button("Load dot from editor");
     
     List<String> nName = new ArrayList<String>();
@@ -125,7 +127,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
         titleField.addTextChangeListener(new TextChangeListener() {	
 			@Override
 			public void textChange(TextChangeEvent event) {
-				saveButton.setEnabled(true);
+//				saveButton.setEnabled(true);
 			}
 		});
         
@@ -136,7 +138,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
         saveButton.addStyleName("tiny");
         saveButton.addStyleName("primary");
 //        saveButton.setDescription("clone Model");
-        saveButton.setEnabled(false);
+//        saveButton.setEnabled(false);
         
         renameNodesButton = new Button("Rename Nodes", this);
         renameNodesButton.setIcon(FontAwesome.SORT_NUMERIC_ASC);
@@ -152,6 +154,13 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
         resetButton.setDescription("Reset Diagram");
 //        resetDiagramButton.addStyleName("icon-only");
         
+		openAceButton = new Button("Source Code", this);
+		openAceButton.setIcon(FontAwesome.CODE);
+		openAceButton.addStyleName("tiny");
+//		loadButton.addStyleName("colored");	//borderless-
+//		launchDBuilderButton.addStyleName("icon-only");
+		openAceButton.setDescription("Switch to code view");
+		
         loadButton = new Button("Load .dot file", this);
         
 //        HorizontalLayout saveLayout = new HorizontalLayout();
@@ -177,10 +186,11 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 ////        v.setComponentAlignment(saveLayout, Alignment.BOTTOM_RIGHT);
 
         
-        toolbar.addComponents(resetButton, renameNodesButton, saveButton, titleField);
+        toolbar.addComponents(resetButton, renameNodesButton, saveButton, titleField, openAceButton);
       toolbar.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
       toolbar.setComponentAlignment(renameNodesButton, Alignment.BOTTOM_LEFT);
       toolbar.setComponentAlignment(resetButton, Alignment.BOTTOM_LEFT);
+      toolbar.setComponentAlignment(openAceButton, Alignment.BOTTOM_LEFT);
 //        toolbar.addComponent(v);
 //        toolbar.setComponentAlignment(v, Alignment.BOTTOM_RIGHT);
         
@@ -368,7 +378,12 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
                 }
             });
                 
-		} else if (event.getButton() == loadButton) {
+		} else if (event.getButton() == openAceButton) {
+			//TODO SAVE FIRST
+//			saveButton.click();
+//        	ModelsTab.acetab.setFieldsDataSource(currmodel);
+			ModelTableAceView.modelsTable.select(currmodel.getId());
+        	ModelsTab.modelsTabs.setSelectedTab(0);
 //			// call method for parsing .dot data
 //     		try {
 //     			if (diagramBuilder != null) {
@@ -399,7 +414,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 		binder.bind(titleField, "title");
 //		binder.bind(diagramBuilder, "dotschema");
 		
-		saveButton.setEnabled(false);
+//		saveButton.setEnabled(false);
 		titleField.setNullRepresentation("");
 
 
@@ -422,7 +437,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 	}
 	
 	public void toggleEditorFields(boolean b) {
-		saveButton.setEnabled(b);
+//		saveButton.setEnabled(b);
 //		renameNodesButton.setEnabled(b);
 		
 //		titleField.focus();

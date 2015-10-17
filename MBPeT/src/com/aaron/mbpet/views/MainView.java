@@ -185,16 +185,8 @@ public class MainView extends HorizontalLayout implements View {
 
         } else {
         	// navigate to Session page
-//        	try {
     		contentLayout.setContent(new SessionViewer(
     				event.getParameters(), tree));
-        		// update page title
-//        		ContentView.setPageTitle(event.getParameters());
-//        	} catch (RuntimeException e) {
-//        		getUI().getConnectorTracker().markAllConnectorsDirty(); 
-//        		getUI().getConnectorTracker().markAllClientSidesUninitialized(); 
-//        		getUI().getPage().reload();
-//        	}
         }
        	
        	

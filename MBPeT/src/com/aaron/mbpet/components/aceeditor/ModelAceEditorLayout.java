@@ -15,6 +15,7 @@ import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 
+import com.aaron.mbpet.components.tabs.ModelsTab;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
@@ -55,7 +56,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 	TextField titleField;
 	ComboBox modeBox;
 	Button saveButton;
-	Button launchDBuilderButton;
+	Button openDBuilderButton;
 //    final TextField aceOutFileField = new TextField();
 //    final TextField aceInFileField = new TextField();
     
@@ -100,7 +101,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			@Override
 			public void textChange(TextChangeEvent event) {
 				saveButton.setEnabled(true);
-				launchDBuilderButton.setEnabled(false);
+				openDBuilderButton.setEnabled(false);
 			}
 		});
         
@@ -132,19 +133,19 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         saveButton.setDescription("save model");
         saveButton.setEnabled(false);
 	    
-		launchDBuilderButton = new Button("Draw Model", this);
-		launchDBuilderButton.setIcon(FontAwesome.EXTERNAL_LINK);
-		launchDBuilderButton.addStyleName("tiny");
+		openDBuilderButton = new Button("Draw Model", this);
+		openDBuilderButton.setIcon(FontAwesome.EXTERNAL_LINK);
+		openDBuilderButton.addStyleName("tiny");
 //		loadButton.addStyleName("colored");	//borderless-
 //		launchDBuilderButton.addStyleName("icon-only");
-		launchDBuilderButton.setDescription("load parameters");
-		launchDBuilderButton.setEnabled(false);
+		openDBuilderButton.setDescription("Drag and drop builder");
+		openDBuilderButton.setEnabled(false);
 		
-		h.addComponents(titleField, modeBox, saveButton, launchDBuilderButton);
+		h.addComponents(titleField, modeBox, saveButton, openDBuilderButton);
 		h.setComponentAlignment(titleField, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(launchDBuilderButton, Alignment.BOTTOM_RIGHT);
+		h.setComponentAlignment(openDBuilderButton, Alignment.BOTTOM_RIGHT);
 		h.setExpandRatio(saveButton, 1);
 //		h.setExpandRatio(launchDBuilderButton, 0);
 		
@@ -177,7 +178,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		    public void textChange(TextChangeEvent event) {
 //		        Notification.show("Text: " + event.getText());
 		        saveButton.setEnabled(true);
-				launchDBuilderButton.setEnabled(false);
+				openDBuilderButton.setEnabled(false);
 		    }
 		});
 		
@@ -215,11 +216,14 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
 			editor.focus();
 
-			launchDBuilderButton.setEnabled(true);
+			openDBuilderButton.setEnabled(true);
 
 //	        saveButton.setEnabled(false);
 
-        } else if (event.getButton() == launchDBuilderButton) {
+        } else if (event.getButton() == openDBuilderButton) {       	
+        	ModelsTab.diagramtab.setFieldsDataSource(currmodel);
+
+        	ModelsTab.modelsTabs.setSelectedTab(1);
         	// open diagram builder window
 //        	UI.getCurrent().addWindow(new ModelDBuilderWindow(currmodel, editor));
         }
@@ -319,7 +323,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		titleField.setEnabled(b);
 		modeBox.setEnabled(b);
 		editor.setEnabled(b);	
-		launchDBuilderButton.setEnabled(b);
+		openDBuilderButton.setEnabled(b);
 
 		titleField.focus();
 	}

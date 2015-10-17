@@ -1,0 +1,25 @@
+digraph passive_user {
+	// States
+	1	[ coords  20 , 20 ]
+	2	[ coords  120 , 155 ]
+	3	[ coords  205 , 77 ]
+	4	[ coords  305 , 212 ]
+	5	[ coords  405 , 347 ]
+	6	[ coords  490 , 173 ]
+
+	// Transitions
+	1 -> 2 [label = "0.60 / / browse()"];
+	1 -> 2 [label = "0.40 / / search(string)"];
+	2 -> 2 [label = "0.10 / / browse()"];
+	2 -> 3 [label = "0.87 / / get_auction(id)"];
+	2 -> 6 [label = "0.03 / / exit()"];
+	3 -> 2 [label = "0.05 / / browse()"];
+	3 -> 4 [label = "0.75 / / get_bids(id)"];
+	3 -> 6 [label = "0.20 / / exit()"];
+	4 -> 2 [label = "0.20 / / browse()"];
+	4 -> 5 [label = "0.30 / / bid(id,price,username,password)"];
+	4 -> 6 [label = "0.50 / / exit()"];
+	5 -> 2 [label = "0.25 / / browse()"];
+	5 -> 4 [label = "0.45 / / get_bids(id)"];
+	5 -> 6 [label = "0.30 / / exit()"];
+}

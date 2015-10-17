@@ -17,6 +17,7 @@ import org.vaadin.diagrambuilder.Transition;
 import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.aaron.mbpet.components.aceeditor.ModelAceEditorLayout;
 import com.aaron.mbpet.components.diagrambuilder.DBuilderUtils;
+import com.aaron.mbpet.components.tabs.ModelsTab;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
@@ -64,7 +65,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
 	ModelAceEditorLayout editorLayout;
-	ModelDBuilderNOTWINDOW dbuilderLayout;
+//	ModelDBuilderNOTWINDOW dbuilderLayout;
 //    final TextField aceOutFileField = new TextField();
 //    final TextField aceInFileField = new TextField();
 //    ComboBox modeBox;
@@ -72,7 +73,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
     
     
 	
-	public ModelTableAceView() {	//AceEditor editor TestSession currsession
+	public ModelTableAceView(AceEditor editor) {	//AceEditor editor TestSession currsession
 		setSizeFull();
 		setSplitPosition(30, Unit.PERCENTAGE);
 //		setSpacing(true);
@@ -80,7 +81,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		
 		models = MBPeTMenu.models;
 		this.currsession = SessionViewer.currsession;
-		this.editor = new AceEditor(); //= new AceEditor()
+		this.editor = editor;	 //= new AceEditor()
 		
 		setFirstComponent(buildLeftSide());
 		setSecondComponent(buildRightSide());
@@ -193,7 +194,8 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 					editorLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 					// add model to dbuilder
-					dbuilderLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
+//					dbuilderLayout
+					ModelsTab.diagramtab.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 //					models.getItem(modelsTable.getValue());					
 					setModificationsEnabled(event.getProperty().getValue() != null);
@@ -222,9 +224,9 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		editorLayout = new ModelAceEditorLayout(editor, "dot");
 		editorLayout.toggleEditorFields(false);
 		
-		dbuilderLayout = new ModelDBuilderNOTWINDOW(editor);
+//		dbuilderLayout = new ModelDBuilderNOTWINDOW(editor);
 		
-		rightlayout.addComponents(editorLayout, dbuilderLayout);
+		rightlayout.addComponent(editorLayout);
 		
 		return rightlayout;	// editorLayout;
 	}

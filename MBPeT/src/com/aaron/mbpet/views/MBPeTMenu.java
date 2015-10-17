@@ -69,11 +69,13 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //	final static Tree tree = new Tree("Test Cases:");
 	private Tree menutree;
 	static MenuBar userMenu;
+	
 	private JPAContainer<User> persons;
 	private static JPAContainer<TestCase> testcases;
 	public static JPAContainer<TestSession> sessions;
 	public static JPAContainer<Model> models;
 	public static JPAContainer<Parameters> parameters;
+	
 	private User currentuser = MainView.sessionUser;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
@@ -283,22 +285,13 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	        	for (TestCase testcase : currentuser.getCases()) {
 	        		menutree.addItem(testcase.getId());
 	        		menutree.setItemCaption(testcase.getId(), testcase.getTitle());
-
-//	        	}
-	        	
-//	        	for (Object caseid : getTestcases().getItemIds() ) {
-//	        		TestCase testcase = getTestcases().getItem(caseid).getEntity();
-//	        		menutree.addItem(caseid);
-//	        		menutree.setItemCaption(caseid, testcase.getTitle());
 	        		
 	        		// load any child sessions
 	        		System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
 	        		System.out.println("GetSESSIONS: " + testcase.getSessions());
 	        		if ( testcase.getSessions().size() > 0 ){	// matchingsessions.isEmpty() 
 //	            	 menutree.setChildrenAllowed(testcase, false);
-//	             } else {
 	        			// fill the subtree with sessions
-	        			
 	        			// sort session elements
 	        			List<TestSession> caseSessions = testcase.getSessions();
 	        			List<Integer> sortedids = new ArrayList<Integer>(); 
@@ -338,7 +331,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            		
 	            	} else {	// a child (Session) was selected
 	            		// get selected child
-	            		path = sessions.getItem(id).getEntity().getTitle();
+//	            		path = sessions.getItem(id).getEntity().getTitle();
 	            		System.out.println("this is the current ENTITY (SESSION) selection's title: " + sessions.getItem(id).getEntity().getTitle());
 	            		
 	            		// get parent (CASE) for path
@@ -346,7 +339,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
 //						String parent = (String) menutree.getParent(id);
 		            	path = getTestcases().getItem(pid).getEntity().getTitle() + "/" + 
-	            				sessions.getItem(id).getEntity().getTitle();
+	            				sessions.getItem(id).getEntity().getTitle() + "id=" + sessions.getItem(id).getEntity().getId();
 	            	}
 
 					System.out.println("path is : " + path);
@@ -359,104 +352,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			});
 
 	        vc.addComponent(menutree);
-	        
-	        
-	    	/* Add test cases as root items in the tree. */
-//	    	for (int i=0; i<testCases.length; i++) {
-//	    	    String testCase = (String) (testCases[i][0]);
-//	    	    menutree.addItem(testCase);
-//	    	    
-//	    	    if (testCases[i].length == 1) {
-//	    	        // The test case has no instances so make it a leaf.
-//	    	        menutree.setChildrenAllowed(testCase, true);	//false
-//	    	    } else {
-//	    	        // Add children (instances) under the test cases.
-//	    	        for (int j=1; j<testCases[i].length; j++) {
-//	    	            String instance = (String) testCases[i][j];
-//	    	            
-//	    	            // Add the item as a regular item.
-//	    	            menutree.addItem(instance);
-//	    	            
-//	    	            // Set it to be a child.
-//	    	            menutree.setParent(instance, testCase);
-//	    	            
-//	    	            // Make the instance look like leaves.
-//	    	            menutree.setChildrenAllowed(instance, false);
-//	    	        }
-//	
-//	    	        // Expand the subtree.
-//	//	    	        tree.expandItemsRecursively(testCase);
-//	    	    }
-//	    	}
-	    	
-	    	
-	        // Contents from a (prefilled example) hierarchical container:
-	//	        tree.setContainerDataSource(ExampleUtil.getHardwareContainer());
-	 
-	        // Set tree to show the 'name' property as caption for items
-	//	        sample.setItemCaptionPropertyId(ExampleUtil.hw_PROPERTY_NAME);
-	//	        tree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-	 
-	        // Expand whole tree
-	        
-	        
-	        // generate button for all test cases in db
-//	        for (Object id : testcases.getItemIds()) {
-//				TestCase item = testcases.getItem(id).getEntity();
-//		        Button button = new Button(item.getTitle());
-//		        button.setIcon(FontAwesome.ANGLE_RIGHT);
-//		        button.addStyleName("menu-button-left-align");
-//		        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-//		        button.addStyleName(ValoTheme.BUTTON_SMALL); 
-//		        vc.addComponent(button);
-//	        }
-	        
-	        
-//	        vc.addComponent(new Button("select no. 5",	new Button.ClickListener() {
-//				@Override
-//				public void buttonClick(ClickEvent event) {
-//					Object item = testcases.getItem(5).getItemId();
-//					menutree.select(item);
-//					menutree.setChildrenAllowed(item, true);
-//				}
-//			}));
-//	        
-//	        vc.addComponent(new Button("show jpa contents",	new Button.ClickListener() {
-//				@Override
-//				public void buttonClick(ClickEvent event) {
-//
-//					for (final Object id : testcases.getItemIds()) {
-//						TestCase tcase = testcases.getItem(id).getEntity();
-//						System.out.println("TEST CASE no. " + tcase.getId() +
-//											" - " + tcase.getTitle());
-//					}
-//
-//					for (final Object id : menutree.rootItemIds()) {
-////			            tree.expandItemsRecursively(id);
-//						Object item = testcases.getItem(id).getItemId();
-////			        	menutree.setChildrenAllowed(item, true);
-//
-//			        }       
-//				}
-//			}));
-		         
-	        
-
-	        
-	        
-//	        tree.addValueChangeListener(new ValueChangeListener(){
-//	            public void valueChange(ValueChangeEvent event){
-//	            	// get parent and child
-//	            	Object current = event.getProperty();
-//	            	System.out.println("this is the current PROPERTY	 selection: " + event.getProperty().toString());
-//	            	if(!tree.isRoot(event.getProperty())){
-//	            		Object parent = tree.getParent(event.getProperty());
-////		            	System.out.println("Parent is: " + tree.getParent(event.getProperty()).toString());
-//
-//	            	}
-//	            }
-//         }
-//	        );
 	    	
 			return vc;
 		}

@@ -63,9 +63,9 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
         sessions = MBPeTMenu.getTestsessions();
         
 		this.tree = tree;
-		setPageTitle(title);
+		setPageTitle(removeID(title));		//setPageTitle(title);
 		
-		currsession = getTestSessionByTitle();
+		currsession = getTestSessionByTitleID(title); //getTestSessionByTitle();
 	
 		addComponent(buildTopBar());
 
@@ -187,13 +187,41 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return pageTitle.getValue();
 	}
 
+	private static String removeID(String input) {
+//		String title = pageTitle.getValue();
+		String title = "";
+		if (input.contains("/") && input.contains("id=")) {
+			title = input.substring(0, (input.indexOf("=")-2)); 
+		}
+//		if (input.contains("#")) {
+//			title = input.substring((input.indexOf("#")+1), input.length()); 
+//		}
+		System.out.println("the parsed page title is: " + title);
+		
+		return title;
+	}
+	
+	private static TestSession getTestSessionByTitleID(String input) {
+		String parsed = "";
+		if (input.contains("id=")) {
+			parsed = input.substring((input.indexOf("=")+1), input.length()); 
+		}
+		System.out.println("the parsed test session ID is: " + parsed);
+		
+		int id = Integer.parseInt(parsed);
+		currsession = sessions.getItem(id).getEntity();
+		
+        System.out.println("retrieved SESSION fro db is :  - " + currsession.getTitle());
+		
+		return currsession;
+	}
 	
 	private static TestSession getTestSessionByTitle() {
 		String title = pageTitle.getValue();
 		if (title.contains("/")) {
 			title = title.substring((title.indexOf("/")+1), title.length()); 
 		}
-		System.out.println("the parses test case title is: " + title);
+		System.out.println("the parsed test session title is: " + title);
 		
 		// add created item to tree (after retrieving db generated id)
         EntityManager em = Persistence.createEntityManagerFactory("mbpet")
