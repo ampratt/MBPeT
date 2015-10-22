@@ -1,4 +1,4 @@
-package com.aaron.mbpet.views.models;
+package com.aaron.mbpet.services;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
@@ -11,6 +11,7 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.aaron.mbpet.views.models.ModelForm;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -277,6 +278,72 @@ public class ModelUtils {
 	        notification.setPosition(Position.BOTTOM_RIGHT);
 	        notification.setDelayMsec(500);
 	        notification.show(Page.getCurrent());
+		}
+
+		public static String compareTitles(String titleFieldvalue, String editorvalue) {
+
+//			String word = cardArray.get(card);
+			String str = "";
+			boolean match = false;
+			try {
+				String[] lines = editorvalue.split("\n"); 
+				System.out.println("firstline is: " + lines);
+				String newString = "";
+				if (lines[0].contains(titleFieldvalue)){
+				    match = true;
+//				    return editorvalue;
+				    str = editorvalue;
+
+				} 
+//				else {
+//					// replace first line
+//					String[] words = lines[0].split(" ");
+//					words[1] = titleFieldvalue;
+//					for (int i = 0; i < words.length; i++)
+//						newString += words[i] + " ";
+//					
+//					System.out.println(newString);
+//					
+//					// replace entire file
+//					lines[0] = newString;
+//					newString = "";
+//					for (int i=0; i<lines.length; i++) {
+//						newString += lines[i] + "\n";	
+//					}
+////					return newString;
+//					str = newString;
+//					
+//				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				Notification not = new Notification("Heads up!", "Check that your file matches proper .dot format syntax.");
+				not.setStyleName("failure");
+				not.setPosition(Position.MIDDLE_RIGHT);
+				not.show(Page.getCurrent());
+			}
+			
+		if (match == false) {
+			Notification not = new Notification("Heads up!", "the 'Title field' and title in the '.dot file' do not match");
+			not.setStyleName("failure");
+			not.setPosition(Position.MIDDLE_RIGHT);
+			not.show(Page.getCurrent());
+		}
+			return str;
+			
+//			for (String word : editorvalue.split("\n")) {	// " "  \\s+
+//				System.out.println("this line is: " + word);
+//			    if (word.contains(titleFieldvalue)){
+//			        match = true;
+//			        return;
+//			    }
+//			}
+			
+//			if (match == false) {
+//				Notification not = new Notification("Heads up!", "the 'Title field' and title in the '.dot file' do not match");
+//				not.setStyleName("failure");
+//				not.setPosition(Position.MIDDLE_RIGHT);
+//				not.show(Page.getCurrent());
+//			}
+
 		}
 	    
 

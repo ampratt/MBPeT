@@ -13,7 +13,6 @@ import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.tabs.TabLayout;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
@@ -21,6 +20,7 @@ import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.sessions.TestSessionEditor;
+import com.aaron.mbpet.views.tabs.TabLayout;
 import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
 import com.vaadin.addon.jpacontainer.EntityItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -76,6 +76,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
     JPAContainer<TestCase> testcases;
     JPAContainer<TestSession> sessions;
     JPAContainer<Model> models;
+    TestCase currSUT;
 
 	private Button saveButton;
 	private Button stopButton;
@@ -111,9 +112,10 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
         testcases = MBPeTMenu.getTestcases();
         sessions = MBPeTMenu.getTestsessions();
         models = MBPeTMenu.getModels();
+        this.currSUT = getTestCaseByTitleID(title);
         
 		this.tree = tree;
-		setPageTitle(title);
+		setPageTitle(currSUT.getTitle());
 		
 		root.addComponent(buildTopBar());
 
@@ -192,8 +194,8 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
         grid.setSpacing(true);
 
 //        contentPanels.addComponent(buildTestSessions());
-        grid.addComponent(new SessionEditorTable(tree, getTestCaseByTitle()));	//(buildTestSessions());
-        grid.addComponent(new ModelEditorTable(tree, getTestCaseByTitle()));	//(buildTestSessions());
+        grid.addComponent(new SessionEditorTable(tree, currSUT));	//getTestCaseByTitle() (buildTestSessions());
+        grid.addComponent(new ModelEditorTable(tree, currSUT));	//getTestCaseByTitle() (buildTestSessions());
         
 //        grid.addComponent(buildModels());
 
@@ -380,7 +382,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 	public void buttonClick(ClickEvent event) {
         if (event.getButton() == newSessionButton) {
 	        // open window to create item
-	        UI.getCurrent().addWindow(new TestSessionEditor(tree, getTestCaseByTitle() ));	//testcases.getItem(parent).getEntity()
+	        UI.getCurrent().addWindow(new TestSessionEditor(tree, currSUT, true));	//getTestCaseByTitle() testcases.getItem(parent).getEntity()
 
         } else if (event.getButton() == editButton) {
 			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
@@ -420,7 +422,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 	
     private void setFilterByTestCase() {
     	sessions.removeAllContainerFilters();
-    	Equal casefilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
+    	Equal casefilter = new Equal("parentcase", currSUT);//  (getTestCaseByTitle()	"parentcase", getTestCaseByTitle(), true, false);
     	
     	sessions.addContainerFilter(casefilter);
     }
@@ -435,6 +437,22 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
     }
    
 
+	private TestCase getTestCaseByTitleID(String input) {
+		String parsed = "";
+		if (input.contains("sut=")) {
+			parsed = input.substring((input.indexOf("=")+1), input.length()); 
+			System.out.println("the parsed SUT ID is: " + parsed);
+			
+			int id = Integer.parseInt(parsed);
+			currSUT = testcases.getItem(id).getEntity();
+			
+	        System.out.println("retrieved SESSION fro db is :  - " + currSUT.getTitle());
+		}
+		
+		return currSUT;
+	}
+	
+	
 	private TestCase getTestCaseByTitle() {
 		String title = pageTitle.getValue();
 		if (title.contains("/")) {

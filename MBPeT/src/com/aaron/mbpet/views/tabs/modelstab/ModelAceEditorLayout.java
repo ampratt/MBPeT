@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.aceeditor;
+package com.aaron.mbpet.views.tabs.modelstab;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,14 +15,12 @@ import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 
-import com.aaron.mbpet.components.tabs.ModelsTab;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.models.ModelDBuilderWindow;
-import com.aaron.mbpet.views.models.ModelTableAceView;
-import com.aaron.mbpet.views.models.ModelUtils;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -44,6 +42,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -53,6 +52,8 @@ import com.vaadin.ui.Notification.Type;
 public class ModelAceEditorLayout extends VerticalLayout implements Button.ClickListener{
 
 	AceEditor editor;// = new AceEditor();
+
+	TabSheet modelsTabs;
 	TextField titleField;
 	ComboBox modeBox;
 	Button saveButton;
@@ -73,12 +74,13 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 	
 	private boolean createNewModel = false;
 
-	public ModelAceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
+	public ModelAceEditorLayout(AceEditor editor, String fileFormat, TabSheet modelsTabs) {	// TestSession currsession
 		setSizeFull();
 		setMargin(new MarginInfo(false, true, false, true));
 //		setMargin(true);
 //		setSpacing(true);
 		
+		this.modelsTabs = modelsTabs;
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
 		this.currsession = SessionViewer.currsession;
@@ -129,16 +131,15 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         saveButton.addStyleName("tiny");
 		saveButton.addStyleName("primary");
 //        saveButton.addStyleName("icon-only");
-//        saveButton.removeStyleName("borderless-colored");
         saveButton.setDescription("save model");
         saveButton.setEnabled(false);
 	    
 		openDBuilderButton = new Button("Draw Model", this);
 		openDBuilderButton.setIcon(FontAwesome.EXTERNAL_LINK);
+//		openDBuilderButton.addStyleName("borderless");
 		openDBuilderButton.addStyleName("tiny");
-//		loadButton.addStyleName("colored");	//borderless-
 //		launchDBuilderButton.addStyleName("icon-only");
-		openDBuilderButton.setDescription("Drag and drop builder");
+		openDBuilderButton.setDescription("Switch to drag and drop builder");
 		openDBuilderButton.setEnabled(false);
 		
 		h.addComponents(titleField, modeBox, saveButton, openDBuilderButton);
@@ -203,10 +204,17 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			
 			Model editedmodel = null;
+			// check editor title matches text field title
+			String corrected = "";
+			if (editor.getValue() != null)
+				corrected = ModelUtils.compareTitles(titleField.getValue(), editor.getValue());
 			if ( createNewModel == true ) {
+//				editor.setValue(corrected);
 				editedmodel = ModelUtils.createNewModel(currmodel, currsession, binder); //currmodel.getParentsession(),
 				createNewModel = false;
 			} else {
+//				editor.setValue(corrected);
+				//save
 				editedmodel = ModelUtils.editModel(currmodel, currsession, binder); //currmodel.getParentsession(),				
 			}
 			
@@ -221,9 +229,9 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 //	        saveButton.setEnabled(false);
 
         } else if (event.getButton() == openDBuilderButton) {       	
+        	modelsTabs.setSelectedTab(1);
         	ModelsTab.diagramtab.setFieldsDataSource(currmodel);
 
-        	ModelsTab.modelsTabs.setSelectedTab(1);
         	// open diagram builder window
 //        	UI.getCurrent().addWindow(new ModelDBuilderWindow(currmodel, editor));
         }
@@ -276,27 +284,6 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			modeBox.setValue(modeList.get(1));
 //			System.out.println("Mode changed to python");
 		} 
-	}
-	
-	public String loadFile(String filename) {
-		
-		String input = "";
-		BufferedReader br;
-		try {
-			Scanner sc = new Scanner(new FileReader(filename));
-			String line = null;
-			while (sc.hasNextLine()) {
-				line = sc.nextLine();
-				System.out.println(line);
-				input = input.concat(line);
-				if(sc.hasNextLine()) {
-					input = input.concat("\n");
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return input;
 	}
 
 	

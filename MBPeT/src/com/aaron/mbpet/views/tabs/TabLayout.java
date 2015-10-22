@@ -1,7 +1,8 @@
-package com.aaron.mbpet.components.tabs;
+package com.aaron.mbpet.views.tabs;
 
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
@@ -19,7 +20,6 @@ public class TabLayout extends TabSheet {
 	TabSheet confTabs;
 	MonitoringTab monitoringTab = new MonitoringTab();
 	final ReportsTab reportsTab = new ReportsTab();
-//	final ModelsTab graph = new ModelsTab();
 	ModelsTab models;// = new ModelsTab();
 	ParametersTab parameters;
 	RampTab ramp;// = new RampTab();

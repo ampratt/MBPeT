@@ -95,7 +95,7 @@ public class ConfirmDeleteModelWindow extends Window {
 //	                menutree.select(parentid);
 	                //navigate to parent
 	                if (navtohomepage == true) {
-	                	getUI().getNavigator().navigateTo(MainView.NAME + "/" + parentcase.getTitle());	                	
+	                	getUI().getNavigator().navigateTo(MainView.NAME + "/" + parentcase.getTitle() + "-sut=" + parentcase.getId());	                	
 	                }
 	                confirmNotification(deleteditem);
 		        	

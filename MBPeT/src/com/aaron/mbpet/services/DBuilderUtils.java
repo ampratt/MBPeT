@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.diagrambuilder;
+package com.aaron.mbpet.services;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +14,9 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.NonUniqueResultException;
+import javax.validation.ConstraintViolationException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.vaadin.diagrambuilder.Connector;
 import org.vaadin.diagrambuilder.DiagramBuilder;
@@ -23,11 +26,21 @@ import org.vaadin.diagrambuilder.NodeType;
 import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.views.MBPeTMenu;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 
 @SuppressWarnings("serial")
 public class DBuilderUtils implements Serializable {
@@ -40,6 +53,13 @@ public class DBuilderUtils implements Serializable {
     List<Connector> nConnectorName = new ArrayList<Connector>();
 	String title = "input_title_name";
 
+	private JPAContainer<Model> models = MBPeTMenu.models;
+	private JPAContainer<TestSession> sessions;
+	private Model currmodel;
+	private BeanItem<Model> modelBeanItem;
+	private TestCase parentcase;
+	private TestSession parentsession;
+	
 	public DBuilderUtils() {
 		// TODO Auto-generated constructor stub
 	}
@@ -57,10 +77,10 @@ public class DBuilderUtils implements Serializable {
         diagramBuilder.setFields(
         		new Node("1", "start",10,10),
         		new Node("2", "state",80,120),
-        		new Node("3", "state",300,55),
-        		new Node("4", "state",235,163),
-        		new Node("5","end", 421,185)
-        		);
+        		new Node("3", "state",300,55)
+//        		,new Node("4", "state",235,163),
+//        		new Node("5","end", 421,185)
+		);
 
         diagramBuilder.setTransitions(
     			new Transition("1", "2", "first connector - 0.60 / / browse()"),
@@ -216,10 +236,11 @@ public class DBuilderUtils implements Serializable {
 	/*
      * Retrieve data from diagram and write to file in .dot format
      */
-	public void saveToFile(List<Node> ns, String fileName, String title) {	// DiagramStateEvent event    reportStateBack
+	public String getGraphDataAsString(List<Node> ns, String fileName, String title) {	// DiagramStateEvent event    reportStateBack
         // get nodes from diagram
 		List<Node> nodes = renameNodes(ns);
-        
+		String dotSchema = "";
+		
 		// mapper for window notification display
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -249,15 +270,16 @@ public class DBuilderUtils implements Serializable {
             Collections.sort(nName);
 
             if (title.equals("") || title.equals(null)){
-            	title = "use_case_abc";
+            	title = "empty_user_type";
             	System.out.println("there was no title data");
             }
             if (title.contains(" ")){
             	title.replaceAll(" ", "_");
             }
-            // call method to parse data to dot file
-            writeToDotFile(nName, nTransitions, nXy, fileName, title);		
-
+            
+            // PARSE data to String (dot file)
+            dotSchema = parseToDot(nName, nTransitions, nXy, fileName, title);	
+                        
             // display some confirmation to user
 //            String writeNodeNames = mapper.writeValueAsString(nName);
 //            Notification.show("State reported: ",
@@ -284,13 +306,15 @@ public class DBuilderUtils implements Serializable {
 			e.printStackTrace();
 		}
 
+        return dotSchema;
+
     }
 	
 	/*
 	 * Actual writing to file from diagram data.
 	 * Called automatically from saveToFile()
 	 */
-	public void writeToDotFile(List<Integer> nName, List<Transition> nTransitions, List<int[]> nXy, String fileName, String title) throws JsonProcessingException, FileNotFoundException {	
+	public String parseToDot(List<Integer> nName, List<Transition> nTransitions, List<int[]> nXy, String fileName, String title) throws JsonProcessingException, FileNotFoundException {	
 		ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -298,15 +322,24 @@ public class DBuilderUtils implements Serializable {
 
         // create file
 //		fileName = "C:/dev/output/dot-output.dot";
+        
+        // string for database
+        String newline = System.getProperty("line.separator");
+        StringBuilder builder = new StringBuilder();
+        
+        // file option
         File file = new File(fileName);
         PrintWriter writer = new PrintWriter(file);
         writer.println("digraph " + title + " {");
-    
+        builder.append("digraph " + title + " {").append(newline);
+        
             // write state data
             writer.println("\t// States");
+            builder.append("\t// States").append(newline);
             for (int n=0; n < nName.size(); n++) {
                 writer.print("\t" + nName.get(n));
-                
+                builder.append("\t" + nName.get(n));
+
                 // save X,Y coordinate values
                 String xy = mapper.writeValueAsString(nXy.get(n));
 
@@ -317,11 +350,16 @@ public class DBuilderUtils implements Serializable {
 //                xy = xy.replaceAll("[\\s]", "");
                 writer.print("\t" + xy);// "}\n");	//mapper.writeValueAsString(nXy.get(n))
                 writer.print("\n");
+                builder.append("\t" + xy).append(newline);
+//                builder.append("\n").append(newline);
+
                 System.out.println("XY values: " + xy);		// for testing
             }            
             
             // write transition data (nodes and label info)
             writer.println("\n\t// Transitions");
+            builder.append("\n\t// Transitions").append(newline);
+
             for (int n=0; n < nTransitions.size(); n++) {
             	Transition t = nTransitions.get(n);
 	            	// insert '"' if not present in transition labels
@@ -336,19 +374,25 @@ public class DBuilderUtils implements Serializable {
 				
                 writer.println("\t" + t.getSource() + " -> " + t.getTarget() + 
                 			   " [label = " + t.getConnector().getName().toString() + "];");	//mapper.writeValueAsString()
+                builder.append("\t" + t.getSource() + " -> " + t.getTarget() + 
+         			   " [label = " + t.getConnector().getName().toString() + "];").append(newline);
+
             }     
         writer.println("}");     
         writer.close();
-	
+        builder.append("}").append(newline);
+
         //show confirmation to user
-        Notification.show("dot file was saved at: " + fileName, Notification.Type.TRAY_NOTIFICATION);;
+        Notification.show("dot file was saved at: " + fileName, Notification.Type.TRAY_NOTIFICATION);
+        
+        return builder.toString();
 	}
 	
 	/*
 	 * Read file data in .dot format and generate diagram
 	 */
 	@SuppressWarnings("resource")
-	public void readFromDotSource(DiagramBuilder diagramBuilder, String inputSource) throws FileNotFoundException, NullPointerException {
+	public void readFromDotSource(DiagramBuilder diagramBuilder, String inputSource) throws NullPointerException {
 		// Lists to hold state (node) and transition data
 		List<Integer> states = new ArrayList<Integer>();
 		List<int[]> xyValues = new ArrayList<int[]>();
@@ -368,7 +412,7 @@ public class DBuilderUtils implements Serializable {
 
 			File f = new File(inputSource);; 		
 			if (!f.isFile()) {		
-				System.out.println("INPUT WAS not a file and is:\n" + inputSource);		
+				System.out.println("INPUT WAS not a file and is:\n" + inputSource);	
 				f = new File("C:/dev/output/from ace string.dot");			
 		        PrintWriter writer = new PrintWriter(f);		
 		        String toParse = "";		
@@ -399,7 +443,7 @@ public class DBuilderUtils implements Serializable {
 		    	Notification.show("Heads up!", 
 		    						"The first line of your dot file seems to be mis-formatted.\n" +
 		    						"Please follow this format: \n\n[graphtype] [graph_name] {", 
-		    						Notification.Type.WARNING_MESSAGE);
+		    						Notification.Type.ERROR_MESSAGE);
 		    } else {
 		    	String t = sc.next();
 	    		if (t.contains(" ")) {
@@ -475,12 +519,20 @@ public class DBuilderUtils implements Serializable {
 			    			} else if (count % 3 == 0) {
 			    				// every 3rd node
 			    				int[] prevCoords = xyValues.get(xyValues.size()-1);
-			    				thisXy = new int[]{prevCoords[0]+85, prevCoords[1]/2};	//{x+=85,y/=2};
+			    				thisXy = new int[]{prevCoords[0]+75, prevCoords[1]/2};	// +((prevCoords[1]/2)/3) {x+=85,y/=2};
 //			    				xyValues.add(thisXy);
 //			    				System.out.println("x,y amount added: 110, y/=2");	// for Testing    				
-			    			} else {
+			    			} 
+//			    			else if (count % 2 == 0){
+//			    				// even numbers
+//			    				int[] prevCoords = xyValues.get(xyValues.size()-1);
+//			    				thisXy = new int[]{prevCoords[0]+80, prevCoords[1]+110};	//{x+=100,y+=135};
+////			    				xyValues.add(thisXy);
+////			    				System.out.println("x,y amount added: 110, 150");	// for Testing			
+//			    			} 
+			    			else {
 			    				int[] prevCoords = xyValues.get(xyValues.size()-1);
-			    				thisXy = new int[]{prevCoords[0]+100, prevCoords[1]+135};	//{x+=100,y+=135};
+			    				thisXy = new int[]{prevCoords[0]+90, prevCoords[1]+125};	//{x+=100,y+=135};
 //			    				xyValues.add(thisXy);
 //			    				System.out.println("x,y amount added: 110, 150");	// for Testing			
 			    			}
@@ -643,7 +695,12 @@ public class DBuilderUtils implements Serializable {
 			// TODO Auto-generated catch block
 			System.out.println(e.getClass());
 			e.printStackTrace();
-		}
+		} 
+//		catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println(e.getClass());
+//		}
 //		return title;
 	}
 	
@@ -744,6 +801,80 @@ public class DBuilderUtils implements Serializable {
         diagramBuilder.setTransitions(ts);
 
         diagramBuilder.setSizeFull();	// layouting
+	}
+
+	public Model commitToDB(Model model, String title, String dotSchema) {
+	
+		this.currmodel = models.getItem(model.getId()).getEntity();
+        this.modelBeanItem = new BeanItem<Model>(currmodel);
+		
+		this.parentcase = model.getParentsut();
+		this.parentsession = model.getParentsession();
+//        parentsession = currsession;
+//		parentcase = parentsession.getParentcase();
+		this.sessions = MBPeTMenu.sessions;
+		
+		// set edited fields
+        currmodel.setTitle(title);
+        currmodel.setDotschema(dotSchema);   
+
+// 		binder = fieldbinder;
+ 		Model editedmodel = null;
+// 			try {
+ 				// EDIT existing Model
+ 				
+ 				// 1. commit the fieldgroup
+// 				binder.commit();
+ 				
+ 				
+           	  	// 2. UPDATE parent Case and Session reference
+ 				parentsession.updateModelData(currmodel);	//(models.getItem(currmodel.getId()).getEntity());
+ 				parentcase.updateModelData(currmodel); //(models.getItem(currmodel.getId()).getEntity());
+// 				System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+
+ 				// 3. UPDATE container
+ 				models.addEntity(modelBeanItem.getBean());
+
+ 				editedmodel = models.getItem(currmodel.getId()).getEntity();
+ 		        System.out.println("Entity is now: " + editedmodel.getTitle());
+
+             	confirmNotification("Model '" + editedmodel.getTitle() + "'", "saved");
+
+// 			} catch (ConstraintViolationException e) {
+// 				binder.discard();
+// 				Notification.show("'Title' cannot be empty and must be between 1 and 40 characters long.", Type.WARNING_MESSAGE);
+// 			} catch (CommitException e) {
+// 				binder.discard();
+// 				Notification.show("'Title' cannot be empty ", Type.WARNING_MESSAGE);
+// 			} catch (NonUniqueResultException e) {
+// 				binder.discard();
+// 				Notification.show("'Title' must be a unique name.\n'" +
+// 								currmodel.getTitle() + 
+// 									"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
+// 			}
+// 			catch (NullPointerException e) {
+// 				binder.discard();
+//// 						Notification.show("'Parent Session' cannot be empty " + e.getMessage().toString(), Type.ERROR_MESSAGE);
+//// 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
+// 			}
+ 			
+// 	        binder.clear();
+ 			
+ 			return editedmodel;
+	
+	}
+	
+	
+	private static void confirmNotification(String deletedItem, String message) {
+        // welcome notification
+        Notification notification = new Notification(deletedItem, Type.TRAY_NOTIFICATION);
+        notification
+                .setDescription(message);
+        notification.setHtmlContentAllowed(true);
+        notification.setStyleName("dark small");	//tray  closable login-help
+        notification.setPosition(Position.BOTTOM_RIGHT);
+        notification.setDelayMsec(500);
+        notification.show(Page.getCurrent());
 	}
 	
 

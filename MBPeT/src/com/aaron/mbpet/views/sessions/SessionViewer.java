@@ -6,11 +6,11 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.tabs.TabLayout;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.tabs.TabLayout;
 import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -137,7 +137,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == newSessionButton) {
 	        // open window to create item
-	        UI.getCurrent().addWindow(new TestSessionEditor(tree, getTestCaseByTitle() ));	//testcases.getItem(parent).getEntity()
+	        UI.getCurrent().addWindow(new TestSessionEditor(tree, currsession.getParentcase(), false));	//getTestCaseByTitle()	testcases.getItem(parent).getEntity()
 
         } else if (event.getButton() == saveButton) {
 			//testing purposes
@@ -155,28 +155,28 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     }
    
 
-	private TestCase getTestCaseByTitle() {
-		String title = pageTitle.getValue();
-		if (title.contains("/")) {
-			title = title.substring(0, title.indexOf("/")); 
-		}
-		System.out.println("the parses test case title is: " + title);
-		
-		// add created item to tree (after retrieving db generated id)
-        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-										.createEntityManager();	
-        Query query = em.createQuery(
-    		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
-    		);
-//        query.setParameter("title", newsession.getTitle());
-        TestCase queriedCase = 
-        		(TestCase) query.setParameter("title", title).getSingleResult();
-        System.out.println("retrieved TC fro db is : " 
-        				+  queriedCase.getId() + " - " + queriedCase.getTitle());
-			            
-		return testcases.getItem(queriedCase.getId()).getEntity();
-		
-	}
+//	private TestCase getTestCaseByTitle() {
+//		String title = pageTitle.getValue();
+//		if (title.contains("/")) {
+//			title = title.substring(0, title.indexOf("/")); 
+//		}
+//		System.out.println("the parses test case title is: " + title);
+//		
+//		// add created item to tree (after retrieving db generated id)
+//        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+//										.createEntityManager();	
+//        Query query = em.createQuery(
+//    		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
+//    		);
+////        query.setParameter("title", newsession.getTitle());
+//        TestCase queriedCase = 
+//        		(TestCase) query.setParameter("title", title).getSingleResult();
+//        System.out.println("retrieved TC fro db is : " 
+//        				+  queriedCase.getId() + " - " + queriedCase.getTitle());
+//			            
+//		return testcases.getItem(queriedCase.getId()).getEntity();
+//		
+//	}
 
 	
 	public static void setPageTitle(String t){
@@ -209,35 +209,35 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		System.out.println("the parsed test session ID is: " + parsed);
 		
 		int id = Integer.parseInt(parsed);
-		currsession = sessions.getItem(id).getEntity();
+//		currsession = sessions.getItem(id).getEntity();
+//		
+//        System.out.println("retrieved SESSION fro db is :  - " + currsession.getTitle());
 		
-        System.out.println("retrieved SESSION fro db is :  - " + currsession.getTitle());
-		
-		return currsession;
+		return sessions.getItem(id).getEntity();
 	}
 	
-	private static TestSession getTestSessionByTitle() {
-		String title = pageTitle.getValue();
-		if (title.contains("/")) {
-			title = title.substring((title.indexOf("/")+1), title.length()); 
-		}
-		System.out.println("the parsed test session title is: " + title);
-		
-		// add created item to tree (after retrieving db generated id)
-        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-										.createEntityManager();	
-        Query query = em.createQuery(
-    		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
-    		);
-//        query.setParameter("title", newsession.getTitle());
-        TestSession queriedSession = 
-        		(TestSession) query.setParameter("title", title).getSingleResult();
-        System.out.println("retrieved SESSION fro db is : " 
-        				+  queriedSession.getId() + " - " + queriedSession.getTitle());
-			            
-		return sessions.getItem(queriedSession.getId()).getEntity();
-		
-	}
+//	private static TestSession getTestSessionByTitle() {
+//		String title = pageTitle.getValue();
+//		if (title.contains("/")) {
+//			title = title.substring((title.indexOf("/")+1), title.length()); 
+//		}
+//		System.out.println("the parsed test session title is: " + title);
+//		
+//		// add created item to tree (after retrieving db generated id)
+//        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+//										.createEntityManager();	
+//        Query query = em.createQuery(
+//    		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
+//    		);
+////        query.setParameter("title", newsession.getTitle());
+//        TestSession queriedSession = 
+//        		(TestSession) query.setParameter("title", title).getSingleResult();
+//        System.out.println("retrieved SESSION fro db is : " 
+//        				+  queriedSession.getId() + " - " + queriedSession.getTitle());
+//			            
+//		return sessions.getItem(queriedSession.getId()).getEntity();
+//		
+//	}
 //    @Override
 //    public void enter(ViewChangeEvent event) {
 //        if (event.getParameters() == null

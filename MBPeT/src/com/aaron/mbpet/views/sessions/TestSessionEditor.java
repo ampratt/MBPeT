@@ -18,6 +18,9 @@ import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.aaron.mbpet.views.cases.ModelEditorTable;
+import com.aaron.mbpet.views.cases.SessionEditorTable;
+import com.aaron.mbpet.views.cases.TestCaseEditor;
 import com.aaron.mbpet.views.cases.TestCaseForm;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.users.UserForm;
@@ -27,6 +30,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -75,22 +79,38 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
 	private JPAContainer<TestSession> sessions;
+	JPAContainer<TestCase> testcases = MBPeTMenu.getTestcases();
 	BeanItem<TestSession> newSessionItem;
 	TestSession testsession;
 	private TestSessionForm form;
 	FieldGroup binder;
 	TestCase parentCase;
-	TestSession clone;
+	TestSession subject;
+	String prevTitle = "";
 	
 	boolean editmode = false;
 	boolean navToCasePage = false;
 	boolean clonemode = false;
 
+	
 	/*
 	 * Create new Test Session
 	 */
-	public TestSessionEditor(Tree tree, TestCase parentcase) {		//JPAContainer<TestCase> container
+	public TestSessionEditor(Tree tree, TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
+		this.navToCasePage = navToCasePage;
+		
+		testsession = new TestSession(); 
+		this.newSessionItem = new BeanItem<TestSession>(testsession);
+		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		
+		init(tree, parentcase);
+	}
+	public TestSessionEditor(Tree tree, Table table, TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
+//      super("Create a new Test Case"); // Set window caption
+		this.navToCasePage = navToCasePage;
+		this.table = table;
+		
 		testsession = new TestSession(); 
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
 		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
@@ -109,6 +129,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
         this.testsession = sessions.getItem(testsessionid).getEntity();
         this.newSessionItem = new BeanItem<TestSession>(testsession);
 
+		prevTitle = testsession.getTitle();
+
         init(tree, parentcase);
 	}
 	
@@ -123,9 +145,13 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.testsession = sessions.getItem(testsessionid).getEntity();
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
+		System.out.println("this session id is: " + testsessionid + " " + testsession.getTitle());
+		
+		prevTitle = testsession.getTitle();
 		
 		init(tree, parentcase);
 	}
+	
 	
 	/*
 	 * Clone existing test Session to new one
@@ -138,19 +164,14 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		models = MBPeTMenu.models;
 		
 		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
-		this.testsession = sessions.getItem(testsessionid).getEntity();
+		this.subject = sessions.getItem(testsessionid).getEntity();
 		
-		this.clone = new TestSession();
-		clone.setTitle("(clone) " + testsession.getTitle());
+		this.testsession = new TestSession();
+		testsession.setTitle("(clone) " + subject.getTitle());
+		testsession.setParentcase(subject.getParentcase());
 //		clone.setParameters(testsession.getParameters());
-		clone.setParentcase(testsession.getParentcase());
+		this.newSessionItem = new BeanItem<TestSession>(testsession);
 
-		this.newSessionItem = new BeanItem<TestSession>(clone);
-		
-//		testsession = new TestSession(); 
-//		this.newSessionItem = new BeanItem<TestSession>(testsession);
-//		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
-		
 		init(tree, parentcase);
 	}
 	/*
@@ -163,19 +184,18 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		models = MBPeTMenu.models;
 		
 		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
-		this.testsession = sessions.getItem(testsessionid).getEntity();
+		this.subject = sessions.getItem(testsessionid).getEntity();
 		
-		this.clone = new TestSession();
-		clone.setTitle("(clone) " + testsession.getTitle());
-//		clone.setParameters(testsession.getParameters());
-		clone.setParentcase(testsession.getParentcase());
+		this.testsession = new TestSession();
+		testsession.setTitle("(clone) " + subject.getTitle());
+		
+		System.out.println("parentcase.getSessions() : " + parentcase.getSessions());
+		System.out.println("subjects parent.getSessions() : " + subject.getParentcase().getSessions());
+		testsession.setParentcase(parentcase); //subject.getParentcase()
 
-		this.newSessionItem = new BeanItem<TestSession>(clone);
-		
-//		testsession = new TestSession(); 
-//		this.newSessionItem = new BeanItem<TestSession>(testsession);
-//		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
-		
+		//		clone.setParameters(testsession.getParameters());
+		this.newSessionItem = new BeanItem<TestSession>(testsession);
+
 		init(tree, parentcase);
 	}
 	
@@ -200,7 +220,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
     private String buildCaption() {
     	if (clonemode==true) {
     		return String.format("Clone Test Session: %s", 
-    				testsession.getTitle());
+    				subject.getTitle());
     	} else if (editmode) {
     		return String.format("Edit Test Session: %s", 
     				testsession.getTitle());
@@ -218,52 +238,29 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		final VerticalLayout layout = new VerticalLayout();
 		layout.setSpacing(true);
 		layout.setMargin(true);
-		
-		
-//		layout.addComponent(new Label("<h4>Add Test Session</h4>", ContentMode.HTML));
 	
 		// set parent Test Case manually without a field
 		if (editmode == false && (clonemode==false)) {
 			testsession.setParentcase(parentCase);			
 		}
 		
-		// create fields manually
-//		form = new TestSessionForm();
-//		layout.addComponent(form);
-		
+
 		binder = new FieldGroup();
 //		BeanItem<Person> item = new BeanItem<Person>(person);		// takes item as argument
 //		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
-//		item.addNestedProperty("address.zip");
-//		item.addNestedProperty("address.city");
 		
 		binder.setItemDataSource(newSessionItem); 	// link to data model to binder
 		
 //		binder.bindMemberFields(form);	// link to layout
 	
-		// GENERATE FIELDS
 		
+		// GENERATE FIELDS
 	//	for (Object propertyId : item.getItemPropertyIds()) {
 	//		if(!"address".equals(propertyId)) {
 	//			Field field = binder.buildAndBind(propertyId);
 	//			layout.addComponent(field);							
 	//		}
 	//	}
-		
-		// using buildAndBind()
-//		titlefield = binder.buildAndBind("title");
-//		titlefield.setWidth(18, Unit.EM);
-//		titlefield.focus();
-//		titlefield.setRequired(true);
-////		titlefield.setRequiredError("'Title' cannot be empty.");
-////		((TextField) titlefield).setValidationVisible(false);
-//		titlefield.addValidator(new BeanValidator(TestSession.class, "title"));
-//		((TextField) titlefield).setValidationVisible(true);
-////		titlefield.addValidator(new StringLengthValidator("Title must be between 1 and 40 characters", 
-////					1, 40, false));
-//		((TextField) titlefield).setNullRepresentation("");
-////		
-//		layout.addComponent(titlefield);
 		
 		// using bind() to determine what type of field is created yourself...
 		title = new TextField();
@@ -307,200 +304,285 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //	            fireEvent(new EditorSavedEvent(this, personItem));
 	        	
 	        	TestSession queriedSession = null;
+	        	String wrongTitle = "";
 	        	
 					try {
 //						form.enableValidationMessages();
 	//					title.setValidationVisible(true);
 	
 
-						Object id = null;
+						int id =0;
 						
-						// add NEW bean object to db through jpa container
-						if (editmode == false && (clonemode == false)) {
-							// commit the fieldgroup
-							binder.commit();
-							
-							// add to container
-							sessions.addEntity(newSessionItem.getBean());	//jpa container	
-							
-			                // add created item to tree (after retrieving db generated id)
-			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-			    											.createEntityManager();	
-				            Query query = em.createQuery(
-				        		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
-				        		);
-		//		            query.setParameter("title", newsession.getTitle());
-				            queriedSession = (TestSession) query.setParameter("title", testsession.getTitle()).getSingleResult();
-				            System.out.println("the generated id is: " + queriedSession.getId());
-				            id = queriedSession.getId();	// here is the id we need for tree
-				            
-				            // create empty parameters object
-				            new ParametersEditor(sessions.getItem(id).getEntity());
-		        			
-				            // add to tree in right order
-				            if ( tree.hasChildren(parentCase.getId()) ) {
-				            	sortAddToTree(id);				            	
-				            } else {
-				            	tree.addItem(id);
-				            	tree.setParent(id, parentCase.getId());
-				            	tree.setChildrenAllowed(id, false);
-				            	tree.setItemCaption(id, sessions.getItem(id).getEntity().getTitle());		//newsession.getTitle()
-				            	tree.expandItem(parentCase.getId());
-				            	tree.select(id);				            	
-				            }
-		              	  			              	  	
-		              	  	// update parent Case to add Session to testCase List<Session> sessions
-		              	  	parentCase.addSession(queriedSession);
-		//              	  	List<TestSession> listofsessions = parentCase.getSessions();
-		//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
-		//              	  	parentCase.setSessions(listofsessions);
-		              	  	
-			            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
-			            	for (TestSession s : parentCase.getSessions()) {
-				            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
-			            	}
-			            	
-						} else if (editmode == true){
-							// EDIT existing object
-							
-							// commit the fieldgroup
-							binder.commit();
-							
-		              	  	//1 UPDATE parentcase reference
-							parentCase.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
-							
-							System.out.println("Test session is now: " + testsession.getTitle());
+						// commit the fieldgroup
+						binder.commit();
+						
+						// check SESSION title doesnt exist for THIS SESSION
+						boolean titleOK = true;
+						id = newSessionItem.getBean().getId();	//testsession.getId();
+						System.out.println("parentCase.getSessions() : " + parentCase.getSessions());
+						for (TestSession s : parentCase.getSessions()) {	//sessions.getItemIds()
+							System.out.println("Existing title -> new title : " + s.getTitle() + "->" + testsession.getTitle());
+							System.out.println("Existing id -> new id : " + s.getId() + "->" + id);
+							if (s.getTitle().equals(testsession.getTitle()) && !(s.getId()==id) ) {	
+								testsession.setTitle(prevTitle);
+								if (clonemode != true) {
+									sessions.addEntity(testsession);
+								}
+								wrongTitle = s.getTitle();
 
-							// 2 UPDATE container
-							sessions.addEntity(newSessionItem.getBean());
-							System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
-
-							// 3 UPDATE tree title
-		              	  	tree.setItemCaption(testsession.getId(), sessions.getItem(testsession.getId()).getEntity().getTitle());
-
-						} else if (clonemode == true){
-							// CLONE 
-				           System.out.println("\n\nWE ARE IN CLONE MODE!!!!!!!!!\n\n");
-
-//							TestSession clone = newSessionItem.getBean();
-							// 1 commit the fieldgroup
-							binder.commit();
-							
-							// 2 add to container
-							sessions.addEntity(newSessionItem.getBean());	//jpa container	
-							
-			                // 3 retrieving db generated id
-			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-			    											.createEntityManager();	
-				            Query query = em.createQuery(
-				        		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title");
-		//		            query.setParameter("title", newsession.getTitle());
-				            queriedSession = (TestSession) query.setParameter("title", clone.getTitle()).getSingleResult();
-				            System.out.println("the generated id is: " + queriedSession.getId());
-				            id = queriedSession.getId();	// here is the id we need for tree
-				            
-				            // 4 clone models
-				            EntityManager em2 = Persistence.createEntityManagerFactory("mbpet").createEntityManager();	
-				            Query query2 = em2.createQuery("SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
-				            for (Model m : testsession.getModels()) {
-				            	// copy over model values
-				            	Model newmodel = new Model(m.getTitle(), queriedSession, m.getParentsut()); //"(clone) " + 
-				            	newmodel.setDotschema(m.getDotschema());
-				            	
-								// add to container
-								models.addEntity(newmodel);	//jpa container	
-								
-				                // retrieve generated id from db
-					            query2.setParameter("title", newmodel.getTitle());
-					            query2.setParameter("parentsession", queriedSession);
-					            Model queriedModel = (Model) query2.getSingleResult();
-					            System.out.println("the generated MODEL id is: " + queriedModel.getId() + " of session ->" + queriedSession.getId());
-			        			
-					            // update parent Case to add Session to testCase List<Session> sessions
-					            parentCase.addModel(queriedModel);
-					            queriedSession.addModel(queriedModel);
-				            }
-				            sessions.addEntity(queriedSession);
-
-				            // 5 clone parameters
-				            String cloneParams = "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'";
-				            if (!(testsession.getParameters().getSettings_file() == null) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
-				            	cloneParams = testsession.getParameters().getSettings_file();
-				            }
-				            System.out.println("\n\n the cloned parameters are:\n" + 
-				            		cloneParams + "\n\n");
-				            new ParametersEditor(queriedSession, cloneParams);
-
-		        			
-				            // 6 add to tree in right order
-				            if ( tree.hasChildren(parentCase.getId()) ) {
-				            	sortAddToTree(id);				            	
-				            } else {
-				            	tree.addItem(id);
-				            	tree.setParent(id, parentCase.getId());
-				            	tree.setChildrenAllowed(id, false);
-				            	tree.setItemCaption(id, sessions.getItem(id).getEntity().getTitle());		//newsession.getTitle()
-				            	tree.expandItem(parentCase.getId());
-				            	tree.select(id);				            	
-				            }
-		        			
-		              	  			              	  	
-		              	  	// 7 update parent Case to add Session to testCase List<Session> sessions
-		              	  	parentCase.addSession(queriedSession);
-		//              	  	List<TestSession> listofsessions = parentCase.getSessions();
-		//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
-		//              	  	parentCase.setSessions(listofsessions);
-		              	  	
-			            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
-			            	for (TestSession s : parentCase.getSessions()) {
-				            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
-			            	}
+								titleOK = false;
+								break;
+							}
 						}
-		                
-
-	              	  	
-		            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
-		            	for (TestSession s : parentCase.getSessions()) {
-			            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
-		            	}
-		            	
-		            	
-		            	if (clonemode==true && navToCasePage == true) {
-		            		confirmNotification(queriedSession.getTitle(), "was created");
-		            		close();
-		            		
-		            	} else if (clonemode==true && navToCasePage == false) {
-		            		confirmNotification(queriedSession.getTitle(), "was CLONED");
-		            		getUI().getNavigator()
+						
+						
+						if (titleOK == true) {
+							System.out.println("TITLE WAS FINE. EDITING");
+							
+							// add NEW bean object to db through jpa container
+							if (editmode == false && (clonemode == false)) {
+									
+									// add to container
+									sessions.addEntity(newSessionItem.getBean()); //jpa container	
+									
+									// add created item to tree (after retrieving db generated id)
+									EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+											.createEntityManager();
+									Query query = em.createQuery("SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title AND t.parentcase = :parentcase");
+									//		            query.setParameter("title", newsession.getTitle());
+									query.setParameter("title",testsession.getTitle());
+									query.setParameter("parentcase",testsession.getParentcase()); //MainView.sessionUser
+									queriedSession = (TestSession) query.getSingleResult();
+									//				            queriedSession = (TestSession) query.setParameter("title", testsession.getTitle()).getSingleResult();
+									System.out.println("the generated id is: " + queriedSession.getId());
+									id = queriedSession.getId(); // here is the id we need for tree
+									
+									// create empty parameters object
+									new ParametersEditor(sessions.getItem(id).getEntity());
+									
+									// add to tree in right order
+									if (tree.hasChildren(parentCase.getId())) {
+										sortAddToTree(id);
+									} else {
+										tree.addItem(id);
+										tree.setParent(id, parentCase.getId());
+										tree.setChildrenAllowed(id, false);
+										tree.setItemCaption(id, sessions.getItem(id).getEntity().getTitle()); //newsession.getTitle()
+										tree.expandItem(parentCase.getId());
+										tree.select(id);
+									}
+									
+									// update parent Case to add Session to testCase List<Session> sessions
+									parentCase.addSession(queriedSession);
+									testcases.addEntity(parentCase);
+									//              	  	List<TestSession> listofsessions = parentCase.getSessions();
+									//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
+									//              	  	parentCase.setSessions(listofsessions);
+									
+									System.out.println("WHAT IS NEW LIST OF SESSIONS: "
+													+ parentCase.getSessions()); // testing purposes
+									for (TestSession s : parentCase.getSessions()) {
+										System.out.println(s.getId() + " - "
+												+ s.getTitle()); // testing purposes	            		
+									}
+									
+	
+				            	
+							} else if (editmode == true){
+								// EDIT existing object
+								
+//								// commit the fieldgroup
+//								binder.commit();
+								
+			              	  	//1 UPDATE parentcase reference
+								parentCase.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
+								
+								System.out.println("Test session is now: " + testsession.getTitle());
+	
+								// 2 UPDATE container
+								sessions.addEntity(newSessionItem.getBean());
+								System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+	
+								// 3 UPDATE tree title
+			              	  	tree.setItemCaption(testsession.getId(), sessions.getItem(testsession.getId()).getEntity().getTitle());
+			              	  	
+			              	  	// 4. UPDATE models (maybe not necessary)
+			              	  	ModelEditorTable.modelsTable.setContainerDataSource(ModelEditorTable.modelsTable.getContainerDataSource());
+			              	  	for (Model m : testsession.getModels()) {
+			              	  		m.setParentsession(sessions.getItem(testsession.getId()).getEntity());
+			              	  		System.out.println("Sessions' model's session title: " + m.getParentsession().getTitle());
+//			              	  		m.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
+			              	  	}
+//			              	  	updateSessionData
+			              	  
+			              	  	id = testsession.getId();
+	
+							} else if (clonemode == true){
+								// CLONE 
+					           System.out.println("\n\nWE ARE IN CLONE MODE!!!!!!!!!\n\n");
+	
+	//							TestSession clone = newSessionItem.getBean();
+//								// 1 commit the fieldgroup
+//								binder.commit();
+								
+								// 2 add to container
+								sessions.addEntity(newSessionItem.getBean());	//jpa container	
+								
+				                // 3 retrieving db generated id
+				                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
+				    											.createEntityManager();	
+					            Query query = em.createQuery(
+					        		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title");
+			//		            query.setParameter("title", newsession.getTitle());
+					            queriedSession = (TestSession) query.setParameter("title", testsession.getTitle()).getSingleResult();
+					            System.out.println("the generated id is: " + queriedSession.getId());
+					            id = queriedSession.getId();	// here is the id we need for tree
+					            
+					            // 4 clone models
+					            EntityManager em2 = Persistence.createEntityManagerFactory("mbpet").createEntityManager();	
+					            Query query2 = em2.createQuery("SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
+					            for (Model m : subject.getModels()) {
+					            	// copy over model values
+					            	Model newmodel = new Model(m.getTitle(), queriedSession, m.getParentsut()); //"(clone) " + 
+					            	newmodel.setDotschema(m.getDotschema());
+					            	
+									// add to container
+									models.addEntity(newmodel);	//jpa container	
+									
+					                // retrieve generated id from db
+						            query2.setParameter("title", newmodel.getTitle());
+						            query2.setParameter("parentsession", queriedSession);
+						            Model queriedModel = (Model) query2.getSingleResult();
+						            System.out.println("the generated MODEL id is: " + queriedModel.getId() + " of session ->" + queriedSession.getId());
+				        			
+						            // update parent Case to add Session to testCase List<Session> sessions
+						            parentCase.addModel(queriedModel);
+						            queriedSession.addModel(queriedModel);
+					            }
+					            sessions.addEntity(queriedSession);
+	
+					            // 5 clone parameters
+					            String cloneParams = "Fill in parameters for Test Session '" + queriedSession.getTitle() + "'";
+					            if (!(subject.getParameters().getSettings_file() == null) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
+					            	cloneParams = subject.getParameters().getSettings_file();
+					            }
+					            System.out.println("\n\n the cloned parameters are:\n" + 
+					            		cloneParams + "\n\n");
+					            new ParametersEditor(queriedSession, cloneParams);
+	
+			        			
+					            // 6 add to tree in right order
+					            if ( tree.hasChildren(parentCase.getId()) ) {
+					            	sortAddToTree(id);				            	
+					            } else {
+					            	tree.addItem(id);
+					            	tree.setParent(id, parentCase.getId());
+					            	tree.setChildrenAllowed(id, false);
+					            	tree.setItemCaption(id, sessions.getItem(id).getEntity().getTitle());		//newsession.getTitle()
+					            	tree.expandItem(parentCase.getId());
+					            	tree.select(id);				            	
+					            }
+			        			
+			              	  			              	  	
+			              	  	// 7 update parent Case to add Session to testCase List<Session> sessions
+			              	  	parentCase.addSession(queriedSession);
+			//              	  	List<TestSession> listofsessions = parentCase.getSessions();
+			//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
+			//              	  	parentCase.setSessions(listofsessions);
+			              	  	
+//				            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
+//				            	for (TestSession s : parentCase.getSessions()) {
+//					            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
+//				            	}
+							}
+	
+		              	  	
+//			            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
+//			            	for (TestSession s : parentCase.getSessions()) {
+//				            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		
+//			            	}
+			            	
+			            	
+			            	if (clonemode==true && navToCasePage == true) {
+			            		confirmNotification(queriedSession.getTitle(), "was created");
+			            		close();
+			            		
+			            	} else if (clonemode==true && navToCasePage == false) {
+			            		confirmNotification(queriedSession.getTitle(), "was CLONED");
+			            		getUI().getNavigator()
+		            				.navigateTo(MainView.NAME + "/" + 
+		            						parentCase.getTitle() + "/" + queriedSession.getTitle() + "id=" + queriedSession.getId());		//sessions.getItem(id).getEntity()		            		
+			            		close();
+	
+			            	} else if ( navToCasePage==true && editmode==false ) {
+			            		// 4 UPDATE table title
+			            		table.select(newSessionItem.getBean().getId());	//(testsession.getId());
+			            		confirmNotification(testsession.getTitle(), "was created");
+			            		close();
+	
+	//		            		getUI().getNavigator()
+	//		            			.navigateTo(MainView.NAME + "/" + 
+	//		            				parentCase.getTitle());		//sessions.getItem(id).getEntity()		            		
+			            	
+			            	} else if ( navToCasePage==true && editmode==true ) {
+			            		getUI().getNavigator()
 	            				.navigateTo(MainView.NAME + "/" + 
-	            						parentCase.getTitle() + "/" + queriedSession.getTitle());		//sessions.getItem(id).getEntity()		            		
-		            		close();
-
-		            	} else if ( navToCasePage==true && editmode==false ) {
-		            		// 4 UPDATE table title
-		            		table.select(testsession.getId());
-		            		confirmNotification(testsession.getTitle(), "was created");
-		            		close();
-
-//		            		getUI().getNavigator()
-//		            			.navigateTo(MainView.NAME + "/" + 
-//		            				parentCase.getTitle());		//sessions.getItem(id).getEntity()		            		
-		            	
-		            	} else if ( navToCasePage==true && editmode==true ) {
-		            		confirmNotification(testsession.getTitle(), "was edited");
-		            		close();
-		            		
-		            	} else {
-		            		getUI().getNavigator()
+	            						parentCase.getTitle() + "-sut=" + parentCase.getId());		//sessions.getItem(id).getEntity()		            		
+			            		confirmNotification(testsession.getTitle(), "was edited");
+			            		close();
+			            		
+			            	} else if ( editmode==true && navToCasePage==false) {
+			            		getUI().getNavigator()
 		            			.navigateTo(MainView.NAME + "/" + 
-		            				parentCase.getTitle() + "/" + testsession.getTitle());		//sessions.getItem(id).getEntity()		            		
-		            	}
+		            				parentCase.getTitle() + "/" + newSessionItem.getBean().getTitle() + "id=" + newSessionItem.getBean().getId());		//testsession.getTitle() sessions.getItem(id).getEntity()		            		
+			            	} else {
+			            		getUI().getNavigator()
+			            			.navigateTo(MainView.NAME + "/" + 
+			            				parentCase.getTitle() + "/" + queriedSession.getTitle() + "id=" + queriedSession.getId());		//testsession.getTitle() sessions.getItem(id).getEntity()		            		
+			            	}
+		            	
+			            // title already existed	
+						} else {
+							System.out.println("title was NOT fine.");
+//							testsession = sessions.getItem(id).getEntity();
+//							System.out.println("db session is: " + testsession.getId() + " " + testsession.getTitle());
+
+							if (editmode==false && clonemode==false) {
+								binder.discard();
+								Notification.show("The title '" + wrongTitle + "' already exists for this SUT. Please rename this session.", Type.ERROR_MESSAGE);	//testsession.getTitle()
+								UI.getCurrent().addWindow(new TestSessionEditor(tree, table, parentCase, true));								
+							} else if (editmode==true){
+								binder.discard();
+								Notification.show("The title '" + wrongTitle + "' already exists for this SUT. Please rename this session.", Type.ERROR_MESSAGE);
+								if (navToCasePage == true) {
+									UI.getCurrent().addWindow(new TestSessionEditor(tree, id, parentCase, table));	//sessions.getItem(testsession.getId()).getEntity().getId()																	
+								} else {
+									UI.getCurrent().addWindow(new TestSessionEditor(tree, id, parentCase));																										
+								}
+									
+							} else if (clonemode==true){
+								binder.discard();
+								Notification.show("The title '" + wrongTitle + "' already exists for this SUT. Please rename this session.", Type.ERROR_MESSAGE);
+								UI.getCurrent().addWindow(new TestSessionEditor(
+										tree, 
+										subject.getId(),	//testsession sessions.getItem( 
+					        			parentCase,
+				        				table,
+				        				true));	
+							}
+								
+						}
 		            
 					} catch (CommitException e) {
 						binder.discard();
 						Notification.show("'Title' cannot be Empty. Please try again.", Type.WARNING_MESSAGE);
-						UI.getCurrent().addWindow(new TestSessionEditor(tree, parentCase));
-					} 
+						UI.getCurrent().addWindow(new TestSessionEditor(tree, parentCase, true));
+					} catch (NonUniqueResultException e) {
+						e.printStackTrace();
+						binder.discard();
+						Notification.show("The title '" + testsession.getTitle() + "' already exists for this SUT. Please rename this session.", Type.ERROR_MESSAGE);
+						UI.getCurrent().addWindow(new TestSessionEditor(tree, parentCase, true));
+					}
 //					catch (NonUniqueResultException e) {
 //						binder.discard();
 //						Notification.show("'Title' must be a unique name.\n'" +
@@ -518,6 +600,14 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 
 			close(); // Close the sub-window
 	    }
+
+	private void filterContainerBySUT(TestCase sut) {
+    	sessions.removeAllContainerFilters();
+//    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
+    	Equal casefilter = new Equal("parentcase", sut);//  ("parentcase", getTestCaseByTitle(), true, false);
+    	
+    	sessions.addContainerFilter(casefilter);
+	}
 
 	private void sortAddToTree(Object sid) {
 //        // sort session elements				            

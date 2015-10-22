@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.data.ExampleUtil;
-import com.aaron.mbpet.data.HierarchicalDepartmentContainer;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.ExampleUtil;
+import com.aaron.mbpet.services.HierarchicalDepartmentContainer;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.views.cases.CreateTestCaseWindow;
@@ -71,7 +71,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	static MenuBar userMenu;
 	
 	private JPAContainer<User> persons;
-	private static JPAContainer<TestCase> testcases;
 	public static JPAContainer<TestSession> sessions;
 	public static JPAContainer<Model> models;
 	public static JPAContainer<Parameters> parameters;
@@ -326,7 +325,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            	// get testCase for parent item or Session for children
 	            	if ( menutree.isRoot(id) ){
 //	            		TestCase caseEntity = testcases.getItem(id).getEntity();
-	            		path = getTestcases().getItem(id).getEntity().getTitle();		//caseEntity.getTitle();
+	            		path = getTestcases().getItem(id).getEntity().getTitle() + "-sut=" + getTestcases().getItem(id).getEntity().getId();		//caseEntity.getTitle();
 	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + getTestcases().getItem(id).getEntity().getTitle());
 	            		
 	            	} else {	// a child (Session) was selected
@@ -390,7 +389,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	}
         	System.out.println("parent is " + parent);
 	        // open window to create TestSession
-	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, testcases.getItem(parent).getEntity()));	//testcases
+	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, MbpetUI.testcases.getItem(parent).getEntity(), false));	//testcases
 
 //			NewUseCaseInstanceWindow sub = new NewUseCaseInstanceWindow(menutree, parent.toString());	        
 //	        // Add it to the root component
@@ -404,7 +403,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     	        UI.getCurrent().addWindow(new TestSessionEditor(
     	        		menutree, 
     	        		target, 
-    	        		testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
+    	        		MbpetUI.testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
         		
         	} else if (menutree.isRoot(target)){
     	        UI.getCurrent().addWindow(new TestCaseEditor(menutree, target));	//testcases.getItem(parent).getEntity()        		
@@ -420,7 +419,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		UI.getCurrent().addWindow(new TestSessionEditor(
         				menutree, 
         				target, //session.getId(), 
-        				session.getParentcase(),
+        				getTestcases().getItem(menutree.getParent(target)).getEntity(),//session.getParentcase(),
 //        				sessionsTable,
         				true)
         				);        		
@@ -445,14 +444,14 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
             	if (menutree.hasChildren(target)) {
             		// ask user to confirm
         	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
-							"<b>" + testcases.getItem(target).getEntity().getTitle() + 
+							"<b>" + MbpetUI.testcases.getItem(target).getEntity().getTitle() + 
 								"</b> has Test Session instances that will all be deleted!<br />" +
-							"Are you sure you want to delete <b>" + testcases.getItem(target).getEntity().getTitle() + 
+							"Are you sure you want to delete <b>" + MbpetUI.testcases.getItem(target).getEntity().getTitle() + 
 								"</b> and all its Test Sessions?<br /><br />"));
             	} else {
 	       	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
 							"Are you sure you want to delete <b>" + 
-							testcases.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
+							MbpetUI.testcases.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
             	}
 
             	return;
@@ -483,11 +482,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 
 
 	public static JPAContainer<TestCase> getTestcases() {
-		return testcases;
+		return MbpetUI.testcases;
 	}
 
 	public void setTestcases(JPAContainer<TestCase> testcases) {
-		this.testcases = testcases;
+		MbpetUI.testcases = testcases;
 	}
 	
 	public static JPAContainer<TestSession> getTestsessions() {

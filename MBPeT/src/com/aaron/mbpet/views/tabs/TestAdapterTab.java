@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.tabs;
+package com.aaron.mbpet.views.tabs;
 
 import java.io.File;
 import java.io.FileOutputStream;

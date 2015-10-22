@@ -35,20 +35,21 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class ModelEditorTable extends Panel implements Button.ClickListener {
 
-	Tree tree; 
-	TestCase parentcase;
-	TestSession parentsession;
 	
+	Tree tree; 
+	public static Table modelsTable;
 	private TextField searchField;
 	private Button editButton;
 	private Button cloneButton;
 	private Button newModelButton;
 	private Button deleteButton;
 
-	private Table modelsTable;
     private String modelsFilter;
 
     JPAContainer<Model> models;
+    JPAContainer<TestSession> sessions = MBPeTMenu.sessions;
+    TestCase parentcase;
+    TestSession parentsession;
 	private GeneratedPropertyContainer gpcontainer;
 
 //	public ModelEditorTable(Tree tree) {
@@ -196,7 +197,8 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 
                 // get title of parent session
                 TestSession session = (TestSession) source.getContainerProperty(itemId, "parentsession").getValue();
-                Label label = new Label(session.getTitle());
+                
+                Label label = new Label(sessions.getItem(session.getId()).getEntity().getTitle());
                 
 				return label;
 			}

@@ -391,26 +391,17 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 			    											.createEntityManager();	
 				            Query query = em.createQuery(
-				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title"
+				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title AND t.parentsession = :parentsession"
 				        		);
 		//		            query.setParameter("title", newsession.getTitle());
-				            queriedModel = (Model) query.setParameter("title", currmodel.getTitle()).getSingleResult();
+				            query.setParameter("title", currmodel.getTitle());
+				            query.setParameter("parentsession", currmodel.getParentsession());
+				            queriedModel = (Model) query.getSingleResult();
+				            
 				            System.out.println("the generated id is: " + queriedModel.getId());
 				            Object id = queriedModel.getId();	// here is the id we need for tree
 				            		        			
-//				            // add to tree in right order
-//				            if ( tree.hasChildren(parentsession.getId()) ) {
-//				            	sortAddToTree(id);				            	
-//				            } else {
-//				            	tree.addItem(id);
-//				            	tree.setParent(id, parentsession.getId());
-//				            	tree.setChildrenAllowed(id, false);
-//				            	tree.setItemCaption(id, models.getItem(id).getEntity().getTitle());		//newsession.getTitle()
-//				            	tree.expandItem(parentsession.getId());
-//				            	tree.select(id);				            	
-//				            }
-		        			
-		              	  			              	  	
+				            
 		              	  	// update parent Case to add Session to testCase List<Session> sessions
 		              	  	parentsession.addModel(queriedModel);
 		              	  	parentcase.addModel(queriedModel);
@@ -463,8 +454,10 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 			    											.createEntityManager();	
 				            Query query = em.createQuery(
-				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title");
-				            queriedModel = (Model) query.setParameter("title", clone.getTitle()).getSingleResult();
+				        		    "SELECT OBJECT(t) FROM Model t WHERE t.title = :title AND t.parentsession = :parentsession");
+				            query.setParameter("title", clone.getTitle());
+				            query.setParameter("parentsession", clone.getParentsession());
+				            queriedModel = (Model) query.getSingleResult();
 				            System.out.println("the generated id is: " + queriedModel.getId());
 				            Object id = queriedModel.getId();	// here is the id we need for tree				            
 		        			
@@ -514,9 +507,10 @@ public class ModelEditor extends Window implements Button.ClickListener {
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
 					} catch (NonUniqueResultException e) {
 						binder.discard();
-						Notification not = new Notification("'Title' must be a unique name.\n'",
-											modelBeanItem.getBean().getTitle() +	//queriedModel.getTitle() + 
-											"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
+						Notification not = new Notification("'Title' must be a unique name.\n",
+											"'" + modelBeanItem.getBean().getParentsession().getTitle() + "' already contains model titled: '" + 
+													modelBeanItem.getBean().getTitle() +	//queriedModel.getTitle() + 
+											"'.", Type.WARNING_MESSAGE);
 						not.setStyleName("failure small");
 						not.show(Page.getCurrent());
 						UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));

@@ -2,6 +2,7 @@ package com.aaron.mbpet.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import com.aaron.mbpet.domain.Model;
@@ -12,6 +13,7 @@ import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
@@ -43,6 +45,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	JPAContainer<TestSession> sessions;
 	JPAContainer<Model> models;
 	JPAContainer<Parameters> parameters;
+	TestCase parentcase;
 	
 	private Object target;
 	private String message;
@@ -108,30 +111,31 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        	// delete session. session items are never root
 	        	if (!menutree.isRoot(target)) {		       	        
 	        		parentid = menutree.getParent(target);
-	        		TestCase parentcase = testcases.getItem(parentid).getEntity();
+	        		parentcase = testcases.getItem(parentid).getEntity();
 	        		System.out.println("\nparent OBJECT is: " + parentid);
 	        		System.out.println("\nparent TestCase is: " + parentcase);
 	        		
 	        		// for notification
 	        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
 	        		
-        		
+	        		// DELETE
+	        		deleteSessionAndDescendants(sessions.getItem(target).getEntity());
 	        		
-	                // 1. remove item from tree
-	                menutree.removeItem(target);
-
-	                // pre 1. delete child models and parameters
-	                TestSession currsession = sessions.getItem(target).getEntity();
-	                for (Model m : currsession.getModels()) {
-	                	models.removeItem(m.getId());
-	                }
-	                parameters.removeItem(currsession.getParameters().getId());
-	                                            
-	                // 2. remove child from Case's list of Sessions
-	                parentcase.removeSession(sessions.getItem(target).getEntity());
-	                
-	                // 3. delete session from container
-	                sessions.removeItem(target);
+//	                // 1. remove item from tree
+//	                menutree.removeItem(target);
+//
+//	                // pre 1. delete child models and parameters
+//	                TestSession currsession = sessions.getItem(target).getEntity();
+//	                for (Model m : currsession.getModels()) {
+//	                	models.removeItem(m.getId());
+//	                }
+//	                parameters.removeItem(currsession.getParameters().getId());
+//	                                            
+//	                // 2. remove child from Case's list of Sessions
+//	                parentcase.removeSession(sessions.getItem(target).getEntity());
+//	                	                
+//	                // 3. delete session from container
+//	                sessions.removeItem(target);
 	                
 	                menutree.select(parentid);
 	                
@@ -139,7 +143,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	                getUI()
 	    	            .getNavigator()
 	    	            	.navigateTo(MainView.NAME + "/" + 
-	    	            			parentcase.getTitle());
+	    	            			parentcase.getTitle() + "-sut=" + parentcase.getId());
 	                
 	                confirmNotification(deleteditem);
 	        	
@@ -147,18 +151,12 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        		TestCase testcase = testcases.getItem(target).getEntity();
 	        		// 1) delete any child sessions first 
 	        		if (menutree.hasChildren(target)) {
-	        			for (int i=0; i<testcase.getSessions().size(); i++) { 		//for (TestSession s : testcase.getSessions()) {
-			                // get session to remove
-	        				TestSession s = testcase.getSessions().get(i);
-	        				// remove item from tree
-			                menutree.removeItem(s.getId());
-			                                            
-			                // remove child from Case's list of Sessions
-			                testcase.removeSession(sessions.getItem(s.getId()).getEntity());
-			                
-			                // delete session from container
-			                sessions.removeItem(s.getId());
-	        			}
+	        			System.out.println(testcase.getSessions().toArray().toString());
+	        			int numsessions = testcase.getSessions().size();
+	        			
+	        			// Delete Session and it's models and parameters
+	        			deleteSUTWithDecendants(testcase);
+
 //	        			List<Object> children = new ArrayList<>(menutree.getChildren(target));
 ////            		Collection children = tree.getChildren(target);
 //	        			for (int i=0; i<children.size(); i++) {	//for (Object child : children) {
@@ -192,7 +190,146 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         	}
         }
         
-    	private void confirmNotification(String deletedItem) {
+
+
+
+		private void deleteSUTWithDecendants(TestCase testcase) {
+			//copy list of sessions to iterate over
+			List<TestSession> slist = testcase.getSessions();
+			for (int i=0; i<slist.size(); i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
+            
+				System.out.println("SUT size list of sessions : " + testcase.getSessions().size());
+				
+				// get session to remove
+				deleteSessionAndDescendants(testcase.getSessions().get(i));
+			}
+			//finally set empty list of sessions
+			// remove child from Case's list of Sessions
+            testcase.setSessions(null);
+
+            
+//				// get iterator for sessions
+////			Iterator<TestSession> ite = testcase.getSessions().iterator();
+////			while (ite.hasNext()) {
+////				TestSession ses = ite.next();
+//
+////			for (TestSession ses : testcase.getSessions()) {
+//				System.out.println("SUT size list of sessions : " + testcase.getSessions().size());
+//				// get session to remove
+//				TestSession ses = testcase.getSessions().get(i);	//sessions.getItem(testcase.getSessions().get(i).getId()).getEntity();
+//				
+//                System.out.println("removing from SUT, session : " + ses.getTitle());
+//
+//                // remove item from tree
+//                menutree.removeItem(ses.getId());
+//                                            
+//                // pre 1. delete child models and parameters
+////                TestSession currsession = sessions.getItem(target).getEntity();
+////                for (Model m : ses.getModels()) {
+//                Iterator<Model> it = ses.getModels().iterator();
+//    			while (it.hasNext()) {
+//    				Model m = it.next();
+//    				ses.removeModel(m);
+//                	models.removeItem(m.getId());
+//                }
+//                try {
+//                	// remove for session's list
+//                	ses.setParameters(null);
+//
+//                	// remove from db
+//					parameters.removeItem(ses.getParameters().getId());
+//				} catch (NullPointerException e) {
+//					e.printStackTrace();
+//				}
+//
+////                // remove child from Case's list of Sessions
+////                testcase.removeSession(ses);	//(sessions.getItem(ses.getId()).getEntity());	//s
+//                               
+//                // delete session from container
+//                sessions.removeItem(ses.getId());
+//			} 
+			
+		}
+
+
+		private void deleteSessionAndDescendants(TestSession ses) {
+
+            System.out.println("removing from SUT, session : " + ses.getTitle());
+
+            // 1 remove item from tree
+            menutree.removeItem(ses.getId());
+                                        
+            // 2 delete child models
+//            TestSession currsession = sessions.getItem(target).getEntity();
+//            for (Model m : ses.getModels()) {
+//			List<Model> mlist = ses.getModels();
+            filterModelsBySession(ses);
+			Collection<Object> mlist = models.getItemIds();
+//			for (int i=0; i<mlist.size(); i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
+			for (Object id : mlist) {
+				System.out.println("SESSION size list of models : " + ses.getModels().size());
+				// get session to remove
+				Model m = models.getItem(id).getEntity();	//ses.getModels().get(i);
+				ses.removeModel(m);
+				// remove from container
+				models.removeItem(m.getId());
+			}
+			models.removeAllContainerFilters();
+			// update session's list of models
+			ses.setModels(null);
+			
+			// 3 delete parameters
+            try {
+            	// remove for session's list
+            	Parameters p = ses.getParameters();
+            	ses.setParameters(null);
+            	
+            	// remove from db
+            	parameters.removeItem(p.getId());
+
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+            
+            // delete session from container
+            sessions.removeItem(ses.getId());
+				
+				
+//            Iterator<Model> it = ses.getModels().iterator();
+//			while (it.hasNext()) {
+//				Model m = it.next();
+//				ses.removeModel(m);
+//            	models.removeItem(m.getId());
+//            }
+//            try {
+//            	// remove for session's list
+//            	ses.setParameters(null);
+//
+//            	// remove from db
+//				parameters.removeItem(ses.getParameters().getId());
+//			} catch (NullPointerException e) {
+//				e.printStackTrace();
+//			}
+//
+////            // remove child from Case's list of Sessions
+////            testcase.removeSession(ses);	//(sessions.getItem(ses.getId()).getEntity());	//s
+//                           
+//            // delete session from container
+//            sessions.removeItem(ses.getId());
+			
+		}
+
+
+		public void filterModelsBySession(TestSession ses){
+	    	models.removeAllContainerFilters();
+//	    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	Equal casefilter = new Equal("parentsession", ses);//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	
+	    	models.addContainerFilter(casefilter);
+		}
+		
+		
+		private void confirmNotification(String deletedItem) {
             // welcome notification
             Notification notification = new Notification(deletedItem);
             notification

@@ -5,10 +5,12 @@ import java.util.logging.Level;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.aaron.mbpet.data.DemoDataGenerator;
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.services.DemoDataGenerator;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
@@ -157,6 +159,7 @@ public class MbpetUI extends UI {
     }
 	
 	  private ConnectorTracker tracker;
+	  public static JPAContainer<TestCase> testcases;
 
 	  @Override
 	  public ConnectorTracker getConnectorTracker() {

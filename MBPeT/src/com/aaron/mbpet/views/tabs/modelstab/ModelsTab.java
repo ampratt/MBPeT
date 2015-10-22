@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.tabs;
+package com.aaron.mbpet.views.tabs.modelstab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
-import com.aaron.mbpet.views.models.ModelDBuilderNOTWINDOW;
-import com.aaron.mbpet.views.models.ModelTableAceView;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +39,7 @@ import com.vaadin.ui.VerticalLayout;
 public class ModelsTab extends VerticalLayout {
 
 	public static TabSheet modelsTabs;
-	public static ModelTableAceView acetab;	// = new ModelTableAceView();
+	public ModelTableAceView acetab;	// = new ModelTableAceView();
 	public static ModelDBuilderNOTWINDOW diagramtab;	// = new ModelDBuilderNOTWINDOW();
 	AceEditor editor;
 	
@@ -71,8 +69,8 @@ public class ModelsTab extends VerticalLayout {
 		
 	//	confTabs.addTab(graph, "User Profiles / Models");
 		//graphTab.addComponent(MbpetDemoUI.graph);
-		acetab = new ModelTableAceView(editor);
-		diagramtab = new ModelDBuilderNOTWINDOW(editor);
+		acetab = new ModelTableAceView(editor, modelsTabs);
+		diagramtab = new ModelDBuilderNOTWINDOW(editor, modelsTabs);
 		
 		modelsTabs.addTab(acetab);
 		modelsTabs.addTab(diagramtab);

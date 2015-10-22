@@ -3,7 +3,7 @@
  * @author Aaron
  *
  */
-package com.aaron.mbpet.views.models;
+package com.aaron.mbpet.views.tabs.modelstab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,9 @@ import org.vaadin.diagrambuilder.DiagramBuilder;
 import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
-import com.aaron.mbpet.components.aceeditor.ModelAceEditorLayout;
-import com.aaron.mbpet.components.diagrambuilder.DBuilderUtils;
-import com.aaron.mbpet.components.tabs.ModelsTab;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.DBuilderUtils;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.sessions.SessionViewer;
@@ -41,6 +39,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
@@ -54,6 +53,8 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
     JPAContainer<Model> models;
     TestSession currsession;
     
+    TabSheet modelsTabs;
+    
     // table elements
     private TextField searchField;
     protected String modelsFilter;
@@ -64,7 +65,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
-	ModelAceEditorLayout editorLayout;
+	public static ModelAceEditorLayout editorLayout;
 //	ModelDBuilderNOTWINDOW dbuilderLayout;
 //    final TextField aceOutFileField = new TextField();
 //    final TextField aceInFileField = new TextField();
@@ -73,7 +74,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
     
     
 	
-	public ModelTableAceView(AceEditor editor) {	//AceEditor editor TestSession currsession
+	public ModelTableAceView(AceEditor editor, TabSheet modelsTabs) {	//AceEditor editor TestSession currsession
 		setSizeFull();
 		setSplitPosition(30, Unit.PERCENTAGE);
 //		setSpacing(true);
@@ -82,6 +83,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		models = MBPeTMenu.models;
 		this.currsession = SessionViewer.currsession;
 		this.editor = editor;	 //= new AceEditor()
+		this.modelsTabs = modelsTabs;
 		
 		setFirstComponent(buildLeftSide());
 		setSecondComponent(buildRightSide());
@@ -221,7 +223,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
-		editorLayout = new ModelAceEditorLayout(editor, "dot");
+		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs);
 		editorLayout.toggleEditorFields(false);
 		
 //		dbuilderLayout = new ModelDBuilderNOTWINDOW(editor);

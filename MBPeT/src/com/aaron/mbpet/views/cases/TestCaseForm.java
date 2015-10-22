@@ -29,7 +29,7 @@ public class TestCaseForm extends GridLayout {
 		title.focus();
 		title.setWidth(18, Unit.EM);//  (100.0f, Unit.PERCENTAGE);	//setWidth("100%");
 		description.setWidth(18, Unit.EM);
-		description.setCaption("Decription (optional)");
+		description.setCaption("Description (optional)");
 		description.addStyleName("caption-optional");
 		
 //		disableValidationMessages();

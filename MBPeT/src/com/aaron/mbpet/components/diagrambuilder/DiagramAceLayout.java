@@ -22,6 +22,7 @@ import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
+import com.aaron.mbpet.services.DBuilderUtils;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -347,7 +348,7 @@ public class DiagramAceLayout extends VerticalLayout {
         aceLoaderButton.addClickListener(new Button.ClickListener() {
         	@Override
 			public void buttonClick(ClickEvent event) {
-        		try {
+//        		try {
         			if (diagramBuilder != null) {
     					//layout.
         				removeComponent(diagramBuilder); 
@@ -357,11 +358,11 @@ public class DiagramAceLayout extends VerticalLayout {
         	        diagramTitleField.setValue(diagramUtils.getGraphTitle());
     		        //layout.
         	        addComponent(diagramBuilder);    		        
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println(e.getClass());
-				}
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//					System.out.println(e.getClass());
+//				}
 			}
 		});
 		
@@ -398,7 +399,7 @@ public class DiagramAceLayout extends VerticalLayout {
 						}
                     	//save data to file
                     	List<Node> nodes = event.getNodes();
-						diagramUtils.saveToFile(nodes, outFileField.getValue(), diagramTitleField.getValue());
+						diagramUtils.getGraphDataAsString(nodes, outFileField.getValue(), diagramTitleField.getValue());
                     	
 						// redraw diagram if nodes need to be renamed
 //                    	nodes = diagramUtils.renameNodes(nodes);
@@ -413,7 +414,7 @@ public class DiagramAceLayout extends VerticalLayout {
         	@Override
 			public void buttonClick(ClickEvent event) {
         		// call method for parsing .dot data
-        		try {
+//        		try {
         			if (diagramBuilder != null) {
     					//layout.
         				removeComponent(diagramBuilder); 
@@ -423,11 +424,11 @@ public class DiagramAceLayout extends VerticalLayout {
         	        diagramTitleField.setValue(diagramUtils.getGraphTitle());
     		        //layout.
         	        addComponent(diagramBuilder);    		        
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println(e.getClass());
-				}
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//					System.out.println(e.getClass());
+//				}
 			}
 		});
         

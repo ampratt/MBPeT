@@ -1,4 +1,4 @@
-package com.aaron.mbpet.data;
+package com.aaron.mbpet.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -298,6 +298,11 @@ public class DemoDataGenerator {
 		Parameters p2 = new Parameters(sess2);
 		Parameters p1 = new Parameters(sess1);
 
+		Parameters p21 = new Parameters(portal1);
+		Parameters p22 = new Parameters(portal2);
+		Parameters p23 = new Parameters(portal3);
+		Parameters p24 = new Parameters(portal4);
+
 //		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
 //		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
 //		Parameters p3 = new Parameters("twitter.com", 90, 3, 3, 1.5,sess6);
@@ -309,6 +314,10 @@ public class DemoDataGenerator {
 		em.persist(p5);
 		em.persist(p6);
 		em.persist(p7);
+		em.persist(p21);
+		em.persist(p22);
+		em.persist(p23);
+		em.persist(p24);
 	
 		// Response times	
 //		HashMap<String, Double> map = new HashMap<String, Double>();
@@ -345,6 +354,10 @@ public class DemoDataGenerator {
 		em.refresh(sess3);
 		em.refresh(sess2);
 		em.refresh(sess1);
+		em.refresh(portal1);
+		em.refresh(portal2);
+		em.refresh(portal3);
+		em.refresh(portal4);
 		em.getTransaction().commit();
 		
 //		// ramp list

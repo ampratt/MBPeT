@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.cases.CaseViewer;
@@ -52,6 +56,8 @@ public class MainView extends HorizontalLayout implements View {
 	MBPeTMenu menu;
 	Tree tree;
 //	ContentView contentView;
+
+	
 
     // Menu navigation button listener
 //    class ButtonListener implements Button.ClickListener {
@@ -178,7 +184,8 @@ public class MainView extends HorizontalLayout implements View {
        		contentLayout.setContent(new LandingPage(tree));
             
               return;
-        } else if (!event.getParameters().contains("/")){
+        } else if (event.getParameters().contains("sut=")){	//! "/"
+//        	getTestCaseByTitleID(event.getParameters());
         	// navigate to TestCase home page
     		contentLayout.setContent(new CaseViewer(
     				event.getParameters(), tree));
@@ -237,6 +244,8 @@ public class MainView extends HorizontalLayout implements View {
     }
     
     
+   
+	
 //    public static void setDisplayName(String name) {
 //    	displayName = name;
 //    }

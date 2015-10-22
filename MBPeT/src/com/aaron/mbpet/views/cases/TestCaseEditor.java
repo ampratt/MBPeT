@@ -1,6 +1,7 @@
 package com.aaron.mbpet.views.cases;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
@@ -191,9 +192,10 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		    					.createEntityManagerFactory("mbpet")
 		    					.createEntityManager();	
 			            Query queryByTestCaseName = em.createQuery(
-			        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
+			        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title AND t.owner = :owner"
 			        		);
 			            queryByTestCaseName.setParameter("title", testcase.getTitle());
+			            queryByTestCaseName.setParameter("owner", testcase.getOwner());	//MainView.sessionUser
 			            TestCase queriedcase = (TestCase) queryByTestCaseName.getSingleResult();
 			            System.out.println("the generated id is: " + queriedcase.getId());
 			            Object id = queriedcase.getId();	// here is the id we need for tree
@@ -217,7 +219,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		            	// nav to created test case
 		    			getUI().getNavigator()
 		         			.navigateTo(MainView.NAME + "/" + 
-		         					testcases.getItem(id).getEntity().getTitle());
+		         					testcases.getItem(id).getEntity().getTitle() +
+		         					"-sut=" + id);
 					} else {
 		            	System.out.println("\nWHAT IS NEW LIST OF CASES (before update): " + MainView.sessionUser.getCases()); // testing purposes
 
@@ -252,6 +255,11 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 						e.printStackTrace();
 						binder.discard();
 						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
+						UI.getCurrent().addWindow(new TestCaseEditor(tree));
+					} catch (NonUniqueResultException e) {
+						e.printStackTrace();
+						binder.discard();
+						Notification.show("The title '" + testcase.getTitle() + "' already exists in your database. Please rename this SUT.", Type.ERROR_MESSAGE);
 						UI.getCurrent().addWindow(new TestCaseEditor(tree));
 					}
 	            

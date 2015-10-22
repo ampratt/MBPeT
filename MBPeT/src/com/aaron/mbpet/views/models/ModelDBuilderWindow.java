@@ -12,8 +12,8 @@ import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
-import com.aaron.mbpet.components.diagrambuilder.DBuilderUtils;
 import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.services.DBuilderUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -358,7 +358,7 @@ public class ModelDBuilderWindow extends Window implements Button.ClickListener 
 					}
                 	//save data to file
                 	List<Node> nodes = event.getNodes();
-					diagramUtils.saveToFile(nodes, outFileField, titleField.getValue());	//outFileField.getValue()
+					diagramUtils.getGraphDataAsString(nodes, outFileField, titleField.getValue());	//outFileField.getValue()
                 	
 					// redraw diagram if nodes need to be renamed
 //                	nodes = diagramUtils.renameNodes(nodes);
@@ -403,7 +403,7 @@ public class ModelDBuilderWindow extends Window implements Button.ClickListener 
 
 
 		// call method for parsing .dot data
- 		try {
+// 		try {
  			if (diagramBuilder != null) {
 					//layout.
  				diagramContainer.removeComponent(diagramBuilder); 
@@ -413,11 +413,11 @@ public class ModelDBuilderWindow extends Window implements Button.ClickListener 
 // 	        titleField.setValue(diagramUtils.getGraphTitle());
 		        
  	        diagramContainer.addComponent(diagramBuilder);    		        
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println(e.getClass());
-			}
+//			} catch (FileNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				System.out.println(e.getClass());
+//			}
 	}
 	
 	public void toggleEditorFields(boolean b) {

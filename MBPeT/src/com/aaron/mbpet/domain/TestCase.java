@@ -36,7 +36,7 @@ public class TestCase {
     private int id;
 
     @NotNull
-    @Column(unique=true)
+    @Column	//(unique=true)
     @Size(min = 1, max = 40)
     private String title;
     

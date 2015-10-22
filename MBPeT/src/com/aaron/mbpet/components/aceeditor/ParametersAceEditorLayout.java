@@ -24,7 +24,9 @@ import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -72,8 +74,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		this.fileFormat = fileFormat;
 		this.currsession = SessionViewer.currsession;
 		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
-		System.out.println("Current parameters from session is ->" + currsession.getParameters().getId() +
-							" - owned by session ->" + currsession.getId() + "-" + currsession.getTitle());
+//		System.out.println("Current parameters from session is ->" + currsession.getParameters().getId() +
+//							" - owned by session ->" + currsession.getId() + "-" + currsession.getTitle());
 //		currParameters.setSettings_file((String) DbUtils.readFromDb(currParameters.getId()));
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
@@ -146,11 +148,16 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 
 	private AceEditor buildAceEditor() {
 		// Ace Editor
-		if (currParameters.getSettings_file() == null) {
+		try {
+			if (currParameters.getSettings_file() == null) {
+				editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
+			} else {
+				editor.setValue(currParameters.getSettings_file());
+			}
+		} catch (NullPointerException e1) {
+			e1.printStackTrace();
 			editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
-		} else {
-			editor.setValue(currParameters.getSettings_file());
-		}
+		} 
 			// use static hosted files for theme, mode, worker
 //			editor.setThemePath("/static/ace");
 //			editor.setModePath("/static/ace");

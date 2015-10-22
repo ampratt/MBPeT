@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aaron.mbpet.data.DemoDataGenerator.SaveObject2Database;
+import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
 
 public class DbUtils {

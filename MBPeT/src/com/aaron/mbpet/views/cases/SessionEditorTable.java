@@ -39,12 +39,12 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	Tree tree; 
 	TestCase testcase;
 	
+	public static Table sessionsTable;
 	private TextField searchField;
 	private Button editButton;
 	private Button cloneButton;
 	private Button newSessionButton;
 	private Button deleteButton;
-	private Table sessionsTable;
     private String sessionsFilter;
 
     JPAContainer<TestSession> sessions;
@@ -219,7 +219,9 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	public void buttonClick(ClickEvent event) {
         if (event.getButton() == newSessionButton) {
 	        // open window to create item
-	        UI.getCurrent().addWindow(new TestSessionEditor(tree, testcase ));	//testcases.getItem(parent).getEntity()
+	        UI.getCurrent().addWindow(
+	        		new TestSessionEditor(tree, sessionsTable, testcase, true));	//testcases.getItem(parent).getEntity()
+//	        		new TestSessionEditor(tree, testcase, true ));	//testcases.getItem(parent).getEntity()
 
         } else if (event.getButton() == editButton) {
 			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();

@@ -104,6 +104,21 @@ public class Model {
 	public void setParentsut(TestCase parentsut) {
 		this.parentsut = parentsut;
 	}
+	
+	
+	public void updateSessionData(TestSession session) {
+		System.out.println("BEFORE UPDATE");
+		System.out.println(getParentsession().getTitle());
+
+		// get index before renaming/removing
+//		removeSession(session);
+
+		setParentsession(session);
+		
+		System.out.println("AFTER UPDATE");
+		System.out.println(getParentsession().getTitle());
+
+	}
 
 	
 }

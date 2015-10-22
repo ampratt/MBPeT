@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.tabs;
+package com.aaron.mbpet.views.tabs;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
