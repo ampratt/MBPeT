@@ -88,6 +88,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 //	    content.setCaption(null);
 	    
         searchField = new TextField();
+        searchField.addStyleName("small");
         searchField.setInputPrompt("Search by title");
         searchField.addTextChangeListener(new TextChangeListener() {
             @Override

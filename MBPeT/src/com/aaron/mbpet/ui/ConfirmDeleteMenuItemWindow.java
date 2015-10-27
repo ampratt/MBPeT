@@ -55,7 +55,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         super("Heads Up!");
         center();
         setResizable(false);
-        setClosable(false);
+        setClosable(true);
         setModal(true);
 
         this.menutree = tree;
@@ -86,7 +86,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
             
             
             // cancel changes and close window
-            cancel = new Button("Cancel");
+            cancel = new Button("Cancel", this);
 //            addStyleName("danger");
 
 
@@ -119,7 +119,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
 	        		
 	        		// DELETE
-	        		deleteSessionAndDescendants(sessions.getItem(target).getEntity());
+	        		deleteSessionAndDescendants(sessions.getItem(target).getEntity(), parentcase);
 	        		
 //	                // 1. remove item from tree
 //	                menutree.removeItem(target);
@@ -185,7 +185,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        	}		        	
 	        	close();
 	        	
-        	} else if (event.getButton() == delete) {
+        	} else if (event.getButton() == cancel) {
                 close(); // Close the sub-window
         	}
         }
@@ -201,10 +201,9 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 				System.out.println("SUT size list of sessions : " + testcase.getSessions().size());
 				
 				// get session to remove
-				deleteSessionAndDescendants(testcase.getSessions().get(i));
+				deleteSessionAndDescendants(testcase.getSessions().get(i), testcase);
 			}
-			//finally set empty list of sessions
-			// remove child from Case's list of Sessions
+//			// remove child from Case's list of Sessions
             testcase.setSessions(null);
 
             
@@ -252,7 +251,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 		}
 
 
-		private void deleteSessionAndDescendants(TestSession ses) {
+		private void deleteSessionAndDescendants(TestSession ses, TestCase testcase) {
 
             System.out.println("removing from SUT, session : " + ses.getTitle());
 
@@ -291,10 +290,23 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 				e.printStackTrace();
 			}
             
+            // remove from Case's list of Sessions
+            testcase.removeSession(ses);
+//            testcase.setSessions(null);
+
             // delete session from container
             sessions.removeItem(ses.getId());
 				
 				
+            try {
+				System.out.println("SUT list of sessions :" + testcase.getSessions());
+				for (TestSession s : testcase.getSessions()) {
+					System.out.println(s.getId() + " " + s.getTitle() + " - parent ->" + s.getParentcase().getTitle());
+				}
+			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //            Iterator<Model> it = ses.getModels().iterator();
 //			while (it.hasNext()) {
 //				Model m = it.next();

@@ -110,10 +110,10 @@ public class DemoDataGenerator {
 
 		TestCase tcdashboard = new TestCase("gen dashboard", "dash decription", user);
 		TestCase tcportal = new TestCase("gen portal", "portal decription", user);
-		TestCase tc3 = new TestCase("gen talkpanel", "talkpanel decription", user);
+		TestCase talkpanel = new TestCase("gen talkpanel", "talkpanel decription", user);
 		tcdashboard.setOwner(user);
 		tcportal.setOwner(user);
-		tc3.setOwner(user);
+		talkpanel.setOwner(user);
 
 		TestCase tc4 = new TestCase("u2 talkpanel", "talkpanel decription", u2);
 		TestCase tc5 = new TestCase("u2 portal", "talkpanel decription", u2);
@@ -130,7 +130,7 @@ public class DemoDataGenerator {
 //		emjpa.persist(new TestCase("gen talkpanel", "talkpanel decription", user)); 
 		em.persist(tcdashboard);
 		em.persist(tcportal);
-		em.persist(tc3);
+		em.persist(talkpanel);
 		em.persist(tc4);
 		em.persist(tc5);
 		em.persist(tc6);
@@ -167,6 +167,10 @@ public class DemoDataGenerator {
 		TestSession portal3 = new TestSession("portal session 3");
 		TestSession portal4 = new TestSession("portal session 4");
 
+
+		TestSession first = new TestSession("first");
+		TestSession second = new TestSession("second");
+
 		sess1.setParentcase(tcdashboard);
 		sess2.setParentcase(tcdashboard);
 		sess3.setParentcase(tcdashboard);
@@ -175,6 +179,9 @@ public class DemoDataGenerator {
 		portal2.setParentcase(tcportal);
 		portal3.setParentcase(tcportal);
 		portal4.setParentcase(tcportal);
+		first.setParentcase(talkpanel);
+		second.setParentcase(talkpanel);
+		
 
 		em.persist(sess1);
 		em.persist(sess2);
@@ -184,6 +191,8 @@ public class DemoDataGenerator {
 		em.persist(portal2);
 		em.persist(portal3);
 		em.persist(portal4);
+		em.persist(first);
+		em.persist(second);
 		
 //		emjpa.persist(new TestSession("dashboard session 1", testcase)); 
 //		emjpa.persist(new TestSession("dashboard session 2", testcase)); 
@@ -198,6 +207,7 @@ public class DemoDataGenerator {
 		em.getTransaction().begin();
 		em.refresh(tcdashboard);
 		em.refresh(tcportal);
+		em.refresh(talkpanel);
 //		List<TestSession> list = new ArrayList<TestSession>();
 //		list.add(sess1);
 //		list.add(sess2);
@@ -227,10 +237,10 @@ public class DemoDataGenerator {
 		// MODELS
 		em.getTransaction().begin();
 		
-		Model m1 = new Model("passive_user", sess1, tcdashboard);
-		Model m2 = new Model("active_user", sess1, tcdashboard);
-		Model m3 = new Model("aggressive_user", sess1, tcdashboard);
-		Model m4 = new Model("nonexistent_user", sess1, tcdashboard);
+		Model m11 = new Model("passive_user", sess1, tcdashboard);
+		Model m12 = new Model("active_user", sess1, tcdashboard);
+		Model m13 = new Model("aggressive_user", sess1, tcdashboard);
+		Model m14 = new Model("nonexistent_user", sess1, tcdashboard);
 
 		Model m21 = new Model("passive_user", sess2, tcdashboard);
 		Model m22 = new Model("active_user", sess2, tcdashboard);
@@ -239,6 +249,11 @@ public class DemoDataGenerator {
 		Model m31 = new Model("nonexistent_user", portal1, tcportal);
 		Model m32 = new Model("you_get_the_point_user", portal1, tcportal);
 		
+		Model m1first = new Model("m1", first, talkpanel);
+		Model m2first = new Model("m2", first, talkpanel);
+		Model m1second = new Model("m1", second, talkpanel);
+		Model m2second = new Model("m2", second, talkpanel);
+
 //		String dotmodel = "";
 //		try{
 //			dotmodel = FileUtils.readFileToString(
@@ -264,11 +279,11 @@ public class DemoDataGenerator {
 			e.printStackTrace();
 		}
 
-		m1.setDotschema(dotmodel);
-		em.persist(m1);
-		em.persist(m2);
-		em.persist(m3);
-		em.persist(m4);
+		m11.setDotschema(dotmodel);
+		em.persist(m11);
+		em.persist(m12);
+		em.persist(m13);
+		em.persist(m14);
 		
 		em.persist(m21);
 		em.persist(m22);
@@ -276,6 +291,12 @@ public class DemoDataGenerator {
 		
 		em.persist(m31);
 		em.persist(m32);
+
+		em.persist(m1first);
+		em.persist(m2first);
+		em.persist(m1second);
+		em.persist(m2second);
+
 		em.getTransaction().commit();
 
 		em.getTransaction().begin();
@@ -284,6 +305,11 @@ public class DemoDataGenerator {
 		em.refresh(portal1);
 		em.refresh(tcdashboard);
 		em.refresh(tcportal);
+
+		em.refresh(first);
+		em.refresh(second);
+		em.refresh(talkpanel);
+
 		em.getTransaction().commit();
 		
 		
@@ -303,6 +329,10 @@ public class DemoDataGenerator {
 		Parameters p23 = new Parameters(portal3);
 		Parameters p24 = new Parameters(portal4);
 
+		Parameters p31 = new Parameters(first);
+		Parameters p32 = new Parameters(second);
+
+		
 //		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
 //		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
 //		Parameters p3 = new Parameters("twitter.com", 90, 3, 3, 1.5,sess6);
@@ -318,6 +348,8 @@ public class DemoDataGenerator {
 		em.persist(p22);
 		em.persist(p23);
 		em.persist(p24);
+		em.persist(p31);
+		em.persist(p32);
 	
 		// Response times	
 //		HashMap<String, Double> map = new HashMap<String, Double>();
@@ -358,6 +390,8 @@ public class DemoDataGenerator {
 		em.refresh(portal2);
 		em.refresh(portal3);
 		em.refresh(portal4);
+		em.refresh(first);
+		em.refresh(second);
 		em.getTransaction().commit();
 		
 //		// ramp list

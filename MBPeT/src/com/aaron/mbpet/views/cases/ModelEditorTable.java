@@ -3,6 +3,8 @@
  */
 package com.aaron.mbpet.views.cases;
 
+import java.util.List;
+
 import org.eclipse.persistence.internal.sessions.factories.SessionsFactory;
 
 import com.aaron.mbpet.domain.Model;
@@ -19,12 +21,16 @@ import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
@@ -108,6 +114,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 //	    content.setCaption(null);
 	    
         searchField = new TextField();
+        searchField.addStyleName("small");
         searchField.setInputPrompt("Search by title");
         searchField.addTextChangeListener(new TextChangeListener() {
             @Override
@@ -260,14 +267,26 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	
 	public void buttonClick(ClickEvent event) {
         if (event.getButton() == newModelButton) {
-	        // open window to create item
-	        UI.getCurrent().addWindow(new ModelEditor(parentcase, true));	//testcases.getItem(parent).getEntity()
+        	if (!(parentcase.getSessions().size() > 0)) {
+    	    	Notification not = new Notification("", "Models must belong to a test Session.\n\nPlease create a Session first.", Type.TRAY_NOTIFICATION);
+    	    	not.setPosition(Position.TOP_RIGHT);
+    	    	not.setStyleName("failure");
+    	    	not.show(Page.getCurrent());
+    	    } else {
+	//        	List<TestSession> slist = parentcase.getSessions().get(parentcase.getSessions().size()-1);
+	        	TestSession newestsession = parentcase.getSessions().get(parentcase.getSessions().size()-1);	//slist.get(slist.size()-1);
+		        // open window to create item
+		        UI.getCurrent().addWindow(new ModelEditor(sessions.getItem(newestsession.getId()).getEntity(),
+		        											parentcase, 
+		        											true));	//testcases.getItem(parent).getEntity()
+    	    }
 
         } else if (event.getButton() == editButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
+			TestSession parentsession = sessions.getItem(model.getParentsession().getId()).getEntity();
 	        UI.getCurrent().addWindow(new ModelEditor(
 	        			model.getId(),
-	        			model.getParentsession(),
+	        			parentsession,	//model.getParentsession(),
 	        			parentcase,
         				modelsTable)
 	        );

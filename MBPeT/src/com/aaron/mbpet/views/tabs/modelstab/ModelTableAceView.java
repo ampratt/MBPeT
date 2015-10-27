@@ -18,6 +18,7 @@ import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.DBuilderUtils;
+import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.sessions.SessionViewer;
@@ -119,6 +120,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 ////	    content.setCaption(null);
 	    
         searchField = new TextField();
+        searchField.setWidth(13, Unit.EM);
         searchField.addStyleName("tiny");
         searchField.setInputPrompt("Search by title");
         searchField.addTextChangeListener(new TextChangeListener() {
@@ -168,9 +170,9 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 	    
 	    
 	    // Table
+	    setFilterByTestCase();
 		modelsTable = new Table();
 		modelsTable.setContainerDataSource(models);	//(userSessionsContainer);
-		setFilterByTestCase();
 		modelsTable.setSizeFull();
 //		modelsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
 //		modelsTable.addStyleName(ValoTheme.TABLE_NO_HEADER);
@@ -187,26 +189,26 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
         modelsTable.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO retrieve model from db and load to ace editor
 				if (modelsTable.getValue() != null) {
-//					Notification.show(event.getProperty().getValue().toString(), Type.TRAY_NOTIFICATION);
 					
 					// add model to editor view
+					editorLayout.createNewModel(false);
 					editorLayout.toggleEditorFields(true);
 					editorLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 					// add model to dbuilder
-//					dbuilderLayout
 					ModelsTab.diagramtab.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 //					models.getItem(modelsTable.getValue());					
 					setModificationsEnabled(event.getProperty().getValue() != null);
 	        	} else {
 					setModificationsEnabled(false);
+					// remove model to editor view
+//					editorLayout.setFieldsDataSource(null);
+//					editorLayout.toggleEditorFields(false);
 	        	}
 			} 	
 				private void setModificationsEnabled(boolean b) {
-//	                editButton.setEnabled(b);
 	                cloneButton.setEnabled(b);
 	                deleteButton.setEnabled(b);
 	            }
@@ -219,6 +221,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		return layout;
 	}
 
+	
 	private Component buildRightSide() {
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
@@ -248,13 +251,13 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
         	
         	Model selected = models.getItem(modelsTable.getValue()).getEntity();
         	Model m = new Model();
-        	m.setTitle("(clone) " + selected.getTitle());
-        	m.setDotschema(selected.getDotschema());
+        	m.setTitle("clone_" + selected.getTitle());
+        	m.setDotschema(ModelUtils.renameAceTitle("clone_" + selected.getTitle(), selected.getDotschema()));		//(selected.getDotschema());
         	m.setParentsession(selected.getParentsession());
         	m.setParentsut(selected.getParentsut());
         	
 			editorLayout.setFieldsDataSource(m);
-			editorLayout.cloneModel(true);
+			editorLayout.cloneModel(m, true);
 
         } else if (event.getButton() == deleteButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();

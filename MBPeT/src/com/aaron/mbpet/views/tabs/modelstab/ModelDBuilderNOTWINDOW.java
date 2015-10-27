@@ -344,7 +344,16 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 			diagramContainer.removeComponent(diagramBuilder); 
 		}
  	    diagramBuilder = new DiagramBuilder();
-        diagramUtils.readFromDotSource(diagramBuilder, currmodel.getDotschema());	//inFileField inFileField.getValue()
+ 	    String dotsource = currmodel.getDotschema();
+ 	    if (dotsource==null){
+ 	    	dotsource = "digraph " + currmodel.getTitle() + " {\n" +
+					"\t//STATES\n"  +
+					"\t1\n" + "\t2\n\n" +
+					"\t//TRANSITIONS\n"  +
+					"\t1 -> 2\n" +
+					"}";
+ 	    }
+        diagramUtils.readFromDotSource(diagramBuilder, dotsource);	// currmodel.getDotschema());	//inFileField inFileField.getValue()
         diagramContainer.addComponent(diagramBuilder);    		        
  		
  		// forcing reload slow loading graph

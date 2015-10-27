@@ -425,7 +425,7 @@ public class DBuilderUtils implements Serializable {
 				}		
 				writer.close();		
 				System.out.println("READING ALL THE FILE INTO A STRING:\n" + toParse + "\nEND OF FILE\n");		
-				sc = new Scanner(f);	//new FileReader(f) inputSource		
+				sc = new Scanner(inputSource);	//(f);	//new FileReader(f) inputSource		
 						
 			} else if (f.isFile()) {		
 				System.out.println("INPUT WAS a file and is: " + inputSource);		
@@ -598,7 +598,7 @@ public class DBuilderUtils implements Serializable {
 							sc.useDelimiter("\\s*\\D+\\s*");
 							//TODO insert automatic label
 //							labels.add("\"no label data temporary label\"");
-		    				conn.setName("\"no label data temporary label\"");
+		    				conn.setName("");	//("\"no label data temporary label\"");
     						transCounter++;
     						System.out.println("The Transition label is: no label data temporary label");				// Testing only. print to console
 
@@ -679,14 +679,14 @@ public class DBuilderUtils implements Serializable {
 			sc.close(); 
 
 			// Testing only
-	    	System.out.println("states were: " + states);	// Testing only. print to console
-	    	System.out.println("xy values length: " + xyValues.size());	// Testing only. print to console
-	    	System.out.println("Transition size: " + actualTransitions.size());	// Testing only. print to console
-//	    	System.out.println("transition(s) coords are: " + transitions);// Testing only. print to console
-//	    	System.out.println("The Transition label(s) size: " + labels.size());	// Testing only. print to console
-//	    	System.out.println("The Transition label(s) are: " + labels);	// Testing only. print to console
-	    	System.out.println("Connector 3 x->y is: " + actualTransitions.get(2).getSource() + "->" + actualTransitions.get(2).getTarget());// Testing only. print to console
-	    	System.out.println("Connector 3 label is: " + actualTransitions.get(2).getConnector().getName());// Testing only. print to console
+//	    	System.out.println("states were: " + states);	// Testing only. print to console
+//	    	System.out.println("xy values length: " + xyValues.size());	// Testing only. print to console
+//	    	System.out.println("Transition size: " + actualTransitions.size());	// Testing only. print to console
+////	    	System.out.println("transition(s) coords are: " + transitions);// Testing only. print to console
+////	    	System.out.println("The Transition label(s) size: " + labels.size());	// Testing only. print to console
+////	    	System.out.println("The Transition label(s) are: " + labels);	// Testing only. print to console
+//	    	System.out.println("Connector 3 x->y is: " + actualTransitions.get(2).getSource() + "->" + actualTransitions.get(2).getTarget());// Testing only. print to console
+//	    	System.out.println("Connector 3 label is: " + actualTransitions.get(2).getConnector().getName());// Testing only. print to console
 	        
 			// Generate diagram from parsed dot file
 			generateDiagramFromFile(diagramBuilder, states, xyValues, actualTransitions);	//transitions, labels

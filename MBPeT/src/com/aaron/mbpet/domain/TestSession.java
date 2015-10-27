@@ -109,8 +109,11 @@ public class TestSession {
 	
 	
 	public void addModel(Model model) {
+		System.out.println("MODEL LIST before adding: " + getModels().size());
+
   	  	this.models.add(model);		
 //  	  	setSessions(this.sessions);
+		System.out.println("MODEL LIST after adding: " + getModels().size());
 	}
 	
 	public void removeModel(Model model) {

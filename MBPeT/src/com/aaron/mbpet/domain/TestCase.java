@@ -249,7 +249,7 @@ public class TestCase {
 	}
 	
 	public void updateModelData(Model model) {
-		System.out.println("BEFORE UPDATE");
+		System.out.println("CASE - BEFORE UPDATE");
 		for (Model m : models) {			
 			System.out.println("container title: " + m.getTitle());
 		}

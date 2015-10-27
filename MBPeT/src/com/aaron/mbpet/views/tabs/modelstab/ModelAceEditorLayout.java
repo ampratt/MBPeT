@@ -20,6 +20,7 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelDBuilderWindow;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.sessions.SessionViewer;
@@ -97,6 +98,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         h.setSpacing(true);    
 
         titleField = new TextField("Title:");
+        titleField.setWidth(13, Unit.EM);
         titleField.addStyleName("tiny");
         titleField.setImmediate(true);
         titleField.addTextChangeListener(new TextChangeListener() {	
@@ -111,6 +113,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         modeBox = new ComboBox("code style:", modeList);
 //        modeBox.setContainerDataSource(modes);
 //        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
+        modeBox.setWidth(7, Unit.EM);
         modeBox.addStyleName("tiny");
         modeBox.setInputPrompt("No style selected");
         modeBox.setFilteringMode(FilteringMode.CONTAINS);
@@ -205,9 +208,11 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			
 			Model editedmodel = null;
 			// check editor title matches text field title
-			String corrected = "";
-			if (editor.getValue() != null)
-				corrected = ModelUtils.compareTitles(titleField.getValue(), editor.getValue());
+//			if (editor.getValue() != null)
+//				corrected = ModelUtils.compareTitles(titleField.getValue(), editor.getValue());
+//			String corrected = ModelUtils.renameAceTitle(titleField.getValue(), editor.getValue());		//(selected.getDotschema());
+//			editor.setValue(corrected);
+			
 			if ( createNewModel == true ) {
 //				editor.setValue(corrected);
 				editedmodel = ModelUtils.createNewModel(currmodel, currsession, binder); //currmodel.getParentsession(),
@@ -219,12 +224,31 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			}
 			
 			
-			ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
-			toggleEditorFields(true);
-			setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
-			editor.focus();
+			try {
+				if (editedmodel != null){
+					ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+					toggleEditorFields(true);
+					setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
+					editor.focus();
+					openDBuilderButton.setEnabled(true);					
+				} else {
+					createNewModel = true;
+					toggleEditorFields(false);
+					setFieldsDataSource(null);
+					UI.getCurrent().getNavigator()
+							.navigateTo(MainView.NAME + "/" + 
+								currsession.getParentcase().getTitle() + "/" + 
+									currsession.getTitle() + "-id=" + currsession.getId());
+				}
+			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				createNewModel = true;
+				toggleEditorFields(false);
+				setFieldsDataSource(null);
+//				saveButton.click();
+			}
 
-			openDBuilderButton.setEnabled(true);
 
 //	        saveButton.setEnabled(false);
 
@@ -277,34 +301,16 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 //			System.out.println("Mode changed to dot");
 		} else if (mode.equals("gv")){
 			editor.setMode(AceMode.dot);
-			modeBox.setValue(modeList.get(2));
+			modeBox.setValue(modeList.get(1));
 //			System.out.println("Mode changed to dot");
 		} else if (mode.equals("py") || mode.equals("python")) {
 			editor.setMode(AceMode.python);	
-			modeBox.setValue(modeList.get(1));
+			modeBox.setValue(modeList.get(2));
 //			System.out.println("Mode changed to python");
 		} 
 	}
 
 	
-	public void setFieldsDataSource(Model currmodel) {
-		this.currmodel = currmodel;
-		
-		binder = new FieldGroup();
-		modelBeanItem = new BeanItem<Model>(currmodel);		// takes item as argument
-		binder.setItemDataSource(modelBeanItem);
-		binder.bind(titleField, "title");
-		binder.bind(editor, "dotschema");
-		
-		titleField.setNullRepresentation("");
-		
-//		titleField.setValue(currmodel.getTitle());
-//		editor.setValue(currmodel.getDotschema());
-		
-		saveButton.setEnabled(false);
-//		titleField.setPropertyDataSource(this.currmodel.getTitle());
-//		editor.setPropertyDataSource(this.currmodel.getDotschema());
-	}
 	
 	public void toggleEditorFields(boolean b) {
 		titleField.setEnabled(b);
@@ -315,18 +321,79 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		titleField.focus();
 	}
 	
+	
+	
+	public void setFieldsDataSource(Model currmodel) {
+		if (currmodel==null) {
+			binder.clear();
+//			titleField.setValue("");
+			editor.setValue("");
+		} else {
+			this.currmodel = currmodel;
+			
+			binder = new FieldGroup();
+			modelBeanItem = new BeanItem<Model>(currmodel);		// takes item as argument
+			binder.setItemDataSource(modelBeanItem);
+			binder.bind(titleField, "title");
+			binder.bind(editor, "dotschema");
+			
+			titleField.setNullRepresentation("");
+			
+	//		titleField.setValue(currmodel.getTitle());
+	//		editor.setValue(currmodel.getDotschema());
+			
+			saveButton.setEnabled(false);
+	//		titleField.setPropertyDataSource(this.currmodel.getTitle());
+	//		editor.setPropertyDataSource(this.currmodel.getDotschema());
+		}
+	}
+	
+
+	
 	public void createNewModel(boolean b) {
 		createNewModel = b;
 	}
 
-	public void cloneModel(boolean b) {
+	public void cloneModel(Model model, boolean b) {
 		createNewModel = b;
-		Notification not = new Notification("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
-		not.setPosition(Position.MIDDLE_RIGHT);
-		not.setStyleName("success");
-		not.show(Page.getCurrent());
-		saveButton.setEnabled(true);
-		saveButton.focus();
+
+		// check editor title matches text field title
+		Model editedmodel = ModelUtils.createNewModel(model, currsession, binder); //currmodel.getParentsession(),
+		createNewModel = false;
+		
+		try {
+			if (editedmodel != null){
+				ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+				toggleEditorFields(true);
+				setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
+				editor.focus();
+				openDBuilderButton.setEnabled(true);
+			
+			} else {
+				createNewModel = true;
+				toggleEditorFields(false);
+				setFieldsDataSource(null);
+				UI.getCurrent().getNavigator()
+						.navigateTo(MainView.NAME + "/" + 
+							currsession.getParentcase().getTitle() + "/" + 
+								currsession.getTitle() + "-id=" + currsession.getId());
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			createNewModel = true;
+			toggleEditorFields(false);
+			setFieldsDataSource(null);
+		}
+
+	
+	
+	
+//		Notification not = new Notification("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
+//		not.setPosition(Position.MIDDLE_RIGHT);
+//		not.setStyleName("success");
+//		not.show(Page.getCurrent());
+//		saveButton.setEnabled(true);
+//		saveButton.focus();
 	}
 
 }

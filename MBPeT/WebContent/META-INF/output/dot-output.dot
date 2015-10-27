@@ -1,7 +1,10 @@
-digraph new {
+digraph m3 {
 	// States
 	1	[ coords  20 , 20 ]
-	2	[ coords  206 , 102 ]
+	2	[ coords  110 , 145 ]
+	3	[ coords  185 , 72 ]
+	4	[ coords  275 , 197 ]
+	5	[ coords  365 , 322 ]
 
 	// Transitions
 }

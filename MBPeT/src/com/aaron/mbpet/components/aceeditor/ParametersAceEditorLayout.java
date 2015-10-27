@@ -57,7 +57,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     
     String fileFormat = "dot";
     List<String> modeList;
-    String[] modes = {"dot", "python", "gv"};
+    String[] modes = {"python", "dot", "gv"};
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
     
     TestSession currsession;
@@ -246,7 +246,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 //		file = file.replace("/", "\\");
 		if (mode.equals("dot")) {
 			editor.setMode(AceMode.dot);
-			modeBox.setValue(modeList.get(0));
+			modeBox.setValue(modeList.get(1));
 //			System.out.println("Mode changed to dot");
 		} else if (mode.equals("gv")){
 			editor.setMode(AceMode.dot);
@@ -254,7 +254,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 //			System.out.println("Mode changed to dot");
 		} else if (mode.equals("py") || mode.equals("python")) {
 			editor.setMode(AceMode.python);	
-			modeBox.setValue(modeList.get(1));
+			modeBox.setValue(modeList.get(0));
 //			System.out.println("Mode changed to python");
 		} 
 	}

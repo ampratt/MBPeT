@@ -10,7 +10,9 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
+import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.aaron.mbpet.views.users.UserForm;
 import com.google.gwt.dev.util.Empty;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -49,61 +51,64 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	private static final long serialVersionUID = 5370960944210111329L;
 
 	private Tree tree;
+	private Button createButton;
+	private Button cancelButton;	
+	
 	private JPAContainer<TestCase> testcases;
 	final BeanItem<TestCase> newCaseItem;
 	TestCase testcase;
 	TestCaseForm form;
 	FieldGroup binder;
-
-	private Button createButton;
-	private Button cancelButton;
+	private User sessionUser = MainView.sessionUser;	
 	
 	boolean editmode = false;
+	private String prevTitle = "";
+	private String wrongTitle = "";
 
-	public TestCaseEditor(Tree tree) {		//JPAContainer<TestCase> container
+
+	/*
+	 * CREATE new
+	 */
+	public TestCaseEditor(Tree tree) {
 //        super("Create a new Test Case"); // Set window caption
+        this.tree = tree;
+
+        this.testcases = MBPeTMenu.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+        testcase = new TestCase(); 
+        this.newCaseItem = new BeanItem<TestCase>(testcase);
+        
+        init();
+//        setContent(buildWindowContent());
+	}
+	
+	/*
+	 * EDIT mode
+	 */
+	public TestCaseEditor(Tree tree, Object caseId) {
+		
+      this.editmode = true;      
+      this.tree = tree;
+      
+//      testcase = new TestCase(); 
+      this.testcases = MBPeTMenu.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	
+      this.testcase = testcases.getItem(caseId).getEntity();
+      this.newCaseItem = new BeanItem<TestCase>(testcase);
+
+      prevTitle = testcase.getTitle();
+      
+      init();
+	}
+	
+	private void init() {
         center();
         setResizable(false);
         setClosable(true);
         setModal(true);
-
-        testcase = new TestCase(); 
-        this.newCaseItem = new BeanItem<TestCase>(testcase);
-        this.tree = tree;
-        this.testcases = JPAContainerFactory.make(TestCase.class,
-        		MbpetUI.PERSISTENCE_UNIT);	//container;
-        
-//        setContent(buildWindowContent());
         
         setSizeUndefined();
         setContent(ManualLayoutDesign()); //editorForm
         setCaption(buildCaption());
 	}
-	
-	public TestCaseEditor(Tree tree, Object caseId) {		//JPAContainer<TestCase> container
-//      super("Create a new Test Case"); // Set window caption
-      center();
-      setResizable(false);
-      setClosable(true);
-      setModal(true);
-
-      this.editmode = true;
-      
-//      testcase = new TestCase(); 
-      this.tree = tree;
-      this.testcases = JPAContainerFactory.make(TestCase.class,
-      		MbpetUI.PERSISTENCE_UNIT);	//container;
-      this.testcase = testcases.getItem(caseId).getEntity();
-      this.newCaseItem = new BeanItem<TestCase>(testcase);
-
-      
-//      setContent(buildWindowContent());
-      
-      setSizeUndefined();
-      setContent(ManualLayoutDesign()); //editorForm
-      setCaption(buildCaption());
-	}
-	
 	
     /**
      * @return the caption of the editor window
@@ -130,13 +135,10 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		final VerticalLayout layout = new VerticalLayout();
 		layout.setSpacing(true);
 		layout.setMargin(true);
-		
-//		layout.addComponent(new Label("<h2>Create new user account.</h2>", 
-//				ContentMode.HTML));
-		
+	
 		// set owner to current logged in user 
 		if (!editmode) {
-			testcase.setOwner(MainView.sessionUser);
+			testcase.setOwner(sessionUser);
 		}
 
 		// CREATE FIELDS MANUALLY
@@ -144,10 +146,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 		layout.addComponent(form);
 		
 		binder = new FieldGroup();
-//		beanUserItem = new BeanItem<User>(user);		// takes item as argument
-//		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
+//		newCaseItem = new BeanItem<User>(user);		// takes item as argument
 		binder.setItemDataSource(newCaseItem); 	// link to data model to binder
-		
 		binder.bindMemberFields(form);	// link to layout		
 		
 		// button layout
@@ -171,97 +171,165 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	}
 	
 	
-	
-	
+
 	   public void buttonClick(ClickEvent event) {
 	        if (event.getButton() == createButton) {
 //	            editorForm.commit();
 //	            fireEvent(new EditorSavedEvent(this, personItem));
-					try {
+				try {
 					form.enableValidationMessages();
+					
 					// commit the fielgroup
 					binder.commit();
 					
-					// add bean object to db through jpa container
-					if (editmode == false) {
-						// add to container
-		                testcases.addEntity(newCaseItem.getBean());	//jpa container
-		                
-		                // add created item to tree (after retrieving db generated id)
-		                EntityManager em = Persistence
-		    					.createEntityManagerFactory("mbpet")
-		    					.createEntityManager();	
-			            Query queryByTestCaseName = em.createQuery(
-			        		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title AND t.owner = :owner"
-			        		);
-			            queryByTestCaseName.setParameter("title", testcase.getTitle());
-			            queryByTestCaseName.setParameter("owner", testcase.getOwner());	//MainView.sessionUser
-			            TestCase queriedcase = (TestCase) queryByTestCaseName.getSingleResult();
-			            System.out.println("the generated id is: " + queriedcase.getId());
-			            Object id = queriedcase.getId();	// here is the id we need for tree
-			            
-			            // add to tree
-			            tree.addItem(id);
-		                tree.setChildrenAllowed(id, true);
-	              	  	tree.setItemCaption(id, testcases.getItem(id).getEntity().getTitle());
-		            	tree.select(id);
-		            	
-		            	// update user to add Case List<TestCase>
-		            	MainView.sessionUser.addCase(queriedcase);
-	              	  	
-	              	  	// TESTING
-	              	  	//list all Cases
-		            	System.out.println("\nWHAT IS NEW LIST OF CASES: " + MainView.sessionUser.getCases()); // testing purposes
-		            	for (TestCase c : MainView.sessionUser.getCases()) {
-			            	System.out.println(c.getId() + " - " + c.getTitle()); // testing purposes	            		
-		            	}
-		            	
-		            	// nav to created test case
-		    			getUI().getNavigator()
-		         			.navigateTo(MainView.NAME + "/" + 
-		         					testcases.getItem(id).getEntity().getTitle() +
-		         					"-sut=" + id);
+					// check CASE title doesn't exist for THIS USER
+					int id =0;
+					boolean titleOK = true;
+					id = newCaseItem.getBean().getId();	//testsession.getId();
+					System.out.println("User.getCases() : " + sessionUser.getCases());
+					for (TestCase c : sessionUser.getCases()) {	//sessions.getItemIds()
+						System.out.println("Existing title -> new title : " + c.getTitle() + "->" + testcase.getTitle());
+						System.out.println("Existing id -> new id : " + c.getId() + "->" + id);
+						if (c.getTitle().equals(testcase.getTitle()) && !(c.getId()==id) ) {	
+							testcase.setTitle(prevTitle );
+							if (editmode == true)
+								testcases.addEntity(testcase);
+							
+							wrongTitle  = c.getTitle();
+							titleOK = false;
+							break;
+						}
+					}
+					
+					if (titleOK == true) {
+						// add bean object to db through jpa container
+						if (editmode == false) {
+							// add to container
+							testcases.addEntity(newCaseItem.getBean()); //jpa container
+
+							// add created item to tree (after retrieving db generated id)
+							EntityManager em = Persistence
+									.createEntityManagerFactory("mbpet")
+									.createEntityManager();
+							Query queryByTestCaseName = em
+									.createQuery("SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title AND t.owner = :owner");
+							queryByTestCaseName.setParameter("title",
+									testcase.getTitle());
+							queryByTestCaseName.setParameter("owner",
+									testcase.getOwner()); //sessionUser
+							TestCase queriedcase = (TestCase) queryByTestCaseName
+									.getSingleResult();
+							System.out.println("the generated id is: "
+									+ queriedcase.getId());
+							id = queriedcase.getId(); // here is the id we need for tree
+
+							// add to tree
+							tree.addItem(id);
+							tree.setChildrenAllowed(id, true);
+							tree.setItemCaption(id, testcases.getItem(id)
+									.getEntity().getTitle());
+							tree.select(id);
+
+							// update user to add Case List<TestCase>
+							sessionUser.addCase(queriedcase);
+
+							// TESTING
+							//list all Cases
+							System.out.println("\nWHAT IS NEW LIST OF CASES: "
+									+ sessionUser.getCases()); // testing purposes
+							for (TestCase c : sessionUser.getCases()) {
+								System.out.println(c.getId() + " - "
+										+ c.getTitle()); // testing purposes	            		
+							}
+
+							// nav to created test case
+							getUI().getNavigator().navigateTo(
+									MainView.NAME
+											+ "/"
+											+ testcases.getItem(id).getEntity()
+													.getTitle() + "-sut=" + id);
+						} else {
+							System.out
+									.println("\nWHAT IS NEW LIST OF CASES (before update): "
+											+ sessionUser.getCases()); // testing purposes
+
+							//1 UPDATE user's reference ???
+							sessionUser.updateCaseData(testcases.getItem(
+									testcase.getId()).getEntity());
+							System.out.println("Test Case is now: "
+									+ testcase.getTitle());
+							//						System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+
+							// 2 UPDATE container
+							testcases.addEntity(newCaseItem.getBean());
+							testcase = testcases.getItem(testcase.getId())
+									.getEntity();
+							System.out.println("Entity is now: "
+									+ testcases.getItem(testcase.getId())
+											.getEntity().getTitle());
+
+							// 3 UPDATE tree title
+							tree.setItemCaption(testcase.getId(), testcases
+									.getItem(testcase.getId()).getEntity()
+									.getTitle());
+
+							// 4. update child sessions
+
+							// TESTING
+							//list all Cases
+							System.out.println("\nWHAT IS NEW LIST OF CASES: "
+									+ sessionUser.getCases()); // testing purposes
+							for (TestCase c : sessionUser.getCases()) {
+								System.out.println(c.getId() + " - "
+										+ c.getTitle()); // testing purposes	            		
+							}
+
+							System.out
+									.println("\nTHE CASE's list of sessions with their reference to case: "
+											+ testcase.getSessions()); // testing purposes
+							for (TestSession s : testcase.getSessions()) {
+								System.out.println(s.getId() + " - "
+										+ s.getTitle() + " - to parent -> "
+										+ s.getParentcase().getTitle()); // testing purposes	            		
+							}
+
+							// nav to created test case
+							getUI().getNavigator().navigateTo(
+									MainView.NAME + "/" + testcase.getTitle()
+											+ "-sut=" + testcase.getId());
+
+						}
+						
+					 // title already existed	
 					} else {
-		            	System.out.println("\nWHAT IS NEW LIST OF CASES (before update): " + MainView.sessionUser.getCases()); // testing purposes
-
-	              	  	//1 UPDATE user's reference ???
-		            	MainView.sessionUser.updateCaseData(testcases.getItem(testcase.getId()).getEntity());
-						System.out.println("Test Case is now: " + testcase.getTitle());
-//						System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
-
-						// 2 UPDATE container
-						testcases.addEntity(newCaseItem.getBean());
-						System.out.println("Entity is now: " + testcases.getItem(testcase.getId()).getEntity().getTitle());
-
-						// 3 UPDATE tree title
-	              	  	tree.setItemCaption(testcase.getId(), testcases.getItem(testcase.getId()).getEntity().getTitle());
-
-	              	  	// TESTING
-	              	  	//list all Cases
-		            	System.out.println("\nWHAT IS NEW LIST OF CASES: " + MainView.sessionUser.getCases()); // testing purposes
-		            	for (TestCase c : MainView.sessionUser.getCases()) {
-			            	System.out.println(c.getId() + " - " + c.getTitle()); // testing purposes	            		
-		            	}
-	              	  	
+						System.out.println("title was NOT fine.");
+	//					testsession = sessions.getItem(id).getEntity();
+	//					System.out.println("db session is: " + testsession.getId() + " " + testsession.getTitle());
+	
+						if (editmode==true){
+							binder.discard();
+							Notification.show("The title '" + wrongTitle + "' already exists. Please rename this SUT.", Type.ERROR_MESSAGE);
+								UI.getCurrent().addWindow(new TestCaseEditor(tree, id));	//sessions.getItem(testsession.getId()).getEntity().getId()																	
+								
+						} else {
+							binder.discard();
+							Notification.show("The title '" + wrongTitle + "' already exists. Please rename this SUT.", Type.ERROR_MESSAGE);	//testsession.getTitle()
+							UI.getCurrent().addWindow(new TestCaseEditor(tree));								
+						} 
+						
 					}
-//		            Notification.show("TEST CASE successfully created: " +
-//		            		"\nid: " + queriedcase.getId() +
-//		            		"\ntitle: " + newcase.getTitle() +
-//		            		"\ndescription: " + newcase.getDescription() +
-//		            		"\nowner: (" + newcase.getOwner() + ") " + newcase.getOwner().getUsername(),
-//		            		Type.TRAY_NOTIFICATION);
 		            
-					} catch (CommitException e) {
-						e.printStackTrace();
-						binder.discard();
-						Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
-						UI.getCurrent().addWindow(new TestCaseEditor(tree));
-					} catch (NonUniqueResultException e) {
-						e.printStackTrace();
-						binder.discard();
-						Notification.show("The title '" + testcase.getTitle() + "' already exists in your database. Please rename this SUT.", Type.ERROR_MESSAGE);
-						UI.getCurrent().addWindow(new TestCaseEditor(tree));
-					}
+				} catch (CommitException e) {
+					e.printStackTrace();
+					binder.discard();
+					Notification.show("'Title' cannot be Empty. Please try again.", Type.ERROR_MESSAGE);
+					UI.getCurrent().addWindow(new TestCaseEditor(tree));
+				} catch (NonUniqueResultException e) {
+					e.printStackTrace();
+					binder.discard();
+					Notification.show("The title '" + testcase.getTitle() + "' already exists in your database. Please rename this SUT.", Type.ERROR_MESSAGE);
+					UI.getCurrent().addWindow(new TestCaseEditor(tree));
+				}
 	            
 	        } else if (event.getButton() == cancelButton) {
 	        	binder.discard();
