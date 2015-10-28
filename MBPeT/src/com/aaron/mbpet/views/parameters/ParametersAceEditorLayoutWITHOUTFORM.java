@@ -1,4 +1,4 @@
-package com.aaron.mbpet.components.aceeditor;
+package com.aaron.mbpet.views.parameters;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,6 @@ import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
-import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -47,7 +46,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 
 @SuppressWarnings("serial")
-public class ParametersAceEditorLayout extends VerticalLayout implements Button.ClickListener {
+public class ParametersAceEditorLayoutWITHOUTFORM extends VerticalLayout implements Button.ClickListener {
 
 	AceEditor editor;// = new AceEditor();
 	ComboBox modeBox;
@@ -66,7 +65,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
     
-	public ParametersAceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
+	public ParametersAceEditorLayoutWITHOUTFORM(AceEditor editor, String fileFormat) {	// TestSession currsession
 		setSizeFull();
 		setMargin(new MarginInfo(false, true, true, true));
 //		setMargin(true);

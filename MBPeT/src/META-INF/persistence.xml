@@ -13,6 +13,7 @@
 		<class>com.aaron.mbpet.domain.TestSession</class>
 		<class>com.aaron.mbpet.domain.Model</class>
 		<class>com.aaron.mbpet.domain.Parameters</class>
+		<class>com.aaron.mbpet.domain.TRT</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />

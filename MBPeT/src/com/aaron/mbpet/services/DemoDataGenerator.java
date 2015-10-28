@@ -42,6 +42,7 @@ import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.AverageMax;
+import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
@@ -79,6 +80,7 @@ public class DemoDataGenerator {
 //			em.createNativeQuery("DROP Testsession").executeUpdate();
 //			em.createNativeQuery("DROP Testcase").executeUpdate();
 //			em.createNativeQuery("DROP User").executeUpdate();
+			em.createNativeQuery("DELETE FROM TRT").executeUpdate();
 			em.createNativeQuery("DELETE FROM Parameters").executeUpdate();
 			em.createNativeQuery("DELETE FROM Model").executeUpdate();
 			em.createNativeQuery("DELETE FROM Testsession").executeUpdate();
@@ -331,7 +333,7 @@ public class DemoDataGenerator {
 
 		Parameters p31 = new Parameters(first);
 		Parameters p32 = new Parameters(second);
-
+		p31.setIp("test.com");
 		
 //		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
 //		Parameters p2 = new Parameters("facebook.com", 60, 3, 3, 0.5, sess7);
@@ -377,6 +379,16 @@ public class DemoDataGenerator {
 //		em.persist(p1);
 		em.getTransaction().commit();
 		
+
+		em.getTransaction().begin();
+		TRT trt1 = new TRT("search on bingo", 0.5, 1);
+		trt1.setParentparameter(p31);
+		em.persist(trt1);
+		em.getTransaction().commit();
+		
+		em.getTransaction().begin();
+		em.refresh(p31);
+		em.getTransaction().commit();
 		
 		em.getTransaction().begin();
 		em.refresh(sess7);

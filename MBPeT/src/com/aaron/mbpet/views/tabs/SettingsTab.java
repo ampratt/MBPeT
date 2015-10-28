@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MBPeTMenu;
-import com.aaron.mbpet.views.parameters.ParametersTableFormView;
+import com.aaron.mbpet.views.tabs.parameterstab.ParametersFormAceView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 //import org.vaadin.aceeditor.AceEditor;
 //import org.vaadin.aceeditor.AceMode;
@@ -54,7 +54,7 @@ public class SettingsTab extends VerticalLayout {
 		
 	    addComponent(new Label("<h3><i>edit test parameters</i></h3>", ContentMode.HTML));	//layout.
 		
-		ParametersTableFormView paramTableFormView = new ParametersTableFormView(currsession);
+		ParametersFormAceView paramTableFormView = new ParametersFormAceView(currsession);
 		addComponent(paramTableFormView);
 		
 //	    addComponent(buildParametersTable());

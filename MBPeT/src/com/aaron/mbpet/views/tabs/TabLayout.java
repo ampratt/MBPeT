@@ -3,6 +3,7 @@ package com.aaron.mbpet.views.tabs;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
+import com.aaron.mbpet.views.tabs.parameterstab.ParametersTab;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
