@@ -30,6 +30,7 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -52,17 +53,18 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	ComboBox modeBox;
 	Button saveButton;
 	Button loadButton;
-//    final TextField aceOutFileField = new TextField();
-//    final TextField aceInFileField = new TextField();
-    
-    String fileFormat = "dot";
+
     List<String> modeList;
+    String fileFormat = "dot";
     String[] modes = {"python", "dot", "gv"};
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
-    
+
     TestSession currsession;
     Parameters currParameters;
     JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
+    
+    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
     
 	public ParametersAceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
 		setSizeFull();
@@ -89,9 +91,9 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
         h.setSpacing(true);    
 
         modeList = Arrays.asList(modes);
-        modeBox = new ComboBox("Select source code style", modeList);
+        modeBox = new ComboBox("code style", modeList);
 //        modeBox.setContainerDataSource(modes);
-//        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
+        modeBox.setWidth(8, Unit.EM);
         modeBox.addStyleName("tiny");
         modeBox.setInputPrompt("No style selected");
         modeBox.setFilteringMode(FilteringMode.CONTAINS);
@@ -124,7 +126,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		saveButton.addStyleName("primary");
 //        saveButton.addStyleName("icon-only");
 //        saveButton.removeStyleName("borderless-colored");
-        saveButton.setDescription("save parameters");
+        saveButton.setDescription("save Parameters");
         saveButton.setEnabled(false);
 	    
 		loadButton = new Button("Load", this);
@@ -147,16 +149,20 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	
 
 	private AceEditor buildAceEditor() {
+		
+		System.out.println("SETTINS FILE : " + defaultsettingsfile);
 		// Ace Editor
 		try {
 			if (currParameters.getSettings_file() == null) {
-				editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
+				loadExampleSettings();
+//				editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
 			} else {
 				editor.setValue(currParameters.getSettings_file());
 			}
 		} catch (NullPointerException e1) {
 			e1.printStackTrace();
-			editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
+			loadExampleSettings();
+//			editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
 		} 
 			// use static hosted files for theme, mode, worker
 //			editor.setThemePath("/static/ace");
@@ -199,7 +205,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	
 	
 	
-    public void buttonClick(ClickEvent event) {
+
+	public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
 			String s = editor.getValue();
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
@@ -281,4 +288,24 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	}
 
 
+    private void loadExampleSettings() {
+		System.out.println("SETTINS FILE : " + defaultsettingsfile);
+
+		StringBuilder builder = new StringBuilder();
+		Scanner scan = null;
+		try {
+			scan = new Scanner(new FileReader(defaultsettingsfile));
+			while (scan.hasNextLine()) {		
+				builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
+			}	
+			System.out.println(builder.toString());
+			editor.setValue(builder.toString());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+	}
+    
+    
 }
