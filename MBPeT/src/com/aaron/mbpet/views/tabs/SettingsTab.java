@@ -49,7 +49,7 @@ public class SettingsTab extends VerticalLayout {
 		setMargin(true);
 		setSpacing(true);
 	
-		this.parameters = MBPeTMenu.parameters;
+		this.parameters = MBPeTMenu.parameterscontainer;
 		this.currsession = currsession;
 		
 	    addComponent(new Label("<h3><i>edit test parameters</i></h3>", ContentMode.HTML));	//layout.

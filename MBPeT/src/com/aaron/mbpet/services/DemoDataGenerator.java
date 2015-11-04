@@ -332,7 +332,9 @@ public class DemoDataGenerator {
 		Parameters p24 = new Parameters(portal4);
 
 		Parameters p31 = new Parameters(first);
+		p31.setStandard_deviation(1.1);
 		Parameters p32 = new Parameters(second);
+		p32.setStandard_deviation(2.2);
 		p31.setIp("test.com");
 		
 //		Parameters p1 = new Parameters("google.com", 30, 3, 3, 0.0, sess7);
@@ -381,7 +383,8 @@ public class DemoDataGenerator {
 		
 
 		em.getTransaction().begin();
-		TRT trt1 = new TRT("search on bingo", 0.5, 1);
+		TRT trt1 = new TRT("search on bingo", 0.5, 1.0);
+//		trt1.setAction("search on bingo");
 		trt1.setParentparameter(p31);
 		em.persist(trt1);
 		em.getTransaction().commit();

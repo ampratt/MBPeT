@@ -58,21 +58,20 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-// Define a sub-window by inheritance
 public class ParametersEditor {
-
 	
-	private JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
+	private JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
 	BeanItem<Parameters> beanItem;
 	Parameters currentParams;// = new Parameters();
 	
 	TestSession parentsession;
 //	Parameters clone;
 	
-	boolean editmode = false;
-	boolean clonemode = false;
+	private FieldGroup binder;
+	private boolean editmode = false;
+	private boolean clonemode = false;
+	private boolean formEdit = false;
 	
-
 
 	/*
 	 * Create new Parameters
@@ -98,14 +97,36 @@ public class ParametersEditor {
         this.currentParams = currentParams; //parameters.getItem(currentParams.getId()).getEntity();
         this.currentParams.setSettings_file(settings);
         this.beanItem = new BeanItem<Parameters>(this.currentParams);
-
+//        binder = new FieldGroup();
 
         saveParameters();
 	}
+	public ParametersEditor(Parameters currentParams, BeanItem<Parameters> beanItem, TestSession parentsession, FieldGroup binder) {		//JPAContainer<TestCase> container      
+		formEdit = true;
+		this.parentsession = parentsession;
+		
+	    this.currentParams = currentParams; //parameters.getItem(currentParams.getId()).getEntity();
+	    this.beanItem = beanItem;	//new BeanItem<Parameters>(this.currentParams);
 	
+	    this.binder = binder;
+	    
+	    saveParameters();
+	}
+	//	public ParametersEditor(Parameters currentParams, BeanItem<Parameters> beanItem, TestSession parentsession, FieldGroup binder) {		//JPAContainer<TestCase> container      
+//		formEdit = true;
+//		this.parentsession = parentsession;
+//		
+//        this.currentParams = currentParams; //parameters.getItem(currentParams.getId()).getEntity();
+//        this.beanItem = beanItem;	//new BeanItem<Parameters>(this.currentParams);
+//
+//        this.binder = binder;
+//        
+//        saveParameters();
+//	}
+
 	
 	/*
-	 * Clone existing test Session to new one
+	 * Clone existing parameters to new one
 	 */
 	public ParametersEditor(TestSession parentsession, String settings) {		//JPAContainer<TestCase> container
 		this.clonemode = true;
@@ -121,20 +142,22 @@ public class ParametersEditor {
 
 	public void saveParameters() {
 
-    	
     	Parameters queriedParams = null;
-    	
 //			try {
-
 				Object id = null;
 				
 				// add NEW bean object to db through jpa container
-				if (editmode == false && clonemode==false) {
-
+				if (editmode == false && formEdit==false) {
+					try {
+						binder.commit();
+					} catch (CommitException e) {
+						e.printStackTrace();
+					}
+					
 					// 1. add to container
 					parameters.addEntity(beanItem.getBean());	//jpa container	
 
-
+					
 	                // 2. retrieving db generated id
 	                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 	    											.createEntityManager();	
@@ -153,7 +176,7 @@ public class ParametersEditor {
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
               	  	MBPeTMenu.sessions.addEntity(parentsession);
 
-				} else if (editmode == true){
+				} else if (editmode == true && formEdit==false){
 
 					// 1 UPDATE container
 					parameters.addEntity(beanItem.getBean());
@@ -167,7 +190,24 @@ public class ParametersEditor {
 					// Option 2. serialize blob to db
 //					DbUtils.commitUpdateToDb(currentParams.getSettings_file(), currentParams, "settings_file");
 
-				} else if (clonemode==true) {
+				} else if (formEdit==true) {
+			        try {
+						binder.commit();
+					} catch (CommitException e) {
+						e.printStackTrace();
+					}
+			        
+					// 1 UPDATE container
+					parameters.addEntity(beanItem.getBean());
+					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
+							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
+
+					// 2 UPDATE parentcase reference
+					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
+					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
+
+				}
+				else if (clonemode==true) {
 
 					// 1. add to container
 					parameters.addEntity(beanItem.getBean());
@@ -215,8 +255,6 @@ public class ParametersEditor {
  
         		if (editmode==true) {
 	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters edited");	//String.valueOf(currentParams.getId())
-            	} else if (clonemode==true) {
-//	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters cloned");	//String.valueOf(currentParams.getId())
             	} else {
 	        		confirmNotification(String.valueOf(currentParams.getId()), "Parameters created");	//String.valueOf(currentParams.getId())
             	} 
@@ -234,9 +272,7 @@ public class ParametersEditor {
 
     }
 	
-	
 
-	
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification

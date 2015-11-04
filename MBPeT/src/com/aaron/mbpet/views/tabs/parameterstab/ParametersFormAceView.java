@@ -1,6 +1,7 @@
 package com.aaron.mbpet.views.tabs.parameterstab;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,17 +13,22 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
+import com.aaron.mbpet.ui.ConfirmDeleteTRTWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.models.ModelEditor;
 import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
+import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.parameters.ParametersForm;
 import com.aaron.mbpet.views.parameters.TRTEditor;
 import com.aaron.mbpet.views.parameters.TRTForm;
-import com.sun.jndi.cosnaming.IiopUrl.Address;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
@@ -43,6 +49,7 @@ import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
@@ -64,7 +71,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class ParametersFormAceView extends HorizontalSplitPanel implements Component, Button.ClickListener {
 
-	private JPAContainer<Parameters> parameters;
+	private JPAContainer<Parameters> parameterscontainer;
 	private JPAContainer<TRT> trtcontainer;
 	private TestSession currsession;
 	private Parameters currentparams;
@@ -78,25 +85,27 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	public Grid grid;
 	private Table sessionsTable;
 	private Button saveButton;
+	private Button enableAceButton;
 	private Button newTRTButton;
 	private Button editTRTButton;
 	private Button deleteTRTButton;
 	
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
+	private Table trtTable;
 	public static ParametersAceEditorLayout editorLayout;
 	
 	public ParametersFormAceView(TestSession currsession){
 		setSizeFull();
-		setSplitPosition(40, Unit.PERCENTAGE);
+		setSplitPosition(45, Unit.PERCENTAGE);
 //		setSpacing(true);
 //		setMargin(true);
 		
 		
 		this.currsession = currsession;
-		this.parameters = MBPeTMenu.parameters;
+		this.parameterscontainer = MBPeTMenu.parameterscontainer;
 		this.trtcontainer = MBPeTMenu.trtcontainer;
-		this.currentparams = parameters.getItem(currsession.getParameters().getId()).getEntity();
+		this.currentparams = parameterscontainer.getItem(currsession.getParameters().getId()).getEntity();
 		this.editor = new AceEditor();
 		
 		setFirstComponent(buildLeftSide());
@@ -105,85 +114,112 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 	}
 	
-
-	private Component buildLeftSide() {
-		VerticalLayout layout = new VerticalLayout();
-		
-		// table
-		layout.addComponent(buildParametersTable());
-//		VerticalLayout tablelayout = new VerticalLayout();
-//		tablelayout.setHeight("20%");
-//		tablelayout.addComponent(TablePersonDisplay());
-		
-		// form
-		layout.addComponent(buildParametersFormView());	//GeneratedLayoutForm()
-//		VerticalLayout tablayout = new VerticalLayout();
-//		tablayout.setHeight("80%");
-//		tablayout.addComponent(TabDisplay());
-		
-//		addComponent(tablelayout);
-//		addComponent(tablayout);
-//		setExpandRatio(tablelayout, 1);
-//		setExpandRatio(tablayout, 2);	
-		
-		return layout;
-	}
-	
-	
 	private Component buildRightSide() {
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
 		editorLayout = new ParametersAceEditorLayout(editor, "python");
 		editorLayout.toggleEditorFields(true);
+		editorLayout.setWidth("97%");
 		
 		rightlayout.addComponent(editorLayout);
+		rightlayout.setComponentAlignment(editorLayout, Alignment.TOP_CENTER);
 		
 		return rightlayout;	// editorLayout;
 	}
-
 	
-	
-	private Component buildParametersFormView() {
-		final VerticalLayout layout = new VerticalLayout();
-//		layout.setMargin(true);
 
+	private Component buildLeftSide() {
+		VerticalLayout layout = new VerticalLayout();
 		
-//		layout.addComponent(new Label("<h4>Edit parameters</h4>", ContentMode.HTML));
+		// table
+//		layout.addComponent(buildParametersTable());
+//		VerticalLayout tablelayout = new VerticalLayout();
+//		tablelayout.setHeight("20%");
+//		tablelayout.addComponent(TablePersonDisplay());
 		
 //		currentparams = new Parameters();
 //		currentparams.setIp("blank.com");
 //		currentparams.setTest_duration(10);
 //		currentparams.setTarget_response_times(new Address());
 		
-		// CREATE FIELDS MANUALLY
+		// header
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidth("97%");
+        header.setSpacing(true);
+//        header.setMargin(new MarginInfo(true, false, true, false));
+//        header.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        
+        Label section = new Label("Edit Parameters");
+        section.addStyleName("h3");
+//        section.addStyleName("colored");
+        
+		saveButton = new Button("Save", this);
+		saveButton.addStyleName("tiny");
+		saveButton.addStyleName("primary");
+		saveButton.setIcon(FontAwesome.SAVE);
+//		saveButton.setEnabled(false);
+		
+		enableAceButton = new Button("Code Editor");
+		enableAceButton.addStyleName("tiny");
+		enableAceButton.setIcon(FontAwesome.PENCIL);
+//		saveButton.setEnabled(false);
+		enableAceButton.addClickListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+//				editorLayout.toggleEditorFields(true);
+			}
+		});
+		
+		header.addComponents(section, saveButton);		//enableAceButton
+		header.setComponentAlignment(section, Alignment.MIDDLE_LEFT);
+		header.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
+//		header.setComponentAlignment(enableAceButton, Alignment.MIDDLE_RIGHT);
+		header.setExpandRatio(section, 1);
+		
+		layout.addComponent(header);
+		
+		
+		// form
 		parametersForm = new ParametersForm();
+		parametersForm.addStyleName("light");
+		parametersForm.setWidth("97%");
 		layout.addComponent(parametersForm);
 		
 		layout.addComponent(buildGridButtons());
-		layout.addComponent(buildResponseGrid());
+		layout.addComponent(buildTRTTable());
 
 //		TRTForm = new TRTForm();
 //		layout.addComponent(TRTForm);
 		
-		TRT trt1 = new TRT();
-			trt1.setAction("search_on_google");
-			trt1.setAverage(0.5);
-			trt1.setMax(1);
-		List<TRT> responseTimes = new ArrayList<TRT>();
-		responseTimes.add(trt1);
-		currentparams.setTarget_response_times(responseTimes);
+//		TRT trt1 = new TRT();
+//			trt1.setAction("search_on_google");
+//			trt1.setAverage(0.5);
+//			trt1.setMax(1);
+//		List<TRT> responseTimes = new ArrayList<TRT>();
+//		responseTimes.add(trt1);
+//		currentparams.setTarget_response_times(responseTimes);
 		
 		binder = new FieldGroup();
 		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
 //		beanItem.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
-		beanItem.addNestedProperty("target_response_times");
+//		beanItem.addNestedProperty("target_response_times");
 		
 		binder.setItemDataSource(beanItem); 	// link the data model to binder
 		
 		binder.bindMemberFields(parametersForm);	// link the layout to binder	
 //		binder.bindMemberFields(TRTForm);	// link to layout	
 		
+		for (Object propertyId : binder.getBoundPropertyIds()) {
+			if ("dstat_mode".equals(propertyId)) {
+				ComboBox combo = (ComboBox) binder.getField(propertyId);
+				System.out.println("property was dstat");
+				if (combo.getValue() == null) {
+					combo.select("None");
+					System.out.println("attempted to set null value to None");
+				}
+			}
+		}
 		
 //		binder = new FieldGroup();
 //		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
@@ -194,25 +230,6 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //		binder.setItemDataSource(beanItem); 	// link the data model to binder
 //		binder.bindMemberFields(form);	// link the layout to binder		
 ////		form.setEnabled(false);
-		
-		saveButton = new Button("Save");
-		saveButton.addStyleName("small");
-		saveButton.addStyleName("primary");
-//		saveButton.setEnabled(false);
-		saveButton.addClickListener(new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				try {
-					parametersForm.enableValidationMessages();
-					TRTForm.toggleValidationMessages(true);
-					binder.commit();
-				} catch (CommitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		layout.addComponent(saveButton);
 
 		
 		return layout;
@@ -222,7 +239,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	private Component buildGridButtons() {
 		// buttons for TRT grid
 		HorizontalLayout h = new HorizontalLayout();
-		h.setWidth("100%");
+		h.setWidth("97%");
 		h.setSpacing(true);
 		
 		newTRTButton = new Button("", this);
@@ -255,65 +272,102 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 		h.addComponents(label, newTRTButton, editTRTButton, deleteTRTButton);
 	    h.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-	    h.setComponentAlignment(newTRTButton, Alignment.MIDDLE_LEFT);
-	    h.setComponentAlignment(editTRTButton, Alignment.MIDDLE_LEFT);
-	    h.setComponentAlignment(deleteTRTButton, Alignment.MIDDLE_LEFT);
-//		    h.setExpandRatio(label, 2);
-	    h.setExpandRatio(deleteTRTButton, 1);
+	    h.setComponentAlignment(newTRTButton, Alignment.MIDDLE_RIGHT);
+//	    h.setComponentAlignment(editTRTButton, Alignment.MIDDLE_LEFT);
+//	    h.setComponentAlignment(deleteTRTButton, Alignment.MIDDLE_LEFT);
+		h.setExpandRatio(label, 1);
+//	    h.setExpandRatio(deleteTRTButton, 1);
 		    
 		return h;
 	}
 
 
-	private Component buildResponseGrid() {
+	private Component buildTRTTable() {
+		filterTRTByParameters();
+		trtTable = new Table();
+		trtTable.setContainerDataSource(trtcontainer);
+		trtTable.setWidth("97%");
+		trtTable.setPageLength(5);
+//		modelsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
+//		modelsTable.addStyleName(ValoTheme.TABLE_NO_HEADER);
+		trtTable.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
+		trtTable.addStyleName(ValoTheme.TABLE_SMALL);
+//		modelsTable.addStyleName("background-white");
 		
-		// Create the Grid
-		grid = new Grid(trtcontainer);
-		grid.setSelectionMode(SelectionMode.SINGLE);
-		grid.setWidth("95%");
-		grid.setHeightByRows(4);
-		grid.addStyleName("tiny");
-		// Define the columns
-		grid.removeColumn("id");
-		grid.removeColumn("parentparameter");
-		grid.setColumnOrder("action", "average", "max");
-//		grid.addColumn("Action", String.class);
-//		grid.addColumn("Average", double.class);
-//		grid.addColumn("Max", int.class);
-		
-        // set selection model
-        SingleSelectionModel selection =
-            (SingleSelectionModel) grid.getSelectionModel();
+		trtTable.setSelectable(true);
+        trtTable.setImmediate(true);
         
-		// Handle selection changes
-		grid.addSelectionListener(new SelectionListener() {
-
+        trtTable.setVisibleColumns("action", "average", "max");
+        trtTable.setColumnHeaders(new String[] {"Action", "Average", "Max"});
+        trtTable.setColumnExpandRatio("action", 3);
+        trtTable.setColumnExpandRatio("average", 1);
+        trtTable.setColumnExpandRatio("max", 1);
+//        trtTable.setColumnWidth("max", 20);
+ 
+        //handle selections
+        trtTable.addValueChangeListener(new ValueChangeListener() {
 			@Override
-			public void select(SelectionEvent event) {
-				editTRTButton.setEnabled(true);
-				deleteTRTButton.setEnabled(true);
-				
-			    // Get selection from the selection model
-			    Object selected = ((SingleSelectionModel)
-			        grid.getSelectionModel()).getSelectedRow();
-			    System.out.println("SELECTED: " + selected);
-			    
-			    // Get selection from the selection model
-//			    Object selected = event.getSelected();		//((SingleSelectionModel) grid.getSelectionModel()).getSelectedRow();
-			    
-			    if (selected != null) {
-		        	selectedTRT = trtcontainer.getItem(selected).getEntity();
-			        Notification.show("Selected " + selectedTRT.getAction() );
-//			            grid.getContainerDataSource().getItem(selected).getItemProperty("action")
-			    } else {
+			public void valueChange(ValueChangeEvent event) {
+				if (trtTable.getValue() != null) {
+					editTRTButton.setEnabled(true);
+					deleteTRTButton.setEnabled(true);
+					
+				    // Get selection from the selection model
+					selectedTRT = trtcontainer.getItem(event.getProperty().getValue()).getEntity();
+				    System.out.println("SELECTED: " + selectedTRT.getAction());
+//				    Notification.show("Selected " + selectedTRT.getAction() );
+				    
+				} else {
 					editTRTButton.setEnabled(false);
-					deleteTRTButton.setEnabled(false);			    	
-			    }
-				
+					deleteTRTButton.setEnabled(false);	
+				}
 			}
 		});
+        
+//		// Create the Grid
+//		grid = new Grid(trtcontainer);
+//		grid.setSelectionMode(SelectionMode.SINGLE);
+//		grid.setWidth("95%");
+//		grid.setHeightByRows(4);
+//		grid.addStyleName("tiny");
+//		// Define the columns
+//		grid.removeColumn("id");
+//		grid.removeColumn("parentparameter");
+//		grid.setColumnOrder("action", "average", "max");
+////		grid.addColumn("Action", String.class);
+//
+//        // set selection model
+//        SingleSelectionModel selection =
+//            (SingleSelectionModel) grid.getSelectionModel();
+//        
+//		// Handle selection changes
+//		grid.addSelectionListener(new SelectionListener() {
+//			@Override
+//			public void select(SelectionEvent event) {
+//				editTRTButton.setEnabled(true);
+//				deleteTRTButton.setEnabled(true);
+//				
+//			    // Get selection from the selection model
+//			    Object selected = ((SingleSelectionModel)
+//			        grid.getSelectionModel()).getSelectedRow();
+//			    System.out.println("SELECTED: " + selected);
+//			    
+//			    // Get selection from the selection model
+////			    Object selected = event.getSelected();		//((SingleSelectionModel) grid.getSelectionModel()).getSelectedRow();
+//			    
+//			    if (selected != null) {
+//		        	selectedTRT = trtcontainer.getItem(selected).getEntity();
+//			        Notification.show("Selected " + selectedTRT.getAction() );
+////			            grid.getContainerDataSource().getItem(selected).getItemProperty("action")
+//			    } else {
+//					editTRTButton.setEnabled(false);
+//					deleteTRTButton.setEnabled(false);			    	
+//			    }
+//				
+//			}
+//		});
 
-		return grid;
+		return trtTable;
 	}
 
 
@@ -321,7 +375,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	    // Table
 		sessionsTable = new Table();
 		setFilterBySession();
-		sessionsTable.setContainerDataSource(parameters);	//(userSessionsContainer);
+		sessionsTable.setContainerDataSource(parameterscontainer);	//(userSessionsContainer);
 		sessionsTable.setWidth("100%");
 		sessionsTable.setPageLength(2);	//setHeight("150px");
 		sessionsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -360,7 +414,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		    	parametersForm.setEnabled(true);
 		    	
 		        Item item = sessionsTable.getItem(event.getItemId());
-		        currentparams = parameters.getItem(item.getItemProperty("id").getValue()).getEntity();
+		        currentparams = parameterscontainer.getItem(item.getItemProperty("id").getValue()).getEntity();
 		        beanItem = new BeanItem<Parameters>(currentparams);
 		        
 		        Notification.show("Event Item Id: " + event.getItemId().toString() +
@@ -383,14 +437,14 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == newTRTButton) {
 //	        	TestSession newestsession = parentcase.getSessions().get(parentcase.getSessions().size()-1);	//slist.get(slist.size()-1);
-		        UI.getCurrent().addWindow(new TRTEditor(currentparams, grid) ); 
+		        UI.getCurrent().addWindow(new TRTEditor(new TRT(), currentparams, trtTable) ); 
 //		        		ModelEditor(sessions.getItem(newestsession.getId()).getEntity(),
 //		        											parentcase, 
 //		        											true));	//testcases.getItem(parent).getEntity()
  
 		} else if (event.getButton() == editTRTButton) {
 			
-	        UI.getCurrent().addWindow(new TRTEditor(selectedTRT.getId(), currentparams, grid) ); 
+	        UI.getCurrent().addWindow(new TRTEditor(selectedTRT.getId(), currentparams, trtTable) ); 
 
 //			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
 //			TestSession parentsession = sessions.getItem(model.getParentsession().getId()).getEntity();
@@ -404,9 +458,85 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //			TRT trt = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
 //	        UI.getCurrent().addWindow(new ConfirmDeleteModelWindow(selectedTRT, 
 //	        		"Are you sure you want to delete <b>" + selectedTRT.getAction()) + "</b> ?<br /><br />", true));
-
-		} else if (event.getButton() == saveButton) {
+			UI.getCurrent().addWindow(
+					new ConfirmDeleteTRTWindow(selectedTRT, currentparams, 
+											"Are you sure you want to delete Action '<b>" +
+											selectedTRT.getAction() + "</b>' ?"));
 			
+		} else if (event.getButton() == saveButton) {
+			parametersForm.enableValidationMessages();
+			
+			// reset trt list so it's up to date before committing
+			filterTRTByParameters();
+			Collection<Object> idList = trtcontainer.getItemIds();
+			List<TRT> trtList = new ArrayList<TRT>();
+			for (Object id : idList){
+				trtList.add(trtcontainer.getItem(id).getEntity());
+//				currentparams.addTRT(trtcontainer.getItem(id).getEntity());
+			}
+			currentparams.setTarget_response_times(trtList);
+			System.out.println("PARAM TRTs before commit:");
+			for (TRT trt : currentparams.getTarget_response_times()){
+				System.out.println(trt.getAction());
+
+			}
+//			TRTForm.toggleValidationMessages(true);
+//			binder.commit();
+		    try {
+				binder.commit();
+				
+				// 1 UPDATE container
+				parameterscontainer.addEntity(beanItem.getBean());
+				this.currentparams = parameterscontainer.getItem(beanItem.getBean().getId()).getEntity();
+//				System.out.println("Parameters are now: " + currentparams.getId() 
+//									+ " " + currentparams.getSettings_file());
+				
+				// 2 UPDATE parentcase reference
+				currsession.setParameters(parameterscontainer.getItem(currentparams.getId()).getEntity());		
+//				System.out.println("Session's Params are now: " + currsession.getParameters().getId() + " " + currsession.getParameters().getSettings_file());
+				
+				currentparams.setTarget_response_times(trtList);
+				System.out.println("PARAM TRTs after commit:");
+				for (TRT trt : currentparams.getTarget_response_times()){
+					System.out.println(trt.getAction());
+
+				}
+				// insert form data into settings file
+				String settings = ParametersUtils.insertFormDataToAce(currentparams, editorLayout.getEditorValue());
+				currentparams.setSettings_file(settings);
+				parameterscontainer.addEntity(currentparams);
+
+				// add settings to editor view
+				editorLayout.toggleEditorFields(true);
+				editorLayout.setEditorValue(settings);
+				
+				
+		        Notification notification = new Notification("Parameters",Type.TRAY_NOTIFICATION);
+		        notification.setDescription("were edited");
+		        notification.setStyleName("dark small");	//tray  closable login-help
+		        notification.setPosition(Position.BOTTOM_RIGHT);
+		        notification.setDelayMsec(500);
+		        notification.show(Page.getCurrent());
+	        
+			} catch (CommitException  | InvalidValueException e) {
+				e.printStackTrace();
+		        Notification notification = new Notification("Heads Up!");
+		        notification.setDescription("Some fields had improper values");
+		        notification.setStyleName("failure");	//tray  closable login-help
+//		        notification.setPosition(Position.BOTTOM_RIGHT);
+//		        notification.setDelayMsec(500);
+		        notification.show(Page.getCurrent());
+			} 
+//		    catch (InvalidValueException e) {
+//				e.printStackTrace();
+//			}
+		    
+		//	new ParametersEditor(currentparams, beanItem, currsession, binder);
+		//	currentparams = parameterscontainer.getItem(currentparams.getId()).getEntity();
+		//			parametersForm.setReadOnly(true);
+		//			parametersForm.addStyleName("light");
+		//			event.getButton().setCaption("Edit");
+		//			event.getButton().removeStyleName("primary");
 		}
 		
 	}
@@ -416,11 +546,11 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	
 	
     private void setFilterBySession() {
-    	parameters.removeAllContainerFilters();
+    	parameterscontainer.removeAllContainerFilters();
 //    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
     	Equal casefilter = new Equal("ownersession", currsession);//  ("parentcase", getTestCaseByTitle(), true, false);
     	
-    	parameters.addContainerFilter(casefilter);
+    	parameterscontainer.addContainerFilter(casefilter);
     }
 	
     private void filterTRTByParameters() {
@@ -431,13 +561,6 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
     	trtcontainer.addContainerFilter(paramfilter);
     }
 	
-    private void updateFilters() {
-//    	parameters.removeAllContainerFilters();
-//    	
-//    	setFilterByTestCase();
-////    	SimpleStringFilter filter = new SimpleStringFilter("title", modelsFilter, true, false);
-//    	parameters.addContainerFilter(filter);
-    }
 
 
 

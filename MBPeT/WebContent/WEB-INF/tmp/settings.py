@@ -32,7 +32,7 @@ ip = "google.com"    # ip-address to test connection with server
 Desribed in seconds how long you want to test.
 E.g. test_duration =  3600 (60 sec * 60 min) runs the test for 1 hour
 '''
-test_duration = 30
+test_duration = 3600
 #=========================== Ramp Coefficient =================================
 '''
 The ramp period is defined as a list of tuples. The first integer in a
@@ -63,9 +63,9 @@ interval = 3
 '''
 Describes how long (in seconds) users should think between actions following a normal distribution
 E.g. mean_user_think_time = 3
-     standard_deviation = 1
+E.g. standard_deviation = 1
 
      The user think time now follows a normal distribution with mean value of 3 and standard deviation of 1
 '''
 mean_user_think_time = 3
-standard_deviation = 0.0
+standard_deviation = 2.1

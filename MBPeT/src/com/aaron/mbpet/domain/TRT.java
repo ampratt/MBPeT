@@ -6,7 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+
 
 @Entity
 public class TRT {
@@ -24,8 +28,9 @@ public class TRT {
 	private double average;
 
 	@NotNull
-	@Column(name = "max")
-	private int max;
+//	@Min(0) @Max(10)	@Column(name = "max")
+	@Column(name = "max", precision=10, scale=2)
+	private double max;
 
     @ManyToOne	
     @JoinColumn(name = "parentparameter", referencedColumnName = "ID")
@@ -40,12 +45,17 @@ public class TRT {
 
 	}
 
-	public TRT(String action, double average, int max) {
+	public TRT(String action, double average, double max) {
 		this.action = action;
 		this.average = average;
 		this.max = max;
 	}
-
+	public TRT(String action, double average, double max, Parameters parentparameter) {
+		this.action = action;
+		this.average = average;
+		this.max = max;
+		this.parentparameter = parentparameter;
+	}
 	
 	
 	/*
@@ -67,11 +77,11 @@ public class TRT {
 		this.average = average;
 	}
 
-	public int getMax() {
+	public double getMax() {
 		return max;
 	}
 
-	public void setMax(int max) {
+	public void setMax(double max) {
 		this.max = max;
 	}
 	

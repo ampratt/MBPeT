@@ -11,27 +11,28 @@ import com.vaadin.ui.TextField;
 
 public class TRTForm extends FormLayout {
 
-	@PropertyId("target_response_times.action")
-	private TextField action = new TextField("Action:");
+	@PropertyId("action") 		//target_response_times
+	public TextField action = new TextField("Action:");
 
 	
-	@PropertyId("target_response_times.average")
+	@PropertyId("average")
 	private TextField average = new TextField("Average:");
 
 	
-	@PropertyId("target_response_times.max")
+	@PropertyId("max")
 	private TextField max = new TextField("Max:");
 	
+	
 	public TRTForm(){
-		setMargin(new MarginInfo(false, true, false, true));
+		setMargin(new MarginInfo(false, false, false, false));
 		
 		action.addValidator(new BeanValidator(TRT.class, "action"));
 		average.addValidator(new BeanValidator(TRT.class, "average"));
 		max.addValidator(new BeanValidator(TRT.class, "max"));
 		
 		action.setNullRepresentation("");
-		average.setNullRepresentation("");
-		max.setNullRepresentation("");
+		average.setNullRepresentation("0.0");
+		max.setNullRepresentation("0.0");
 		
 		toggleValidationMessages(false);
 		
@@ -41,6 +42,7 @@ public class TRTForm extends FormLayout {
 		
 		for (Component c : this.components) {
 			c.addStyleName("small");
+			c.setWidth("97%");
 		}
 		
 	}

@@ -60,7 +60,7 @@ public class ParametersAceEditorLayoutWITHOUTFORM extends VerticalLayout impleme
 
     TestSession currsession;
     Parameters currParameters;
-    JPAContainer<Parameters> parameters = MBPeTMenu.parameters;
+    JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
     
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";

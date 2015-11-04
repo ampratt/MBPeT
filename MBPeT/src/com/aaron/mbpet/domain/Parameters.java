@@ -36,10 +36,34 @@ public class Parameters {
 	private String settings_file;
 	
 	
+	// DSTAT settings
+	@Column(name = "dstat_mode")
+	private String dstat_mode;
+	
+	@Column(name = "host")
+	private String host;
+	
+//	@Column(name = "username")
+	private String username;
+	
+//	@Column(name = "password")
+	private String password;
+	
+	@Column(name = "user_types")
+	private String user_types;
+
+	@Column(name = "models_folder")
+	private String models_folder;
+	
+	@Column(name = "test_report_folder")
+	private String test_report_folder;
+
 	@Column(name = "ip")
 	private String ip;
 
 	
+	
+	// TEST settings
 	@Column(name = "test_duration")
 	private int test_duration;				// in seconds
 	
@@ -67,6 +91,8 @@ public class Parameters {
 	//	private Map<String, HashMap<String, Double>> TargetResponseTime;
 	//	private String responseTime_object_name;
 
+    
+    
 	
 	/*
 	 * Constructors
@@ -79,12 +105,12 @@ public class Parameters {
 	}
 	
 	public Parameters(String ip, int test_duration,int monitoring_interval, 
-			int mean_user_think_time, double d, TestSession ownersession) {
+			int mean_user_think_time, double standard_deviation, TestSession ownersession) {
 		this.ip = ip;
 		this.test_duration = test_duration;
 		this.monitoring_interval = monitoring_interval;
 		this.mean_user_think_time = mean_user_think_time;
-		this.standard_deviation = d;
+		this.standard_deviation = standard_deviation;
 		this.ownersession = ownersession;
 	}
 	
@@ -132,6 +158,61 @@ public class Parameters {
 	
 	
 	
+	public String getDstat_mode() {
+		return dstat_mode;
+	}
+	
+	public void setDstat_mode(String dstat_mode) {
+		this.dstat_mode = dstat_mode;
+	}
+	
+	public String getHost() {
+		return host;
+	}
+	
+	public void setHost(String host) {
+		this.host = host;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public String getUser_types() {
+		return user_types;
+	}
+	
+	public void setUser_types(String user_types) {
+		this.user_types = user_types;
+	}
+	
+	public String getModels_folder() {
+		return models_folder;
+	}
+	
+	public void setModels_folder(String models_folder) {
+		this.models_folder = models_folder;
+	}
+	
+	public String getTest_report_folder() {
+		return test_report_folder;
+	}
+	
+	public void setTest_report_folder(String test_report_folder) {
+		this.test_report_folder = test_report_folder;
+	}
 	
 	public String getIp() {
 		return ip;
@@ -141,12 +222,39 @@ public class Parameters {
 		this.ip = ip;
 	}
 
+	
+	
 	public int getTest_duration() {
 		return test_duration;
 	}
 
 	public void setTest_duration(int test_duration) {
 		this.test_duration = test_duration;
+	}
+
+
+	public int getMonitoring_interval() {
+		return monitoring_interval;
+	}
+
+	public void setMonitoring_interval(int monitoring_interval) {
+		this.monitoring_interval = monitoring_interval;
+	}
+
+	public int getMean_user_think_time() {
+		return mean_user_think_time;
+	}
+
+	public void setMean_user_think_time(int mean_user_think_time) {
+		this.mean_user_think_time = mean_user_think_time;
+	}
+
+	public double getStandard_deviation() {
+		return standard_deviation;
+	}
+
+	public void setStandard_deviation(double standard_deviation) {
+		this.standard_deviation = standard_deviation;
 	}
 
 	public String getRamp_list() {
@@ -165,30 +273,6 @@ public class Parameters {
 		target_response_times = trt;
 	}
 
-	public int getInterval() {
-		return monitoring_interval;
-	}
-
-	public void setInterval(int monitoring_interval) {
-		this.monitoring_interval = monitoring_interval;
-	}
-
-	public int getMean_user_think_time() {
-		return mean_user_think_time;
-	}
-
-	public void setMean_user_think_time(int mean_user_think_time) {
-		this.mean_user_think_time = mean_user_think_time;
-	}
-
-	public Double getStandard_deviation() {
-		return standard_deviation;
-	}
-
-	public void setStandard_deviation(Double standard_deviation) {
-		this.standard_deviation = standard_deviation;
-	}
-
 
 
 	public void addTRT(TRT trt) {
@@ -205,9 +289,9 @@ public class Parameters {
 		// copy all wanted items to new list and leave behind 'removed' items
 		List<TRT> newList = new ArrayList<TRT>();
 		for (TRT t : target_response_times) {
-			if (t.getId() == trt.getId()) {
-				// do nothing
-			} else {
+			System.out.println("comparing: " + t.getId() + " ->" + trt.getId());
+			System.out.println("comparing: " + t.getAction() + " ->" + trt.getAction());				
+			if (t.getId() != trt.getId()) {
 				// add to new list
 				newList.add(t);
 				System.out.println("NEW LIST size: " + newList.size());				
@@ -218,6 +302,27 @@ public class Parameters {
 		
 		setTarget_response_times(newList);
 		System.out.println("TRT LIST after removing: " + getTarget_response_times().size());
+		
+	}
+	
+	
+	public void updateTRTData(TRT currTrt) {
+		System.out.println("BEFORE UPDATE");
+		for (TRT t : target_response_times) {			
+			System.out.println("container title: " + t.getAction());
+		}
+		// get index before renaming/removing
+		removeTRT(currTrt);
+		
+		// add renamed session back at same index
+//		sessions.add(index, session);
+		addTRT(currTrt);
+		
+		System.out.println("AFTER UPDATE");
+//		sortSessions();
+		for (TRT t : target_response_times) {			
+			System.out.println("container title: " + t.getAction());
+		}
 		
 	}
 	

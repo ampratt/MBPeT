@@ -75,7 +75,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	public static JPAContainer<TestCase> testcases = getTestcases();
 	public static JPAContainer<TestSession> sessions;
 	public static JPAContainer<Model> models;
-	public static JPAContainer<Parameters> parameters;
+	public static JPAContainer<Parameters> parameterscontainer;
 	public static JPAContainer<TRT> trtcontainer;
 	
 	private User currentuser = MainView.sessionUser;
@@ -102,7 +102,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		MbpetUI.PERSISTENCE_UNIT);
         models = JPAContainerFactory.make(Model.class,
         		MbpetUI.PERSISTENCE_UNIT);        //new HierarchicalDepartmentContainer();
-        parameters = JPAContainerFactory.make(Parameters.class,
+        parameterscontainer = JPAContainerFactory.make(Parameters.class,
         		MbpetUI.PERSISTENCE_UNIT); 
         trtcontainer = JPAContainerFactory.make(TRT.class,
         		MbpetUI.PERSISTENCE_UNIT);
