@@ -2,15 +2,13 @@ package com.aaron.mbpet.views.parameters;
 
 import java.util.List;
 
+import com.kbdunn.vaadin.addons.fontawesome.FontAwesome;
 import com.aaron.mbpet.domain.Parameters;
-import com.aaron.mbpet.domain.TestSession;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
+import com.aaron.mbpet.services.FlotUtils;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.Resource;
+//import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -19,6 +17,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 public class ParametersForm extends FormLayout implements Button.ClickListener {
@@ -67,7 +66,7 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 	private TextField standard_deviation = new TextField("Standard deviation (secs):");
 	
 	@PropertyId("ramp_list")
-	private TextField ramp_list = new TextField("Ramp list:");
+	private TextField ramp_list = new TextField();
 	
 //	@PropertyId("target_response_times")
 //	private TextField target_response_times = new TextField("Target Response Time");
@@ -149,16 +148,25 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 			addComponent(mean_user_think_time);
 			addComponent(standard_deviation);
         
-    	ramp_list.addStyleName("light");
-    	ramp_list.setInputPrompt("input as: [(0,0), (100,200), ..]");
-	    addComponent(ramp_list);
-		
 		wrap = new HorizontalLayout();
-			wrap.setWidth("100%");
-			rampbutton = new Button("Draw Ramp", this);
-			rampbutton.addStyleName("tiny");
+		wrap.setSpacing(false);
+		wrap.setWidth("100%");
+		wrap.setCaption("Ramp list:");
+
+			ramp_list.addStyleName("light");
+			ramp_list.addStyleName("borderless");
+			ramp_list.addStyleName("small");
+	    	ramp_list.setInputPrompt("[(0,0), (100,200), ..]");
+		    wrap.addComponent(ramp_list);
+		
+			rampbutton = new Button("", this);
+			rampbutton.setIcon(FontAwesome.LINE_CHART);
+			rampbutton.addStyleName("borderless");
+			rampbutton.addStyleName("colored");
+			rampbutton.setDescription("Plot ramp function on chart");
 			wrap.addComponent(rampbutton);
 			wrap.setComponentAlignment(rampbutton, Alignment.MIDDLE_RIGHT);
+			wrap.setExpandRatio(ramp_list, 1);
 		addComponent(wrap);
 	        
 //			addComponent(TargetResponseTime);
@@ -234,7 +242,9 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 	@Override
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == rampbutton) {
-			
+			String formatted = FlotUtils.formatRampToFlot(ramp_list.getValue());
+			Notification.show("Formatted for flot: " + formatted);
+//			FlotUtils.formatFlotToRamp(formatted);
 		}
 		
 	}
