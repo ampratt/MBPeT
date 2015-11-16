@@ -7,28 +7,25 @@ import javax.servlet.annotation.WebServlet;
 
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.services.DemoDataGenerator;
+import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ClientConnector;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.ClientConnector.DetachEvent;
-import com.vaadin.server.ClientConnector.DetachListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 
 @JavaScript({//"http://cdn.alloyui.com/3.0.1/aui/aui-min.js",
 //	"js/alloy-ui-master/.*",
@@ -49,6 +46,7 @@ import com.vaadin.ui.VerticalLayout;
 @StyleSheet("http://cdn.alloyui.com/3.0.1/aui-css/css/bootstrap.min.css")
 @SuppressWarnings("serial")
 @Theme("mbpet")
+@Push(PushMode.MANUAL)
 public class MbpetUI extends UI {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
@@ -185,4 +183,44 @@ public class MbpetUI extends UI {
 	    return tracker;
 	  }
 
+	    public class PushThread extends Thread {
+	        int x = 1;
+	        @Override
+	        public void run() {
+	            try {
+	                // Update the data for a while
+//	                while (x < 5) {
+	                    Thread.sleep(1000);
+	                
+	                    access(new Runnable() {
+	                        @Override
+	                        public void run() {
+//	                        	UI.getCurrent().getPushConfiguration().setPushMode(PushMode.MANUAL);
+	                        	new UDPServer();
+	                        	
+//	                          double y = Math.random();
+//	                    		loadingText.setValue("Loading UI, please wait..." + x);
+//	                    		UI.getCurrent().push();
+//	                    		x++;
+	                        }
+	                    });
+//	                }
+
+	                // Inform that we have stopped running
+	                access(new Runnable() {
+	                    @Override
+	                    public void run() {
+	                    	// Here the UI is locked and can be updated
+//		                    mainLayout.removeAllComponents();1
+//		                    mainLayout.addComponent(new Label("The test is complete!"));
+		                    UI.getCurrent().push();
+	                    }
+	                });
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    
+	    
 }

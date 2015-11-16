@@ -22,6 +22,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -51,33 +52,12 @@ public class MainView extends HorizontalLayout implements View {
     JPAContainer<User> persons;
 //    private Item sessionUser;
     
-    VerticalLayout menuLayout = new VerticalLayout();
+    Panel menuLayout = new Panel();	//VerticalLayout
 	Panel contentLayout = new Panel();
 	MBPeTMenu menu;
 	Tree tree;
 //	ContentView contentView;
 
-	
-
-    // Menu navigation button listener
-//    class ButtonListener implements Button.ClickListener {
-//        private static final long serialVersionUID = -4941184695301907995L;
-//
-//        String menuitem;
-//        public ButtonListener(String menuitem) {
-//            this.menuitem = menuitem;
-//        }
-//
-//        @Override
-//        public void buttonClick(ClickEvent event) {
-//            // Navigate to a specific state
-//        	UI.getCurrent()
-//        		.getNavigator()
-//    				.navigateTo(MainView.NAME + "/" + menuitem);
-//        	//        	navigator.navigateTo(MainView.NAME + "/" + menuitem);
-//        }
-//    }
-    
     
 	public MainView() {
 		
@@ -90,13 +70,14 @@ public class MainView extends HorizontalLayout implements View {
 //    	setSpacing(true);
 		setSizeFull();
 		addStyleName("mainview");
+//    	setWidth(100%);
     	
 		addComponent(menuLayout);
-    	setExpandRatio(menuLayout, 1.7f);		
+    	setExpandRatio(menuLayout, 0);	//2.0f);	//1.7	
 
     	addComponent(contentLayout);
-    	setExpandRatio(contentLayout, 8.3f);    	
-
+    	setExpandRatio(contentLayout, 1);	//8.0f);    	
+//    	setComponentAlignment(contentLayout, Alignment.TOP_LEFT);
     	// call this in enter()
 //		MenuLayout();
 		ContentLayout();
@@ -132,17 +113,21 @@ public class MainView extends HorizontalLayout implements View {
 	
 	private void MenuLayout() {
 		menuLayout.setHeight("100%");
-		tree = new Tree("Test Cases:");
+		menuLayout.setWidth("250px");
+//		menuLayout.addStyleName("menu-containerpanel");
+		menuLayout.addStyleName("borderless");
+		tree = new Tree("SUT's:");
 
 		// add menu to main view
     	menu = new MBPeTMenu(persons, tree);	//sessionUser, displayName,
-    	menuLayout.addComponent(menu);
+    	menuLayout.setContent(menu);
 //    	setExpandRatio(menu, 1.7f);		
 	}
 
 	
 	private void ContentLayout() {
 		contentLayout.setHeight("100%");
+		contentLayout.setWidth("100%");
 		contentLayout.addStyleName("borderless");
 //		contentLayout.setContent(new LandingPage(tree));
 //		addComponent(landingPage);	
@@ -255,4 +240,22 @@ public class MainView extends HorizontalLayout implements View {
 //    }
   
 
+    // Menu navigation button listener
+//  class ButtonListener implements Button.ClickListener {
+//      private static final long serialVersionUID = -4941184695301907995L;
+//
+//      String menuitem;
+//      public ButtonListener(String menuitem) {
+//          this.menuitem = menuitem;
+//      }
+//
+//      @Override
+//      public void buttonClick(ClickEvent event) {
+//          // Navigate to a specific state
+//      	UI.getCurrent()
+//      		.getNavigator()
+//  				.navigateTo(MainView.NAME + "/" + menuitem);
+//      	//        	navigator.navigateTo(MainView.NAME + "/" + menuitem);
+//      }
+//  }
 }

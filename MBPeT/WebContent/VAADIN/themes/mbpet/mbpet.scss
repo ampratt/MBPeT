@@ -50,7 +50,29 @@
   /* Insert your theme rules here */
   
   .invalid-value {
-  	border: solid 1px #ff0000; 
+	border: solid 1px #ff0000; 
   }
   
+	.mbpet .v-required-field-indicator {
+		color: white;
+		padding: 0 0.2em;
+	}
+
+	.hide-required-asterisk {	
+		color: white;
+		padding-left:2px;
+	}
+
+
+	.content {
+		height: 100%;
+	}
+
+	.v-table .v-table-body-background-white {
+		background-color: white;
+	}
+	.v-table-background-white {
+		background-color: white;
+	}
+	
 }

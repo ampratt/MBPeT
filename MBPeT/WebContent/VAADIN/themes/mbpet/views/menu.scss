@@ -2,12 +2,14 @@
 	
 	.menu {
 		height: 100%;
-		width: 17%;
+		/*width: 17%;*/
+		width: 250px;
 		padding-top: 0px;
+		padding-bottom: 10px;
 		background-color: #F9FAFB; /* #4b4b4b */
 		left: 0;
 /*		bottom: 0;*/
-		border-right: 1px solid #cccdcd;
+		border-right: none; /*1px solid #cccdcd;*/
 		
 		.v-button {
 			display: block;

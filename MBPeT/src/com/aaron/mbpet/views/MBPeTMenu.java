@@ -60,14 +60,9 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 
 public class MBPeTMenu extends CustomComponent implements Action.Handler{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8976097773826956282L;
 	
 //    public static final String NAME = "MBPeT";
-	VerticalLayout menuLayout = new VerticalLayout(); //VerticalLayout
-//	final static Tree tree = new Tree("Test Cases:");
+	VerticalLayout menuLayout = new VerticalLayout();
 	private Tree menutree;
 	static MenuBar userMenu;
 	
@@ -87,7 +82,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     private static final Action ACTION_CLONE = new Action("Clone");
     private static final Action ACTION_DELETE = new Action("Delete");
     private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_CLONE, ACTION_DELETE };
-//    String[] animals = new String[] {"possum", "donkey", "pig", "duck", "dog", "cow", "horse", "cat", "reindeer", "penguin", "sheep", "goat", "tractor cow", "chicken", "bacon", "cheddar"};
     
     
 	public MBPeTMenu(JPAContainer<User> persons, Tree tree) {	//User sessUser, String usrname,

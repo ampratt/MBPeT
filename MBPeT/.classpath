@@ -40,5 +40,6 @@
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/eclipselink/org.eclipse.persistence.jpa.jar"/>
 	<classpathentry kind="lib" path="src/com/aaron/mbpet/js/alloy-ui-master"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/font-awesome-label-1.2.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

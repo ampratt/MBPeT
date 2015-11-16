@@ -4,11 +4,13 @@
     padding: $view-padding; 
 	padding-top: 0;
     overflow: visible;
-	
+	border-left: 1px solid #cccdcd;
+
 	
 	.v-horizontallayout-topBar-layout-padding-white {
 		padding: 0 10px 0 10px;
-		background-color: #FAFAFA;
+		background-color: #FFF; 	/*#FAFAFA;*/
+		border-bottom: 1px solid #cccdcd;
 	}
  
 	.panel-caption {

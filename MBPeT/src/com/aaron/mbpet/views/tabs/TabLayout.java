@@ -19,7 +19,7 @@ public class TabLayout extends TabSheet {
 	
 //	ConfigurationTab configTab = new ConfigurationTab();
 	TabSheet confTabs;
-	MonitoringTab monitoringTab = new MonitoringTab();
+	private static MonitoringTab monitoringTab = new MonitoringTab();
 	final ReportsTab reportsTab = new ReportsTab();
 	ModelsTab models;// = new ModelsTab();
 	ParametersTab parameters;
@@ -51,7 +51,7 @@ public class TabLayout extends TabSheet {
         configTab.addComponent(buildConfigTabs());
 
         addTab(configTab, "Configuration");
-        addTab(monitoringTab, "Monitoring");
+        addTab(getMonitoringTab(), "Monitoring");
         addTab(reportsTab, "Reports");
         
     }
@@ -76,6 +76,14 @@ public class TabLayout extends TabSheet {
 		confTabs.addTab(adapter, "Test Adapter");
 		return confTabs;
        		
+	}
+
+	public static MonitoringTab getMonitoringTab() {
+		return monitoringTab;
+	}
+
+	public void setMonitoringTab(MonitoringTab monitoringTab) {
+		this.monitoringTab = monitoringTab;
 	}
     
 }

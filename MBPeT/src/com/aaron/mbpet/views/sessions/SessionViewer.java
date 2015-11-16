@@ -8,6 +8,8 @@ import javax.persistence.Query;
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.UDPServer;
+import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.tabs.TabLayout;
@@ -147,6 +149,13 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			//testing purposes
 			Notification.show("This will launch the test session to the master", Type.WARNING_MESSAGE);
 
+			MbpetUI mbpetui = new MbpetUI();
+			MbpetUI.PushThread push = mbpetui.new PushThread();
+			push.start();
+			
+//			new UDPServer();
+//			new MasterUtils();
+
         } else if (event.getButton() == stopButton) {
 			//testing purposes
 			Notification.show("This will stop the test", Type.WARNING_MESSAGE);
@@ -154,29 +163,6 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
         }
     }
    
-
-//	private TestCase getTestCaseByTitle() {
-//		String title = pageTitle.getValue();
-//		if (title.contains("/")) {
-//			title = title.substring(0, title.indexOf("/")); 
-//		}
-//		System.out.println("the parses test case title is: " + title);
-//		
-//		// add created item to tree (after retrieving db generated id)
-//        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-//										.createEntityManager();	
-//        Query query = em.createQuery(
-//    		    "SELECT OBJECT(t) FROM TestCase t WHERE t.title = :title"
-//    		);
-////        query.setParameter("title", newsession.getTitle());
-//        TestCase queriedCase = 
-//        		(TestCase) query.setParameter("title", title).getSingleResult();
-//        System.out.println("retrieved TC fro db is : " 
-//        				+  queriedCase.getId() + " - " + queriedCase.getTitle());
-//			            
-//		return testcases.getItem(queriedCase.getId()).getEntity();
-//		
-//	}
 
 	
 	public static void setPageTitle(String t){
@@ -216,120 +202,6 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return sessions.getItem(id).getEntity();
 	}
 	
-//	private static TestSession getTestSessionByTitle() {
-//		String title = pageTitle.getValue();
-//		if (title.contains("/")) {
-//			title = title.substring((title.indexOf("/")+1), title.length()); 
-//		}
-//		System.out.println("the parsed test session title is: " + title);
-//		
-//		// add created item to tree (after retrieving db generated id)
-//        EntityManager em = Persistence.createEntityManagerFactory("mbpet")
-//										.createEntityManager();	
-//        Query query = em.createQuery(
-//    		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title"
-//    		);
-////        query.setParameter("title", newsession.getTitle());
-//        TestSession queriedSession = 
-//        		(TestSession) query.setParameter("title", title).getSingleResult();
-//        System.out.println("retrieved SESSION fro db is : " 
-//        				+  queriedSession.getId() + " - " + queriedSession.getTitle());
-//			            
-//		return sessions.getItem(queriedSession.getId()).getEntity();
-//		
-//	}
-//    @Override
-//    public void enter(ViewChangeEvent event) {
-//        if (event.getParameters() == null
-//            || event.getParameters().isEmpty()) {
-//        	setPageTitle("didn't get anything?");	//title.setValue
-////            equalPanel.setContent(
-////                new Label("Nothing to see here, " +
-////                          "just pass along."));
-//            return;
-//        } else {
-//        	Notification.show(event.getParameters(), Type.WARNING_MESSAGE);
-//        	System.out.println(event.getParameters());
-//            setPageTitle(event.getParameters());	//title.setValue
-////            equalPanel.setContent(new AnimalViewer(
-////                event.getParameters()));
-//        }
-//    }
 
-
-    /*
-     * Handle actions
-     */
-//    @Override
-//    public void handleAction(final Action action, final Object sender,
-//            final Object target) {
-//        if (action == ACTION_ADD) {
-//            // Allow children for the target item, and expand it
-//            sample.setChildrenAllowed(target, true);
-//            sample.expandItem(target);
-// 
-//            // Create new item, set parent, disallow children (= leaf node)
-//            final Object itemId = sample.addItem();
-//            sample.setParent(itemId, target);
-//            sample.setChildrenAllowed(itemId, false);
-// 
-//            // Set the name for this item (we use it as item caption)
-//            final Item item = sample.getItem(itemId);
-//            final Property name = item
-//                    .getItemProperty(ExampleUtil.hw_PROPERTY_NAME);
-//            name.setValue("New Item");
-// 
-//        } else if (action == ACTION_DELETE) {
-//            final Object parent = sample.getParent(target);
-//            sample.removeItem(target);
-//            // If the deleted object's parent has no more children, set it's
-//            // childrenallowed property to false (= leaf node)
-//            if (parent != null && sample.getChildren(parent) == null) {
-//                sample.setChildrenAllowed(parent, false);
-//            }
-//        }
-//    }
-	
-//	public Component buildContentLayout(){
-//	HorizontalLayout contentLayout = new HorizontalLayout();
-//	contentLayout.setWidth("100%");
-//	contentLayout.addStyleName("content");
-//	
-////    equalPanel.setWidth("100%");
-//    equalPanel.addStyleName("equal-panel");
-//    contentLayout.addComponent(equalPanel);
-////    contentLayout.setExpandRatio(equalPanel, 1);
-//    
-//    contentLayout.addComponent(buildTreeMenu2());
-////    contentLayout.addComponent(BuildTreeMenu());
-//    
-//    // Create a grid
-//    Grid grid = new Grid();
-//    // Define some columns
-//    grid.addColumn("name", String.class);
-//    grid.addColumn("born", Integer.class);
-//    // Add some data rows
-//    grid.addRow("Nicolaus Copernicus", 1543);
-//    grid.addRow("Galileo Galilei", 1564);
-//    grid.addRow("Johannes Kepler", 1571);
-//
-////    contentLayout.addComponent(grid);
-//    
-//    grid.addSelectionListener(new SelectionListener() {
-//        @Override
-//        public void select(SelectionEvent event) {                   
-//        	getUI()
-//        		.getNavigator()
-//        			.navigateTo(MainView.NAME + "/" + 
-//    							event.getSelected().toString());
-//        	
-//			// update title
-//        	setPageTitle(event.getSelected().toString());
-////        	title.setValue(event.getSelected().toString());
-//        }
-//    }); 
-//
-//    return contentLayout;
-//}
 	
 }

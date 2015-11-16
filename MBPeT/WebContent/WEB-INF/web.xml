@@ -15,6 +15,16 @@
     <url-pattern>/static/*</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+		<servlet-name>MyServlet</servlet-name>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+		<init-param>
+			<param-name>ui</param-name>
+			<param-value>com.aaron.mbpet.MbpetUI</param-value>
+		</init-param>
+		<async-supported>true</async-supported>
+  </servlet>
+	
 <!--   <servlet>
     <servlet-name>myservlet</servlet-name>
     <servlet-class>

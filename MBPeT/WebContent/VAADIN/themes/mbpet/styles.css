@@ -15851,11 +15851,12 @@ div.v-layout.v-horizontal.v-widget {
 
 .mbpet .menu {
 	height: 100%;
-	width: 17%;
+	width: 250px;
 	padding-top: 0px;
+	padding-bottom: 10px;
 	background-color: #F9FAFB;
 	left: 0;
-	border-right: 1px solid #cccdcd;
+	border-right: none;
 }
 
 .mbpet .menu .v-button {
@@ -15885,10 +15886,15 @@ div.v-layout.v-horizontal.v-widget {
 	padding-left: 1em;
 }
 
+.mbpet .content-border .v-panel .v-panel-content {
+	border-left: 1px solid #cccdcd;
+}
+
 .mbpet .content {
 	height: 100%;
 	width: 83%;
 	background-color: white;
+	border-left: 1px solid #cccdcd;
 }
 
 .mbpet .content .equal-panel {
@@ -15933,11 +15939,13 @@ div.v-layout.v-horizontal.v-widget {
 	padding: $view-padding;
 	padding-top: 0;
 	overflow: visible;
+	border-left: 1px solid #cccdcd;
 }
 
 .mbpet .dashboard-view.dashboard-view .v-horizontallayout-topBar-layout-padding-white {
 	padding: 0 10px 0 10px;
-	background-color: #FAFAFA;
+	background-color: #FFF;
+	border-bottom: 1px solid #cccdcd;
 }
 
 .mbpet .dashboard-view.dashboard-view .panel-caption .v-panel-caption {
@@ -16042,24 +16050,24 @@ div.v-layout.v-horizontal.v-widget {
 	border: solid 1px #ff0000;
 }
 
-.mbpet .v-required-field-indicator {
+.mbpet .mbpet .v-required-field-indicator {
 	color: white;
 	padding: 0 0.2em;
 }
 
-.hide-required-asterisk {
+.mbpet .hide-required-asterisk {
 	color: white;
 	padding-left: 2px;
 }
 
-.content {
+.mbpet .content {
 	height: 100%;
 }
 
-.v-table .v-table-body-background-white {
+.mbpet .v-table .v-table-body-background-white {
 	background-color: white;
 }
 
-.v-table-background-white {
+.mbpet .v-table-background-white {
 	background-color: white;
 }

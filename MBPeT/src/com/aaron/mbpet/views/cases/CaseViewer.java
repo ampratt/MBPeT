@@ -127,6 +127,11 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 	}
 
 	public HorizontalLayout buildTopBar() {
+		HorizontalLayout topBar = new HorizontalLayout();
+		topBar.addStyleName("topBar-layout-padding-white");
+		topBar.setWidth("100%");
+		topBar.setSpacing(true);
+		
 //		pageTitle.addStyleName("test-case-title");
 		pageTitle.addStyleName("h2");
 		
@@ -147,11 +152,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 //		saveButton.setIcon(FontAwesome.SAVE);
 //		startButton.setIcon(FontAwesome.PLAY);
 //		stopButton.setIcon(FontAwesome.STOP);
-		
-		HorizontalLayout topBar = new HorizontalLayout();
-		topBar.addStyleName("topBar-layout-padding-white");
-		topBar.setWidth("100%");
-		topBar.setSpacing(true);
+	
 
 		HorizontalLayout buttons = new HorizontalLayout();
 		buttons.setSpacing(true);

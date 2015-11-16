@@ -19,6 +19,13 @@ import com.vaadin.ui.themes.ValoTheme;
 public class MonitoringTab extends VerticalLayout {
 
 	VerticalLayout vert = new VerticalLayout();
+	public Label sentdata;
+	public Label receiveddata;
+	public Label throughput;
+	public Label targetuser;
+	public Label averageresponse;
+	public Label minmaxresponse;
+	public Label slave;
 	
     public MonitoringTab() {
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -39,22 +46,22 @@ public class MonitoringTab extends VerticalLayout {
     	HorizontalLayout row = new HorizontalLayout();
         //row.setStyleName("monitor-panels");
         row.setMargin(true);
-        //row.setSpacing(true);
+        row.setSpacing(true);
     	row.setWidth("100%");
         addComponent(row);
         //TestIcon testIcon = new TestIcon(60);
 
         Panel panel = new Panel("Response Times");
         //panel.setIcon(testIcon.get());
-        panel.setContent(panelContent());
+        panel.setContent(responseTimes());
         row.addComponent(panel);
 
         panel = new Panel("Response Counts");
-        panel.setContent(panelContent());
+        panel.setContent(responseCounts());
         row.addComponent(panel);
         
         panel = new Panel("Bandwidth");
-        panel.setContent(panelContent());
+        panel.setContent(bandwidthContent());
         row.addComponent(panel);
         
         panel = new Panel("Slaves");
@@ -66,7 +73,107 @@ public class MonitoringTab extends VerticalLayout {
     }
     
     
-    Component panelContent() {
+    private Component responseTimes() {
+        VerticalLayout vert = new VerticalLayout();
+        //vert.setSizeFull();
+        vert.setMargin(true);
+        vert.setHeight("6em");
+        //vert.setWidth("8em");
+        
+        HorizontalLayout row = new HorizontalLayout();
+        row.setWidth("100%");
+        //layout.setSpacing(true);
+        //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
+        Label responseTimesLabel = new Label("Average");
+        averageresponse = new Label();
+        row.addComponent(responseTimesLabel);
+        row.addComponent(averageresponse);
+        row.setComponentAlignment(responseTimesLabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(averageresponse, Alignment.TOP_RIGHT);
+        //row.setExpandRatio(data, 1);
+        vert.addComponent(row);
+
+        row = new HorizontalLayout();
+        row.setWidth("100%");
+        responseTimesLabel = new Label("Min/Max");
+        minmaxresponse = new Label();
+        row.addComponent(responseTimesLabel);
+        row.addComponent(minmaxresponse);
+        row.setComponentAlignment(responseTimesLabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(minmaxresponse, Alignment.TOP_RIGHT);
+        vert.addComponent(row);
+        
+        return vert;
+    }
+    
+    private Component responseCounts() {
+        VerticalLayout vert = new VerticalLayout();
+        //vert.setSizeFull();
+        vert.setMargin(true);
+        vert.setHeight("6em");
+        //vert.setWidth("8em");
+        
+        HorizontalLayout row = new HorizontalLayout();
+        row.setWidth("100%");
+        //layout.setSpacing(true);
+        //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
+        Label responseCountsLabel = new Label("Throughput");
+        throughput = new Label();
+        row.addComponent(responseCountsLabel);
+        row.addComponent(throughput);
+        row.setComponentAlignment(responseCountsLabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(throughput, Alignment.TOP_RIGHT);
+        //row.setExpandRatio(data, 1);
+        vert.addComponent(row);
+
+        row = new HorizontalLayout();
+        row.setWidth("100%");
+        responseCountsLabel = new Label("Target User");
+        targetuser = new Label();
+        row.addComponent(responseCountsLabel);
+        row.addComponent(targetuser);
+        row.setComponentAlignment(responseCountsLabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(targetuser, Alignment.TOP_RIGHT);
+        vert.addComponent(row);
+        
+        return vert;
+    }
+    
+    private Component bandwidthContent() {
+        VerticalLayout vert = new VerticalLayout();
+        //vert.setSizeFull();
+        vert.setMargin(true);
+        vert.setHeight("6em");
+        //vert.setWidth("8em");
+        
+        HorizontalLayout row = new HorizontalLayout();
+        row.setWidth("100%");
+        //layout.setSpacing(true);
+        //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
+        Label bandwidthlabel = new Label("Sent");
+        sentdata = new Label();
+        row.addComponent(bandwidthlabel);
+        row.addComponent(sentdata);
+        row.setComponentAlignment(bandwidthlabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(sentdata, Alignment.TOP_RIGHT);
+        //row.setExpandRatio(data, 1);
+        vert.addComponent(row);
+
+        row = new HorizontalLayout();
+        row.setWidth("100%");
+        bandwidthlabel = new Label("Received");
+        receiveddata = new Label();
+        row.addComponent(bandwidthlabel);
+        row.addComponent(receiveddata);
+        row.setComponentAlignment(bandwidthlabel, Alignment.TOP_LEFT);
+        row.setComponentAlignment(receiveddata, Alignment.TOP_RIGHT);
+        vert.addComponent(row);
+        
+        return vert;
+    }
+    
+    
+    private Component panelContent() {
         VerticalLayout vert = new VerticalLayout();
         //vert.setSizeFull();
         vert.setMargin(true);
@@ -99,23 +206,44 @@ public class MonitoringTab extends VerticalLayout {
         return vert;
     }
     
-    Component slavePanelContent() {
+    private Component slavePanelContent() {
         VerticalLayout vert = new VerticalLayout();
         //vert.setSizeFull();
         vert.setMargin(true);
         vert.setHeight("6em");
         //vert.setWidth("8em");
         
-        String[] statuses = {"Connected", "Generating", "Saturated"};
+        HorizontalLayout row = new HorizontalLayout();
+        row.setWidth("100%");
+       
+        slave = new Label();
+        row.addComponent(slave);
+        vert.addComponent(row);  
         
-        for (int i=0; i<statuses.length; i++) {
-            HorizontalLayout row = new HorizontalLayout();
-            row.setWidth("100%");
-           
-            Label slave = new Label("Slave " + (i+1) + " - " + statuses[i]);
-            row.addComponent(slave);
-            vert.addComponent(row);        	
-        }    
+        
+//        String[] statuses = {"Connected", "Generating", "Saturated"};
+//        
+//        for (int i=0; i<statuses.length; i++) {
+//            HorizontalLayout row = new HorizontalLayout();
+//            row.setWidth("100%");
+//           
+//            Label slave = new Label("Slave " + (i+1) + " - " + statuses[i]);
+//            row.addComponent(slave);
+//            vert.addComponent(row);        	
+//        }    
         return vert;
+    }
+    
+    
+    public void updateFields(String[] fields) {
+    //(String averageresponse, String minmaxresponse, String sent, String received, String throughput, String targetuser, String slave ) {
+    	
+    	this.averageresponse.setValue(fields[0]);
+    	this.minmaxresponse.setValue(fields[1]);
+    	this.sentdata.setValue(fields[2]);
+    	this.receiveddata.setValue(fields[3]);
+    	this.throughput.setValue(fields[4]);
+    	this.targetuser.setValue(fields[5]);
+    	this.slave.setValue(fields[6]);
     }
 }
