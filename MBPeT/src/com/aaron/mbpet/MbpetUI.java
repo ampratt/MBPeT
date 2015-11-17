@@ -12,6 +12,7 @@ import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
+import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -53,7 +54,6 @@ import com.vaadin.ui.UI;
 public class MbpetUI extends UI implements PushLabelUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
-	MonitoringTab montab = TabLayout.getMonitoringTab();
 	
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = true, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
@@ -193,7 +193,10 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		        @Override
 		        public void run() {
 		        	//update the UI
-		        	montab.addNewMessageComponent(string);
+//		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();	// TabLayout.getMonitoringTab();
+
+		        	SessionViewer.tabs.getMonitoringTab()
+		        		.addNewMessageComponent(string);
 		        	
 //		        	mainview.addNewMessageComponent(string);
 		        }

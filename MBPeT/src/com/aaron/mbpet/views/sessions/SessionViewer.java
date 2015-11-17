@@ -58,6 +58,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	private Button startButton;
 	private Button newSessionButton;
 	
+	public static TabLayout tabs;
+	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
 		this.addStyleName("content");
@@ -77,7 +79,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //    	setExpandRatio(contentLayout, 1);
     	
 //		VerticalLayout tabs = new VerticalLayout();
-		TabLayout tabs = new TabLayout();
+		tabs = new TabLayout();
 		addComponent(tabs);
     	setExpandRatio(tabs, 1);
 	}

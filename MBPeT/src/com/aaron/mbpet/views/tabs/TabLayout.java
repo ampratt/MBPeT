@@ -19,13 +19,13 @@ public class TabLayout extends TabSheet {
 	
 //	ConfigurationTab configTab = new ConfigurationTab();
 	TabSheet confTabs;
-	public static MonitoringTab monitoringTab = new MonitoringTab();
-	final ReportsTab reportsTab = new ReportsTab();
-	ModelsTab models;// = new ModelsTab();
-	ParametersTab parameters;
-	RampTab ramp;// = new RampTab();
-	SettingsTab settings;// = new SettingsTab();
-	TestAdapterTab adapter;// = new TestAdapterTab();
+	public MonitoringTab monitoringTab;	// = new MonitoringTab();
+	ReportsTab reportsTab;	// = new ReportsTab();	//final
+	ModelsTab modelTab;// = new ModelsTab();
+	ParametersTab parametersTab;
+//	TestAdapterTab adapter;// = new TestAdapterTab();
+//	RampTab ramp;// = new RampTab();
+//	SettingsTab settings;// = new SettingsTab();
 	
 //	TestSession currsession;
 	
@@ -39,20 +39,16 @@ public class TabLayout extends TabSheet {
         addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
 //        addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
  
-        /*
-        for (int i = 1; i < 4; i++) {
-            final VerticalLayout layout = new VerticalLayout(new Label(
-                    getLoremContent(), ContentMode.HTML));
-            layout.setMargin(true);
-            sample.addTab(layout, "Tab " + i);
-        }
-        */
+        monitoringTab = new MonitoringTab();
+        reportsTab = new ReportsTab();
+
         VerticalLayout configTab = new VerticalLayout();
         configTab.addComponent(buildConfigTabs());
 
         addTab(configTab, "Configuration");
         addTab(getMonitoringTab(), "Monitoring");
         addTab(reportsTab, "Reports");
+        
         
     }
 
@@ -61,24 +57,22 @@ public class TabLayout extends TabSheet {
 		confTabs.setSizeFull();
 		confTabs.addStyleName(ValoTheme.TABSHEET_CENTERED_TABS);	//TABSHEET_EQUAL_WIDTH_TABS);
 
-//		confTabs.addTab(graph, "User Profiles / Models");
-		//graphTab.addComponent(MbpetDemoUI.graph);
-		models = new ModelsTab();
-		ramp = new RampTab();
-		parameters = new ParametersTab();		//currsession
+		modelTab = new ModelsTab();
+		parametersTab = new ParametersTab();
+//		adapter = new TestAdapterTab();
+//		ramp = new RampTab();
 //		settings = new SettingsTab(currsession);
-		adapter = new TestAdapterTab();
 		
-		confTabs.addTab(models, "Models");
-		confTabs.addTab(ramp, "Ramp Function");
-		confTabs.addTab(parameters, "Test Parameters");
+		confTabs.addTab(modelTab, "Models");
+		confTabs.addTab(parametersTab, "Test Parameters");
+//		confTabs.addTab(adapter, "Test Adapter");
+//		confTabs.addTab(ramp, "Ramp Function");
 //		confTabs.addTab(settings, "Settings");
-		confTabs.addTab(adapter, "Test Adapter");
 		return confTabs;
        		
 	}
 
-	public static MonitoringTab getMonitoringTab() {
+	public MonitoringTab getMonitoringTab() {
 		return monitoringTab;
 	}
 
