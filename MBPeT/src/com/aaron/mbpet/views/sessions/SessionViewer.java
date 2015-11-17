@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.PushThreadWorker;
 import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
@@ -147,11 +148,14 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
         } else if (event.getButton() == startButton) {
 			//testing purposes
-			Notification.show("This will launch the test session to the master", Type.WARNING_MESSAGE);
+			Notification.show("test session is starting now", Type.TRAY_NOTIFICATION);
 
-			MbpetUI mbpetui = new MbpetUI();
-			MbpetUI.PushThread push = mbpetui.new PushThread();
-			push.start();
+	        final PushThreadWorker pushWorker = new PushThreadWorker();
+	        pushWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
+	        
+//			MbpetUI mbpetui = new MbpetUI();
+//			MbpetUI.PushThread push = mbpetui.new PushThread();
+//			push.start();
 			
 //			new UDPServer();
 //			new MasterUtils();

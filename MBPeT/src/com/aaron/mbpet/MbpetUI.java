@@ -7,10 +7,13 @@ import javax.servlet.annotation.WebServlet;
 
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.services.DemoDataGenerator;
+import com.aaron.mbpet.services.PushLabelUpdater;
 import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
+import com.aaron.mbpet.views.tabs.MonitoringTab;
+import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
@@ -46,11 +49,11 @@ import com.vaadin.ui.UI;
 @StyleSheet("http://cdn.alloyui.com/3.0.1/aui-css/css/bootstrap.min.css")
 @SuppressWarnings("serial")
 @Theme("mbpet")
-@Push(PushMode.MANUAL)
-public class MbpetUI extends UI {
+@Push	//(PushMode.MANUAL)
+public class MbpetUI extends UI implements PushLabelUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
-
+	MonitoringTab montab = TabLayout.getMonitoringTab();
 	
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = true, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
@@ -71,7 +74,7 @@ public class MbpetUI extends UI {
             } 
         });
         
-        getPage().setTitle("MBPeT Demo");
+        getPage().setTitle("MBPeT");
         
         //testing dummy data
         try {
@@ -183,44 +186,19 @@ public class MbpetUI extends UI {
 	    return tracker;
 	  }
 
-	    public class PushThread extends Thread {
-	        int x = 1;
-	        @Override
-	        public void run() {
-	            try {
-	                // Update the data for a while
-//	                while (x < 5) {
-	                    Thread.sleep(1000);
-	                
-	                    access(new Runnable() {
-	                        @Override
-	                        public void run() {
-//	                        	UI.getCurrent().getPushConfiguration().setPushMode(PushMode.MANUAL);
-	                        	new UDPServer();
-	                        	
-//	                          double y = Math.random();
-//	                    		loadingText.setValue("Loading UI, please wait..." + x);
-//	                    		UI.getCurrent().push();
-//	                    		x++;
-	                        }
-	                    });
-//	                }
-
-	                // Inform that we have stopped running
-	                access(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                    	// Here the UI is locked and can be updated
-//		                    mainLayout.removeAllComponents();1
-//		                    mainLayout.addComponent(new Label("The test is complete!"));
-		                    UI.getCurrent().push();
-	                    }
-	                });
-	            } catch (InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    }
+	  
+		@Override
+		public void printnewestMessage(final String string) {
+		    access(new Runnable() {
+		        @Override
+		        public void run() {
+		        	//update the UI
+		        	montab.addNewMessageComponent(string);
+		        	
+//		        	mainview.addNewMessageComponent(string);
+		        }
+		    });
+		}
 	    
 	    
 }

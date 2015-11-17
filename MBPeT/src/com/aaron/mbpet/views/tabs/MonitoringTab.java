@@ -16,7 +16,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @JavaScript("http://cdn.alloyui.com/2.5.0/aui/aui-min.js")
 @StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
-public class MonitoringTab extends VerticalLayout {
+public class MonitoringTab extends Panel {
 
 	VerticalLayout vert = new VerticalLayout();
 	public Label sentdata;
@@ -30,12 +30,14 @@ public class MonitoringTab extends VerticalLayout {
     public MonitoringTab() {
     	//setHeight(100.0f, Unit.PERCENTAGE);
         setSizeFull();
-		setMargin(true);
-		setSpacing(true);
+		setContent(vert);
+        
+        vert.setMargin(true);
+        vert.setSpacing(true);
 		
-        addComponent(buildPanels());
-        addComponent(vert);
-        setExpandRatio(vert, 1);
+        vert.addComponent(buildPanels());
+//        vert.addComponent(vert);
+//        vert.setExpandRatio(vert, 1);
        
         vert.addComponent(new Label("<h2>Here below will be whatever graphs are desired...</h2>", ContentMode.HTML));
 
@@ -48,7 +50,7 @@ public class MonitoringTab extends VerticalLayout {
         row.setMargin(true);
         row.setSpacing(true);
     	row.setWidth("100%");
-        addComponent(row);
+//    	addComponent(row);
         //TestIcon testIcon = new TestIcon(60);
 
         Panel panel = new Panel("Response Times");
@@ -68,7 +70,7 @@ public class MonitoringTab extends VerticalLayout {
         panel.setContent(slavePanelContent());
         row.addComponent(panel);
 
-        this.setComponentAlignment(row, Alignment.TOP_CENTER);
+//        vert.setComponentAlignment(row, Alignment.TOP_CENTER);	//this
         return row;
     }
     
@@ -245,5 +247,9 @@ public class MonitoringTab extends VerticalLayout {
     	this.throughput.setValue(fields[4]);
     	this.targetuser.setValue(fields[5]);
     	this.slave.setValue(fields[6]);
+    }
+    
+    public void addNewMessageComponent(String string) {
+    	vert.addComponent(new Label(string));
     }
 }

@@ -19,7 +19,7 @@ public class TabLayout extends TabSheet {
 	
 //	ConfigurationTab configTab = new ConfigurationTab();
 	TabSheet confTabs;
-	private static MonitoringTab monitoringTab = new MonitoringTab();
+	public static MonitoringTab monitoringTab = new MonitoringTab();
 	final ReportsTab reportsTab = new ReportsTab();
 	ModelsTab models;// = new ModelsTab();
 	ParametersTab parameters;
