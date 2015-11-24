@@ -16,28 +16,34 @@ public class UDPServer {
 
 	public UDPServer(MbpetUI mbpetUI) {
     	final PushLabelUpdater updater = mbpetUI;
-
+    	
+    	// Volatile because read in another thread in access()
+        double current = 0.0;
+        
 		try {
 			JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet();
 			
 			// create datagram socket at port num
 			DatagramSocket serverSocket = new DatagramSocket(9999);
 
-			byte[] receiveData;
+			byte[] receiveBuffer;
 			byte[] sendData;	// = new byte[5120];
+			String sentence;
 			
 			int x=1;
-			serverSocket.setSoTimeout(40000);   // set the timeout in millisecounds.  
+			serverSocket.setSoTimeout(8000);   // set the timeout in millisecounds.  
 			while(true) {
+//		           current += 0.05;
+
 				try {
-				   receiveData = new byte[5120];
+				   receiveBuffer = new byte[5120];
 				// create space for received datagram
-		    	   DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+		    	   DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
 		    	   // receive datagram
 		    	   System.out.println("Waiting for datagram packet...");
 		    	   serverSocket.receive(receivePacket);
 		    	   
-		    	   String sentence = new String(receivePacket.getData());
+		    	   sentence = new String(receivePacket.getData());
 		    	   
 		    	   // get ip address, port # of sender
 		    	   InetAddress IPAddress = receivePacket.getAddress();
@@ -49,8 +55,8 @@ public class UDPServer {
 //		           System.out.println("\nMessage: \n" + jsonDecoder.getMessage(sentence.trim()));	//new JsonDecoderMbpet(sentence.trim()));// + );
 		//           JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sentence);
 		           
-		           // update monitoring tab fields
-		           updater.printnewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
+		           // update monitoring tab fields - thread-safely	           
+//		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);
 //		           PushdemointerfacedUI.addNewMessageComponent("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
 //		           UI.getCurrent().push();
 		           
@@ -63,6 +69,9 @@ public class UDPServer {
 	                System.out.println("Timeout reached!!! " + e);
 	                serverSocket.close();
 	            }
+//				finally {
+//					serverSocket.close();
+//				}
 			}
 
 		} catch (SocketException e) {

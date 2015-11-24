@@ -1,6 +1,8 @@
 // Global variable overrides. Must be declared before importing Valo.
 
 // Defines the plaintext font size, weight and family. Font size affects general component sizing.
+$v-unit-size: 34px;
+$v-font-size: 15px;
 //$v-font-size: 16px;
 //$v-font-weight: 300;
 //$v-font-family: "Open Sans", sans-serif;
@@ -75,4 +77,17 @@
 		background-color: white;
 	}
 	
+	.blue-start {
+		color: #197DDE;
+		/*background: #197DDE;
+		$v-bevel: inset 0 2px 0 v-tint;
+		border: 1px solid #4455aa;*/
+	}
+	
+	.v-verticallayout .slave-select-padding  {
+		padding-top: 22px;
+	}
+	.v-verticallayout .response-counts-layout-padding {
+		padding-top: 0px;
+	}
 }

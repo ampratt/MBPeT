@@ -22,6 +22,7 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -114,7 +115,8 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 //	    content.setCaption(null);
 	    
         searchField = new TextField();
-        searchField.addStyleName("small");
+        searchField.addStyleName("tiny");
+        searchField.setWidth(11, Unit.EM);
         searchField.setInputPrompt("Search by title");
         searchField.addTextChangeListener(new TextChangeListener() {
             @Override

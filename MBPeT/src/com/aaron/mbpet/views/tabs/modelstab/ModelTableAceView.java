@@ -120,7 +120,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 ////	    content.setCaption(null);
 	    
         searchField = new TextField();
-        searchField.setWidth(13, Unit.EM);
+        searchField.setWidth(11, Unit.EM);
         searchField.addStyleName("tiny");
         searchField.setInputPrompt("Search by title");
         searchField.addTextChangeListener(new TextChangeListener() {

@@ -186,22 +186,56 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	    return tracker;
 	  }
 
-	  
 		@Override
-		public void printnewestMessage(final String string) {
+		public void updateMonitoringPanels(final String[] values, final int numslaves, final String[] slaveresults) {	//, final double current
+		    access(new Runnable() {
+		        @Override
+		        public void run() {
+		        	//update the UI
+		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();
+		        	montab.updateFields(values);
+		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
+
+		        }
+		    });
+		}
+		
+		@Override
+		public void printNewestMessage(final String message) {	//, final double current
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
 		        	//update the UI
 //		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();	// TabLayout.getMonitoringTab();
 
-		        	SessionViewer.tabs.getMonitoringTab()
-		        		.addNewMessageComponent(string);
+		        	SessionViewer.tabs.getMonitoringTab().addNewMessageComponent(message);
 		        	
 //		        	mainview.addNewMessageComponent(string);
+		        	
+//		        	SessionViewer.progressbar.setValue(new Float(current));
+//                    if (current < 1.0)
+//                    	SessionViewer.progressstatus.setValue("" +
+//                            ((int)(current*100)) + "% done");
+//                    else
+//                    	SessionViewer.progressstatus.setValue("all done");
+                    
 		        }
 		    });
 		}
 	    
+		
+		@Override
+		public void printFinalMessage(final String message, final int numslaves) {
+		    access(new Runnable() {
+		        @Override
+		        public void run() {
+		        	//update the UI
+		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();
+		        	montab.addNewMessageComponent(message);
+		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
+                    
+		        }
+		    });
+		}
 	    
 }
