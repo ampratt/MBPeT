@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import javax.servlet.annotation.WebServlet;
 
 import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.DemoDataGenerator;
 import com.aaron.mbpet.services.PushLabelUpdater;
 import com.aaron.mbpet.services.UDPServer;
@@ -21,6 +22,7 @@ import com.vaadin.annotations.Push;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.Item;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ClientConnector;
@@ -54,7 +56,9 @@ import com.vaadin.ui.UI;
 public class MbpetUI extends UI implements PushLabelUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
-	
+    public static User sessionuser;
+//    public static Item sessionUserItem;
+
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = true, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
@@ -77,12 +81,12 @@ public class MbpetUI extends UI implements PushLabelUpdater {
         getPage().setTitle("MBPeT");
         
         //testing dummy data
-        try {
-			DemoDataGenerator.create();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        try {
+//			DemoDataGenerator.create();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
         
 		//
@@ -238,4 +242,12 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		    });
 		}
 	    
+		
+		public static User getSessionUser() {
+			return sessionuser;
+		}
+
+		public static void setSessionUser(User sessionUser) {
+			sessionuser = sessionUser;
+		}
 }

@@ -52,16 +52,17 @@ public class MainView extends HorizontalLayout implements View {
     private static final long serialVersionUID = -3398565663865641952L;
 
     public static String NAME = "home";	//MBPeT
-    public static String displayName = "";
-    public static User sessionUser;
-    public static Item sessionUserItem;
+//    public static String displayName = "";
+//    public static User sessionuser;
+//    public static Item sessionUserItem;
 //    private Item sessionUser;
     
     Panel menuLayout = new Panel();	//VerticalLayout
-	Panel contentLayout = new Panel();
-	MBPeTMenu menu;
+	Panel contentLayout;	// = new Panel();
 	Tree tree;
+	MBPeTMenu menu;
 //	ContentView contentView;
+	boolean firstenter = true;
 
 	public static JPAContainer<User> persons;
 	public static JPAContainer<TestCase> testcases = getTestcases();
@@ -87,80 +88,40 @@ public class MainView extends HorizontalLayout implements View {
         		MbpetUI.PERSISTENCE_UNIT);
 
         
-//		tree = new Tree("Test Cases:");
-//		landingPage = new LandingPageView(tree);
-		
-//    	setSpacing(true);
-		setSizeFull();
-		addStyleName("mainview");
-//    	setWidth(100%);
-    	
-		addComponent(menuLayout);
-    	setExpandRatio(menuLayout, 0);	//2.0f);	//1.7	
-
-    	addComponent(contentLayout);
-    	setExpandRatio(contentLayout, 1);	//8.0f);    	
-//    	setComponentAlignment(contentLayout, Alignment.TOP_LEFT);
-    	// call this in enter()
-//		MenuLayout();
-		ContentLayout();
+    	initContent();
     	
     }        
     
-	
-	
-	private void MenuLayout() {
-		menuLayout.setHeight("100%");
-		menuLayout.setWidth("250px");
-//		menuLayout.addStyleName("menu-containerpanel");
-		menuLayout.addStyleName("borderless");
-		tree = new Tree("SUT's:");
-
-		// add menu to main view
-    	menu = new MBPeTMenu(persons, tree);	//sessionUser, displayName,
-    	menuLayout.setContent(menu);
-//    	setExpandRatio(menu, 1.7f);		
-	}
-
-	
-	private void ContentLayout() {
-		contentLayout.setHeight("100%");
-		contentLayout.setWidth("100%");
-		contentLayout.addStyleName("borderless");
-//		contentLayout.setContent(new LandingPage(tree));
-//		addComponent(landingPage);	
-//    	setExpandRatio(landingPage, 8.3f);    	
-		
-	}
-
-    
-    
     @Override
     public void enter(ViewChangeEvent event) {
+//    	initContent();
 
     	// Get the user name from the session
+    	
 //    	sessionUser = (User) getSession().getAttribute("sessionUser");
-    	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
-    	sessionUser = persons.getItem(su.getId()).getEntity();
-    	sessionUserItem = (Item) getSession().getAttribute("sessionUserItem");
+//    	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
+//    	System.out.println("session user: " + su.getId());
+//    	sessionuser = persons.getItem(su.getId()).getEntity();
+//    	sessionUserItem = (Item) VaadinSession.getCurrent().getAttribute("sessionUserItem");
 
-    	if (displayName.equals("")) {	
-//    		displayName = String.valueOf(getSession().getAttribute("user"));
-    		
-    		String lname = sessionUser.getLastname();
-    		if (sessionUser.getLastname() == null) {
-    			lname = "";
+//    	if (displayName.equals("")) {	
+////    		displayName = String.valueOf(getSession().getAttribute("user"));
+//    		
+//    		String lname = sessionUser.getLastname();
+//    		if (sessionUser.getLastname() == null) {
+//    			lname = "";
+//    		}
+//    		displayName = sessionUser.getFirstname() + " " +
+//    						lname;
+    		if (firstenter){
+    			MenuLayout();
+    			firstenter = false;
     		}
-    		displayName = sessionUser.getFirstname() + " " +
-    						lname;
-//    		setDisplayName(sessionUser.getFirstname() + " " +
-//					sessionUser.getLastname());
     		
-//    		// And pass it to the menu to disaply it
-//    		Notification.show("welcome: " + displayName);
-    		MenuLayout();
 //      	menu.setUserDisplayName(username);    		
-    	}
+//    	}
+    	
+
     	
        	if (event.getParameters().equals("landingPage")
     			|| event.getParameters() == null || event.getParameters().isEmpty()) {
@@ -180,6 +141,70 @@ public class MainView extends HorizontalLayout implements View {
         }
        	
     }
+    
+    
+	public void initContent() {
+		
+//		tree = new Tree("Test Cases:");
+//		landingPage = new LandingPageView(tree);
+		
+//    	setSpacing(true);
+		setSizeFull();
+		addStyleName("mainview");
+//    	setWidth(100%);
+    	
+		tree = new Tree("SUT's:");
+//		menu = new MBPeTMenu(tree);
+//		menu.setWidth("250px");
+//		addComponent(menu);
+    	
+//		addComponent(menuLayout);
+//    	setExpandRatio(menuLayout, 0);	//2.0f);	//1.7	
+
+		contentLayout = new Panel();
+		contentLayout.setHeight("100%");
+		contentLayout.setWidth("100%");
+		contentLayout.addStyleName("borderless");
+		addComponent(contentLayout);
+    	setExpandRatio(contentLayout, 1.0f);	//8.0f);    	
+//    	setComponentAlignment(contentLayout, Alignment.TOP_LEFT);
+    	// call this in enter()
+//		MenuLayout();
+//		ContentLayout();
+	}
+	
+	
+	
+	private void MenuLayout() {
+		
+		menu = new MBPeTMenu(tree);
+		menu.setWidth("250px");
+		addComponentAsFirst(menu);
+		
+//		menuLayout.setHeight("100%");
+//		menuLayout.setWidth("250px");
+////		menuLayout.addStyleName("menu-containerpanel");
+//		menuLayout.addStyleName("borderless");
+//		tree = new Tree("SUT's:");
+//
+//		// add menu to main view
+////    	menu = new MBPeTMenu(persons, tree);	//sessionUser, displayName,
+//    	menuLayout.setContent(new MBPeTMenu(persons, tree));	//(menu);
+////    	setExpandRatio(menu, 1.7f);		
+	}
+//
+//	
+//	private void ContentLayout() {
+//		contentLayout.setHeight("100%");
+//		contentLayout.setWidth("100%");
+//		contentLayout.addStyleName("borderless");
+////		contentLayout.setContent(new LandingPage(tree));
+////		addComponent(landingPage);	
+////    	setExpandRatio(landingPage, 8.3f);    	
+//		
+//	}
+
+   
     
     
 	public static JPAContainer<TestCase> getTestcases() {

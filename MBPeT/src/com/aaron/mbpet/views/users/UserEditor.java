@@ -137,7 +137,7 @@ public class UserEditor extends Window implements Button.ClickListener,
             		if (personItem.getItemProperty("lastname").getValue() == null) {
             			lname = "";
             		}
-        			MBPeTMenu.setMenuDisplayName(
+        			MBPeTMenu.updateMenuDisplayName(
         					String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
         					lname);	//MainView.setDisplayName            	        		
         		}

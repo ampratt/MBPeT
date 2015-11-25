@@ -59,7 +59,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	TestCase testcase;
 	TestCaseForm form;
 	FieldGroup binder;
-	private User sessionUser = MainView.sessionUser;	
+	private User sessionUser = MbpetUI.getSessionUser();	
 	
 	boolean editmode = false;
 	private String prevTitle = "";
@@ -186,8 +186,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 					int id =0;
 					boolean titleOK = true;
 					id = newCaseItem.getBean().getId();	//testsession.getId();
-					System.out.println("User.getCases() : " + sessionUser.getCases());
-					for (TestCase c : sessionUser.getCases()) {	//sessions.getItemIds()
+					System.out.println("User.getCases() : " + sessionUser.getTestCases());
+					for (TestCase c : sessionUser.getTestCases()) {	//sessions.getItemIds()
 						System.out.println("Existing title -> new title : " + c.getTitle() + "->" + testcase.getTitle());
 						System.out.println("Existing id -> new id : " + c.getId() + "->" + id);
 						if (c.getTitle().equals(testcase.getTitle()) && !(c.getId()==id) ) {	
@@ -236,8 +236,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 							// TESTING
 							//list all Cases
 							System.out.println("\nWHAT IS NEW LIST OF CASES: "
-									+ sessionUser.getCases()); // testing purposes
-							for (TestCase c : sessionUser.getCases()) {
+									+ sessionUser.getTestCases()); // testing purposes
+							for (TestCase c : sessionUser.getTestCases()) {
 								System.out.println(c.getId() + " - "
 										+ c.getTitle()); // testing purposes	            		
 							}
@@ -251,7 +251,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 						} else {
 							System.out
 									.println("\nWHAT IS NEW LIST OF CASES (before update): "
-											+ sessionUser.getCases()); // testing purposes
+											+ sessionUser.getTestCases()); // testing purposes
 
 							//1 UPDATE user's reference ???
 							sessionUser.updateCaseData(testcases.getItem(
@@ -278,8 +278,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 							// TESTING
 							//list all Cases
 							System.out.println("\nWHAT IS NEW LIST OF CASES: "
-									+ sessionUser.getCases()); // testing purposes
-							for (TestCase c : sessionUser.getCases()) {
+									+ sessionUser.getTestCases()); // testing purposes
+							for (TestCase c : sessionUser.getTestCases()) {
 								System.out.println(c.getId() + " - "
 										+ c.getTitle()); // testing purposes	            		
 							}

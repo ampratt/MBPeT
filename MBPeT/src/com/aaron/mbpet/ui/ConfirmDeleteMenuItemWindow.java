@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
@@ -172,7 +173,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	                menutree.removeItem(target);
 	                                            
 	                // 2.2 remove test case from user's list of cases?
-	                MainView.sessionUser.removeCase(testcases.getItem(target).getEntity());
+	                MbpetUI.getSessionUser().removeCase(testcases.getItem(target).getEntity());
 	                
 	                // 2.3 delete TestCase from container
 	                testcases.removeItem(target);

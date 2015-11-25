@@ -39,6 +39,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -62,6 +63,7 @@ import com.vaadin.ui.themes.ValoTheme;
 public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	
 //    public static final String NAME = "MBPeT";
+	private Panel mainPanel;
 	VerticalLayout menuLayout = new VerticalLayout();
 	private Tree menutree;
 	static MenuBar userMenu;
@@ -70,7 +72,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private JPAContainer<TestCase> testcases;
 	private JPAContainer<TestSession> sessions;
 
-    private User currentuser;
+    public static String displayName = "";
+//    public static User sessionUser;
+    public static Item sessionUserItem;
+    private static User sessionuser;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
@@ -81,21 +86,27 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_CLONE, ACTION_DELETE };
     
     
-	public MBPeTMenu(JPAContainer<User> persons, Tree tree) {	//User sessUser, String usrname,
-//		this.sessionUser = sessUser;
+	public MBPeTMenu(Tree tree) {	//JPAContainer<User> persons	User sessUser, String usrname,
 		this.menutree = tree;
-//		this.displayName = usrname;
 		
-		this.currentuser = MainView.sessionUser;
-        this.persons = persons;	
+		this.sessionuser = MbpetUI.getSessionUser();
+        this.persons = MainView.persons;	//JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);//persons;	
         this.testcases = MainView.getTestcases();	//testcases;
         this.sessions = MainView.getTestsessions();	//testcases;
 
-        
+        setDisplayName();
+
+        mainPanel = new Panel();
+		mainPanel.setHeight("100%");
+		mainPanel.setWidth("250px");
+		mainPanel.addStyleName("borderless");
+		mainPanel.setContent(buildContent());
+		
 //		setUserDisplayName(usrname);
-		setCompositionRoot(buildContent());
+		setCompositionRoot(mainPanel);
 	}
 	
+
 
 
 	public Component buildContent() {
@@ -134,7 +145,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		        public void menuSelected(final MenuItem selectedItem) {
 		        	if (selectedItem.getText().equals("Edit Profile")){
 		                UserEditor personEditor = new UserEditor(
-		                		persons.getItem(currentuser.getId()), 
+		                		persons.getItem(sessionuser.getId()), 
 		                			"Edit User Account", true);
 
 		                personEditor.setModal(false);
@@ -142,44 +153,19 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		                personEditor.center();
 		                
 		        	} else if (selectedItem.getText().equals("Sign Out")){
-		        		// "Logout" the user
-
-//		        		MainView.sessionUser = null;
-//		        		MainView.sessionUserItem = null;
-//		        		// remove current user in session attribute        	
-//			            getSession().setAttribute("user", null);
-//			        	getSession().setAttribute("sessionUser", null);
-//			        	getSession().setAttribute("sessionUserItem", null);
-			        	
-			            //close the session
-//			            UI.getCurrent().getSession().close();
-//			            UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
-//			            UI.getCurrent().close();
-			            
-//			            UI.getCurrent().getPage().setLocation(
-//			        			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
-			         
-			            // Refresh this view, should redirect to login view
-//			            UI.getCurrent().getNavigator().navigateTo(MainView.NAME);
-//			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
-			        	
-                        getUI().getPage().setLocation("/MBPeT/");
-
-                        VaadinSession.getCurrent().close();
-                        
-                        // Notice quickly if other UIs are closed
-                        getUI().setPollInterval(30);
-                        
-//			            return;
+		        		logout();
 		        	}
 		        }
-		    };
+		 };
+
+
 		    
- 
+
+	    	
 		userMenu = new MenuBar();
 		userMenu.addStyleName("user-menu");
 		
-		MenuItem user = userMenu.addItem(MainView.displayName, null);
+		MenuItem user = userMenu.addItem(displayName, null);
 		user.addItem("Edit Profile", menuCommand);
 //		user.addItem("Preferences", menuCommand);
 		user.addSeparator();
@@ -278,11 +264,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			//	        TestSession session = sessions.getItem(sessids).getEntity();
 	        
 	        // check if owner has existing cases
-	        System.out.println(currentuser.getId() + " - " + currentuser.getFirstname());
-	        if (currentuser.getCases().size() > 0) {
+	        System.out.println(sessionuser.getId() + " -> " + sessionuser.getFirstname());
+	        if (sessionuser.getTestCases().size() > 0) {
 	        	
 	        	// load all test cases owned by user
-	        	for (TestCase testcase : currentuser.getCases()) {
+	        	for (TestCase testcase : sessionuser.getTestCases()) {
 	        		menutree.addItem(testcase.getId());
 	        		menutree.setItemCaption(testcase.getId(), testcase.getTitle());
 	        		
@@ -467,12 +453,93 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     }
     
     
-    public static void setMenuDisplayName(String newname) {
+    public static void setDisplayName(){
+    	if (displayName.equals("")) {	
+//    		displayName = String.valueOf(getSession().getAttribute("user"));
+    		
+    		String lname = "";
+    		if (sessionuser.getLastname() != null) {
+    			lname = sessionuser.getLastname();
+    		}
+    		displayName = sessionuser.getFirstname() + " " +
+    						lname;
+  		
+    	}	
+    }
+    
+    public static void updateMenuDisplayName(String newname) {
+    	displayName = newname;
 		List<MenuItem> mitems = userMenu.getItems();
 		mitems.get(0).setText(newname);
 		
 		System.out.println("USER MENU new name: " + mitems.get(0).getText()); 	//getItems().toString());
     }
 
+    
+	private void logout() {
+        System.out.println("### LOGGING OUT ###");
+
+        // 1st close any other UI's that is also created for this Session
+        for (UI ui : UI.getCurrent().getSession().getUIs()) {
+            if (ui != UI.getCurrent()) {
+                ui.access(new Runnable() {	//Synchronously
+                    @Override
+                    public void run() {
+                        System.out.println("Closing UI {0}" + UI.getCurrent());
+                        UI.getCurrent().getPage().setLocation("/MBPeT/");
+                        UI.getCurrent().close();
+                    }
+                });
+            }
+		
+        }
+		// "Logout" the user
+
+//		MainView.sessionUser = null;
+//		MainView.sessionUserItem = null;
+//		// remove current user in session attribute        	
+//        getSession().setAttribute("user", null);
+//    	getSession().setAttribute("sessionUser", null);
+//    	getSession().setAttribute("sessionUserItem", null);
+    	
+        //close the session
+//        UI.getCurrent().getSession().close();
+//        UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
+//        UI.getCurrent().close();
+        
+//        UI.getCurrent().getPage().setLocation(
+//    			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
+     
+        // Refresh this view, should redirect to login view
+//        UI.getCurrent().getNavigator().navigateTo(MainView.NAME);
+//        UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
+
+        updateMenuDisplayName("");
+        
+        // redirect to start view
+        UI.getCurrent().getPage().setLocation("/MBPeT/");
+
+        // Close the Current UI
+        UI.getCurrent().close();
+
+        // Close the Current VaadinSession
+        try {
+            VaadinSession.getCurrent().close();
+            
+            // TESTING
+            System.out.println("-- Session Cookies --");
+            System.out.println("sessionuser " + VaadinSession.getCurrent().getAttribute("sessionUser"));
+            System.out.println("sessionuseritem " + VaadinSession.getCurrent().getAttribute("sessionUserItem"));
+            System.out.println("user " + VaadinSession.getCurrent().getAttribute("user"));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+//        VaadinSession.getCurrent().close();
+        
+        // Notice quickly if other UIs are closed
+        getUI().setPollInterval(30);
+        
+//        return;
+	}
 
 }

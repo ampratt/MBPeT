@@ -55,9 +55,11 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     
 	@Override
     public void enter(ViewChangeEvent event) {
-		// TODO get user by userId passed from parameters and fetch from db
-//		String createdUser = event.getParameters();
-//		username.setValue(createdUser);
+        // TESTING
+//        System.out.println("-- Session Cookies --");
+//        System.out.println("sessionuser " + VaadinSession.getCurrent().getAttribute("sessionUser"));
+//        System.out.println("sessionuseritem " + VaadinSession.getCurrent().getAttribute("sessionUserItem"));
+//        System.out.println("user " + VaadinSession.getCurrent().getAttribute("user"));
 
 //        Notification.show("Welcome to the MBPeT design demo", 
 //        			Notification.Type.TRAY_NOTIFICATION);
@@ -261,6 +263,12 @@ final VerticalLayout loginPanel = new VerticalLayout();
             // Store the current username in the service session
         	VaadinSession.getCurrent().setAttribute("user", usernameStr);
 
+        	// set static user objects in MbpetUI
+        	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
+        	System.out.println("session user: " + su.getId());
+        	MbpetUI.setSessionUser(persons.getItem(su.getId()).getEntity());	//sessionuser = 
+//        	sessionUserItem = (Item) VaadinSession.getCurrent().getAttribute("sessionUserItem");
+        	
             // Navigate to main view
             UI.getCurrent().getNavigator().navigateTo(MainView.NAME + "/" + "landingPage");	//SimpleLoginMainView.NAME
 

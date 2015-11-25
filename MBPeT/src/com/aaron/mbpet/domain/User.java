@@ -125,11 +125,11 @@ public class User implements Serializable { //
 	}
 
 //  @OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,mappedBy="parentcase")
-    public List<TestCase> getCases() {
+    public List<TestCase> getTestCases() {
 		return cases;
 	}
 
-	public void setCases(List<TestCase> cases) {
+	public void setTestCases(List<TestCase> cases) {
 		this.cases = cases;
 	}
 	
@@ -141,7 +141,7 @@ public class User implements Serializable { //
 	}
 
 	public void removeCase(TestCase thiscase) {
-		System.out.println("CASES LIST before removing: " + getCases().size());
+		System.out.println("CASES LIST before removing: " + getTestCases().size());
 		
 		// copy all wanted items to new list and leave behind 'removed' items
 		List<TestCase> newList = new ArrayList<TestCase>();
@@ -155,10 +155,10 @@ public class User implements Serializable { //
 			}
 		}
 		this.cases.clear();
-		System.out.println("CASE LIST after clear: " + getCases().size());
+		System.out.println("CASE LIST after clear: " + getTestCases().size());
 		
-		setCases(newList);
-		System.out.println("CASE LIST after removing: " + getCases().size());
+		setTestCases(newList);
+		System.out.println("CASE LIST after removing: " + getTestCases().size());
 		
 	}
 
