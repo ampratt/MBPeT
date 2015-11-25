@@ -9,6 +9,11 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.Parameters;
+import com.aaron.mbpet.domain.TRT;
+import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.cases.CaseViewer;
 import com.aaron.mbpet.views.sessions.SessionViewer;
@@ -22,6 +27,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -49,7 +55,6 @@ public class MainView extends HorizontalLayout implements View {
     public static String displayName = "";
     public static User sessionUser;
     public static Item sessionUserItem;
-    JPAContainer<User> persons;
 //    private Item sessionUser;
     
     Panel menuLayout = new Panel();	//VerticalLayout
@@ -58,12 +63,30 @@ public class MainView extends HorizontalLayout implements View {
 	Tree tree;
 //	ContentView contentView;
 
+	public static JPAContainer<User> persons;
+	public static JPAContainer<TestCase> testcases = getTestcases();
+	public static JPAContainer<TestSession> sessions;
+	public static JPAContainer<Parameters> parameterscontainer;
+	public static JPAContainer<Model> models;
+	public static JPAContainer<TRT> trtcontainer;
+
     
 	public MainView() {
 		
 		persons = JPAContainerFactory.make(User.class,
         		MbpetUI.PERSISTENCE_UNIT);
-		
+		setTestcases(JPAContainerFactory.make(TestCase.class,
+				MbpetUI.PERSISTENCE_UNIT));
+		setTestsessions(JPAContainerFactory.make(TestSession.class,
+        		MbpetUI.PERSISTENCE_UNIT)); 
+        models = JPAContainerFactory.make(Model.class,
+        		MbpetUI.PERSISTENCE_UNIT);
+        parameterscontainer = JPAContainerFactory.make(Parameters.class,
+        		MbpetUI.PERSISTENCE_UNIT); 
+        trtcontainer = JPAContainerFactory.make(TRT.class,
+        		MbpetUI.PERSISTENCE_UNIT);
+
+        
 //		tree = new Tree("Test Cases:");
 //		landingPage = new LandingPageView(tree);
 		
@@ -82,31 +105,6 @@ public class MainView extends HorizontalLayout implements View {
 //		MenuLayout();
 		ContentLayout();
     	
-    	  	
-//        Collection<Item> c = (Collection<Item>) tree.rootItemIds();
-//        System.out.println("the tree collection length: " + c.size());
-//        Object[] array = c.toArray();
-//        for (int i=0; i<array.length; i++) {
-//        	System.out.println("this item was: " + array[i]);
-//            	
-//        }
-//        int count = 1;
-//        for (Iterator iterator = c.iterator(); iterator.hasNext();) { 
-//        	if (count == 1)
-//        		System.out.println("\nfor loop: ");
-//        	System.out.println(iterator.next());
-//        	count++;
-//    	}
-//        
-////        Iterator itr = c.iterator();
-////        count = 1;
-////        //iterate through the ArrayList values using Iterator's hasNext and next methods
-////        while(itr.hasNext()) {
-////        	if (count == 1)
-////        		System.out.println("\nwhile loop:");
-////        	System.out.println(itr.next());
-////        	count ++;
-////        }
     }        
     
 	
@@ -142,7 +140,7 @@ public class MainView extends HorizontalLayout implements View {
 
     	// Get the user name from the session
 //    	sessionUser = (User) getSession().getAttribute("sessionUser");
-    	User su = (User) getSession().getAttribute("sessionUser");
+    	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
     	sessionUser = persons.getItem(su.getId()).getEntity();
     	sessionUserItem = (Item) getSession().getAttribute("sessionUserItem");
 
@@ -181,54 +179,33 @@ public class MainView extends HorizontalLayout implements View {
     				event.getParameters(), tree));
         }
        	
-       	
-       	
-    	// Get the user name from the session
-//        String username = String.valueOf(getSession().getAttribute("user"));
-//
-//        // And pass it to the menu to disaply it
-//        Notification.show("welcome: " + username);
-        
-//        if (event.getParameters() == null
-//            || event.getParameters().isEmpty()) {
-//          contentView.equalPanel.setContent(
-//        		  new Label("Nothing to see here, " +
-//        				  "just pass along."));
-//            return;
-//        } 
-//    	if (event.getParameters().equals("landingPage")
-//    			|| event.getParameters() == null || event.getParameters().isEmpty()) {
-////            removeComponent(contentView);
-//        	removeComponent(getComponent(1));	//pageTemplate
-//            addComponent(landingPage);
-//            setExpandRatio(landingPage, 8.3f);
-//            
-//            markAsDirty();
-//            
-//              return;
-//        } else {
-//        	removeComponent(getComponent(1));	//contentView
-//        	try {
-//        		ContentView contentView = new ContentView("test title", tree);
-//        		addComponent(contentView);        		
-//        		setExpandRatio(contentView, 8.3f);
-//
-//                markAsDirty();
-//
-//        		// update page title
-//        		ContentView.setPageTitle(event.getParameters());
-//        		
-////        		contentView.equalPanel.setContent(new ContentViewer(
-////        				event.getParameters()));
-//        	} catch (RuntimeException e) {
-//        		getUI().getConnectorTracker().markAllConnectorsDirty(); 
-//        		getUI().getConnectorTracker().markAllClientSidesUninitialized(); 
-//        		getUI().getPage().reload();
-//        	}
-//        }
     }
     
     
+	public static JPAContainer<TestCase> getTestcases() {
+		return MbpetUI.testcases;
+	}
+
+	
+	public void setTestcases(JPAContainer<TestCase> testcases) {
+		MbpetUI.testcases = testcases;
+	}
+	
+	public static JPAContainer<TestSession> getTestsessions() {
+		return MainView.sessions;
+	}
+
+	public void setTestsessions(JPAContainer<TestSession> sessions) {
+		MainView.sessions = sessions;
+	}
+
+	public static JPAContainer<Model> getModels() {
+		return MainView.models;
+	}
+
+	public void setModels(JPAContainer<Model> models) {
+		MainView.models = models;
+	}
    
 	
 //    public static void setDisplayName(String name) {
@@ -240,22 +217,5 @@ public class MainView extends HorizontalLayout implements View {
 //    }
   
 
-    // Menu navigation button listener
-//  class ButtonListener implements Button.ClickListener {
-//      private static final long serialVersionUID = -4941184695301907995L;
-//
-//      String menuitem;
-//      public ButtonListener(String menuitem) {
-//          this.menuitem = menuitem;
-//      }
-//
-//      @Override
-//      public void buttonClick(ClickEvent event) {
-//          // Navigate to a specific state
-//      	UI.getCurrent()
-//      		.getNavigator()
-//  				.navigateTo(MainView.NAME + "/" + menuitem);
-//      	//        	navigator.navigateTo(MainView.NAME + "/" + menuitem);
-//      }
-//  }
+
 }

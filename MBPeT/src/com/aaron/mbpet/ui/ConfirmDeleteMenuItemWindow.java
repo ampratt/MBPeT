@@ -59,10 +59,10 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         setModal(true);
 
         this.menutree = tree;
-        this.testcases = MBPeTMenu.getTestcases();
-        this.sessions = MBPeTMenu.getTestsessions();
-        this.models = MBPeTMenu.models;
-        this.parameters = MBPeTMenu.parameterscontainer;
+        this.testcases = MainView.getTestcases();
+        this.sessions = MainView.getTestsessions();
+        this.models = MainView.models;
+        this.parameters = MainView.parameterscontainer;
         
         this.target = targetId; 
         this.message = message;

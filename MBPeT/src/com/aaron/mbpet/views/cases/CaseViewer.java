@@ -109,9 +109,9 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 ////		this.addStyleName("content");
 //		this.setMargin(new MarginInfo(false, true, false, true));
 		
-        testcases = MBPeTMenu.getTestcases();
-        sessions = MBPeTMenu.getTestsessions();
-        models = MBPeTMenu.getModels();
+        testcases = MainView.getTestcases();
+        sessions = MainView.getTestsessions();
+        models = MainView.getModels();
         this.currSUT = getTestCaseByTitleID(title);
         
 		this.tree = tree;

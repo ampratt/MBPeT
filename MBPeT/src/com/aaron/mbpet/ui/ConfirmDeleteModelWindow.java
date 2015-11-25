@@ -51,9 +51,9 @@ public class ConfirmDeleteModelWindow extends Window {
         
         this.navtohomepage = navtohomepage;
 
-        this.testcases = MBPeTMenu.getTestcases();
-        this.sessions = MBPeTMenu.getTestsessions();
-        this.models = MBPeTMenu.models;
+        this.testcases = MainView.getTestcases();
+        this.sessions = MainView.getTestsessions();
+        this.models = MainView.models;
         this.model = model;
 
         setContent(buildWindowContent(message));

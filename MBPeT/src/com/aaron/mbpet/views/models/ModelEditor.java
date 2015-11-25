@@ -19,7 +19,6 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.LoginView;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
 import com.aaron.mbpet.views.sessions.TestSessionEditor;
@@ -85,7 +84,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
-	private JPAContainer<TestSession> sessions = MBPeTMenu.sessions;
+	private JPAContainer<TestSession> sessions = MainView.sessions;
 	BeanItem<Model> modelBeanItem;
 	Model currmodel;
 	List<Model> mlist;
@@ -112,7 +111,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	 */
 	public ModelEditor(TestSession parentsession, TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
-		this.models = MBPeTMenu.models;
+		this.models = MainView.models;
 		this.currmodel = new Model(); 
 		this.modelBeanItem = new BeanItem<Model>(currmodel);
 //		this.parentsession = new TestSession();
@@ -123,7 +122,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	}
 	public ModelEditor(TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
-		this.models = MBPeTMenu.models;
+		this.models = MainView.models;
 		this.currmodel = new Model(); 
 		this.modelBeanItem = new BeanItem<Model>(currmodel);
 		
@@ -155,7 +154,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = true;
 		this.table = table;
 		
-		this.models = MBPeTMenu.models;
+		this.models = MainView.models;
 		this.currmodel = models.getItem(modelid).getEntity();
 		this.modelBeanItem = new BeanItem<Model>(currmodel);
 		
@@ -173,7 +172,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		this.clonemode = clonemode;
 		this.table = table;
 		
-		this.models = MBPeTMenu.models;
+		this.models = MainView.models;
 		this.subject = models.getItem(modelId).getEntity();
 		
 		prevTitle = subject.getTitle();

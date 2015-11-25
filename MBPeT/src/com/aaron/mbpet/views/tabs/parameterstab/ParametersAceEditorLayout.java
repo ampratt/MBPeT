@@ -21,7 +21,6 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.services.ParametersUtils;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelDBuilderWindow;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
@@ -70,7 +69,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     
     TestSession currsession;
     Parameters currParameters;
-    JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
+    JPAContainer<Parameters> parameters = MainView.parameterscontainer;
     
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";

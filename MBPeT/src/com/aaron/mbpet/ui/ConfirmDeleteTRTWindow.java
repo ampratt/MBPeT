@@ -9,7 +9,6 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
@@ -52,8 +51,8 @@ public class ConfirmDeleteTRTWindow extends Window {
         
 //        this.testcases = MBPeTMenu.getTestcases();
         this.parentparameters = currParams;
-        this.parameterscontainer = MBPeTMenu.parameterscontainer;
-        this.trtcontainer = MBPeTMenu.trtcontainer;
+        this.parameterscontainer = MainView.parameterscontainer;
+        this.trtcontainer = MainView.trtcontainer;
         this.currTrt = currtrt;
 
         setContent(buildWindowContent(message));

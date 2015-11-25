@@ -70,7 +70,7 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 
 			@Override
             public void detach(DetachEvent event) {
-                releaseResources();
+//                releaseResources();
             } 
         });
         
@@ -144,10 +144,10 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	
     private void releaseResources() {
         // Redirect this page immediately
-        getPage().setLocation("/");	//MBPeT
+//        getPage().setLocation("/");	//MBPeT
         
         // Close the session
-        getSession().close();
+//        getSession().close();
         
         // Close the session
 //        UI.getCurrent().getSession().close();

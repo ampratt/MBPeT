@@ -79,7 +79,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
 	private JPAContainer<TestSession> sessions;
-	JPAContainer<TestCase> testcases = MBPeTMenu.getTestcases();
+	JPAContainer<TestCase> testcases = MainView.getTestcases();
 	BeanItem<TestSession> newSessionItem;
 	TestSession testsession;
 	private TestSessionForm form;
@@ -102,7 +102,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		testsession = new TestSession(); 
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
-		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		
 		init(tree, parentcase);
 	}
@@ -113,7 +113,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		testsession = new TestSession(); 
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
-		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		
 		init(tree, parentcase);
 	}
@@ -125,7 +125,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.editmode = true;
 		this.navToCasePage = false;
         
-        sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+        sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
         this.testsession = sessions.getItem(testsessionid).getEntity();
         this.newSessionItem = new BeanItem<TestSession>(testsession);
 
@@ -142,7 +142,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = true;
 		this.table = table;
 		
-		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.testsession = sessions.getItem(testsessionid).getEntity();
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
 		System.out.println("this session id is: " + testsessionid + " " + testsession.getTitle());
@@ -161,9 +161,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.table = table;
 		this.navToCasePage = true;
 		
-		models = MBPeTMenu.models;
+		models = MainView.models;
 		
-		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
 		this.testsession = new TestSession();
@@ -181,9 +181,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.clonemode = clonemode;
 		this.navToCasePage = false;
 		
-		models = MBPeTMenu.models;
+		models = MainView.models;
 		
-		sessions = MBPeTMenu.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+		sessions = MainView.sessions;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
 		this.testsession = new TestSession();

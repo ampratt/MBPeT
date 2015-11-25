@@ -73,7 +73,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 //        super("Create a new Test Case"); // Set window caption
         this.tree = tree;
 
-        this.testcases = MBPeTMenu.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+        this.testcases = MainView.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	//container;
         testcase = new TestCase(); 
         this.newCaseItem = new BeanItem<TestCase>(testcase);
         
@@ -90,7 +90,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
       this.tree = tree;
       
 //      testcase = new TestCase(); 
-      this.testcases = MBPeTMenu.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	
+      this.testcases = MainView.getTestcases();	//JPAContainerFactory.make(TestCase.class, MbpetUI.PERSISTENCE_UNIT);	
       this.testcase = testcases.getItem(caseId).getEntity();
       this.newCaseItem = new BeanItem<TestCase>(testcase);
 

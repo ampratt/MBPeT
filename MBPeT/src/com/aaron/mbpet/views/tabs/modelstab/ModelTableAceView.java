@@ -20,7 +20,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.DBuilderUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.google.gwt.dev.javac.UnusedImportsRemover;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -81,7 +81,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 //		setSpacing(true);
 //		setMargin(true);
 		
-		models = MBPeTMenu.models;
+		models = MainView.models;
 		this.currsession = SessionViewer.currsession;
 		this.editor = editor;	 //= new AceEditor()
 		this.modelsTabs = modelsTabs;

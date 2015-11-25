@@ -17,7 +17,7 @@ import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.ui.ConfirmDeleteTRTWindow;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
 import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
@@ -103,8 +103,8 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 		
 		this.currsession = currsession;
-		this.parameterscontainer = MBPeTMenu.parameterscontainer;
-		this.trtcontainer = MBPeTMenu.trtcontainer;
+		this.parameterscontainer = MainView.parameterscontainer;
+		this.trtcontainer = MainView.trtcontainer;
 		this.currentparams = parameterscontainer.getItem(currsession.getParameters().getId()).getEntity();
 		this.editor = new AceEditor();
 		

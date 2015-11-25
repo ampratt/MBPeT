@@ -15,7 +15,7 @@ import org.vaadin.diagrambuilder.Transition;
 import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.services.DBuilderUtils;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
@@ -65,7 +65,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
     AceEditor editor;
 //    Button aceLoaderButton = new Button("Load dot from editor");
         
-    private JPAContainer<Model> models = MBPeTMenu.models;
+    private JPAContainer<Model> models = MainView.models;
     private Model currmodel;
 	private FieldGroup binder;
 	private BeanItem<Model> modelBeanItem;

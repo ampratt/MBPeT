@@ -18,7 +18,7 @@ import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -60,7 +60,7 @@ public class ParametersAceEditorLayoutWITHOUTFORM extends VerticalLayout impleme
 
     TestSession currsession;
     Parameters currParameters;
-    JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
+    JPAContainer<Parameters> parameters = MainView.parameterscontainer;
     
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";

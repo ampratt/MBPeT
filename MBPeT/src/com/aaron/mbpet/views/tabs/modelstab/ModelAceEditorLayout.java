@@ -19,7 +19,6 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.ModelUtils;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelDBuilderWindow;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
@@ -67,7 +66,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
     String[] modes = {"dot", "gv", "python"};
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
     
-    JPAContainer<Model> models = MBPeTMenu.models;
+    JPAContainer<Model> models = MainView.models;
     Model currmodel;
     TestSession currsession;
 	FieldGroup binder;

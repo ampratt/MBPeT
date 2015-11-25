@@ -29,7 +29,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +53,7 @@ public class DBuilderUtils implements Serializable {
     List<Connector> nConnectorName = new ArrayList<Connector>();
 	String title = "input_title_name";
 
-	private JPAContainer<Model> models = MBPeTMenu.models;
+	private JPAContainer<Model> models = MainView.models;
 	private JPAContainer<TestSession> sessions;
 	private Model currmodel;
 	private BeanItem<Model> modelBeanItem;
@@ -812,7 +812,7 @@ public class DBuilderUtils implements Serializable {
 		this.parentsession = model.getParentsession();
 //        parentsession = currsession;
 //		parentcase = parentsession.getParentcase();
-		this.sessions = MBPeTMenu.sessions;
+		this.sessions = MainView.sessions;
 		
 		// set edited fields
         currmodel.setTitle(title);

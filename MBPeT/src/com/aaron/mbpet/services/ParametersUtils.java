@@ -14,7 +14,7 @@ import javax.persistence.Query;
 
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
@@ -26,8 +26,8 @@ public class ParametersUtils {
 	static StringBuilder builder;
 	
 	static Parameters currParams;
-	static JPAContainer<Parameters> parameterscontainer = MBPeTMenu.parameterscontainer;
-	static JPAContainer<TRT> trtcontainer = MBPeTMenu.trtcontainer;
+	static JPAContainer<Parameters> parameterscontainer = MainView.parameterscontainer;
+	static JPAContainer<TRT> trtcontainer = MainView.trtcontainer;
 
 	public static String insertFormDataToAce(Parameters currparams, String editor){
 		

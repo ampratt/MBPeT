@@ -11,7 +11,7 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -54,7 +54,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
     private String modelsFilter;
 
     JPAContainer<Model> models;
-    JPAContainer<TestSession> sessions = MBPeTMenu.sessions;
+    JPAContainer<TestSession> sessions = MainView.sessions;
     TestCase parentcase;
     TestSession parentsession;
 	private GeneratedPropertyContainer gpcontainer;
@@ -70,7 +70,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 		this.tree = tree;
 		this.parentcase = parentcase;
 //		this.testsession = testsession;
-		this.models = MBPeTMenu.models;
+		this.models = MainView.models;
 		
 		buildModelsPanel();
 	}

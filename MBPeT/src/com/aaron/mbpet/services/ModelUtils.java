@@ -14,7 +14,6 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
 import com.aaron.mbpet.views.models.ModelForm;
@@ -70,7 +69,7 @@ public class ModelUtils {
 	
 	
 	public static Model createNewModel(Model model, TestSession currsession, FieldGroup fieldbinder) {	//Model model, 
-		models = MBPeTMenu.models;
+		models = MainView.models;
 		currmodel = model; //new Model(); 
 		modelBeanItem = new BeanItem<Model>(currmodel);
 		
@@ -198,7 +197,7 @@ public class ModelUtils {
 	
 	public static Model editModel(Model model, TestSession currsession, FieldGroup fieldbinder) {
         
-		models = MBPeTMenu.models;
+		models = MainView.models;
         currmodel = models.getItem(model.getId()).getEntity();
         modelBeanItem = new BeanItem<Model>(currmodel);
         

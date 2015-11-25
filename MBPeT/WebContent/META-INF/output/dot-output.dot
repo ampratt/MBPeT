@@ -1,10 +1,12 @@
-digraph m3 {
+digraph m1 {
 	// States
 	1	[ coords  20 , 20 ]
-	2	[ coords  110 , 145 ]
-	3	[ coords  185 , 72 ]
-	4	[ coords  275 , 197 ]
-	5	[ coords  365 , 322 ]
+	2	[ coords  133 , 102 ]
+	3	[ coords  288 , 96 ]
+	4	[ coords  396 , 196 ]
 
 	// Transitions
+	1 -> 2 [label = "connector1091"];
+	2 -> 3 [label = "connector1508"];
+	3 -> 4 [label = "connector1934"];
 }

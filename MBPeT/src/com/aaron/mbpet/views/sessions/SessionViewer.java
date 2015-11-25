@@ -17,6 +17,7 @@ import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
 import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
@@ -86,8 +87,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		setSizeFull();
 		this.addStyleName("content");
 		
-        testcases = MBPeTMenu.getTestcases();
-        sessions = MBPeTMenu.getTestsessions();
+        testcases = MainView.getTestcases();
+        sessions = MainView.getTestsessions();
         
 		this.tree = tree;
 		setPageTitle(removeID(title));		//setPageTitle(title);

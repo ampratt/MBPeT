@@ -6,7 +6,7 @@ package com.aaron.mbpet.views.cases;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -52,7 +52,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	public SessionEditorTable(Tree tree, TestCase testcase) {
 		this.tree = tree;
 		this.testcase = testcase;
-		this.sessions = MBPeTMenu.sessions;
+		this.sessions = MainView.sessions;
 		
 		buildTestSessionsPanel();
 	}

@@ -18,7 +18,6 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.ModelEditorTable;
 import com.aaron.mbpet.views.cases.SessionEditorTable;
@@ -76,7 +75,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 	private Button createButton;
 	private Button cancelButton;
 	
-	private JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
+	private JPAContainer<Parameters> parameters = MainView.parameterscontainer;
 	private JPAContainer<TRT> trtcontainer;
 	BeanItem<TRT> beanItem;
 	TRT currTrt;
@@ -96,7 +95,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 		
 		this.currTrt = currTrt;	//new TRT(); 
 		this.beanItem = new BeanItem<TRT>(currTrt);
-		trtcontainer = MBPeTMenu.trtcontainer;	
+		trtcontainer = MainView.trtcontainer;	
 
 		init(parentparameters, table);
 	}
@@ -109,7 +108,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 	public TRTEditor(Object trtid, Parameters parentparameters, Table table) {		//JPAContainer<TestCase> container
 		this.editmode = true;
         
-        trtcontainer = MBPeTMenu.trtcontainer;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+        trtcontainer = MainView.trtcontainer;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
         this.currTrt = trtcontainer.getItem(trtid).getEntity();
         this.beanItem = new BeanItem<TRT>(currTrt);
 

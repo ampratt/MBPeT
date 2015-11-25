@@ -24,6 +24,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -122,7 +123,7 @@ final VerticalLayout loginPanel = new VerticalLayout();
         username.addValidator(new UsernameValidator());
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
-        username.setValue("jim.halpert");
+//        username.setValue("jim.halpert");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
 //        username.setInvalidAllowed(false);
@@ -202,10 +203,11 @@ final VerticalLayout loginPanel = new VerticalLayout();
         // fields we reduce the amount of queries we have to use to the database
         // for wrongly entered passwords
         if (!username.isValid() || !password.isValid()) {
-            return;
+    		Notification.show("Login Failure", "Username or Password was invalid. \nPlease try again.", Type.WARNING_MESSAGE);
+    		return;
         }
 
-        String usernameStr = username.getValue();
+        String usernameStr = this.username.getValue();
         String passwordStr = this.password.getValue();
 
         // Credentials were valid.
@@ -217,14 +219,15 @@ final VerticalLayout loginPanel = new VerticalLayout();
 					.createEntityManager();	
         
         Query queryByUsername = em.createQuery(
-    		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username"
+    		    "SELECT OBJECT(u) FROM User u WHERE u.username = :username AND u.password =:password"
     		);
         queryByUsername.setParameter("username", username.getValue());
+        queryByUsername.setParameter("password", password.getValue());
         User personById = new User();
         try {
         	personById = (User) queryByUsername.getSingleResult();
         	if (personById.getUsername().equals(usernameStr) && 
-        			personById.getPassword().equals(passwordStr)) {
+        		personById.getPassword().equals(passwordStr)) {
         		isValid = true;
 //        		System.out.println("user associated with username is : " +
 //        				personById.getFirstname() + personById.getLastname() );
@@ -241,21 +244,22 @@ final VerticalLayout loginPanel = new VerticalLayout();
         if (isValid) {
 
         	// store current user in session attribute        	
-        	getSession().setAttribute("sessionUser", personById);
+        	VaadinSession.getCurrent().setAttribute("sessionUser", personById);
         	
         	// Item object to store session user
         	BeanItem<User> personItemById = new BeanItem<User>((User) queryByUsername.getSingleResult());	
-        	getSession().setAttribute("sessionUserItem", personItemById);
+        	VaadinSession.getCurrent().setAttribute("sessionUserItem", personItemById);
         	
         	System.out.println("the query gave this: " +
         			personById + "\n" + personById.getUsername() +
     				"\n" + personById.getFirstname() +
     				"\n" + personById.getLastname());
         	
-        	System.out.println("session user object: " + getSession().getAttribute("sessionUser").toString());
+        	System.out.println("session user object: " + VaadinSession.getCurrent()
+        													.getAttribute("sessionUser").toString());
        	
             // Store the current username in the service session
-            getSession().setAttribute("user", usernameStr);
+        	VaadinSession.getCurrent().setAttribute("user", usernameStr);
 
             // Navigate to main view
             UI.getCurrent().getNavigator().navigateTo(MainView.NAME + "/" + "landingPage");	//SimpleLoginMainView.NAME

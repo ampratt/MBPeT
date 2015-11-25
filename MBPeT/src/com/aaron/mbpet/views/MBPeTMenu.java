@@ -67,13 +67,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	static MenuBar userMenu;
 	
 	private JPAContainer<User> persons;
-	public static JPAContainer<TestCase> testcases = getTestcases();
-	public static JPAContainer<TestSession> sessions;
-	public static JPAContainer<Model> models;
-	public static JPAContainer<Parameters> parameterscontainer;
-	public static JPAContainer<TRT> trtcontainer;
-	
-	private User currentuser = MainView.sessionUser;
+	private JPAContainer<TestCase> testcases;
+	private JPAContainer<TestSession> sessions;
+
+    private User currentuser;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
@@ -88,20 +85,12 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //		this.sessionUser = sessUser;
 		this.menutree = tree;
 //		this.displayName = usrname;
+		
+		this.currentuser = MainView.sessionUser;
+        this.persons = persons;	
+        this.testcases = MainView.getTestcases();	//testcases;
+        this.sessions = MainView.getTestsessions();	//testcases;
 
-        this.persons = persons;	//JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);
-        setTestcases(JPAContainerFactory.make(TestCase.class,
-        		MbpetUI.PERSISTENCE_UNIT));
-        sessions = JPAContainerFactory.make(TestSession.class,
-        		MbpetUI.PERSISTENCE_UNIT);
-        models = JPAContainerFactory.make(Model.class,
-        		MbpetUI.PERSISTENCE_UNIT);        //new HierarchicalDepartmentContainer();
-        parameterscontainer = JPAContainerFactory.make(Parameters.class,
-        		MbpetUI.PERSISTENCE_UNIT); 
-        trtcontainer = JPAContainerFactory.make(TRT.class,
-        		MbpetUI.PERSISTENCE_UNIT);
-//        		JPAContainerFactory.make(TestCase.class,
-//        		MbpetUI.PERSISTENCE_UNIT);
         
 //		setUserDisplayName(usrname);
 		setCompositionRoot(buildContent());
@@ -152,23 +141,36 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		                UI.getCurrent().addWindow(personEditor);
 		                personEditor.center();
 		                
-		        	} else if (selectedItem.getText().equals("Preferences")){
-		        		
 		        	} else if (selectedItem.getText().equals("Sign Out")){
 		        		// "Logout" the user
-			            getSession().setAttribute("user", null);
-			            
+
+//		        		MainView.sessionUser = null;
+//		        		MainView.sessionUserItem = null;
+//		        		// remove current user in session attribute        	
+//			            getSession().setAttribute("user", null);
+//			        	getSession().setAttribute("sessionUser", null);
+//			        	getSession().setAttribute("sessionUserItem", null);
+			        	
 			            //close the session
-			            UI.getCurrent().getSession().close();
-			            UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
-			            UI.getCurrent().close();
+//			            UI.getCurrent().getSession().close();
+//			            UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
+//			            UI.getCurrent().close();
 			            
 //			            UI.getCurrent().getPage().setLocation(
 //			        			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
 			         
 			            // Refresh this view, should redirect to login view
-			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
-			            return;
+//			            UI.getCurrent().getNavigator().navigateTo(MainView.NAME);
+//			            UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
+			        	
+                        getUI().getPage().setLocation("/MBPeT/");
+
+                        VaadinSession.getCurrent().close();
+                        
+                        // Notice quickly if other UIs are closed
+                        getUI().setPollInterval(30);
+                        
+//			            return;
 		        	}
 		        }
 		    };
@@ -179,7 +181,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		
 		MenuItem user = userMenu.addItem(MainView.displayName, null);
 		user.addItem("Edit Profile", menuCommand);
-		user.addItem("Preferences", menuCommand);
+//		user.addItem("Preferences", menuCommand);
 		user.addSeparator();
 		user.addItem("Sign Out", menuCommand);
 		
@@ -324,8 +326,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            	// get testCase for parent item or Session for children
 	            	if ( menutree.isRoot(id) ){
 //	            		TestCase caseEntity = testcases.getItem(id).getEntity();
-	            		path = getTestcases().getItem(id).getEntity().getTitle() + "-sut=" + getTestcases().getItem(id).getEntity().getId();		//caseEntity.getTitle();
-	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + getTestcases().getItem(id).getEntity().getTitle());
+	            		path = testcases.getItem(id).getEntity().getTitle() + "-sut=" + testcases.getItem(id).getEntity().getId();		//getTestcases()		caseEntity.getTitle();
+	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + testcases.getItem(id).getEntity().getTitle());
 	            		
 	            	} else {	// a child (Session) was selected
 	            		// get selected child
@@ -336,7 +338,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            		Object pid = menutree.getParent(id);
 //		            	TestCase parentEntity = testcases.getItem(pid).getEntity();
 //						String parent = (String) menutree.getParent(id);
-		            	path = getTestcases().getItem(pid).getEntity().getTitle() + "/" + 
+		            	path = testcases.getItem(pid).getEntity().getTitle() + "/" + 
 	            				sessions.getItem(id).getEntity().getTitle() + "id=" + sessions.getItem(id).getEntity().getId();
 	            	}
 
@@ -418,7 +420,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         		UI.getCurrent().addWindow(new TestSessionEditor(
         				menutree, 
         				target, //session.getId(), 
-        				getTestcases().getItem(menutree.getParent(target)).getEntity(),//session.getParentcase(),
+        				testcases.getItem(menutree.getParent(target)).getEntity(),//session.getParentcase(),
 //        				sessionsTable,
         				true)
         				);        		
@@ -464,13 +466,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         }
     }
     
-//    public void setDisplayName(String name) {
-//    	MainView.displayName = name;
-//    }
-//    
-//    public String getDisplayName() {
-//    	return MainView.displayName;
-//    }
     
     public static void setMenuDisplayName(String newname) {
 		List<MenuItem> mitems = userMenu.getItems();
@@ -480,27 +475,4 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     }
 
 
-	public static JPAContainer<TestCase> getTestcases() {
-		return MbpetUI.testcases;
-	}
-
-	public void setTestcases(JPAContainer<TestCase> testcases) {
-		MbpetUI.testcases = testcases;
-	}
-	
-	public static JPAContainer<TestSession> getTestsessions() {
-		return sessions;
-	}
-
-	public void setTestsessions(JPAContainer<TestSession> sessions) {
-		this.sessions = sessions;
-	}
-
-	public static JPAContainer<Model> getModels() {
-		return models;
-	}
-
-	public void setModels(JPAContainer<Model> models) {
-		this.models = models;
-	}
 }

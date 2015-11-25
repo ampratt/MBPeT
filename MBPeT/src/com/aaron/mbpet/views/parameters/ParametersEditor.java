@@ -16,7 +16,6 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.LoginView;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
 import com.aaron.mbpet.views.sessions.TestSessionForm;
@@ -60,7 +59,7 @@ import com.vaadin.ui.Window;
 
 public class ParametersEditor {
 	
-	private JPAContainer<Parameters> parameters = MBPeTMenu.parameterscontainer;
+	private JPAContainer<Parameters> parameters = MainView.parameterscontainer;
 	BeanItem<Parameters> beanItem;
 	Parameters currentParams;// = new Parameters();
 	
@@ -174,7 +173,7 @@ public class ParametersEditor {
 
 		            // 3. update parent Session to link Parameters
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
-              	  	MBPeTMenu.sessions.addEntity(parentsession);
+              	  	MainView.sessions.addEntity(parentsession);
 
 				} else if (editmode == true && formEdit==false){
 
@@ -228,12 +227,12 @@ public class ParametersEditor {
 
               	  	// 3. update parent Session to link Parameters !AND RECOMMIT SESSION TO CONTAINER!
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
-              	  	MBPeTMenu.sessions.addEntity(parentsession);
+              	  	MainView.sessions.addEntity(parentsession);
 				}
 
 				System.out.println("\n\nALL TEST SESSIONS AND THEIR PARAMS");
-				for (Object o : MBPeTMenu.sessions.getItemIds()) {
-					TestSession s = MBPeTMenu.sessions.getItem(o).getEntity();
+				for (Object o : MainView.sessions.getItemIds()) {
+					TestSession s = MainView.sessions.getItem(o).getEntity();
 					if (s.getParameters() != null) {
 						System.out.println(s.getId() + " " + s.getParameters().getId());						
 					}
