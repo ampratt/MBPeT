@@ -104,7 +104,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
         themeBox = new ComboBox("editor theme:", themeList);
 //        modeBox.setContainerDataSource(modeList);
 //        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
-        themeBox.setWidth(10, Unit.EM);
+        themeBox.setWidth(9, Unit.EM);
         themeBox.addStyleName("tiny");
 //        themeBox.setInputPrompt("No style selected");
         themeBox.setFilteringMode(FilteringMode.CONTAINS);
@@ -122,7 +122,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
         modeBox = new ComboBox("code style:", modeList);
 //        modeBox.setContainerDataSource(modeList);
 //        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
-        modeBox.setWidth(8, Unit.EM);
+        modeBox.setWidth(7, Unit.EM);
         modeBox.addStyleName("tiny");
         modeBox.setInputPrompt("No style selected");
         modeBox.setFilteringMode(FilteringMode.CONTAINS);
@@ -148,10 +148,10 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	    
 		
 		h.addComponents(themeBox, modeBox, saveButton);	//themeBox
-		h.setComponentAlignment(themeBox, Alignment.BOTTOM_RIGHT);
-		h.setComponentAlignment(modeBox, Alignment.BOTTOM_RIGHT);
+		h.setComponentAlignment(themeBox, Alignment.BOTTOM_LEFT);
+		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
-		h.setExpandRatio(themeBox, 1);
+		h.setExpandRatio(saveButton, 1);
 
 		return h;
 		

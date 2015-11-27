@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.User;
@@ -60,17 +62,20 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 //    public static Item sessionUserItem;
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = true, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
+	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
 
 //    static {
 //        DemoDataGenerator.create();
 //    }
-    
+//	  private static ThreadLocal<MbpetUI> threadLocal = new ThreadLocal<MbpetUI>();
+
+	
 	@Override
     protected void init(VaadinRequest request) {
-        addDetachListener(new DetachListener() { 
+//	    setInstance(this); // So that we immediately have access to the current application
+	    addDetachListener(new DetachListener() { 
 
 			@Override
             public void detach(DetachEvent event) {
@@ -250,4 +255,28 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		public static void setSessionUser(User sessionUser) {
 			sessionuser = sessionUser;
 		}
+		
+		
+
+
+//		  // return the current application instance
+//		  public static MbpetUI getInstance() {
+//		    return threadLocal.get();
+//		  }
+//
+//		  // Set the current application instance
+//		  public static void setInstance(MbpetUI application) {
+//		    threadLocal.set(application);
+//		  }
+//
+//		  @Override
+//		  public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+//			  MbpetUI.setInstance(this);
+//		  }
+//
+//		  @Override
+//		  public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+//		    threadLocal.remove();
+//		  }
+		  
 }

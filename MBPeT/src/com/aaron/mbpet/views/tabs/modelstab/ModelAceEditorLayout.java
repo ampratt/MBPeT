@@ -97,7 +97,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         h.setSpacing(true);    
 
         titleField = new TextField("Title:");
-        titleField.setWidth(13, Unit.EM);
+        titleField.setWidth(11, Unit.EM);
         titleField.addStyleName("tiny");
         titleField.setImmediate(true);
         titleField.addTextChangeListener(new TextChangeListener() {	
@@ -147,7 +147,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		h.addComponents(titleField, modeBox, saveButton, openDBuilderButton);
 		h.setComponentAlignment(titleField, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
+		h.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
 		h.setComponentAlignment(openDBuilderButton, Alignment.BOTTOM_RIGHT);
 		h.setExpandRatio(saveButton, 1);
 //		h.setExpandRatio(launchDBuilderButton, 0);

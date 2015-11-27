@@ -1,8 +1,15 @@
 package com.aaron.mbpet.views.parameters;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
@@ -33,6 +40,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -70,17 +78,19 @@ public class ParametersEditor {
 	private boolean editmode = false;
 	private boolean clonemode = false;
 	private boolean formEdit = false;
-	
+	private boolean createmode = false;
 
 	/*
 	 * Create new Parameters
 	 */
 	public ParametersEditor(TestSession parentsession) {		//JPAContainer<TestCase> container
+		createmode = true;
 		this.parentsession = parentsession;
 
 		this.currentParams = new Parameters(); 
 		this.currentParams.setOwnersession(this.parentsession);
-		this.currentParams.setSettings_file("Fill in parameters for Test Session '" + parentsession.getTitle() + "'");
+		this.currentParams.setSettings_file(getDefaultSettings());
+//		this.currentParams.setSettings_file("Fill in parameters for Test Session '" + parentsession.getTitle() + "'");
 		this.beanItem = new BeanItem<Parameters>(currentParams);
 
         saveParameters();
@@ -146,10 +156,10 @@ public class ParametersEditor {
 				Object id = null;
 				
 				// add NEW bean object to db through jpa container
-				if (editmode == false && formEdit==false) {
+				if ((createmode==false) || editmode==false && formEdit==false) {
 					try {
 						binder.commit();
-					} catch (CommitException e) {
+					} catch (CommitException | NullPointerException e) {
 						e.printStackTrace();
 					}
 					
@@ -272,6 +282,50 @@ public class ParametersEditor {
     }
 	
 
+	private String getDefaultSettings(){
+//		InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/output/parameters_default.py");
+		String BASEDIR;
+	    if (VaadinService.getCurrent() != null) {
+	        BASEDIR = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+	    } else {
+	        BASEDIR = "WebContent";
+	    }
+	    System.out.println("BASEDIR ->" + BASEDIR);
+	    BASEDIR+="/META-INF/output/parameters_default.py";	
+	    String lineSeparator = System.getProperty("line.separator");
+
+		Scanner scan = null;
+		try {
+			scan = new Scanner(new File(BASEDIR));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		StringBuilder sb = new StringBuilder();
+
+		while (scan.hasNextLine()){
+		   sb.append(scan.nextLine()).append(lineSeparator);
+		}
+		
+		return sb.toString();
+		
+		
+//	    File file = new File(inStream);
+//	    StringBuilder fileContents = new StringBuilder((int)file.length());
+//	    Scanner scanner = new Scanner(file);
+//	    String lineSeparator = System.getProperty("line.separator");
+//
+//	    try {
+//	        while(scanner.hasNextLine()) {        
+//	            fileContents.append(scanner.nextLine() + lineSeparator);
+//	        }
+//	        return fileContents.toString();
+//	    } finally {
+//	        scanner.close();
+//	    }
+
+
+	}
+	
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification

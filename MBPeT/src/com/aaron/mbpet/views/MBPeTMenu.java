@@ -74,16 +74,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 
     public static String displayName = "";
 //    public static User sessionUser;
-    public static Item sessionUserItem;
-    private static User sessionuser;
+    public Item sessionUserItem;
+    private User sessionuser;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
-    private static final Action ACTION_ADD = new Action("Add TestSession");
-    private static final Action ACTION_EDIT = new Action("Edit");
-    private static final Action ACTION_CLONE = new Action("Clone");
-    private static final Action ACTION_DELETE = new Action("Delete");
-    private static final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_CLONE, ACTION_DELETE };
+    private final Action ACTION_ADD = new Action("Add TestSession");
+    private final Action ACTION_EDIT = new Action("Edit");
+    private final Action ACTION_CLONE = new Action("Clone");
+    private final Action ACTION_DELETE = new Action("Delete");
+    private final Action[] ACTIONS = new Action[] { ACTION_ADD, ACTION_EDIT, ACTION_CLONE, ACTION_DELETE };
     
     
 	public MBPeTMenu(Tree tree) {	//JPAContainer<User> persons	User sessUser, String usrname,
@@ -453,7 +453,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     }
     
     
-    public static void setDisplayName(){
+    public void setDisplayName(){
     	if (displayName.equals("")) {	
 //    		displayName = String.valueOf(getSession().getAttribute("user"));
     		
@@ -502,10 +502,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //    	getSession().setAttribute("sessionUser", null);
 //    	getSession().setAttribute("sessionUserItem", null);
     	
-        //close the session
-//        UI.getCurrent().getSession().close();
-//        UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
-//        UI.getCurrent().close();
         
 //        UI.getCurrent().getPage().setLocation(
 //    			VaadinServlet.getCurrent().getServletContext().getContextPath());	//"/"
@@ -515,12 +511,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //        UI.getCurrent().getNavigator().navigateTo(LoginView.NAME);
 
         updateMenuDisplayName("");
-        
-        // redirect to start view
-        UI.getCurrent().getPage().setLocation("/MBPeT/");
 
-        // Close the Current UI
-        UI.getCurrent().close();
+        //close the session
+        UI.getCurrent().getSession().close();
+        UI.getCurrent().getSession().getService().closeSession(VaadinSession.getCurrent());
+//        UI.getCurrent().close();
 
         // Close the Current VaadinSession
         try {
@@ -536,6 +531,11 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         }
 //        VaadinSession.getCurrent().close();
         
+        // redirect to start view
+//      UI.getCurrent().getPage().setLocation("/MBPeT/");
+        UI.getCurrent().getPage().setLocation(VaadinServlet.getCurrent().getServletContext().getContextPath());
+
+      
         // Notice quickly if other UIs are closed
         getUI().setPollInterval(30);
         

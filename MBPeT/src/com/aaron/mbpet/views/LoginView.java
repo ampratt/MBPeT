@@ -76,7 +76,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
 //        addComponent(loginForm);
 //        setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
         
-final VerticalLayout loginPanel = new VerticalLayout();
+        final VerticalLayout loginPanel = new VerticalLayout();
         loginPanel.setSizeUndefined();
         loginPanel.setSpacing(true);
         loginPanel.addStyleName("login-panel");
