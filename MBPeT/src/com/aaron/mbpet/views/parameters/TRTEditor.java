@@ -75,7 +75,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 	private Button createButton;
 	private Button cancelButton;
 	
-	private JPAContainer<Parameters> parameters = MainView.parameterscontainer;
+	private JPAContainer<Parameters> parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
 	private JPAContainer<TRT> trtcontainer;
 	BeanItem<TRT> beanItem;
 	TRT currTrt;
@@ -95,7 +95,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 		
 		this.currTrt = currTrt;	//new TRT(); 
 		this.beanItem = new BeanItem<TRT>(currTrt);
-		trtcontainer = MainView.trtcontainer;	
+		trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();	
 
 		init(parentparameters, table);
 	}
@@ -108,7 +108,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 	public TRTEditor(Object trtid, Parameters parentparameters, Table table) {		//JPAContainer<TestCase> container
 		this.editmode = true;
         
-        trtcontainer = MainView.trtcontainer;	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
+        trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
         this.currTrt = trtcontainer.getItem(trtid).getEntity();
         this.beanItem = new BeanItem<TRT>(currTrt);
 

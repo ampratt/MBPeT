@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MainView;
@@ -31,6 +32,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
@@ -49,7 +51,7 @@ public class SettingsTab extends VerticalLayout {
 		setMargin(true);
 		setSpacing(true);
 	
-		this.parameters = MainView.parameterscontainer;
+		this.parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
 		this.currsession = currsession;
 		
 	    addComponent(new Label("<h3><i>edit test parameters</i></h3>", ContentMode.HTML));	//layout.

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
@@ -51,9 +52,9 @@ public class ConfirmDeleteModelWindow extends Window {
         
         this.navtohomepage = navtohomepage;
 
-        this.testcases = MainView.getTestcases();
-        this.sessions = MainView.getTestsessions();
-        this.models = MainView.models;
+        this.testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
+        this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
+        this.models = ((MbpetUI) UI.getCurrent()).getModels();
         this.model = model;
 
         setContent(buildWindowContent(message));

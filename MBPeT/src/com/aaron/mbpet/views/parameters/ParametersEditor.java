@@ -67,7 +67,8 @@ import com.vaadin.ui.Window;
 
 public class ParametersEditor {
 	
-	private JPAContainer<Parameters> parameters = MainView.parameterscontainer;
+	private JPAContainer<Parameters> parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+	private JPAContainer<TestSession> sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
 	BeanItem<Parameters> beanItem;
 	Parameters currentParams;// = new Parameters();
 	
@@ -183,7 +184,7 @@ public class ParametersEditor {
 
 		            // 3. update parent Session to link Parameters
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
-              	  	MainView.sessions.addEntity(parentsession);
+              	  	sessions.addEntity(parentsession);
 
 				} else if (editmode == true && formEdit==false){
 
@@ -237,12 +238,12 @@ public class ParametersEditor {
 
               	  	// 3. update parent Session to link Parameters !AND RECOMMIT SESSION TO CONTAINER!
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
-              	  	MainView.sessions.addEntity(parentsession);
+              	  	sessions.addEntity(parentsession);
 				}
 
 				System.out.println("\n\nALL TEST SESSIONS AND THEIR PARAMS");
-				for (Object o : MainView.sessions.getItemIds()) {
-					TestSession s = MainView.sessions.getItem(o).getEntity();
+				for (Object o : sessions.getItemIds()) {
+					TestSession s = sessions.getItem(o).getEntity();
 					if (s.getParameters() != null) {
 						System.out.println(s.getId() + " " + s.getParameters().getId());						
 					}

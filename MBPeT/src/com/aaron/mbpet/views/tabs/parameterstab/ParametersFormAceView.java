@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.vaadin.aceeditor.AceEditor;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.DbUtils;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
@@ -103,8 +104,8 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 		
 		this.currsession = currsession;
-		this.parameterscontainer = MainView.parameterscontainer;
-		this.trtcontainer = MainView.trtcontainer;
+		this.parameterscontainer = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+		this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 		this.currentparams = parameterscontainer.getItem(currsession.getParameters().getId()).getEntity();
 		this.editor = new AceEditor();
 		

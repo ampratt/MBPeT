@@ -7,7 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.Parameters;
+import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
+import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.DemoDataGenerator;
 import com.aaron.mbpet.services.PushLabelUpdater;
@@ -19,6 +23,7 @@ import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.StyleSheet;
@@ -58,9 +63,18 @@ import com.vaadin.ui.UI;
 public class MbpetUI extends UI implements PushLabelUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
-    public static User sessionuser;
+    public User sessionuser;
 //    public static Item sessionUserItem;
+	public JPAContainer<User> persons = JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);
 
+
+	public JPAContainer<TestCase> testcases = JPAContainerFactory.make(TestCase.class,MbpetUI.PERSISTENCE_UNIT);
+	public JPAContainer<TestSession> sessions = JPAContainerFactory.make(TestSession.class,MbpetUI.PERSISTENCE_UNIT); 
+	public JPAContainer<Parameters> parameterscontainer = JPAContainerFactory.make(Parameters.class,MbpetUI.PERSISTENCE_UNIT); 
+	public JPAContainer<Model> models = JPAContainerFactory.make(Model.class,MbpetUI.PERSISTENCE_UNIT);
+	public JPAContainer<TRT> trtcontainer = JPAContainerFactory.make(TRT.class,MbpetUI.PERSISTENCE_UNIT);
+    
+    
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
@@ -169,7 +183,6 @@ public class MbpetUI extends UI implements PushLabelUpdater {
     }
 	
 	  private ConnectorTracker tracker;
-	  public static JPAContainer<TestCase> testcases;
 
 	  @Override
 	  public ConnectorTracker getConnectorTracker() {
@@ -248,17 +261,63 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		}
 	    
 		
-		public static User getSessionUser() {
+		public User getSessionUser() {
 			return sessionuser;
 		}
 
-		public static void setSessionUser(User sessionUser) {
-			sessionuser = sessionUser;
+		public void setSessionUser(User sessionUser) {
+			this.sessionuser = sessionUser;
 		}
 		
 		
+		public JPAContainer<TestCase> getTestcases() {
+			return testcases;
+		}
+		public void setTestcases(JPAContainer<TestCase> testcases) {
+			this.testcases = testcases;
+		}
+		
+		
+		public JPAContainer<TestSession> getTestsessions() {
+			return sessions;
+		}
+		public void setTestsessions(JPAContainer<TestSession> sessions) {
+			this.sessions = sessions;
+		}
 
+		
+		public JPAContainer<Model> getModels() {
+			return models;
+		}
+		public void setModels(JPAContainer<Model> models) {
+			this.models = models;
+		}
+		
+		
+		public JPAContainer<User> getPersons() {
+			return persons;
+		}
+		public void setPersons(JPAContainer<User> persons) {
+			this.persons = persons;
+		}
 
+		
+		public JPAContainer<Parameters> getParameterscontainer() {
+			return parameterscontainer;
+		}
+		public void setParameterscontainer(JPAContainer<Parameters> parameterscontainer) {
+			this.parameterscontainer = parameterscontainer;
+		}
+
+		
+		public JPAContainer<TRT> getTrtcontainer() {
+			return trtcontainer;
+		}
+		public void setTrtcontainer(JPAContainer<TRT> trtcontainer) {
+			this.trtcontainer = trtcontainer;
+		}
+		
+		
 //		  // return the current application instance
 //		  public static MbpetUI getInstance() {
 //		    return threadLocal.get();

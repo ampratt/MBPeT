@@ -60,10 +60,10 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         setModal(true);
 
         this.menutree = tree;
-        this.testcases = MainView.getTestcases();
-        this.sessions = MainView.getTestsessions();
-        this.models = MainView.models;
-        this.parameters = MainView.parameterscontainer;
+        this.testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
+        this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
+        this.models = ((MbpetUI) UI.getCurrent()).getModels();
+        this.parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
         
         this.target = targetId; 
         this.message = message;
@@ -173,7 +173,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	                menutree.removeItem(target);
 	                                            
 	                // 2.2 remove test case from user's list of cases?
-	                MbpetUI.getSessionUser().removeCase(testcases.getItem(target).getEntity());
+	                ((MbpetUI) UI.getCurrent()).getSessionUser().removeCase(testcases.getItem(target).getEntity());
 	                
 	                // 2.3 delete TestCase from container
 	                testcases.removeItem(target);

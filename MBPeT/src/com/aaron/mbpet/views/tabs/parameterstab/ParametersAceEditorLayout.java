@@ -16,6 +16,7 @@ import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 import org.vaadin.aceeditor.AceTheme;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
@@ -69,7 +70,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     
     TestSession currsession;
     Parameters currParameters;
-    JPAContainer<Parameters> parameters = MainView.parameterscontainer;
+    JPAContainer<Parameters> parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
     
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";

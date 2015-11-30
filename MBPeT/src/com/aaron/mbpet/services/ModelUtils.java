@@ -50,7 +50,7 @@ public class ModelUtils {
 
 	private static JPAContainer<Model> models;
 	private static JPAContainer<TestSession> sessions;
-	private static JPAContainer<TestCase> testcases = MbpetUI.testcases;
+	private static JPAContainer<TestCase> testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
 	static BeanItem<Model> modelBeanItem;
 	static Model currmodel;
 	static TestCase parentcase;
@@ -69,7 +69,7 @@ public class ModelUtils {
 	
 	
 	public static Model createNewModel(Model model, TestSession currsession, FieldGroup fieldbinder) {	//Model model, 
-		models = MainView.models;
+		models = ((MbpetUI) UI.getCurrent()).getModels();
 		currmodel = model; //new Model(); 
 		modelBeanItem = new BeanItem<Model>(currmodel);
 		
@@ -197,7 +197,7 @@ public class ModelUtils {
 	
 	public static Model editModel(Model model, TestSession currsession, FieldGroup fieldbinder) {
         
-		models = MainView.models;
+		models = ((MbpetUI) UI.getCurrent()).getModels();
         currmodel = models.getItem(model.getId()).getEntity();
         modelBeanItem = new BeanItem<Model>(currmodel);
         

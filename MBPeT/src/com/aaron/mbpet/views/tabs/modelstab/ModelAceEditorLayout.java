@@ -15,6 +15,7 @@ import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
@@ -66,7 +67,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
     String[] modes = {"dot", "gv", "python"};
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
     
-    JPAContainer<Model> models = MainView.models;
+    JPAContainer<Model> models = ((MbpetUI) UI.getCurrent()).getModels();
     Model currmodel;
     TestSession currsession;
 	FieldGroup binder;

@@ -64,28 +64,21 @@ public class MainView extends HorizontalLayout implements View {
 //	ContentView contentView;
 	boolean firstenter = true;
 
-	public static JPAContainer<User> persons;
-	public static JPAContainer<TestCase> testcases = getTestcases();
-	public static JPAContainer<TestSession> sessions;
-	public static JPAContainer<Parameters> parameterscontainer;
-	public static JPAContainer<Model> models;
-	public static JPAContainer<TRT> trtcontainer;
-
     
 	public MainView() {
 		
-		persons = JPAContainerFactory.make(User.class,
-        		MbpetUI.PERSISTENCE_UNIT);
-		setTestcases(JPAContainerFactory.make(TestCase.class,
-				MbpetUI.PERSISTENCE_UNIT));
-		setTestsessions(JPAContainerFactory.make(TestSession.class,
-        		MbpetUI.PERSISTENCE_UNIT)); 
-        models = JPAContainerFactory.make(Model.class,
-        		MbpetUI.PERSISTENCE_UNIT);
-        parameterscontainer = JPAContainerFactory.make(Parameters.class,
-        		MbpetUI.PERSISTENCE_UNIT); 
-        trtcontainer = JPAContainerFactory.make(TRT.class,
-        		MbpetUI.PERSISTENCE_UNIT);
+//		MbpetUI.persons = JPAContainerFactory.make(User.class,
+//        		MbpetUI.PERSISTENCE_UNIT);
+//		setTestcases(JPAContainerFactory.make(TestCase.class,
+//				MbpetUI.PERSISTENCE_UNIT));
+//		setTestsessions(JPAContainerFactory.make(TestSession.class,
+//        		MbpetUI.PERSISTENCE_UNIT)); 
+//        models = JPAContainerFactory.make(Model.class,
+//        		MbpetUI.PERSISTENCE_UNIT);
+//        parameterscontainer = JPAContainerFactory.make(Parameters.class,
+//        		MbpetUI.PERSISTENCE_UNIT); 
+//        trtcontainer = JPAContainerFactory.make(TRT.class,
+//        		MbpetUI.PERSISTENCE_UNIT);
 
         
     	initContent();
@@ -207,30 +200,30 @@ public class MainView extends HorizontalLayout implements View {
    
     
     
-	public static JPAContainer<TestCase> getTestcases() {
-		return MbpetUI.testcases;
-	}
-
-	
-	public void setTestcases(JPAContainer<TestCase> testcases) {
-		MbpetUI.testcases = testcases;
-	}
-	
-	public static JPAContainer<TestSession> getTestsessions() {
-		return MainView.sessions;
-	}
-
-	public void setTestsessions(JPAContainer<TestSession> sessions) {
-		MainView.sessions = sessions;
-	}
-
-	public static JPAContainer<Model> getModels() {
-		return MainView.models;
-	}
-
-	public void setModels(JPAContainer<Model> models) {
-		MainView.models = models;
-	}
+//	public static JPAContainer<TestCase> getTestcases() {
+//		return MbpetUI.testcases;
+//	}
+//
+//	
+//	public void setTestcases(JPAContainer<TestCase> testcases) {
+//		MbpetUI.testcases = testcases;
+//	}
+//	
+//	public static JPAContainer<TestSession> getTestsessions() {
+//		return MbpetUI.sessions;
+//	}
+//
+//	public void setTestsessions(JPAContainer<TestSession> sessions) {
+//		MbpetUI.sessions = sessions;
+//	}
+//
+//	public static JPAContainer<Model> getModels() {
+//		return MainView.models;
+//	}
+//
+//	public void setModels(JPAContainer<Model> models) {
+//		MainView.models = models;
+//	}
    
 	
 //    public static void setDisplayName(String name) {

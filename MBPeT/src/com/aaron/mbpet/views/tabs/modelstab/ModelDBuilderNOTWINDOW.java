@@ -12,6 +12,7 @@ import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.NodeType;
 import org.vaadin.diagrambuilder.Transition;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.services.DBuilderUtils;
@@ -32,6 +33,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
@@ -65,7 +67,7 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
     AceEditor editor;
 //    Button aceLoaderButton = new Button("Load dot from editor");
         
-    private JPAContainer<Model> models = MainView.models;
+    private JPAContainer<Model> models = ((MbpetUI) UI.getCurrent()).getModels();
     private Model currmodel;
 	private FieldGroup binder;
 	private BeanItem<Model> modelBeanItem;

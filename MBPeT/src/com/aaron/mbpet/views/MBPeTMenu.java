@@ -72,7 +72,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private JPAContainer<TestCase> testcases;
 	private JPAContainer<TestSession> sessions;
 
-    public static String displayName = "";
+    public String displayName = "";
 //    public static User sessionUser;
     public Item sessionUserItem;
     private User sessionuser;
@@ -89,10 +89,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	public MBPeTMenu(Tree tree) {	//JPAContainer<User> persons	User sessUser, String usrname,
 		this.menutree = tree;
 		
-		this.sessionuser = MbpetUI.getSessionUser();
-        this.persons = MainView.persons;	//JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);//persons;	
-        this.testcases = MainView.getTestcases();	//testcases;
-        this.sessions = MainView.getTestsessions();	//testcases;
+		this.sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
+        this.persons = ((MbpetUI) UI.getCurrent()).getPersons();	//JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);//persons;	
+        this.testcases = ((MbpetUI) UI.getCurrent()).getTestcases();	//testcases;
+        this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//testcases;
 
         setDisplayName();
 
@@ -467,7 +467,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     	}	
     }
     
-    public static void updateMenuDisplayName(String newname) {
+    public void updateMenuDisplayName(String newname) {
     	displayName = newname;
 		List<MenuItem> mitems = userMenu.getItems();
 		mitems.get(0).setText(newname);

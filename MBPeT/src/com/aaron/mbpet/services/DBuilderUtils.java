@@ -40,6 +40,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Notification.Type;
 
 @SuppressWarnings("serial")
@@ -53,7 +54,7 @@ public class DBuilderUtils implements Serializable {
     List<Connector> nConnectorName = new ArrayList<Connector>();
 	String title = "input_title_name";
 
-	private JPAContainer<Model> models = MainView.models;
+	private JPAContainer<Model> models = ((MbpetUI) UI.getCurrent()).getModels();
 	private JPAContainer<TestSession> sessions;
 	private Model currmodel;
 	private BeanItem<Model> modelBeanItem;
@@ -812,7 +813,7 @@ public class DBuilderUtils implements Serializable {
 		this.parentsession = model.getParentsession();
 //        parentsession = currsession;
 //		parentcase = parentsession.getParentcase();
-		this.sessions = MainView.sessions;
+		this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
 		
 		// set edited fields
         currmodel.setTitle(title);

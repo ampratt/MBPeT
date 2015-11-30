@@ -87,8 +87,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		setSizeFull();
 		this.addStyleName("content");
 		
-        testcases = MainView.getTestcases();
-        sessions = MainView.getTestsessions();
+        testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
+        sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
         
 		this.tree = tree;
 		setPageTitle(removeID(title));		//setPageTitle(title);

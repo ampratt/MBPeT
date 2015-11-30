@@ -70,8 +70,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
     	setSizeFull();
     	this.addStyleName("login-background-grey");
 
-        persons = JPAContainerFactory.make(User.class,
-        		MbpetUI.PERSISTENCE_UNIT);
+        persons = ((MbpetUI) UI.getCurrent()).getPersons();
 //        Component loginForm = buildLoginForm();
 //        addComponent(loginForm);
 //        setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
@@ -266,7 +265,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
         	// set static user objects in MbpetUI
         	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
         	System.out.println("session user: " + su.getId());
-        	MbpetUI.setSessionUser(persons.getItem(su.getId()).getEntity());	//sessionuser = 
+        	((MbpetUI) UI.getCurrent()).setSessionUser(persons.getItem(su.getId()).getEntity());	//sessionuser = 
 //        	sessionUserItem = (Item) VaadinSession.getCurrent().getAttribute("sessionUserItem");
         	
             // Navigate to main view

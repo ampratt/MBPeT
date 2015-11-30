@@ -14,6 +14,7 @@ import org.vaadin.diagrambuilder.Connector;
 import org.vaadin.diagrambuilder.DiagramBuilder;
 import org.vaadin.diagrambuilder.Transition;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestSession;
@@ -81,7 +82,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 //		setSpacing(true);
 //		setMargin(true);
 		
-		models = MainView.models;
+		models = ((MbpetUI) UI.getCurrent()).getModels();
 		this.currsession = SessionViewer.currsession;
 		this.editor = editor;	 //= new AceEditor()
 		this.modelsTabs = modelsTabs;

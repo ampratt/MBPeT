@@ -12,12 +12,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 
 public class ParametersUtils {
 
@@ -26,8 +28,8 @@ public class ParametersUtils {
 	static StringBuilder builder;
 	
 	static Parameters currParams;
-	static JPAContainer<Parameters> parameterscontainer = MainView.parameterscontainer;
-	static JPAContainer<TRT> trtcontainer = MainView.trtcontainer;
+	static JPAContainer<Parameters> parameterscontainer = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+	static JPAContainer<TRT> trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 
 	public static String insertFormDataToAce(Parameters currparams, String editor){
 		

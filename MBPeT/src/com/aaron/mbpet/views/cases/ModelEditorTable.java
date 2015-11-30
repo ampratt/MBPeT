@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.persistence.internal.sessions.factories.SessionsFactory;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
@@ -54,7 +55,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
     private String modelsFilter;
 
     JPAContainer<Model> models;
-    JPAContainer<TestSession> sessions = MainView.sessions;
+    JPAContainer<TestSession> sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
     TestCase parentcase;
     TestSession parentsession;
 	private GeneratedPropertyContainer gpcontainer;
@@ -70,7 +71,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 		this.tree = tree;
 		this.parentcase = parentcase;
 //		this.testsession = testsession;
-		this.models = MainView.models;
+		this.models = ((MbpetUI) UI.getCurrent()).getModels();
 		
 		buildModelsPanel();
 	}

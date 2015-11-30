@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
@@ -51,8 +52,8 @@ public class ConfirmDeleteTRTWindow extends Window {
         
 //        this.testcases = MBPeTMenu.getTestcases();
         this.parentparameters = currParams;
-        this.parameterscontainer = MainView.parameterscontainer;
-        this.trtcontainer = MainView.trtcontainer;
+        this.parameterscontainer = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+        this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
         this.currTrt = currtrt;
 
         setContent(buildWindowContent(message));
