@@ -57,10 +57,9 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 
 public class SessionViewer extends VerticalLayout implements Button.ClickListener {	//implements View 
-	private static final long serialVersionUID = -5878465079008311569L;
 	
 	Panel equalPanel = new Panel("equal panel"); 
-	public static Label pageTitle = new Label("");
+	public Label pageTitle = new Label("");
 	Tree tree;
     JPAContainer<TestCase> testcases;
     static JPAContainer<TestSession> sessions;
@@ -324,7 +323,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	}
 
 
-	public static void setPageTitle(String t){
+	public void setPageTitle(String t){
 		pageTitle.setValue(t);
 
 	}

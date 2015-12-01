@@ -31,6 +31,7 @@ public class User implements Serializable { //
     @Size(min = 1, max = 40)
     private String firstname;
 
+    @NotNull
 	@Size(max = 40)
     private String lastname;
     
@@ -141,7 +142,7 @@ public class User implements Serializable { //
 	}
 
 	public void removeCase(TestCase thiscase) {
-		System.out.println("CASES LIST before removing: " + getTestCases().size());
+		System.out.println("USER's list of CASES before removing: " + getTestCases().size());
 		
 		// copy all wanted items to new list and leave behind 'removed' items
 		List<TestCase> newList = new ArrayList<TestCase>();

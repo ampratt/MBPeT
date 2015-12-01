@@ -66,16 +66,15 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private Panel mainPanel;
 	VerticalLayout menuLayout = new VerticalLayout();
 	private Tree menutree;
-	static MenuBar userMenu;
+	MenuBar userMenu;
 	
 	private JPAContainer<User> persons;
 	private JPAContainer<TestCase> testcases;
 	private JPAContainer<TestSession> sessions;
 
     public String displayName = "";
-//    public static User sessionUser;
-    public Item sessionUserItem;
     private User sessionuser;
+    public Item sessionUserItem;
 //	public static BeanItemContainer<Model> userModelsContainer = new BeanItemContainer<Model>(Model.class);
 	
     // Actions for the context menu
@@ -147,7 +146,6 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		                UserEditor personEditor = new UserEditor(
 		                		persons.getItem(sessionuser.getId()), 
 		                			"Edit User Account", true);
-
 		                personEditor.setModal(false);
 		                UI.getCurrent().addWindow(personEditor);
 		                personEditor.center();
@@ -421,24 +419,32 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //       			ConfirmDeleteMenuItemWindow confirm = new ConfirmDeleteMenuItemWindow(menutree, target, 
 //									"Are you sure you want to delete <b>" + target.toString() + "</b>?<br /><br />");
        	        UI.getCurrent().addWindow(
-       	        		new ConfirmDeleteMenuItemWindow(menutree, target, 
-						"Are you sure you want to delete <b>" + 
-						sessions.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
+       	        		new ConfirmDeleteMenuItemWindow(
+       	        				menutree, 
+       	        				target, 
+       	        				"Are you sure you want to delete <b>" + 
+   	        						sessions.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
 //                return;
                 
         	} else if (menutree.isRoot(target)) {            	
             	// ask user if attempted to delete root item that still has children items
             	if (menutree.hasChildren(target)) {
             		// ask user to confirm
-        	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
-							"<b>" + testcases.getItem(target).getEntity().getTitle() + 
-								"</b> has Test Session instances that will also be deleted!<br /><br />" +
-							"Are you sure you want to delete <b>" + testcases.getItem(target).getEntity().getTitle() + 
-								"</b> and all its data?<br /><br />"));
+        	        UI.getCurrent().addWindow(
+        	        		new ConfirmDeleteMenuItemWindow(
+	        	        		menutree, 
+	        	        		target, 
+								"<b>" + testcases.getItem(target).getEntity().getTitle() + 
+									"</b> has Test Session instances that will also be deleted!<br /><br />" +
+									"Are you sure you want to delete <b>" + testcases.getItem(target).getEntity().getTitle() + 
+									"</b> and all its data?<br /><br />"));
             	} else {
-	       	        UI.getCurrent().addWindow(new ConfirmDeleteMenuItemWindow(menutree, target, 
-							"Are you sure you want to delete <b>" + 
-							testcases.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
+	       	        UI.getCurrent().addWindow(
+	       	        		new ConfirmDeleteMenuItemWindow(
+		       	        		menutree, 
+		       	        		target, 
+								"Are you sure you want to delete <b>" + 
+								testcases.getItem(target).getEntity().getTitle() + "</b>?<br /><br />"));
             	}
 
             	return;
@@ -454,7 +460,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     
     
     public void setDisplayName(){
-    	if (displayName.equals("")) {	
+//    	if (displayName.equals("")) {	
 //    		displayName = String.valueOf(getSession().getAttribute("user"));
     		
     		String lname = "";
@@ -463,8 +469,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     		}
     		displayName = sessionuser.getFirstname() + " " +
     						lname;
-  		
-    	}	
+
+//    	}	
     }
     
     public void updateMenuDisplayName(String newname) {
@@ -472,7 +478,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		List<MenuItem> mitems = userMenu.getItems();
 		mitems.get(0).setText(newname);
 		
-		System.out.println("USER MENU new name: " + mitems.get(0).getText()); 	//getItems().toString());
+//		System.out.println("USER MENU new name: " + mitems.get(0).getText()); 	//getItems().toString());
     }
 
     

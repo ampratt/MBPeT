@@ -38,7 +38,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class ModelsTab extends VerticalLayout {
 
-	public static TabSheet modelsTabs;
+	public TabSheet modelsTabs;
 	public ModelTableAceView acetab;	// = new ModelTableAceView();
 	public static ModelDBuilderNOTWINDOW diagramtab;	// = new ModelDBuilderNOTWINDOW();
 	AceEditor editor;

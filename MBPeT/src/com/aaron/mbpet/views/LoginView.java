@@ -43,7 +43,6 @@ import com.vaadin.ui.themes.ValoTheme;
 	
 /** A start view for navigating to the main view */
 public class LoginView extends VerticalLayout  implements View, Button.ClickListener {	//
-    private static final long serialVersionUID = -3398565663865641952L;
 
     public static final String NAME = ""; 
     
@@ -262,7 +261,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
             // Store the current username in the service session
         	VaadinSession.getCurrent().setAttribute("user", usernameStr);
 
-        	// set static user objects in MbpetUI
+        	// set user objects in MbpetUI
         	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
         	System.out.println("session user: " + su.getId());
         	((MbpetUI) UI.getCurrent()).setSessionUser(persons.getItem(su.getId()).getEntity());	//sessionuser = 

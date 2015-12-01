@@ -47,7 +47,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	private Button deleteButton;
     private String sessionsFilter;
 
-    JPAContainer<TestSession> sessions;
+    private JPAContainer<TestSession> sessions;
 
 	public SessionEditorTable(Tree tree, TestCase testcase) {
 		this.tree = tree;

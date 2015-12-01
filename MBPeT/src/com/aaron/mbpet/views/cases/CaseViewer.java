@@ -70,21 +70,21 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class CaseViewer extends Panel implements Button.ClickListener {	//implements View 
 	
-	Panel equalPanel = new Panel("equal panel"); 
-	public static Label pageTitle = new Label("");
+	public Label pageTitle = new Label("");
 	Tree tree;
+	
     JPAContainer<TestCase> testcases;
     JPAContainer<TestSession> sessions;
     JPAContainer<Model> models;
     TestCase currSUT;
 
-	private Button saveButton;
-	private Button stopButton;
-	private Button startButton;
-	private Button newSessionButton;
-	private Button editButton;
-	private Button cloneButton;
-	private Table sessionsTable;
+    private Table sessionsTable;
+    private Button stopButton;
+    private Button startButton;
+//	private Button saveButton;
+//	private Button newSessionButton;
+//	private Button editButton;
+//	private Button cloneButton;
 	
 	private CssLayout contentPanels;
 	private VerticalLayout root;
@@ -135,10 +135,10 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 //		pageTitle.addStyleName("test-case-title");
 		pageTitle.addStyleName("h2");
 		
-		newSessionButton = new Button("", this);
-		newSessionButton.addStyleName("tiny");
-		newSessionButton.setIcon(FontAwesome.PLUS);
-		newSessionButton.setDescription("create new Test Session");
+//		newSessionButton = new Button("", this);
+//		newSessionButton.addStyleName("tiny");
+//		newSessionButton.setIcon(FontAwesome.PLUS);
+//		newSessionButton.setDescription("create new Test Session");
 //		saveButton = new Button("Save settings", this);
 //		startButton = new Button("Run Test", this);
 //		stopButton = new Button("Stop Test", this);
@@ -153,19 +153,19 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 //		startButton.setIcon(FontAwesome.PLAY);
 //		stopButton.setIcon(FontAwesome.STOP);
 	
-
-		HorizontalLayout buttons = new HorizontalLayout();
-		buttons.setSpacing(true);
-		buttons.addComponent(newSessionButton); //saveButton, startButton, stopButton);	//newSessionButton 
+//
+//		HorizontalLayout buttons = new HorizontalLayout();
+//		buttons.setSpacing(true);
+//		buttons.addComponent(newSessionButton); //saveButton, startButton, stopButton);	//newSessionButton 
 		
 		topBar.addComponent(pageTitle); //(pageTitle);
-		topBar.addComponent(buttons);
+//		topBar.addComponent(buttons);
 //		topBar.addComponent(newUseCaseButton);
 //		topBar.addComponent(saveButton);
 //		topBar.addComponent(startButton);
 		
 		topBar.setComponentAlignment(pageTitle, Alignment.MIDDLE_LEFT);
-		topBar.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT);	//(newUseCaseButton, Alignment.MIDDLE_RIGHT);
+//		topBar.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT);	//(newUseCaseButton, Alignment.MIDDLE_RIGHT);
 //		topBar.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
 //		topBar.setComponentAlignment(startButton, Alignment.MIDDLE_RIGHT);
 		
@@ -204,211 +204,12 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 
         return contentPanels;
     }
-    
-    
-
-	
-//	private Component buildModels() {
-//        TextArea notes = new TextArea("Notes");
-//        notes.setValue("Remember to:\n� Zoom in and out in the Sales view\n� Filter the transactions and drag a set of them to the Reports tab\n� Create a new report\n� Change the schedule of the movie theater");
-//        notes.setSizeFull();
-////        notes.setWidth("100%");
-//        notes.addStyleName(ValoTheme.TEXTAREA_BORDERLESS);
-//        Component panel = createPanelWrapper(notes);
-//        panel.addStyleName("notes");
-//        
-//        return panel;
-//	}
-	
-//	private Component buildTestSessions() {
-//	Table sessionsTable = new Table("Test Sessions", MBPeTMenu.userSessionsContainer);
-//	sessionsTable.setSizeFull();
-//	sessionsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
-//	sessionsTable.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
-//	
-//	sessionsTable.setSelectable(true);
-//    sessionsTable.setImmediate(true);
-//	
-//	Component contentWrapper = createContentWrapper(sessionsTable);
-//    contentWrapper.addStyleName("sessions-table");
-//	
-//	return contentWrapper;
-//}
-
-//	private Component createPanelWrapper(final Component content) {
-//		final Panel panel = new Panel();
-////		panel.addStyleName("panel-caption");
-////		panel.setSizeFull();
-//        panel.setHeight("250px");
-//
-//		
-//		VerticalLayout layout = new VerticalLayout();
-//        layout.setSizeFull();
-////        layout.setSpacing(true);
-////        Label spacer = new Label(
-////                "Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
-////        spacer.setWidth("10em");
-////        layout.addComponent(spacer);       
-//        
-//	    
-//	    HorizontalLayout panelHeader = new HorizontalLayout();
-////	    panelCaption.addStyleName("v-panel-caption");
-//	    panelHeader.addStyleName("panel-style-layout-header");
-//	    panelHeader.setWidth("100%");
-//	    // panelCaption.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-//	    
-//	    Label label = new Label(content.getCaption());
-//	    label.addStyleName(ValoTheme.LABEL_H4);
-//	    label.addStyleName(ValoTheme.LABEL_COLORED);
-//	    label.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-//	    content.setCaption(null);
-//	    
-//        searchField = new TextField();
-//        searchField.setInputPrompt("Search by title");
-//        searchField.addTextChangeListener(new TextChangeListener() {
-//            @Override
-//            public void textChange(TextChangeEvent event) {
-//            	sessionsFilter = event.getText();
-//                updateFilters();
-//            }
-//        });
-//
-//
-//	    Button edit = new Button();
-//	    edit.setIcon(FontAwesome.PENCIL);
-//	    edit.addStyleName("borderless-colored");
-//	    edit.addStyleName("small");
-//	    edit.addStyleName("icon-only");
-//	    edit.setDescription("edit selected session");
-//	    edit.setEnabled(false);
-//	    
-//	    MenuBar dropdown = new MenuBar();
-//	    dropdown.addStyleName("borderless");
-//	    dropdown.addStyleName("small");
-//	    MenuItem addItem = dropdown.addItem("", FontAwesome.COG, null);
-//	    addItem.setStyleName("icon-only");
-//	    addItem.addItem("Settings", null);
-//	    addItem.addItem("Preferences", null);
-//	    addItem.addSeparator();
-//	    addItem.addItem("Sign Out", null);
-//
-//	    panelHeader.addComponent(label);
-//	    panelHeader.addComponent(searchField);
-//	    panelHeader.addComponent(edit);
-//	    panelHeader.addComponent(dropdown);
-//	    panelHeader.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-//	    panelHeader.setComponentAlignment(searchField, Alignment.MIDDLE_RIGHT);
-//	    panelHeader.setExpandRatio(label, 1);
-//	    
-////	    card.addComponents(panelHeader, content);
-//////	    layout.setExpandRatio(content, 1);
-////	    card.setWidth("100%");
-////	    
-////	    slot.addComponent(card);
-//	    
-////	    content.setSizeFull();
-//	    layout.addComponent(panelHeader);
-//        layout.addComponent(content);
-//        layout.setExpandRatio(content, 1);
-//        panel.setContent(layout);
-//        
-//
-//        return panel;
-//	}
-//	
-//	
-//	private Component createContentWrapper2(final Component content) {
-//        final CssLayout slot = new CssLayout();
-//        slot.setWidth("100%");
-//        slot.addStyleName("dashboard-panel-slot");
-//
-//        CssLayout card = new CssLayout();
-//        card.setWidth("100%");
-//        card.addStyleName(ValoTheme.LAYOUT_CARD);
-//
-//        HorizontalLayout toolbar = new HorizontalLayout();
-//        toolbar.addStyleName("dashboard-panel-toolbar");
-//        toolbar.setWidth("100%");
-//
-//        Label caption = new Label(content.getCaption());
-//        caption.addStyleName(ValoTheme.LABEL_H4);
-//        caption.addStyleName(ValoTheme.LABEL_COLORED);
-//        caption.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-//        content.setCaption(null);
-//
-//        MenuBar tools = new MenuBar();
-//        tools.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-//        MenuItem max = tools.addItem("", FontAwesome.EXPAND, new Command() {
-//
-//            @Override
-//            public void menuSelected(final MenuItem selectedItem) {
-//                if (!slot.getStyleName().contains("max")) {
-//                    selectedItem.setIcon(FontAwesome.COMPRESS);
-////                    toggleMaximized(slot, true);
-//                } else {
-//                    slot.removeStyleName("max");
-//                    selectedItem.setIcon(FontAwesome.EXPAND);
-////                    toggleMaximized(slot, false);
-//                }
-//            }
-//        });
-//        max.setStyleName("icon-only");
-//        MenuItem root = tools.addItem("", FontAwesome.COG, null);
-//        root.addItem("Configure", new Command() {
-//            @Override
-//            public void menuSelected(final MenuItem selectedItem) {
-//                Notification.show("Not implemented in this demo");
-//            }
-//        });
-//        root.addSeparator();
-//        root.addItem("Close", new Command() {
-//            @Override
-//            public void menuSelected(final MenuItem selectedItem) {
-//                Notification.show("Not implemented in this demo");
-//            }
-//        });
-//
-//        toolbar.addComponents(caption, tools);
-//        toolbar.setExpandRatio(caption, 1);
-//        toolbar.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-//
-//        card.addComponents(toolbar, content);
-//        slot.addComponent(card);
-//        return slot;
-//        
-//	}
 
     
     
 	public void buttonClick(ClickEvent event) {
-        if (event.getButton() == newSessionButton) {
-	        // open window to create item
-	        UI.getCurrent().addWindow(new TestSessionEditor(tree, currSUT, true));	//getTestCaseByTitle() testcases.getItem(parent).getEntity()
-
-        } else if (event.getButton() == editButton) {
-			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
-	        UI.getCurrent().addWindow(new TestSessionEditor(
-	        			tree, 
-	        			session.getId(), 
-	        			testcases.getItem(
-	        					sessions.getItem(session.getId()).getEntity().getParentcase().getId()).getEntity(),
-        				sessionsTable)
-	        );
-        } else if (event.getButton() == cloneButton) {
-			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
-	        UI.getCurrent().addWindow(new TestSessionEditor(
-	        			tree, 
-	        			session.getId(), 
-	        			testcases.getItem(
-	        					sessions.getItem(session.getId()).getEntity().getParentcase().getId()).getEntity(),
-        				sessionsTable)
-	        );
-
-        } else if (event.getButton() == saveButton) {
-			//testing purposes
-			Notification.show("Your settings will be saved", Type.WARNING_MESSAGE);
-
-        } else if (event.getButton() == startButton) {
+ 
+        if (event.getButton() == startButton) {
 			//testing purposes
 			Notification.show("This will launch the test session to the master", Type.WARNING_MESSAGE);
 
@@ -417,6 +218,30 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 			Notification.show("This will stop the test", Type.WARNING_MESSAGE);
 
         }
+//        if (event.getButton() == editButton) {
+//			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
+//	        UI.getCurrent().addWindow(new TestSessionEditor(
+//	        			tree, 
+//	        			session.getId(), 
+//	        			testcases.getItem(
+//	        					sessions.getItem(session.getId()).getEntity().getParentcase().getId()).getEntity(),
+//        				sessionsTable)
+//	        );
+//        } else if (event.getButton() == cloneButton) {
+//			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
+//	        UI.getCurrent().addWindow(new TestSessionEditor(
+//	        			tree, 
+//	        			session.getId(), 
+//	        			testcases.getItem(
+//	        					sessions.getItem(session.getId()).getEntity().getParentcase().getId()).getEntity(),
+//        				sessionsTable)
+//	        );
+//
+//        } else if (event.getButton() == saveButton) {
+//			//testing purposes
+//			Notification.show("Your settings will be saved", Type.WARNING_MESSAGE);
+//
+//        }
     }
 	
 	
@@ -442,12 +267,11 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 		String parsed = "";
 		if (input.contains("sut=")) {
 			parsed = input.substring((input.indexOf("=")+1), input.length()); 
-			System.out.println("the parsed SUT ID is: " + parsed);
+//			System.out.println("the parsed SUT ID is: " + parsed);
 			
 			int id = Integer.parseInt(parsed);
 			currSUT = testcases.getItem(id).getEntity();
-			
-	        System.out.println("retrieved SESSION fro db is :  - " + currSUT.getTitle());
+//	        System.out.println("retrieved SUT from db is :  - " + currSUT.getTitle());
 		}
 		
 		return currSUT;
@@ -478,7 +302,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 	}
 
 	
-	public static void setPageTitle(String t){
+	public void setPageTitle(String t){
 		pageTitle.setValue(t);
 
 	}

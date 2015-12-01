@@ -63,6 +63,7 @@ public class ParametersUtils {
 				writeQuotedDataInfo(line, "\"", currParams.getTest_report_folder());
 
 			} else if (line.contains("ip") && line.contains("=")) {
+				System.out.println("## handling IP now ##");
 				writeQuotedDataInfo(line, "\"", currParams.getIp());
 				
 			} else if ( (line.contains("test_duration") && line.contains("=")) && !(line.contains("E.g."))  ) {
@@ -146,6 +147,7 @@ public class ParametersUtils {
 					currparams.setTest_report_folder(getQuotedDataInfo(line, "\"", "test_report_folder"));
 				
 			} else if (line.contains("ip") && line.contains("=")) {
+				System.out.println("## handling IP now ##");
 				if (line.startsWith("#"))
 					currparams.setIp(null);
 				else
@@ -205,23 +207,38 @@ public class ParametersUtils {
 	 * WRITE DATA TO ACE EDITOR
 	 */
 	private static void writeQuotedDataInfo(String line, String quoteType, String formData) {
+		System.out.println("the current line is: " + line);
 		StringTokenizer stk = new StringTokenizer(line, "=");
-		builder.append(stk.nextToken() + "= ");
+		String pre = stk.nextToken();
+		if(!(formData==null)){
+			if(!formData.isEmpty() && pre.startsWith("#"))  
+				pre = pre.substring(1);
+		} else 
+			formData="";
+		builder.append(pre + "= ");
 		String afterequals = stk.nextToken();
-		
+		System.out.println("afterequals: " + afterequals);
+
 		Scanner lineScanner = new Scanner(afterequals); //(line)
 		while (lineScanner.hasNext()) {
 			String next = lineScanner.next();
-			
-			stk = new StringTokenizer(line, quoteType);		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
+			System.out.println("linescanner.next: " + next);
+
+			stk = new StringTokenizer(next, quoteType);		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
 			if (line.contains(quoteType)) {
-				stk.nextToken();
-				String hoststr = stk.nextToken();
-				System.out.println(next + " stk->" + hoststr);						
-				if ( next.equals(quoteType + hoststr + quoteType) ){
+				if (stk.hasMoreTokens()) {
+					String nt = stk.nextToken();
+					System.out.println("next token: " + nt);
+					
+//					String str = stk.nextToken();
+					System.out.println(next + " stk-> " + nt);						
+					if ( next.equals(quoteType + nt + quoteType) ){
+						builder.append(quoteType + formData + quoteType).append(space);						
+					} else 
+						builder.append(next).append(space);
+				} else
 					builder.append(quoteType + formData + quoteType).append(space);						
-				} else 
-					builder.append(next).append(space);
+
 			}
 		}
 		lineScanner.close();
@@ -369,7 +386,7 @@ public class ParametersUtils {
 		String result = "";
 		StringTokenizer stk = new StringTokenizer(line, "=");
 		stk.nextToken();	// token before '='
-		String afterequals = stk.nextToken();
+		String afterequals = stk.nextToken().trim();
 		System.out.println("afterequals -> " + afterequals);
 
 //		if (afterequals == null) {
@@ -378,10 +395,24 @@ public class ParametersUtils {
 			stk = new StringTokenizer(afterequals, quoteType);		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
 			try {
 				String str = stk.nextToken();
-				if (!str.equals(" ")) 
-					result = str;	//stk.nextToken();
-				else
+				System.out.println("first token -> -" + str + "-");
+				if (!str.equals(" ")) {
+					String s = str.trim();
+					if (!s.startsWith("#")){
+						result = s;
+						System.out.println("first Token - result -> -" + result + "-");						
+					} else {
+						result = "";
+						System.out.println("first Token - result -> -" + result + "-");												
+					}
+//					result = str;	//stk.nextToken();
+				} else if (str.equals("") || str.equals(" ")) {
+					result = "";
+					System.out.println("result -> " + result);
+				} else {
 					result = stk.nextToken();
+					System.out.println("second Token - result -> " + result);
+				}
 			} catch (NoSuchElementException e) {
 				e.printStackTrace();
 				Notification not = new Notification("Check your formatting on '" + variable + "'");

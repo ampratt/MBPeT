@@ -49,7 +49,6 @@ import com.vaadin.ui.Button.ClickEvent;
 /** Main view with a menu (with declarative layout design) */
 //@DesignRoot
 public class MainView extends HorizontalLayout implements View {
-    private static final long serialVersionUID = -3398565663865641952L;
 
     public static String NAME = "home";	//MBPeT
 //    public static String displayName = "";
@@ -109,6 +108,9 @@ public class MainView extends HorizontalLayout implements View {
     		if (firstenter){
     			MenuLayout();
     			firstenter = false;
+    		} else{
+    			User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
+    			menu.updateMenuDisplayName(sessionuser.getFirstname() +  " " + sessionuser.getLastname() );
     		}
     		
 //      	menu.setUserDisplayName(username);    		

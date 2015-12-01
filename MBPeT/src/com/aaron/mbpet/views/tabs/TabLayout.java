@@ -19,7 +19,7 @@ public class TabLayout extends TabSheet {
 	
 //	ConfigurationTab configTab = new ConfigurationTab();
 	TabSheet confTabs;
-	public static MonitoringTab monitoringTab;	// = new MonitoringTab();
+	public MonitoringTab monitoringTab;	// = new MonitoringTab();
 	ReportsTab reportsTab;	// = new ReportsTab();	//final
 	ModelsTab modelTab;// = new ModelsTab();
 	ParametersTab parametersTab;
@@ -72,7 +72,7 @@ public class TabLayout extends TabSheet {
        		
 	}
 
-	public static MonitoringTab getMonitoringTab() {
+	public MonitoringTab getMonitoringTab() {
 		return monitoringTab;
 	}
 

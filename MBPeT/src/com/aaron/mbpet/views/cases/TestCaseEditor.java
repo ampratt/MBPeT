@@ -45,10 +45,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class TestCaseEditor extends Window implements Button.ClickListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5370960944210111329L;
 
 	private Tree tree;
 	private Button createButton;
@@ -356,10 +352,6 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	   
 //	 // Define a sub-window by inheritance
 //	    public class CreateTestCaseWindow extends Window {
-//	    	/**
-//	    	 * 
-//	    	 */
-//	    	private static final long serialVersionUID = 5370960944210111329L;
 //
 //	    	private Tree tree;
 //	    	private JPAContainer<TestCase> testcases;

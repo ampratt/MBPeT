@@ -34,7 +34,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class ConfirmDeleteModelWindow extends Window {
-	private static final long serialVersionUID = 5408254248079275265L;
 
 	Model model;
 	JPAContainer<TestCase> testcases;
@@ -75,8 +74,6 @@ public class ConfirmDeleteModelWindow extends Window {
             delete.addStyleName("danger");
 //            submit.setClickShortcut(KeyCode.ENTER);
             delete.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = -7778774800816407833L;
-
 				public void buttonClick(ClickEvent event) {
 
 	        		// for notification
@@ -109,11 +106,6 @@ public class ConfirmDeleteModelWindow extends Window {
             Button cancel = new Button("Cancel");
 //            addStyleName("danger");
             cancel.addClickListener(new ClickListener() {
-                /**
-				 * 
-				 */
-				private static final long serialVersionUID = -53528761196259133L;
-
 				public void buttonClick(ClickEvent event) {
                     close(); // Close the sub-window
                 }

@@ -23,10 +23,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class CreateTestCaseWindow extends Window {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5370960944210111329L;
 
 	private Tree tree;
 	private JPAContainer<TestCase> testcases;

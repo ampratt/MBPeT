@@ -84,7 +84,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	private TRTForm TRTForm;
 	
 	public Grid grid;
-	private Table sessionsTable;
+//	private Table sessionsTable;
 	private Button saveButton;
 	private Button enableAceButton;
 	private Button newTRTButton;
@@ -119,7 +119,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
-		editorLayout = new ParametersAceEditorLayout(editor, "python");
+		editorLayout = new ParametersAceEditorLayout(editor, "python", beanItem, this);
 		editorLayout.toggleEditorFields(true);
 		editorLayout.setWidth("97%");
 		
@@ -202,6 +202,44 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //		currentparams.setTarget_response_times(responseTimes);
 		
 		binder = new FieldGroup();
+		bindFormtoBean(currentparams);
+//		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
+////		beanItem.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
+////		beanItem.addNestedProperty("target_response_times");
+//		
+//		binder.setItemDataSource(beanItem); 	// link the data model to binder
+//		
+//		binder.bindMemberFields(parametersForm);	// link the layout to binder	
+////		binder.bindMemberFields(TRTForm);	// link to layout	
+//		
+//		for (Object propertyId : binder.getBoundPropertyIds()) {
+//			if ("dstat_mode".equals(propertyId)) {
+//				ComboBox combo = (ComboBox) binder.getField(propertyId);
+//				System.out.println("property was dstat");
+//				if (combo.getValue() == null) {
+//					combo.select("None");
+//					System.out.println("attempted to set null value to None");
+//				}
+//			}
+//		}
+		
+//		binder = new FieldGroup();
+//		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
+////		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
+////		item.addNestedProperty("address.zip");
+////		item.addNestedProperty("address.city");
+//		
+//		binder.setItemDataSource(beanItem); 	// link the data model to binder
+//		binder.bindMemberFields(form);	// link the layout to binder		
+////		form.setEnabled(false);
+
+		
+		return layout;
+	}
+	
+
+	public void bindFormtoBean(Parameters currparams) {
+		this.currentparams = currparams;
 		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
 //		beanItem.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
 //		beanItem.addNestedProperty("target_response_times");
@@ -222,20 +260,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 			}
 		}
 		
-//		binder = new FieldGroup();
-//		beanItem = new BeanItem<Parameters>(currentparams);		// takes item as argument
-////		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
-////		item.addNestedProperty("address.zip");
-////		item.addNestedProperty("address.city");
-//		
-//		binder.setItemDataSource(beanItem); 	// link the data model to binder
-//		binder.bindMemberFields(form);	// link the layout to binder		
-////		form.setEnabled(false);
-
-		
-		return layout;
 	}
-	
 
 	private Component buildGridButtons() {
 		// buttons for TRT grid
@@ -372,64 +397,64 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	}
 
 
-	private Component buildParametersTable() {
-	    // Table
-		sessionsTable = new Table();
-		setFilterBySession();
-		sessionsTable.setContainerDataSource(parameterscontainer);	//(userSessionsContainer);
-		sessionsTable.setWidth("100%");
-		sessionsTable.setPageLength(2);	//setHeight("150px");
-		sessionsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
-//		sessionsTable.addStyleName(ValoTheme.TABLE_NO_HEADER);
-		sessionsTable.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
-		sessionsTable.addStyleName(ValoTheme.TABLE_SMALL);
-//		sessionsTable.setSizeFull();
-		
-		sessionsTable.setSelectable(true);
-        sessionsTable.setImmediate(true);
-        sessionsTable.setVisibleColumns("id", "ip", "test_duration","monitoring_interval", "mean_user_think_time", "standard_deviation");
-        sessionsTable.setBuffered(true);
-//        sessionsTable.setColumnHeaders(new String[] {"Model"});
-//        modelsTable.setColumnExpandRatio("title", 1);
-		
-		// add generated column
-        sessionsTable.addGeneratedColumn("Owner Session", new ColumnGenerator() {
-			
-			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				// Get the value in the first column
-//                int modelId = (Integer) source
-//                    .getContainerProperty(itemId, "id").getValue();
-
-                // get title of parent session
-                TestSession session = (TestSession) source.getContainerProperty(itemId, "ownersession").getValue();
-                Label label = new Label(session.getTitle());
-                
-				return label;
-			}
-		});
-
-		sessionsTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
-		    @Override
-		    public void itemClick(ItemClickEvent event) {
-		    	parametersForm.setEnabled(true);
-		    	
-		        Item item = sessionsTable.getItem(event.getItemId());
-		        currentparams = parameterscontainer.getItem(item.getItemProperty("id").getValue()).getEntity();
-		        beanItem = new BeanItem<Parameters>(currentparams);
-		        
-		        Notification.show("Event Item Id: " + event.getItemId().toString() +
-		        				"\nTable Item: " + item.getItemProperty("id") + item.getItemProperty("ip"), Type.TRAY_NOTIFICATION);
-
-		        binder.setItemDataSource(beanItem);	//(item);
-				binder.bindMemberFields(parametersForm);	// link to layout	
-//				binder.bindMemberFields(addressForm);	// link to layout	
-//				binder.bindMemberFields(skillsForm);
-		    }
-		});	
-
-		return sessionsTable;
-	}
+//	private Component buildParametersTable() {
+//	    // Table
+//		sessionsTable = new Table();
+//		setFilterBySession();
+//		sessionsTable.setContainerDataSource(parameterscontainer);	//(userSessionsContainer);
+//		sessionsTable.setWidth("100%");
+//		sessionsTable.setPageLength(2);	//setHeight("150px");
+//		sessionsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
+////		sessionsTable.addStyleName(ValoTheme.TABLE_NO_HEADER);
+//		sessionsTable.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
+//		sessionsTable.addStyleName(ValoTheme.TABLE_SMALL);
+////		sessionsTable.setSizeFull();
+//		
+//		sessionsTable.setSelectable(true);
+//        sessionsTable.setImmediate(true);
+//        sessionsTable.setVisibleColumns("id", "ip", "test_duration","monitoring_interval", "mean_user_think_time", "standard_deviation");
+//        sessionsTable.setBuffered(true);
+////        sessionsTable.setColumnHeaders(new String[] {"Model"});
+////        modelsTable.setColumnExpandRatio("title", 1);
+//		
+//		// add generated column
+//        sessionsTable.addGeneratedColumn("Owner Session", new ColumnGenerator() {
+//			
+//			@Override
+//			public Object generateCell(Table source, Object itemId, Object columnId) {
+//				// Get the value in the first column
+////                int modelId = (Integer) source
+////                    .getContainerProperty(itemId, "id").getValue();
+//
+//                // get title of parent session
+//                TestSession session = (TestSession) source.getContainerProperty(itemId, "ownersession").getValue();
+//                Label label = new Label(session.getTitle());
+//                
+//				return label;
+//			}
+//		});
+//
+//		sessionsTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+//		    @Override
+//		    public void itemClick(ItemClickEvent event) {
+//		    	parametersForm.setEnabled(true);
+//		    	
+//		        Item item = sessionsTable.getItem(event.getItemId());
+//		        currentparams = parameterscontainer.getItem(item.getItemProperty("id").getValue()).getEntity();
+//		        beanItem = new BeanItem<Parameters>(currentparams);
+//		        
+//		        Notification.show("Event Item Id: " + event.getItemId().toString() +
+//		        				"\nTable Item: " + item.getItemProperty("id") + item.getItemProperty("ip"), Type.TRAY_NOTIFICATION);
+//
+//		        binder.setItemDataSource(beanItem);	//(item);
+//				binder.bindMemberFields(parametersForm);	// link to layout	
+////				binder.bindMemberFields(addressForm);	// link to layout	
+////				binder.bindMemberFields(skillsForm);
+//		    }
+//		});	
+//
+//		return sessionsTable;
+//	}
 
 	
 

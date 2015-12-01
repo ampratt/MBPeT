@@ -20,7 +20,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 
 public class LandingPage extends VerticalLayout {	//implements View 
-	private static final long serialVersionUID = -5311837216590841111L;
 
     public static final String NAME = "landingPage"; 
 	Tree tree;
@@ -49,11 +48,6 @@ public class LandingPage extends VerticalLayout {	//implements View
 		
         // button listener
 		createTestCase.addClickListener(new ClickListener() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -3952503576887345886L;
-
 			@Override
 			public void buttonClick(ClickEvent event) {
 		        // open window to create item

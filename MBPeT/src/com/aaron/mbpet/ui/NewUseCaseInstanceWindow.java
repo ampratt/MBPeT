@@ -24,10 +24,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class NewUseCaseInstanceWindow extends Window {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 898541303993774111L;
 
 	public NewUseCaseInstanceWindow(Tree tree) {
         super("Create new Instance of this Test Case"); // Set window caption

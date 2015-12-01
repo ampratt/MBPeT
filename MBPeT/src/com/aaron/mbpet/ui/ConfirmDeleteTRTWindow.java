@@ -35,7 +35,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class ConfirmDeleteTRTWindow extends Window {
-	private static final long serialVersionUID = 5408254248079275265L;
 
 	TRT currTrt;
 	JPAContainer<TestCase> testcases;
@@ -74,8 +73,6 @@ public class ConfirmDeleteTRTWindow extends Window {
             delete.addStyleName("danger");
 //            submit.setClickShortcut(KeyCode.ENTER);
             delete.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = -7778774800816407833L;
-
 				public void buttonClick(ClickEvent event) {
 
 	        		// for notification

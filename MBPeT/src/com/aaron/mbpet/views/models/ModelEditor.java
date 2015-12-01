@@ -78,7 +78,6 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	private TextField title; 
 	private ComboBox sessionCombobox;
 	
-//	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
 	private JPAContainer<TestSession> sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
 	BeanItem<Model> modelBeanItem;

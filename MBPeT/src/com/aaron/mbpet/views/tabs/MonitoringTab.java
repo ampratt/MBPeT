@@ -31,7 +31,7 @@ public class MonitoringTab extends Panel {
 	public Label minmaxresponse;
 	public Label slave;
 	private Label slavelabel;
-	private static VerticalLayout slavevert;
+	private VerticalLayout slavevert;
 	
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
@@ -307,7 +307,7 @@ public class MonitoringTab extends Panel {
         return slavevert;     
     }
     
-    public static void updateSlaveMonitoringInfo(int numslaves, String[] slaveresults) {
+    public void updateSlaveMonitoringInfo(int numslaves, String[] slaveresults) {
     	String[] statuses = {"Connected", "Generating", "Saturated"};
     	slavevert.removeAllComponents();
     	
@@ -325,7 +325,7 @@ public class MonitoringTab extends Panel {
       	}    
     }
     
-    public static void generateSlaveMonitoringInfo(int numslaves, String status) {
+    public void generateSlaveMonitoringInfo(int numslaves, String status) {
     	String[] statuses = {"Connected", "Generating", "Saturated"};
     	slavevert.removeAllComponents();
     	

@@ -21,16 +21,20 @@ import java.util.Arrays;
 
 import javax.persistence.PersistenceException;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.PasswordValidator;
 import com.aaron.mbpet.components.UsernameValidator;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ListenerMethod.MethodException;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -57,6 +61,7 @@ public class UserEditor extends Window implements Button.ClickListener,
         FormFieldFactory {
 
     private final Item personItem;
+    private User currsessionuser;
     private Form editorForm;
     private Button saveButton;
     private Button cancelButton;
@@ -66,6 +71,7 @@ public class UserEditor extends Window implements Button.ClickListener,
     	this.editMode = mode;
 //    	this.setModal(true);
     	this.setResizable(false);
+    	this.currsessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
     	
     	VerticalLayout layout = new VerticalLayout();
     	layout.setMargin(true);  
@@ -133,11 +139,24 @@ public class UserEditor extends Window implements Button.ClickListener,
 
         		// update display name efter edit
         		if (editMode) {
-        			String lname = String.valueOf(personItem.getItemProperty("lastname").getValue());
+
+            		JPAContainer<User> persons = ((MbpetUI) UI.getCurrent()).getPersons();
+            		currsessionuser = persons.getItem(personItem.getItemProperty("id").getValue()).getEntity();
+                	((MbpetUI) UI.getCurrent()).setSessionUser(currsessionuser);
+        			
+                	String lname = currsessionuser.getLastname();	//String.valueOf(personItem.getItemProperty("lastname").getValue());
             		if (personItem.getItemProperty("lastname").getValue() == null) {
             			lname = "";
             		}
-        	        		
+//            		System.out.println("The user is updated to: " + 
+//            				((MbpetUI) UI.getCurrent()).getSessionUser().getUsername() +
+//            				"/n" + currsessionuser.getFirstname() + " " + currsessionuser.getLastname());
+            		
+            		UI.getCurrent().getNavigator().navigateTo(MainView.NAME);
+            		
+//        			MBPeTMenu.updateMenuDisplayName(
+//        					String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
+//        					lname);	//MainView.setDisplayName            	        		
         		}
             } catch (MethodException | PersistenceException e) {
 //            	Field f = editorForm.getField("username");
@@ -223,5 +242,9 @@ public class UserEditor extends Window implements Button.ClickListener,
     public interface EditorSavedListener extends Serializable {
         public void editorSaved(EditorSavedEvent event);
     }
+
+//	public void setSessionUser(User sessionuser) {
+//		user currsessionuser = sessionuser;	
+//	}
 
 }

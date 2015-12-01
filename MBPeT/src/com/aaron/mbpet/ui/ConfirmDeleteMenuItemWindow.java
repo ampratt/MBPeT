@@ -8,8 +8,10 @@ import java.util.List;
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
+import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -36,7 +38,6 @@ import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
 public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickListener {
-	private static final long serialVersionUID = 5408254248079275265L;
 
 	Tree menutree;
 	Button delete;
@@ -46,9 +47,11 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	JPAContainer<TestSession> sessions;
 	JPAContainer<Model> models;
 	JPAContainer<Parameters> parameters;
+	JPAContainer<TRT> trtcontainer;
+	private User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
 	TestCase parentcase;
 	
-	private Object target;
+	private Object targetId;
 	private String message;
 
 	
@@ -64,8 +67,9 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
         this.models = ((MbpetUI) UI.getCurrent()).getModels();
         this.parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+        this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
         
-        this.target = targetId; 
+        this.targetId = targetId; 
         this.message = message;
         
         setContent(buildWindowContent(tree));
@@ -110,17 +114,17 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        	Object parentid = null;
 
 	        	// delete session. session items are never root
-	        	if (!menutree.isRoot(target)) {		       	        
-	        		parentid = menutree.getParent(target);
+	        	if (!menutree.isRoot(targetId)) {		       	        
+	        		parentid = menutree.getParent(targetId);
 	        		parentcase = testcases.getItem(parentid).getEntity();
 	        		System.out.println("\nparent OBJECT is: " + parentid);
 	        		System.out.println("\nparent TestCase is: " + parentcase);
 	        		
 	        		// for notification
-	        		String deleteditem = sessions.getItem(target).getEntity().getTitle();
+	        		String deleteditem = sessions.getItem(targetId).getEntity().getTitle();
 	        		
 	        		// DELETE
-	        		deleteSessionAndDescendants(sessions.getItem(target).getEntity(), parentcase);
+	        		deleteSessionAndDescendants(sessions.getItem(targetId).getEntity(), parentcase);
 	        		
 //	                // 1. remove item from tree
 //	                menutree.removeItem(target);
@@ -149,11 +153,11 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	                confirmNotification(deleteditem);
 	        	
 	        	} else {
-	        		TestCase testcase = testcases.getItem(target).getEntity();
+	        		TestCase testcase = testcases.getItem(targetId).getEntity();
 	        		// 1) delete any child sessions first 
-	        		if (menutree.hasChildren(target)) {
+	        		if (menutree.hasChildren(targetId)) {
 	        			System.out.println(testcase.getSessions().toArray().toString());
-	        			int numsessions = testcase.getSessions().size();
+//	        			int numsessions = testcase.getSessions().size();
 	        			
 	        			// Delete Session and it's models and parameters
 	        			deleteSUTWithDecendants(testcase);
@@ -165,23 +169,24 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 		
 	        		}
 	        		// for notification
-	        		String deleteditem = testcases.getItem(target).getEntity().getTitle();
+	        		String deleteditem = testcases.getItem(targetId).getEntity().getTitle();
 	        		
 	        		// 2) delete test case itself
 	        		
 	                // 2.1 remove item from tree
-	                menutree.removeItem(target);
+	                menutree.removeItem(targetId);
 	                                            
 	                // 2.2 remove test case from user's list of cases?
-	                ((MbpetUI) UI.getCurrent()).getSessionUser().removeCase(testcases.getItem(target).getEntity());
+	                sessionuser.removeCase(testcases.getItem(targetId).getEntity());
 	                
 	                // 2.3 delete TestCase from container
-	                testcases.removeItem(target);
+	                testcases.removeItem(targetId);
         		
 	        		// navigate to landing page
                 	getUI()
     	            	.getNavigator()
     	            		.navigateTo(MainView.NAME + "/" + "landingPage");
+                	
 	                confirmNotification(deleteditem);
 	        	}		        	
 	        	close();
@@ -195,16 +200,28 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 
 
 		private void deleteSUTWithDecendants(TestCase testcase) {
+			System.out.println("### DELETING SUT ###");
+
 			//copy list of sessions to iterate over
-			List<TestSession> slist = testcase.getSessions();
-			for (int i=0; i<slist.size(); i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
-            
+//			List<TestSession> slist = testcase.getSessions();
+//			for (int i=0; i<slist.size()+1; i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
+            filterSessionsBySUT(testcase);
+			Collection<Object> slist = sessions.getItemIds();
+//			for (int i=0; i<mlist.size(); i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
+			int count = 1;
+			for (Object id : slist) {
+				// get session to remove
+//				Model m = sessions.getItem(id).getEntity();
+				
 				System.out.println("SUT size list of sessions : " + testcase.getSessions().size());
 				
 				// get session to remove
-				deleteSessionAndDescendants(testcase.getSessions().get(i), testcase);
+				deleteSessionAndDescendants(sessions.getItem(id).getEntity(), testcase);
+				System.out.println("### SESSION " + count + " DELETED ###");
+				count ++;
 			}
-//			// remove child from Case's list of Sessions
+			sessions.removeAllContainerFilters();
+//			// remove children from Case's list of Sessions
             testcase.setSessions(null);
 
             
@@ -252,23 +269,25 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 		}
 
 
-		private void deleteSessionAndDescendants(TestSession ses, TestCase testcase) {
 
-            System.out.println("removing from SUT, session : " + ses.getTitle());
+		private void deleteSessionAndDescendants(TestSession ses, TestCase testcase) {
+			System.out.println("### DELETING SESSION ###  :  " + ses.getTitle());
 
             // 1 remove item from tree
             menutree.removeItem(ses.getId());
                                         
             // 2 delete child models
-//            TestSession currsession = sessions.getItem(target).getEntity();
-//            for (Model m : ses.getModels()) {
-//			List<Model> mlist = ses.getModels();
+				//            TestSession currsession = sessions.getItem(target).getEntity();
+				//            for (Model m : ses.getModels()) {
+				//			List<Model> mlist = ses.getModels();
+			System.out.println("### DELETING MODELS ###");
+
             filterModelsBySession(ses);
 			Collection<Object> mlist = models.getItemIds();
 //			for (int i=0; i<mlist.size(); i++) { 		//testcase.getSessions().size()  for (TestSession s : testcase.getSessions()) {
 			for (Object id : mlist) {
 				System.out.println("SESSION size list of models : " + ses.getModels().size());
-				// get session to remove
+				// get model to remove
 				Model m = models.getItem(id).getEntity();	//ses.getModels().get(i);
 				ses.removeModel(m);
 				// remove from container
@@ -278,10 +297,37 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 			// update session's list of models
 			ses.setModels(null);
 			
+			
 			// 3 delete parameters
+			System.out.println("### DELETING PARAMETERS ###");
+			System.out.println("### DELETING TRT's ###");
+			
+        	Parameters p = ses.getParameters();
+
+			//copy list of TRT's to iterate over
+//			List<TRT> trtlist = p.getTarget_response_times();
+			filterTRTsByParameter(p);
+			Collection<Object> trtlist = trtcontainer.getItemIds();
+			for (Object id : trtlist){		//for (int i=0; i<trtlist.size(); i++) { 
+				System.out.println("Parameter size list of trt's : " + p.getTarget_response_times().size());
+				
+				// get trt to remove
+				TRT trt = trtcontainer.getItem(id).getEntity();	
+				p.removeTRT(trt);
+				
+				// remove from container
+				trtcontainer.removeItem(trt.getId());
+			}
+			trtcontainer.removeAllContainerFilters();
+			
+			// update session's list of models
+			p.setTarget_response_times(null);
+			
             try {
+    			System.out.println("### DELETING Actual PARAMETERS ###");
+
             	// remove for session's list
-            	Parameters p = ses.getParameters();
+//            	Parameters p = ses.getParameters();
             	ses.setParameters(null);
             	
             	// remove from db
@@ -302,7 +348,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
             try {
 				System.out.println("SUT list of sessions :" + testcase.getSessions());
 				for (TestSession s : testcase.getSessions()) {
-					System.out.println(s.getId() + " " + s.getTitle() + " - parent ->" + s.getParentcase().getTitle());
+					System.out.println(s.getId() + " " + s.getTitle() + " - parent -> " + s.getParentcase().getTitle());
 				}
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
@@ -332,6 +378,13 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 			
 		}
 
+		private void filterSessionsBySUT(TestCase testcase) {
+	    	sessions.removeAllContainerFilters();
+//	    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	Equal casefilter = new Equal("parentcase", testcase);//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	
+	    	sessions.addContainerFilter(casefilter);			
+		}
 
 		public void filterModelsBySession(TestSession ses){
 	    	models.removeAllContainerFilters();
@@ -340,10 +393,16 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	    	
 	    	models.addContainerFilter(casefilter);
 		}
-		
+
+		public void filterTRTsByParameter(Parameters p){
+			trtcontainer.removeAllContainerFilters();
+//	    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	Equal trtfilter = new Equal("parentparameter", p);//  ("parentcase", getTestCaseByTitle(), true, false);
+	    	
+	    	trtcontainer.addContainerFilter(trtfilter);
+		}
 		
 		private void confirmNotification(String deletedItem) {
-            // welcome notification
             Notification notification = new Notification(deletedItem);
             notification
                     .setDescription("<span>was deleted.</span>");

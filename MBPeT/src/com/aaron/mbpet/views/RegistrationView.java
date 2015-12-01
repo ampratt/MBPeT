@@ -19,7 +19,6 @@ import com.vaadin.ui.VerticalLayout;
 
 /** A start view for navigating to the main view */
 public class RegistrationView extends VerticalLayout implements View {
-    private static final long serialVersionUID = -3398565663865641952L;
 
     public static final String NAME = "registration";
     private JPAContainer<User> persons;
