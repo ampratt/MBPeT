@@ -25,6 +25,7 @@ import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelDBuilderWindow;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
+import com.aaron.mbpet.views.parameters.ParametersForm;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -71,11 +72,14 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     TestSession currsession;
     Parameters currParameters;
     JPAContainer<Parameters> parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+    BeanItem<Parameters> beanItem;
+    ParametersFormAceView formAceView;
     
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
 
-	public ParametersAceEditorLayout(AceEditor editor, String fileFormat) {	// TestSession currsession
+	public ParametersAceEditorLayout(AceEditor editor, String fileFormat, BeanItem<Parameters> beanItem,
+			ParametersFormAceView formAceView) {	// TestSession currsession
 		setSizeFull();
 		setMargin(false);	//(new MarginInfo(false, true, false, true));
 //		setMargin(true);
@@ -85,7 +89,9 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		this.fileFormat = fileFormat;
 		this.currsession = SessionViewer.currsession;
 		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
-
+		this.beanItem = beanItem;
+		this.formAceView= formAceView; 
+		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
 		
 		addComponent(buildButtons());	
@@ -219,7 +225,11 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 			
 			// commit individual field, parsed from ace
 			ParametersUtils.commitAceParamData(currParameters, editor.getValue());
-	        saveButton.setEnabled(false);
+			
+			// update Form view
+			formAceView.bindFormtoBean(currParameters);
+//			for (Object pid : beanItem.getItemPropertyIds()) {beanItem.getItemProperty(pid).setValue(currParameters)}	        
+			saveButton.setEnabled(false);
 
 //			Notification.show(s, Type.WARNING_MESSAGE);
         }
