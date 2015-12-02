@@ -345,8 +345,8 @@ public class DBuilderUtils implements Serializable {
                 String xy = mapper.writeValueAsString(nXy.get(n));
 
                 // a little formatting
-                xy = xy.replace("[", "[ coords ");
-                xy = xy.replaceAll("[,]", " ,");
+                xy = xy.replace("[", "[ coords =");
+                xy = xy.replaceAll("[,]", ",");
 //                xy = xy.replaceAll("[\\[\\]]", "");
 //                xy = xy.replaceAll("[\\s]", "");
                 writer.print("\t" + xy);// "}\n");	//mapper.writeValueAsString(nXy.get(n))

@@ -1,46 +1,36 @@
 package com.aaron.mbpet.views.tabs.modelstab;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.vaadin.aceeditor.AceEditor;
-import org.vaadin.diagrambuilder.Connector;
 import org.vaadin.diagrambuilder.DiagramBuilder;
 import org.vaadin.diagrambuilder.DiagramStateEvent;
 import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.NodeType;
-import org.vaadin.diagrambuilder.Transition;
-
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.services.DBuilderUtils;
-import com.aaron.mbpet.views.MainView;
+import com.aaron.mbpet.views.tabs.parameterstab.ParametersFormAceView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.ClickListener {
-
-	final VerticalLayout main = new VerticalLayout();
+public class ModelDBuilderTab extends Panel implements Button.ClickListener {
 
 	// Diagram elements
 	final VerticalLayout diagramContainer = new VerticalLayout();
@@ -49,11 +39,6 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 	
     DiagramBuilder diagramBuilder; 
     DBuilderUtils diagramUtils = new DBuilderUtils();
-//    List<String> nName = new ArrayList<String>();
-//    List<String> nType = new ArrayList<String>();
-//    List<int[]> nXy = new ArrayList<int[]>();
-//    List<Transition> nTransitions = new ArrayList<Transition>();
-//    List<Connector> nConnectorName = new ArrayList<Connector>();
 
     TabSheet modelsTabs;
     
@@ -65,6 +50,8 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
     Button renameNodesButton;	// = new Button("Rename Nodes");
     Button openAceButton;
     AceEditor editor;
+    ModelAceEditorLayout editorLayout;
+    Table modelsTable;
 //    Button aceLoaderButton = new Button("Load dot from editor");
         
     private JPAContainer<Model> models = ((MbpetUI) UI.getCurrent()).getModels();
@@ -73,31 +60,44 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 	private BeanItem<Model> modelBeanItem;
     
     
-	public ModelDBuilderNOTWINDOW(AceEditor editor, TabSheet modelsTabs) {	//Model currmodel, 
+	public ModelDBuilderTab(AceEditor editor, TabSheet modelsTabs, 
+			ModelAceEditorLayout editorLayout, Table modelsTable, DiagramBuilder diagramBuilder) {	//Model currmodel, 
 //		this.currmodel = models.getItem(currmodel.getId()).getEntity();
 //    	toggleEditorFields(false);
-
-		setSizeFull();
+		this.modelsTabs = modelsTabs;
+		this.editor = editor;
+		this.editorLayout = editorLayout;
+		this.modelsTable = modelsTable;
+		this.diagramBuilder = diagramBuilder;
+		
+//		setSizeFull();
 //		setWidth("1600px");
 //		setHeight("100%");
+		setHeight("100%");
+		setWidth("100%");
+		addStyleName("borderless");
+			
+		VerticalLayout content = new VerticalLayout();
+		content.setMargin(new MarginInfo(false, false, false, false));
+		content.addStyleName("dbuilder-window");
+//		content.setWidth("100%");
 
-		this.modelsTabs = modelsTabs;
-		// AceEditor
-		this.editor = editor;
+		Component toolbar = buildButtons();
 		
-		main.addStyleName("dbuilder-window");
+		content.addComponent(toolbar);
+		content.addComponent(buildDiagramBuilder());
+
+		setContent(content);
+		
 		
 		// Toolbar buttons
-		Component toolbar = buildButtons();
-		main.addComponent(toolbar);
-//		main.setComponentAlignment(toolbar, Alignment.MIDDLE_RIGHT);
-    	
-		// Diagram Builder
-		main.addComponent(buildDiagramBuilder());
+//		addComponent(toolbar);
+////		main.setComponentAlignment(toolbar, Alignment.MIDDLE_RIGHT);
+//    	
+//		// Diagram Builder
+//		addComponent(buildDiagramBuilder());
 		
 //		setFieldsDataSource(currmodel);
-
-		this.addComponent(main);
 	}
 
 	
@@ -212,15 +212,17 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
         diagramContainer.setMargin(new MarginInfo(false, false, true, false));
 //    	addComponent(aceLoaderButton);
 		
-        diagramBuilder = new DiagramBuilder();
+//        diagramBuilder = new DiagramBuilder();
         diagramBuilder.setImmediate(true);
         diagramBuilder.setAvailableFields(
 		        new NodeType("diagram-node-start-icon", "Start", "start"),
 		        new NodeType("diagram-node-state-icon", "State", "state"),
 		        new NodeType("diagram-node-end-icon", "End", "end")
         );
-        diagramBuilder.setSizeFull();
-
+//        diagramBuilder.setSizeFull();
+        diagramBuilder.setWidth("100%");
+        diagramBuilder.setHeight(1600, Unit.PIXELS);
+        
 //        diagramUtils.initDiagram(diagramBuilder);
         
         diagramContainer.addComponent(diagramBuilder);
@@ -252,8 +254,8 @@ public class ModelDBuilderNOTWINDOW extends VerticalLayout implements Button.Cli
 			currmodel = saveDiagram();
 			
 			modelsTabs.setSelectedTab(0);
-			ModelTableAceView.modelsTable.select(currmodel.getId());
-			ModelTableAceView.editorLayout.setFieldsDataSource(currmodel); //models.getItem(currmodel.getId()).getEntity());
+			modelsTable.select(currmodel.getId());
+			editorLayout.setFieldsDataSource(currmodel); //models.getItem(currmodel.getId()).getEntity());
 //        	ModelsTab.acetab.setFieldsDataSource(models.getItem(currmodel.getId()).getEntity());
 
 			

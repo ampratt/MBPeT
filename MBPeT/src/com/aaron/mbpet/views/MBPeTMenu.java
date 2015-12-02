@@ -463,12 +463,16 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //    	if (displayName.equals("")) {	
 //    		displayName = String.valueOf(getSession().getAttribute("user"));
     		
-    		String lname = "";
-    		if (sessionuser.getLastname() != null) {
-    			lname = sessionuser.getLastname();
-    		}
-    		displayName = sessionuser.getFirstname() + " " +
-    						lname;
+    		try {
+				String lname = "";
+				if (sessionuser.getLastname() != null) {
+					lname = sessionuser.getLastname();
+				}
+				displayName = sessionuser.getFirstname() + " " +
+								lname;
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
 
 //    	}	
     }

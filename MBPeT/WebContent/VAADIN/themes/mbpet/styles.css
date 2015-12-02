@@ -16083,3 +16083,7 @@ div.v-layout.v-horizontal.v-widget {
 .mbpet .v-verticallayout .response-counts-layout-padding {
 	padding-top: 0px;
 }
+
+.mbpet .v-verticallayout .splitview-padding-left {
+	padding-left: 5px;
+}

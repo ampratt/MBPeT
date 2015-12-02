@@ -5,25 +5,14 @@
  */
 package com.aaron.mbpet.views.tabs.modelstab;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.persistence.jaxb.compiler.Property;
 import org.vaadin.aceeditor.AceEditor;
-import org.vaadin.diagrambuilder.Connector;
-import org.vaadin.diagrambuilder.DiagramBuilder;
-import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.aceeditor.AceEditorLayoutDirectory;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.services.DBuilderUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
-import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.sessions.SessionViewer;
-import com.google.gwt.dev.javac.UnusedImportsRemover;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -35,26 +24,24 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-public class ModelTableAceView extends HorizontalSplitPanel implements Button.ClickListener{
+public class ModelTableAceTab extends Panel implements Button.ClickListener{
 
     JPAContainer<Model> models;
     TestSession currsession;
     
+    HorizontalSplitPanel splitpanel;
     TabSheet modelsTabs;
     
     // table elements
@@ -63,32 +50,48 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
     private Button cloneButton;
     private Button newModelButton;
     private Button deleteButton;
-    public static Table modelsTable;
+    Table modelsTable;
+//    public static Table modelsTable;
 
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
-	public static ModelAceEditorLayout editorLayout;
-//	ModelDBuilderNOTWINDOW dbuilderLayout;
-//    final TextField aceOutFileField = new TextField();
-//    final TextField aceInFileField = new TextField();
-//    ComboBox modeBox;
-//    List<String> modeList;
-    
+	ModelAceEditorLayout editorLayout;
+	ModelDBuilderTab diagramtab;    
     
 	
-	public ModelTableAceView(AceEditor editor, TabSheet modelsTabs) {	//AceEditor editor TestSession currsession
-		setSizeFull();
-		setSplitPosition(30, Unit.PERCENTAGE);
-//		setSpacing(true);
-//		setMargin(true);
+	public ModelTableAceTab(AceEditor editor, TabSheet modelsTabs, 
+			ModelAceEditorLayout editorLayout, Table modelsTable, ModelDBuilderTab diagramtab) {	//AceEditor editor TestSession currsession
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
 		this.currsession = SessionViewer.currsession;
 		this.editor = editor;	 //= new AceEditor()
 		this.modelsTabs = modelsTabs;
+		this.editorLayout = editorLayout;
+		this.modelsTable = modelsTable;
+		this.diagramtab = diagramtab;
 		
-		setFirstComponent(buildLeftSide());
-		setSecondComponent(buildRightSide());
+//		panel = new Panel();
+		setHeight("100%");
+		setWidth("100%");
+		addStyleName("borderless");
+		
+		VerticalLayout content = new VerticalLayout();
+		content.setMargin(new MarginInfo(false, false, true, true));
+//		content.setWidth("100%");
+		
+
+		splitpanel = new HorizontalSplitPanel();
+		splitpanel.setSizeFull();
+		splitpanel.setSplitPosition(30, Unit.PERCENTAGE);
+//		setSpacing(true);
+//		setMargin(true);
+		splitpanel.setFirstComponent(buildLeftSide());
+		splitpanel.setSecondComponent(buildRightSide());
+
+		content.addComponent(splitpanel);
+
+		setContent(content);
+		
 //		addComponent(buildLeftSide());
 //		addComponent(buildRightSide());
 		
@@ -172,7 +175,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 	    
 	    // Table
 	    setFilterByTestCase();
-		modelsTable = new Table();
+//		modelsTable = new Table();
 		modelsTable.setContainerDataSource(models);	//(userSessionsContainer);
 		modelsTable.setSizeFull();
 //		modelsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -198,7 +201,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 					editorLayout.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 					// add model to dbuilder
-					ModelsTab.diagramtab.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
+					diagramtab.setFieldsDataSource(models.getItem(event.getProperty().getValue()).getEntity());
 					
 //					models.getItem(modelsTable.getValue());					
 					setModificationsEnabled(event.getProperty().getValue() != null);
@@ -227,7 +230,7 @@ public class ModelTableAceView extends HorizontalSplitPanel implements Button.Cl
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
-		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs);
+//		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs, diagramtab);
 		editorLayout.toggleEditorFields(false);
 		
 //		dbuilderLayout = new ModelDBuilderNOTWINDOW(editor);

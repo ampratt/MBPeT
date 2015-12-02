@@ -20,10 +20,12 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 
 import org.apache.tools.ant.taskdefs.Length;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.diagrambuilder.DiagramBuilder;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -31,28 +33,47 @@ import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 
 public class ModelsTab extends VerticalLayout {
 
+	
+	Panel panel;
 	public TabSheet modelsTabs;
-	public ModelTableAceView acetab;	// = new ModelTableAceView();
-	public static ModelDBuilderNOTWINDOW diagramtab;	// = new ModelDBuilderNOTWINDOW();
+	public ModelTableAceTab acetab;	// = new ModelTableAceView();
+	public ModelDBuilderTab diagramtab;	// = new ModelDBuilderNOTWINDOW();
+	public ModelAceEditorLayout editorLayout;
 	AceEditor editor;
+    public Table modelsTable;
+    public DiagramBuilder diagramBuilder;
 	
 	
 	public ModelsTab() {		
 		//setHeight(100.0f, Unit.PERCENTAGE);
-	    setSizeFull();
-		setMargin(true);
-		setSpacing(true);
+		setHeight("100%");
+//	    setSizeFull();
+//		setMargin(true);
+//		setSpacing(true);
 		
 		editor = new AceEditor();
 		
-		addComponent(buildConfigTabs());
+//		panel = new Panel();
+		setHeight("100%");
+//		setWidth("100%");
+//		addStyleName("borderless");
+		
+//		VerticalLayout content = new VerticalLayout();
+//		content.setMargin(new MarginInfo(false, false, true, true));
+////		content.setWidth("100%");
+//		content.addComponent(buildEditingTabs());
+
+//		setContent(content);
+		addComponent(buildEditingTabs());
 		
 	//    addComponent(vert);
 	//    setExpandRatio(vert, 1);
@@ -61,7 +82,7 @@ public class ModelsTab extends VerticalLayout {
 	
 	}
 
-	private TabSheet buildConfigTabs(){
+	private TabSheet buildEditingTabs(){
 		modelsTabs = new TabSheet();
 		modelsTabs.setSizeFull();
 		modelsTabs.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);	//TABSHEET_EQUAL_WIDTH_TABS);
@@ -69,8 +90,13 @@ public class ModelsTab extends VerticalLayout {
 		
 	//	confTabs.addTab(graph, "User Profiles / Models");
 		//graphTab.addComponent(MbpetDemoUI.graph);
-		acetab = new ModelTableAceView(editor, modelsTabs);
-		diagramtab = new ModelDBuilderNOTWINDOW(editor, modelsTabs);
+	    modelsTable = new Table();
+		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs, modelsTable);
+		diagramBuilder = new DiagramBuilder();
+		
+		diagramtab = new ModelDBuilderTab(editor, modelsTabs, editorLayout, modelsTable, diagramBuilder);
+		acetab = new ModelTableAceTab(editor, modelsTabs, editorLayout, modelsTable, diagramtab);
+		editorLayout.setDBuilderTab(diagramtab);
 		
 		modelsTabs.addTab(acetab);
 		modelsTabs.addTab(diagramtab);

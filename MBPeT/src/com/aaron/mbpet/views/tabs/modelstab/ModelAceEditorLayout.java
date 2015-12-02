@@ -44,6 +44,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -53,14 +54,14 @@ import com.vaadin.ui.Notification.Type;
 public class ModelAceEditorLayout extends VerticalLayout implements Button.ClickListener{
 
 	AceEditor editor;// = new AceEditor();
-
+	ModelDBuilderTab diagramtab;
+	
 	TabSheet modelsTabs;
+	Table modelsTable;
 	TextField titleField;
 	ComboBox modeBox;
 	Button saveButton;
 	Button openDBuilderButton;
-//    final TextField aceOutFileField = new TextField();
-//    final TextField aceInFileField = new TextField();
     
     String fileFormat = "dot";
     List<String> modeList;
@@ -75,7 +76,8 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 	
 	private boolean createNewModel = false;
 
-	public ModelAceEditorLayout(AceEditor editor, String fileFormat, TabSheet modelsTabs) {	// TestSession currsession
+	public ModelAceEditorLayout(AceEditor editor, String fileFormat, 
+			TabSheet modelsTabs, Table modelsTable) {	// TestSession currsession
 		setSizeFull();
 		setMargin(new MarginInfo(false, true, false, true));
 //		setMargin(true);
@@ -83,12 +85,15 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		
 		this.modelsTabs = modelsTabs;
 		this.editor = editor; //= new AceEditor()
+		this.modelsTable = modelsTable;
 		this.fileFormat = fileFormat;
 		this.currsession = SessionViewer.currsession;
+//		this.diagramtab = diagramtab;
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
 		addComponent(buildButtons());	
 		addComponent(buildAceEditor());
+		setExpandRatio(editor, 1);
 	}
 
 	private Component buildButtons() {
@@ -226,7 +231,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			
 			try {
 				if (editedmodel != null){
-					ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+					modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
 					toggleEditorFields(true);
 					setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
 					editor.focus();
@@ -254,7 +259,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 
         } else if (event.getButton() == openDBuilderButton) {       	
         	modelsTabs.setSelectedTab(1);
-        	ModelsTab.diagramtab.setFieldsDataSource(currmodel);
+        	diagramtab.setFieldsDataSource(currmodel);
 
         	// open diagram builder window
 //        	UI.getCurrent().addWindow(new ModelDBuilderWindow(currmodel, editor));
@@ -363,7 +368,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		
 		try {
 			if (editedmodel != null){
-				ModelTableAceView.modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
+				modelsTable.select(models.getItem(editedmodel.getId()).getEntity().getId());
 				toggleEditorFields(true);
 				setFieldsDataSource(models.getItem(editedmodel.getId()).getEntity());	//(models.getItem(currmodel.getId()).getEntity());
 				editor.focus();
@@ -394,6 +399,11 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 //		not.show(Page.getCurrent());
 //		saveButton.setEnabled(true);
 //		saveButton.focus();
+	}
+
+	public void setDBuilderTab(ModelDBuilderTab diagramtab) {
+		this.diagramtab = diagramtab;
+		
 	}
 
 }

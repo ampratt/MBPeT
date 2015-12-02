@@ -47,6 +47,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.Position;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -111,7 +112,6 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 		setFirstComponent(buildLeftSide());
 		setSecondComponent(buildRightSide());
-	
 		
 	}
 	
@@ -131,7 +131,8 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	
 
 	private Component buildLeftSide() {
-		VerticalLayout layout = new VerticalLayout();
+		VerticalLayout leftlayout = new VerticalLayout();
+		leftlayout.addStyleName("splitview-padding-left");
 		
 		// table
 //		layout.addComponent(buildParametersTable());
@@ -178,17 +179,17 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //		header.setComponentAlignment(enableAceButton, Alignment.MIDDLE_RIGHT);
 		header.setExpandRatio(section, 1);
 		
-		layout.addComponent(header);
+		leftlayout.addComponent(header);
 		
 		
 		// form
 		parametersForm = new ParametersForm();
 		parametersForm.addStyleName("light");
 		parametersForm.setWidth("97%");
-		layout.addComponent(parametersForm);
+		leftlayout.addComponent(parametersForm);
 		
-		layout.addComponent(buildGridButtons());
-		layout.addComponent(buildTRTTable());
+		leftlayout.addComponent(buildGridButtons());
+		leftlayout.addComponent(buildTRTTable());
 
 //		TRTForm = new TRTForm();
 //		layout.addComponent(TRTForm);
@@ -234,7 +235,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 ////		form.setEnabled(false);
 
 		
-		return layout;
+		return leftlayout;
 	}
 	
 

@@ -30,7 +30,7 @@ public class TabLayout extends TabSheet {
 //	TestSession currsession;
 	
     public TabLayout() {	//TestSession currsession
-        setSizeFull();
+//        setSizeFull();
 
 //        this.currsession = SessionViewer.currsession;
         
@@ -43,6 +43,7 @@ public class TabLayout extends TabSheet {
         reportsTab = new ReportsTab();
 
         VerticalLayout configTab = new VerticalLayout();
+        configTab.setHeight("100%");
         configTab.addComponent(buildConfigTabs());
 
         addTab(configTab, "Configuration");
@@ -54,7 +55,8 @@ public class TabLayout extends TabSheet {
 
 	private TabSheet buildConfigTabs(){
 		confTabs = new TabSheet();
-		confTabs.setSizeFull();
+//		confTabs.setSizeFull();
+		confTabs.setHeight(100.0f, Unit.PERCENTAGE);
 		confTabs.addStyleName(ValoTheme.TABSHEET_CENTERED_TABS);	//TABSHEET_EQUAL_WIDTH_TABS);
 
 		modelTab = new ModelsTab();

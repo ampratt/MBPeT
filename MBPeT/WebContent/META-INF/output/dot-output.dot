@@ -1,11 +1,15 @@
-digraph m2 {
+digraph m3 {
 	// States
-	1	[ coords  10 , 10 ]
-	2	[ coords  80 , 120 ]
-	3	[ coords  300 , 55 ]
+	1	[ coords = 10, 10 ]
+	2	[ coords = 80, 120 ]
+	3	[ coords = 300, 55 ]
+	4	[ coords = 219, 206 ]
+	5	[ coords = 405, 177 ]
 
 	// Transitions
 	1 -> 2 [label = "first connector - 0.60 / / browse()"];
 	1 -> 3 [label = "0.50 / / bid(id,price,username,password)"];
 	2 -> 3 [label = "0.30 / / exit()"];
+	3 -> 4 [label = "connector1784"];
+	4 -> 5 [label = "connector1906"];
 }

@@ -123,7 +123,7 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
         username.addValidator(new UsernameValidator());
         username.setRequired(true);
 //        username.setInputPrompt("Your username (eg. test@test.com)");
-//        username.setValue("jim.halpert");
+        username.setValue("apratt");
 //        username.addValidator(new EmailValidator(
 //                "Username must be an email address"));
 //        username.setInvalidAllowed(false);
