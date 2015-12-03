@@ -20,7 +20,7 @@ import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.ui.ConfirmDeleteTRTWindow;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
-import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
+//import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.parameters.ParametersForm;
 import com.aaron.mbpet.views.parameters.TRTEditor;
@@ -119,7 +119,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
-		editorLayout = new ParametersAceEditorLayout(editor, "python", beanItem, this);
+		editorLayout = new ParametersAceEditorLayout(editor, "python", beanItem, currsession, this);
 		editorLayout.toggleEditorFields(true);
 		editorLayout.setWidth("97%");
 		

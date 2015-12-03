@@ -11,6 +11,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.GenerateComboBoxContainer;
+import com.aaron.mbpet.services.KillProcess;
 import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.services.UDPServer;
@@ -62,23 +63,21 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	public Label pageTitle = new Label("");
 	Tree tree;
     JPAContainer<TestCase> testcases;
-    static JPAContainer<TestSession> sessions;
-    public static TestSession currsession;
+    JPAContainer<TestSession> sessions;
+    public TestSession currsession;
 
     UDPThreadWorker udpWorker;
+    
+//  private Button newSessionButton;
+//	private Button saveButton;
     public static ProgressBarThread progressThread;
     public static ProgressBar spinner;
-    
-    private Button newSessionButton;
-	private Button saveButton;
-
-	private ComboBox slaveSelect;
-
+    public static ProgressBar progressbar;
+    public static Label progressstatus;
 	private static Label spinLabel;
+	private ComboBox slaveSelect;
 	private static Button startButton;
 	private static Button stopButton;
-	public static ProgressBar progressbar;
-	public static Label progressstatus;
 	
 	public static TabLayout tabs;
 	
@@ -101,7 +100,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //    	setExpandRatio(contentLayout, 1);
     	
 //		VerticalLayout tabs = new VerticalLayout();
-		tabs = new TabLayout();
+		tabs = new TabLayout(currsession);
 		addComponent(tabs);
     	setExpandRatio(tabs, 1);
 	}
@@ -232,15 +231,16 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	
 	
     public void buttonClick(ClickEvent event) {
-        if (event.getButton() == newSessionButton) {
-	        // open window to create item
-	        UI.getCurrent().addWindow(new TestSessionEditor(tree, currsession.getParentcase(), false));	//getTestCaseByTitle()	testcases.getItem(parent).getEntity()
-
-        } else if (event.getButton() == saveButton) {
-			//testing purposes
-			Notification.show("Your settings will be saved", Type.WARNING_MESSAGE);
-
-        } else if (event.getButton() == startButton) {
+//        if (event.getButton() == newSessionButton) {
+//	        // open window to create item
+//	        UI.getCurrent().addWindow(new TestSessionEditor(tree, currsession.getParentcase(), false));	//getTestCaseByTitle()	testcases.getItem(parent).getEntity()
+//
+//        } else if (event.getButton() == saveButton) {
+//			//testing purposes
+//			Notification.show("Your settings will be saved", Type.WARNING_MESSAGE);
+//
+//        } 
+        if (event.getButton() == startButton) {
         	tabs.setSelectedTab(1);
 
 			Notification not = new Notification("test session is starting now", Type.TRAY_NOTIFICATION);
@@ -263,9 +263,25 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start round spinner till messages arrive
 			displaySpinner(true);
 			
-        	// start receiving UDP messages
+			// start mbpet MASTER
+			String command = "mbpet_cli.exe " +
+					"test_project " +
+					slaveSelect.getValue().toString() + 
+					" -b localhost:9999 -s";
+			Notification.show("Running start command", command, Type.TRAY_NOTIFICATION);
+			MasterUtils masterUtils = new MasterUtils(command);
+			masterUtils.startMaster(command);
+//	        Thread t = new Thread(masterUtils);
+//	        t.start();
+
+			// start receiving UDP messages
 	        udpWorker = new UDPThreadWorker();
 	        udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
+	        
+	        
+	        // start SLAVE(s)
+	        
+	        
 
 //	        // start progress indicator - DO THIS IN UDP CLIENT UPON RECEPTION OF FIRST MESSAGE
 //	        progressThread = new ProgressBarThread(40);
@@ -294,8 +310,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// stop UDP
 			udpWorker.endThread(false);
 			
-			// stop mbpet master
+			// stop mbpet MASTER
+			new KillProcess();
 			
+			
+			// stop SLAVE(s)
 			
 			resetStartStopButton();
         }
@@ -331,7 +350,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return pageTitle.getValue();
 	}
 
-	private static String removeID(String input) {
+	private String removeID(String input) {
 //		String title = pageTitle.getValue();
 		String title = "";
 		if (input.contains("/") && input.contains("id=")) {
@@ -345,7 +364,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return title;
 	}
 	
-	private static TestSession getTestSessionByTitleID(String input) {
+	private TestSession getTestSessionByTitleID(String input) {
 		String parsed = "";
 		if (input.contains("id=")) {
 			parsed = input.substring((input.indexOf("=")+1), input.length()); 

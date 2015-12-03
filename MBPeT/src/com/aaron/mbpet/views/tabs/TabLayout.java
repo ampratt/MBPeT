@@ -27,12 +27,12 @@ public class TabLayout extends TabSheet {
 //	RampTab ramp;// = new RampTab();
 //	SettingsTab settings;// = new SettingsTab();
 	
-//	TestSession currsession;
+	TestSession currsession;
 	
-    public TabLayout() {	//TestSession currsession
+    public TabLayout(TestSession currsession) {	//TestSession currsession
 //        setSizeFull();
 
-//        this.currsession = SessionViewer.currsession;
+        this.currsession = currsession;
         
         setHeight(100.0f, Unit.PERCENTAGE);
         addStyleName(ValoTheme.TABSHEET_FRAMED);
@@ -59,8 +59,8 @@ public class TabLayout extends TabSheet {
 		confTabs.setHeight(100.0f, Unit.PERCENTAGE);
 		confTabs.addStyleName(ValoTheme.TABSHEET_CENTERED_TABS);	//TABSHEET_EQUAL_WIDTH_TABS);
 
-		modelTab = new ModelsTab();
-		parametersTab = new ParametersTab();
+		modelTab = new ModelsTab(currsession);
+		parametersTab = new ParametersTab(currsession);
 //		adapter = new TestAdapterTab();
 //		ramp = new RampTab();
 //		settings = new SettingsTab(currsession);

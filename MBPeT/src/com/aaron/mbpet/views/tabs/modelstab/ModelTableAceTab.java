@@ -57,13 +57,14 @@ public class ModelTableAceTab extends Panel implements Button.ClickListener{
 	AceEditor editor;	// = new AceEditor();
 	ModelAceEditorLayout editorLayout;
 	ModelDBuilderTab diagramtab;    
-    
+
 	
 	public ModelTableAceTab(AceEditor editor, TabSheet modelsTabs, 
-			ModelAceEditorLayout editorLayout, Table modelsTable, ModelDBuilderTab diagramtab) {	//AceEditor editor TestSession currsession
+			ModelAceEditorLayout editorLayout, Table modelsTable, 
+			ModelDBuilderTab diagramtab, TestSession currsession) {	//AceEditor editor TestSession currsession
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
-		this.currsession = SessionViewer.currsession;
+		this.currsession = currsession;
 		this.editor = editor;	 //= new AceEditor()
 		this.modelsTabs = modelsTabs;
 		this.editorLayout = editorLayout;

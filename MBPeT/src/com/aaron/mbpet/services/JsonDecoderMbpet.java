@@ -229,12 +229,14 @@ public class JsonDecoderMbpet {
 	       	slave_name = "";
        		if (jsonObject.has("slave_name") ) 
        			slave_name = (String) jsonObject.get("slave_name");
-	       	slavearray[0] = slave_name;
-	       	slavearray[1] = "";
-	       	System.out.println("SLAVE ARRAY 1: " + slavearray);
-	       	for (int i=0; i<numslaves; i++) {
-	       		System.out.println("SLAVE ARRAY 2: " + slavearray[i]);	       		
-	       	}
+       		for (int i=0; i<slavearray.length; i++){
+       			slavearray[i] = slave_name;       			
+       			System.out.println("SLAVE ARRAY " + (i+1) + ": " + slavearray[i]);
+       		}
+//	       	slavearray[1] = "";
+//	       	for (int i=0; i<numslaves; i++) {
+//	       		System.out.println("SLAVE ARRAY 2: " + slavearray[i]);	       		
+//	       	}
 	       	
 		} catch (JSONException e) {
           e.printStackTrace();

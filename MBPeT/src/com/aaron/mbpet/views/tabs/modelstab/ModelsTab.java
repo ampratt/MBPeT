@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.aaron.mbpet.components.diagrambuilder.DiagramAceLayout;
+import com.aaron.mbpet.domain.TestSession;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,14 +53,16 @@ public class ModelsTab extends VerticalLayout {
     public Table modelsTable;
     public DiagramBuilder diagramBuilder;
 	
+    TestSession currsession;
 	
-	public ModelsTab() {		
+	public ModelsTab(TestSession currsession) {		
 		//setHeight(100.0f, Unit.PERCENTAGE);
 		setHeight("100%");
 //	    setSizeFull();
 //		setMargin(true);
 //		setSpacing(true);
 		
+		this.currsession = currsession;
 		editor = new AceEditor();
 		
 //		panel = new Panel();
@@ -91,11 +94,11 @@ public class ModelsTab extends VerticalLayout {
 	//	confTabs.addTab(graph, "User Profiles / Models");
 		//graphTab.addComponent(MbpetDemoUI.graph);
 	    modelsTable = new Table();
-		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs, modelsTable);
+		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs, modelsTable, currsession);
 		diagramBuilder = new DiagramBuilder();
 		
 		diagramtab = new ModelDBuilderTab(editor, modelsTabs, editorLayout, modelsTable, diagramBuilder);
-		acetab = new ModelTableAceTab(editor, modelsTabs, editorLayout, modelsTable, diagramtab);
+		acetab = new ModelTableAceTab(editor, modelsTabs, editorLayout, modelsTable, diagramtab, currsession);
 		editorLayout.setDBuilderTab(diagramtab);
 		
 		modelsTabs.addTab(acetab);

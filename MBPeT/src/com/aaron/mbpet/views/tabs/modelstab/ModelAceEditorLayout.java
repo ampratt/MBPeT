@@ -77,7 +77,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 	private boolean createNewModel = false;
 
 	public ModelAceEditorLayout(AceEditor editor, String fileFormat, 
-			TabSheet modelsTabs, Table modelsTable) {	// TestSession currsession
+			TabSheet modelsTabs, Table modelsTable, TestSession currsession) {	// TestSession currsession
 		setSizeFull();
 		setMargin(new MarginInfo(false, true, false, true));
 //		setMargin(true);
@@ -87,7 +87,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		this.editor = editor; //= new AceEditor()
 		this.modelsTable = modelsTable;
 		this.fileFormat = fileFormat;
-		this.currsession = SessionViewer.currsession;
+		this.currsession = currsession;
 //		this.diagramtab = diagramtab;
 		
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));

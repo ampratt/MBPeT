@@ -79,7 +79,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
 
 	public ParametersAceEditorLayout(AceEditor editor, String fileFormat, BeanItem<Parameters> beanItem,
-			ParametersFormAceView formAceView) {	// TestSession currsession
+			TestSession currsession, ParametersFormAceView formAceView) {	// TestSession currsession
 		setSizeFull();
 		setMargin(false);	//(new MarginInfo(false, true, false, true));
 //		setMargin(true);
@@ -87,7 +87,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 				
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
-		this.currsession = SessionViewer.currsession;
+		this.currsession = currsession;
 		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
 		this.beanItem = beanItem;
 		this.formAceView= formAceView; 

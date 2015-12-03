@@ -13,11 +13,11 @@ public class ParametersTab extends Panel {
 	AceEditor editor;
 	private TestSession currsession;
 	
-	public ParametersTab() {		//TestSession currsession
+	public ParametersTab(TestSession currsession) {		//TestSession currsession
 //		setSizeFull();
 //		setMargin(true);
 //		setSpacing(true);
-		this.currsession = SessionViewer.currsession;
+		this.currsession = currsession;
 		editor = new AceEditor();
 		
 		setHeight("100%");
