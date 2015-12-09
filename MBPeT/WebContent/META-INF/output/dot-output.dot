@@ -6,11 +6,15 @@ digraph m1 {
 	4	[ coords = 349, 137 ]
 	5	[ coords = 242, 221 ]
 	6	[ coords = 449, 269 ]
+	7	[ coords = 513, 191 ]
+	8	[ coords = 637, 356 ]
 
 	// Transitions
-	1 -> 2 [label = "connector1989"];
-	2 -> 3 [label = "connector2159"];
-	3 -> 4 [label = "connector1437"];
-	4 -> 5 [label = "connector1867"];
-	5 -> 6 [label = "connector2532"];
+	1 -> 2 [label = "trans1"];
+	2 -> 3 [label = "trans2"];
+	3 -> 4 [label = "trans3"];
+	4 -> 5 [label = "trans4"];
+	5 -> 6 [label = "trans5"];
+	5 -> 7 [label = "temporary label"];
+	7 -> 8 [label = "."];
 }

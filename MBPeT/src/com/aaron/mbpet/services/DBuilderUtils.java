@@ -456,20 +456,22 @@ public class DBuilderUtils implements Serializable {
 		    	setGraphTitle(t);
 		    }
 		    
+		    int count = 1;		// for coord generation
+		    int x=10;
+		    int y=10;
 			// Parse input for states and transitions
-			while (sc.hasNext()) {
-			    String nextToken = sc.next();
-			    
+			while (sc.hasNextLine()) {
+//			    String nextToken = sc.next();
+				String restOfLine = sc.nextLine();
+			    System.out.println(restOfLine);
+				Scanner lineScanner = new Scanner(restOfLine);
 			    
 			    // get STATES
-			    if (nextToken.equalsIgnoreCase("//states") || nextToken.equalsIgnoreCase("states")){
-	//		    	System.out.println("STATES:");				// Testing only. print to console
-			    	int count = 1;		// for coord generation
-			    	int x=10;
-			    	int y=10;
-			    	while (sc.hasNextInt()){
+			    if (!restOfLine.contains("->") && lineScanner.hasNextInt()){	//(nextToken.equalsIgnoreCase("//states") || nextToken.equalsIgnoreCase("states")){
+			    	System.out.println("STATES:");				// Testing only. print to console
+//			    	while (sc.hasNextInt()){
 			    		// add states to states list
-			    		int state = sc.nextInt();
+			    		int state = lineScanner.nextInt();
 			    		states.add(state);	
 			    		System.out.println("state is: " + state);
 //			    		Node thisNode = new Node();
@@ -477,14 +479,14 @@ public class DBuilderUtils implements Serializable {
 //			    		actualNodes.add(thisNode);
 
 			    		// the next character was not an int, so get embedded coordinates
-			    		String restOfLine = sc.nextLine();
+//			    		String restOfLine = sc.nextLine();
 			    		if (restOfLine.contains("coords")) {	//!sc.hasNextInt()
 			    			
 //				    		System.out.println("restofline: " + restOfLine);
 //							if ( !(restOfLine.equals("") || restOfLine.equals(null)) || restOfLine.equals(" ")) {
 //			    				System.out.println("found '" + restOfLine + "' ... looking for xy");	// for Testing
 			    				int[] coords = new int[2];
-			    				Scanner lineScanner = new Scanner(restOfLine).useDelimiter("[^0-9]+");
+			    				lineScanner.useDelimiter("[^0-9]+");
 			    				if (lineScanner.hasNextInt()) {		//sc.
 			    					coords[0] = lineScanner.nextInt();
 			    					coords[1] = lineScanner.nextInt();
@@ -545,7 +547,7 @@ public class DBuilderUtils implements Serializable {
 //		    				System.out.println("thisXy: " + x + ", " + y);		// for Testing		
 
 			    		}
-			    	}
+//			    	}
 //		    	System.out.println("states were: " + states);	// Testing only. print to console
 //		    	System.out.println("states length: " + states.size());	// Testing only. print to console
 //		    	System.out.println("xy values length: " + xyValues.size());	// Testing only. print to console
@@ -558,19 +560,19 @@ public class DBuilderUtils implements Serializable {
 			    
 			    
 			    // get TRANSTIONS
-			    if (nextToken.equalsIgnoreCase("//transitions") || nextToken.equalsIgnoreCase("transitions")){
-	//				System.out.println("TRANSITIONS:");			// Testing only. print to console			    	
-			    	sc.useDelimiter("\\s*\\D+\\s*");	//("\\s*[^0-9]+\\s*");		"\\s*->\\s*"
-			    	while (sc.hasNextInt()) {
+			    lineScanner.useDelimiter("\\s*\\D+\\s*");	//("\\s*[^0-9]+\\s*");		"\\s*->\\s*"
+			    if (restOfLine.contains("->") && lineScanner.hasNextInt()){		//(nextToken.equalsIgnoreCase("//transitions") || nextToken.equalsIgnoreCase("transitions")){
+					System.out.println("\nTRANSITIONS:");			// Testing only. print to console			    	
+//			    	while (sc.hasNextInt()) {
 			    		// get x values
-			    		int x = sc.nextInt();
+			    		x = lineScanner.nextInt();
 			    		System.out.println("x is: "+ x);		// Testing only. print to console s.nextInt());
 //			    		List<Integer> t = new ArrayList<>();	// temp storage for current transition pair
 //			    		t.add(x);
 			    		
 			    		// get y values after "->" sign
 //			    			if (sc.next().equals("->")) {
-		    			int y = sc.nextInt();
+		    			y = lineScanner.nextInt();
 		    			System.out.println("y is: "+ y);		// Testing only. print to console s.nextInt());
 //			    		t.add(y);
 		    			
@@ -590,25 +592,27 @@ public class DBuilderUtils implements Serializable {
 
 						Connector conn = new Connector();
 
-						sc.useDelimiter("\\s+");
-						String nextLine = sc.nextLine();
-						System.out.println("NEXTLINE (" + nextLine + ")");
-						if ( (nextLine.equals(null) || nextLine.equals("") || nextLine.equals(" ")
-								&& !nextLine.contains(";"))) {
+						lineScanner.useDelimiter("\\s+");
+						restOfLine = "";
+						if (lineScanner.hasNextLine()) 
+							restOfLine = lineScanner.nextLine();
+						System.out.println("NEXTLINE (" + restOfLine + ")");
+						if ( (restOfLine.equals(null) || restOfLine.equals("") || restOfLine.equals(" ")
+								&& !restOfLine.contains(";"))) {
 							System.out.println("WE ENTERED THE FIRST IF");
 							sc.useDelimiter("\\s*\\D+\\s*");
 							//TODO insert automatic label
 //							labels.add("\"no label data temporary label\"");
-		    				conn.setName("");	//("\"no label data temporary label\"");
+		    				conn.setName("temporary label");	//("\"no label data temporary label\"");
     						transCounter++;
     						System.out.println("The Transition label is: no label data temporary label");				// Testing only. print to console
 
 						} else {
-			    			if ((nextLine.contains("label"))) {	//!sc.hasNextInt()		//(s.hasNext()) { 
+			    			if ((restOfLine.contains("label"))) {	//!sc.hasNextInt()		//(s.hasNext()) { 
 	    						System.out.println("SEARCHING THROUGH NEXTLINE");				// Testing only. print to console
 			    				boolean firstRound = true;
 			    				boolean endReached = false;
-			    				Scanner lineScanner = new Scanner(nextLine);
+			    				lineScanner = new Scanner(restOfLine);
 			    				while (!endReached==true){		// while (!(sc.hasNextInt())){	sc.hasNext()
 //			    					sc.useDelimiter("\\s+");
 			    					
@@ -672,7 +676,7 @@ public class DBuilderUtils implements Serializable {
 		    				thisTrans.setConnector(conn);
 	    				sc.useDelimiter("\\s*\\D+\\s*");	
 //			    		}
-			    	}
+//			    	}
 				} // end of TRANSTIONS
 			    
 			} // end of Scanner loop

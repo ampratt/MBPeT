@@ -269,8 +269,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 					slaveSelect.getValue().toString() + 
 					" -b localhost:9999 -s";
 			Notification.show("Running start command", command, Type.TRAY_NOTIFICATION);
-			MasterUtils masterUtils = new MasterUtils(command);
-			masterUtils.startMaster(command);
+//			MasterUtils masterUtils = new MasterUtils(command);
+//			masterUtils.startMaster(command);
 //	        Thread t = new Thread(masterUtils);
 //	        t.start();
 
