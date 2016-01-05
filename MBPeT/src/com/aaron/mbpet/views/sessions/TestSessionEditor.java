@@ -15,6 +15,7 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
@@ -355,6 +356,12 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 									System.out.println("the generated id is: " + queriedSession.getId());
 									id = queriedSession.getId(); // here is the id we need for tree
 									
+									// create session directory for test and reports
+									new FileSystemUtils().createSessionTestDir(
+											testsession.getParentcase().getOwner().getUsername(),
+											testsession.getParentcase().getTitle(), 
+											testsession.getTitle());
+									
 									// create empty parameters object
 									new ParametersEditor(sessions.getItem(id).getEntity());
 									
@@ -411,6 +418,16 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 			              	  		System.out.println("Sessions' model's session title: " + m.getParentsession().getTitle());
 //			              	  		m.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
 			              	  	}
+			              	  	
+								// edit session directory for test and reports
+								if (!prevTitle.equals(testsession.getTitle())) {
+									new FileSystemUtils().renameSessionDir(
+											testsession.getParentcase().getOwner().getUsername(),
+											testsession.getParentcase().getTitle(), 
+											prevTitle,
+											testsession.getTitle());
+								}								
+								
 //			              	  	// update parameters ?
 			              	  	System.out.println("Sessions' params's session title: " + testsession.getParameters().getOwnersession().getTitle());
 //		              	  		
@@ -489,6 +506,12 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 			//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
 			//              	  	parentCase.setSessions(listofsessions);
 			              	  	
+								// create session directory for test and reports
+								new FileSystemUtils().createSessionTestDir(
+										queriedSession.getParentcase().getOwner().getUsername(),
+										queriedSession.getParentcase().getTitle(), 
+										queriedSession.getTitle());
+								
 //				            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + parentCase.getSessions()); // testing purposes
 //				            	for (TestSession s : parentCase.getSessions()) {
 //					            	System.out.println(s.getId() + " - " + s.getTitle()); // testing purposes	            		

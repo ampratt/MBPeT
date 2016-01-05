@@ -98,10 +98,13 @@ public class Parameters {
 	 * Constructors
 	 */
 	public Parameters() {
-		
+		this.models_folder = "models/";
+		this.test_report_folder = "test_reports/";
 	}
 	public Parameters(TestSession ownersession) {
 		this.ownersession = ownersession;
+		this.models_folder = "models/";
+		this.test_report_folder = "test_reports/";
 	}
 	
 	public Parameters(String ip, int test_duration,int monitoring_interval, 

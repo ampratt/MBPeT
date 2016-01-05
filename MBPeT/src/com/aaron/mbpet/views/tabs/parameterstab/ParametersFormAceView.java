@@ -14,6 +14,7 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
@@ -83,6 +84,8 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	FieldGroup binder = new FieldGroup();
 	private ParametersForm parametersForm;
 	private TRTForm TRTForm;
+	String prevModelsFolder;
+	String prevReportsFolder;
 	
 	public Grid grid;
 //	private Table sessionsTable;
@@ -109,7 +112,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 		this.currentparams = parameterscontainer.getItem(currsession.getParameters().getId()).getEntity();
 		this.editor = new AceEditor();
-		
+				
 		setFirstComponent(buildLeftSide());
 		setSecondComponent(buildRightSide());
 		
@@ -247,9 +250,10 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		
 		binder.setItemDataSource(beanItem); 	// link the data model to binder
 		
-		binder.bindMemberFields(parametersForm);	// link the layout to binder	
+		binder.bindMemberFields(parametersForm);	// link the layout to binder
+
 //		binder.bindMemberFields(TRTForm);	// link to layout	
-		
+
 		for (Object propertyId : binder.getBoundPropertyIds()) {
 			if ("dstat_mode".equals(propertyId)) {
 				ComboBox combo = (ComboBox) binder.getField(propertyId);
@@ -258,7 +262,15 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 					combo.select("None");
 					System.out.println("attempted to set null value to None");
 				}
+			} else if ("models_folder".equals(propertyId)) {
+				this.prevModelsFolder = binder.getField(propertyId).getValue().toString();
+//				Notification.show("prevModelsFolder is:" + prevModelsFolder);
+				
+			} else if ("test_report_folder".equals(propertyId)) {
+				this.prevReportsFolder = binder.getField(propertyId).getValue().toString();
+//				Notification.show("prevReportsFolder is:" + prevReportsFolder);
 			}
+
 		}
 		
 	}
@@ -537,7 +549,46 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				editorLayout.toggleEditorFields(true);
 				editorLayout.setEditorValue(settings);
 				
+				// edit models directory name
+          	  	FileSystemUtils fileUtils = new FileSystemUtils();
+
+				System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
+				if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
+					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+							currsession.getParentcase().getOwner().getUsername(),
+							currsession.getParentcase().getTitle(), 
+							currsession.getTitle(), 
+							prevModelsFolder,
+							currentparams.getModels_folder());
+					
+//					Notification.show("Previous->new folder: " + prevModelsFolder +"->"+currentparams.getModels_folder());
+					prevModelsFolder = currentparams.getModels_folder();
+					editorLayout.setPrevModelsFolder(prevModelsFolder);
+				}
 				
+				// edit reports directory name
+				System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
+				if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
+					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+							currsession.getParentcase().getOwner().getUsername(),
+							currsession.getParentcase().getTitle(), 
+							currsession.getTitle(), 
+							prevReportsFolder,
+							currentparams.getTest_report_folder());
+					
+//					Notification.show("Previous->new folder: " + prevReportsFolder +"->"+currentparams.getTest_report_folder());
+					prevReportsFolder = currentparams.getTest_report_folder();
+					editorLayout.setPrevReportsFolder(prevReportsFolder);
+				}
+				
+				// write settings file to disk
+				fileUtils.writeSettingsToDisk(	//username, sut, session, settings_file)
+						currsession.getParentcase().getOwner().getUsername(),
+						currsession.getParentcase().getTitle(), 
+						currsession.getTitle(), 
+						currentparams.getSettings_file());
+				
+				// write confirmation message
 		        Notification notification = new Notification("Parameters",Type.TRAY_NOTIFICATION);
 		        notification.setDescription("were edited");
 		        notification.setStyleName("dark small");	//tray  closable login-help

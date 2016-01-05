@@ -9,6 +9,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
@@ -229,6 +230,9 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 							// update user to add Case List<TestCase>
 							sessionUser.addCase(queriedcase);
 
+							// create sut dir for test and reports
+							new FileSystemUtils().createSUTDir(sessionUser.getUsername(), testcase.getTitle());
+
 							// TESTING
 							//list all Cases
 							System.out.println("\nWHAT IS NEW LIST OF CASES: "
@@ -271,6 +275,15 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 
 							// 4. update child sessions
 
+							// edit sut directory for test and reports
+							if (!prevTitle.equals(testcase.getTitle())) {
+								new FileSystemUtils().renameSUTDir(
+										sessionUser.getUsername(), 
+										prevTitle, 
+										testcase.getTitle());
+							}
+							
+							
 							// TESTING
 							//list all Cases
 							System.out.println("\nWHAT IS NEW LIST OF CASES: "
@@ -280,8 +293,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 										+ c.getTitle()); // testing purposes	            		
 							}
 
-							System.out
-									.println("\nTHE CASE's list of sessions with their reference to case: "
+							System.out.println("\nTHE CASE's list of sessions with their reference to case: "
 											+ testcase.getSessions()); // testing purposes
 							for (TestSession s : testcase.getSessions()) {
 								System.out.println(s.getId() + " - "

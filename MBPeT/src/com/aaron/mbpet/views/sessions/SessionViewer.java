@@ -7,9 +7,13 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
+import org.apache.commons.io.FileUtils;
+
+
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillProcess;
 import com.aaron.mbpet.services.ProgressBarThread;
@@ -263,20 +267,38 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start round spinner till messages arrive
 			displaySpinner(true);
 			
+			// delete old model files
+			FileSystemUtils fileUtils = new FileSystemUtils();
+			fileUtils.cleanModelsDirectory(					
+					currsession.getParentcase().getOwner().getUsername(),
+					currsession.getParentcase().getTitle(),
+					currsession.getTitle(),
+					currsession.getParameters().getModels_folder());
+			
+			// write models to disk
+			fileUtils.writeModelsToDisk(	//username, sut, session, models_folder, mlist);
+					currsession.getParentcase().getOwner().getUsername(),
+					currsession.getParentcase().getTitle(),
+					currsession.getTitle(),
+					currsession.getParameters().getModels_folder(),
+					currsession.getModels());
+			
+			// start receiving UDP messages
+//			udpWorker = new UDPThreadWorker();
+//			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
+
 			// start mbpet MASTER
-			String command = "mbpet_cli.exe " +
-					"test_project " +
-					slaveSelect.getValue().toString() + 
-					" -b localhost:9999 -s";
-			Notification.show("Running start command", command, Type.TRAY_NOTIFICATION);
+//			String command = "mbpet_cli.exe " +
+//					"test_project " +
+//					slaveSelect.getValue().toString() + 
+//					" -b localhost:9999 -s";
+//			Notification.show("Running start command", command, Type.TRAY_NOTIFICATION);
 //			MasterUtils masterUtils = new MasterUtils(command);
 //			masterUtils.startMaster(command);
-//	        Thread t = new Thread(masterUtils);
+
+			//	        Thread t = new Thread(masterUtils);
 //	        t.start();
 
-			// start receiving UDP messages
-	        udpWorker = new UDPThreadWorker();
-	        udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
 	        
 	        
 	        // start SLAVE(s)
@@ -308,7 +330,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			progressThread.endThread();
 
 			// stop UDP
-			udpWorker.endThread(false);
+//			udpWorker.endThread(false);
 			
 			// stop mbpet MASTER
 			new KillProcess();

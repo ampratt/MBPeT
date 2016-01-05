@@ -76,13 +76,12 @@ public class MasterUtils implements Runnable {
 	
 	public void startMaster(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //    	new Thread() {
-		Thread t1 = new Thread(new Runnable() {
+		new Thread(new Runnable() {
             @Override
             public void run() {
             	Process p;
         		try {
-        	        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
-        	        		command);
+        	        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"dir & echo example of & echo working dir");
@@ -91,20 +90,22 @@ public class MasterUtils implements Runnable {
         			System.out.println("Run echo command");
 //        			pb.redirectErrorStream(true);
         			p = pb.start();
+        			p.getInputStream().close(); 
+        			p.getOutputStream().close(); 
+        			p.getErrorStream().close();
 
-//        			try {
-//        				int exitVal = p.waitFor();            
-//        				System.out.println("Process exitValue: " + exitVal);
-//        			} catch (InterruptedException e) {
-//        				e.printStackTrace();
-//        			}
+        			try {
+        				int exitVal = p.waitFor();            
+        				System.out.println("Process exitValue: " + exitVal);
+        			} catch (InterruptedException e) {
+        				e.printStackTrace();
+        			}
 
         		} catch (IOException e) {
         			e.printStackTrace();
         		}
             };
-        });
-		t1.start();
+        }).start();
         
         
 //		Process p;

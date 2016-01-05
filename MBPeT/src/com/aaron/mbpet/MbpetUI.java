@@ -81,9 +81,14 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	}
 
 //    static {
-//        DemoDataGenerator.create();
+//        try {
+//			DemoDataGenerator.create();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //    }
-//	  private static ThreadLocal<MbpetUI> threadLocal = new ThreadLocal<MbpetUI>();
+	  private static ThreadLocal<MbpetUI> threadLocal = new ThreadLocal<MbpetUI>();
 
 	
 	@Override

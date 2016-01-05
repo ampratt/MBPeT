@@ -22,6 +22,7 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
@@ -80,7 +81,8 @@ public class ParametersEditor {
 	private boolean clonemode = false;
 	private boolean formEdit = false;
 	private boolean createmode = false;
-
+	String prevModelsFolder;
+	
 	/*
 	 * Create new Parameters
 	 */
@@ -108,6 +110,7 @@ public class ParametersEditor {
         this.currentParams.setSettings_file(settings);
         this.beanItem = new BeanItem<Parameters>(this.currentParams);
 //        binder = new FieldGroup();
+        this.prevModelsFolder = currentParams.getModels_folder();
 
         saveParameters();
 	}
@@ -117,9 +120,9 @@ public class ParametersEditor {
 		
 	    this.currentParams = currentParams; //parameters.getItem(currentParams.getId()).getEntity();
 	    this.beanItem = beanItem;	//new BeanItem<Parameters>(this.currentParams);
-	
 	    this.binder = binder;
-	    
+        this.prevModelsFolder = currentParams.getModels_folder();
+
 	    saveParameters();
 	}
 	//	public ParametersEditor(Parameters currentParams, BeanItem<Parameters> beanItem, TestSession parentsession, FieldGroup binder) {		//JPAContainer<TestCase> container      
@@ -157,7 +160,7 @@ public class ParametersEditor {
 				Object id = null;
 				
 				// add NEW bean object to db through jpa container
-				if ((createmode==false) || editmode==false && formEdit==false) {
+				if ((createmode==true) || (editmode==false && formEdit==false)) {
 					try {
 						binder.commit();
 					} catch (CommitException | NullPointerException e) {
@@ -185,7 +188,30 @@ public class ParametersEditor {
 		            // 3. update parent Session to link Parameters
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
               	  	sessions.addEntity(parentsession);
+              	  	
+              	  	// save settings.py file to directory
+              	  	FileSystemUtils fileUtils = new FileSystemUtils();
+              	  	
+              	  	fileUtils.writeSettingsToDisk(
+	              	  		parentsession.getParentcase().getOwner().getUsername(),
+							parentsession.getParentcase().getTitle(), 
+							parentsession.getTitle(), 
+							currentParams.getSettings_file());	
+              	  	
+              	  	// create models directory
+              	  	fileUtils.createModelsDir(	//username, sut, session, models_dir);
+							parentsession.getParentcase().getOwner().getUsername(),
+							parentsession.getParentcase().getTitle(), 
+							parentsession.getTitle(), 
+							currentParams.getModels_folder());
 
+              	  	// create reports directory
+					fileUtils.createReportsDir(	//username, sut, session, reports_dir)
+							parentsession.getParentcase().getOwner().getUsername(),
+							parentsession.getParentcase().getTitle(), 
+							parentsession.getTitle(), 
+							currentParams.getTest_report_folder());
+					
 				} else if (editmode == true && formEdit==false){
 
 					// 1 UPDATE container
@@ -197,6 +223,17 @@ public class ParametersEditor {
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
 					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
 
+					// edit models directory name
+					System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
+					if (!prevModelsFolder.equals(currentParams.getModels_folder())) {
+						new FileSystemUtils().renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+								parentsession.getParentcase().getOwner().getUsername(),
+								parentsession.getParentcase().getTitle(), 
+								parentsession.getTitle(), 
+								prevModelsFolder,
+								currentParams.getModels_folder());
+					}
+					
 					// Option 2. serialize blob to db
 //					DbUtils.commitUpdateToDb(currentParams.getSettings_file(), currentParams, "settings_file");
 
@@ -216,6 +253,16 @@ public class ParametersEditor {
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
 					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
 
+					// edit models directory name
+					System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
+					if (!prevModelsFolder.equals(currentParams.getModels_folder())) {
+						new FileSystemUtils().renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+								parentsession.getParentcase().getOwner().getUsername(),
+								parentsession.getParentcase().getTitle(), 
+								parentsession.getTitle(), 
+								prevModelsFolder,
+								currentParams.getModels_folder());
+					}
 				}
 				else if (clonemode==true) {
 

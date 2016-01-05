@@ -40,7 +40,7 @@ public class TabLayout extends TabSheet {
 //        addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
  
         monitoringTab = new MonitoringTab();
-        reportsTab = new ReportsTab();
+        reportsTab = new ReportsTab(currsession);
 
         VerticalLayout configTab = new VerticalLayout();
         configTab.setHeight("100%");

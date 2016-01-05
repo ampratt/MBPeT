@@ -12,6 +12,7 @@ import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -50,7 +51,8 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	JPAContainer<TRT> trtcontainer;
 	private User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
 	TestCase parentcase;
-	
+	FileSystemUtils fileUtils = new FileSystemUtils();
+
 	private Object targetId;
 	private String message;
 
@@ -120,12 +122,20 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        		System.out.println("\nparent OBJECT is: " + parentid);
 	        		System.out.println("\nparent TestCase is: " + parentcase);
 	        		
+	        		TestSession deletedSession = sessions.getItem(targetId).getEntity();
+	        		
 	        		// for notification
 	        		String deleteditem = sessions.getItem(targetId).getEntity().getTitle();
 	        		
+	        		// delete session directory on disk
+	        		fileUtils.deleteSessionDirectory(
+	        				deletedSession.getParentcase().getOwner().getUsername(), 
+	        				deletedSession.getParentcase().getTitle(), 
+	        				deletedSession.getTitle());
+
 	        		// DELETE
 	        		deleteSessionAndDescendants(sessions.getItem(targetId).getEntity(), parentcase);
-	        		
+
 //	                // 1. remove item from tree
 //	                menutree.removeItem(target);
 //
@@ -159,6 +169,11 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	        			System.out.println(testcase.getSessions().toArray().toString());
 //	        			int numsessions = testcase.getSessions().size();
 	        			
+		        		// delete sut directory on disk
+		        		fileUtils.deleteSUTDirectory(
+		        				testcase.getOwner().getUsername(), 
+		        				testcase.getTitle());
+		        		
 	        			// Delete Session and it's models and parameters
 	        			deleteSUTWithDecendants(testcase);
 

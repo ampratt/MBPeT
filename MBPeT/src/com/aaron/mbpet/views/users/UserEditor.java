@@ -25,6 +25,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.PasswordValidator;
 import com.aaron.mbpet.components.UsernameValidator;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -157,7 +158,11 @@ public class UserEditor extends Window implements Button.ClickListener,
 //        			MBPeTMenu.updateMenuDisplayName(
 //        					String.valueOf(personItem.getItemProperty("firstname").getValue()) + " " +
 //        					lname);	//MainView.setDisplayName            	        		
+        		} else {
+        			//create user directory in file system
+        			new FileSystemUtils().createUserDir(personItem.getItemProperty("username").getValue().toString());
         		}
+        			
             } catch (MethodException | PersistenceException e) {
 //            	Field f = editorForm.getField("username");
 //            	f.addStyleName("invalid-value");

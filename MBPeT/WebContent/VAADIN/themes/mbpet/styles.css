@@ -16087,3 +16087,44 @@ div.v-layout.v-horizontal.v-widget {
 .mbpet .v-verticallayout .splitview-padding-left {
 	padding-left: 5px;
 }
+
+.mbpet .reports .create .v-slot {
+	border: 1px solid rgba(122, 122, 122, 0.1);
+	background: rgba(122, 122, 122, 0.04);
+}
+
+.mbpet .reports .catalog {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.mbpet .reports .report-thumb {
+	position: relative;
+}
+
+.mbpet .reports .report-thumb .v-label {
+	display: block;
+	text-align: center;
+}
+
+.mbpet .reports .report-thumb .v-label span {
+	font-size: 0.8em;
+}
+
+.mbpet .reports .report-thumb .v-image {
+	-webkit-box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+}
+
+.mbpet .reports .report-thumb .v-image:hover {
+	outline: 2px solid #5198df;
+}
+
+.mbpet .reports .report-thumb .v-image .v-label {
+	font-size: 13px;
+	line-height: 1.2;
+	margin: 0.5em 0 1em;
+}

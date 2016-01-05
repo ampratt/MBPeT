@@ -20,6 +20,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.views.MainView;
@@ -68,15 +69,17 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     String[] themes = {"ambiance", "chrome", "clouds", "cobalt", "dreamweaver", "eclipse", "github", "terminal", "twilight", "xcode"};
 
     String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
+    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
+    String prevModelsFolder;
+    String prevReportsFolder;
     
     TestSession currsession;
-    Parameters currParameters;
+    Parameters currentparams;
     JPAContainer<Parameters> parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
     BeanItem<Parameters> beanItem;
     ParametersFormAceView formAceView;
     
-    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-    String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
 
 	public ParametersAceEditorLayout(AceEditor editor, String fileFormat, BeanItem<Parameters> beanItem,
 			TestSession currsession, ParametersFormAceView formAceView) {	// TestSession currsession
@@ -88,10 +91,13 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		this.editor = editor; //= new AceEditor()
 		this.fileFormat = fileFormat;
 		this.currsession = currsession;
-		this.currParameters = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
+		this.currentparams = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
 		this.beanItem = beanItem;
 		this.formAceView= formAceView; 
-		
+		this.prevModelsFolder = currentparams.getModels_folder();
+		this.prevReportsFolder = currentparams.getTest_report_folder();
+//		Notification.show("prevModelsFolder is:" + prevModelsFolder);
+
 //        addComponent(new Label("<h3>Give Test Parameters in settings.py file</h3>", ContentMode.HTML));
 		
 		addComponent(buildButtons());	
@@ -167,14 +173,14 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	
 
 	private AceEditor buildAceEditor() {
-		System.out.println("SETTINS FILE : " + defaultsettingsfile);
+		System.out.println("SETTINGS FILE : " + defaultsettingsfile);
 		// Ace Editor
 		try {
-			if (currParameters.getSettings_file() == null) {
+			if (currentparams.getSettings_file() == null) {
 				loadExampleSettings();
 //				editor.setValue("Fill in parameters for Test Session '" + currsession.getTitle() + "'");	//("Hello world!\nif:\n\tthen \ndo that\n...");			
 			} else {
-				editor.setValue(currParameters.getSettings_file());
+				editor.setValue(currentparams.getSettings_file());
 			}
 		} catch (NullPointerException e1) {
 			e1.printStackTrace();
@@ -220,17 +226,54 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			
 			// commit settings file from Ace
-			new ParametersEditor(currParameters, currsession, s);
-			currParameters = parameters.getItem(currParameters.getId()).getEntity();
+			new ParametersEditor(currentparams, currsession, s);
+			currentparams = parameters.getItem(currentparams.getId()).getEntity();
 			
 			// commit individual field, parsed from ace
-			ParametersUtils.commitAceParamData(currParameters, editor.getValue());
+			ParametersUtils.commitAceParamData(currentparams, editor.getValue());
 			
 			// update Form view
-			formAceView.bindFormtoBean(currParameters);
+			formAceView.bindFormtoBean(currentparams);
 //			for (Object pid : beanItem.getItemPropertyIds()) {beanItem.getItemProperty(pid).setValue(currParameters)}	        
 			saveButton.setEnabled(false);
 
+			// edit models directory name
+      	  	FileSystemUtils fileUtils = new FileSystemUtils();
+
+			System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
+			if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
+				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+						currsession.getParentcase().getOwner().getUsername(),
+						currsession.getParentcase().getTitle(), 
+						currsession.getTitle(), 
+						prevModelsFolder,
+						currentparams.getModels_folder());
+				
+//				Notification.show("Previous->new folder: " + prevModelsFolder +"->"+currentparams.getModels_folder());
+				prevModelsFolder = currentparams.getModels_folder();
+			}
+			
+			// edit reports directory name
+			System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
+			if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
+				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+						currsession.getParentcase().getOwner().getUsername(),
+						currsession.getParentcase().getTitle(), 
+						currsession.getTitle(), 
+						prevReportsFolder,
+						currentparams.getTest_report_folder());
+				
+//				Notification.show("Previous->new folder: " + prevReportsFolder +"->"+currentparams.getTest_report_folder());
+				prevReportsFolder = currentparams.getTest_report_folder();
+			}
+			
+			// write settings file to disk
+			fileUtils.writeSettingsToDisk(	//username, sut, session, settings_file)
+					currsession.getParentcase().getOwner().getUsername(),
+					currsession.getParentcase().getTitle(), 
+					currsession.getTitle(), 
+					currentparams.getSettings_file());
+			
 //			Notification.show(s, Type.WARNING_MESSAGE);
         }
 
@@ -330,6 +373,15 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	public String getEditorValue() {
 		return editor.getValue();
 	}	
+	
+	public void setPrevModelsFolder(String modelsFolder){
+		prevModelsFolder = modelsFolder;
+	}
+	public void setPrevReportsFolder(String reportsFolder) {
+		prevReportsFolder = reportsFolder;
+		
+	}
+	
 //	public void setFieldsDataSource(Parameters currparams) {
 //		if (currmodel==null) {
 //			binder.clear();
@@ -356,7 +408,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 
 	
     private void loadExampleSettings() {
-		System.out.println("SETTINS FILE : " + defaultsettingsfile);
+		System.out.println("SETTINGS FILE : " + defaultsettingsfile);
 
 		StringBuilder builder = new StringBuilder();
 		Scanner scan = null;
@@ -373,6 +425,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		}		
 		
 	}
+
+
 
 
 }
