@@ -5,6 +5,7 @@ import java.util.List;
 import com.kbdunn.vaadin.addons.fontawesome.FontAwesome;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.services.FlotUtils;
+import com.aaron.mbpet.ui.RampFlotWindow;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.validator.BeanValidator;
@@ -19,6 +20,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 
 public class ParametersForm extends FormLayout implements Button.ClickListener {
 
@@ -159,7 +161,7 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 	    	ramp_list.setInputPrompt("[(0,0), (100,200), ..]");
 		    wrap.addComponent(ramp_list);
 		
-			rampbutton = new Button("", this);
+			rampbutton = new Button("");	//, this);
 			rampbutton.setIcon(FontAwesome.LINE_CHART);
 			rampbutton.addStyleName("borderless");
 			rampbutton.addStyleName("colored");
@@ -239,12 +241,23 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 //	mean_user_think_time
 //	standard_deviation
 
+	public TextField getRampList(){
+		return ramp_list;
+	}
+	public Button getRampButton(){
+		return rampbutton;
+	}
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == rampbutton) {
 			String formatted = FlotUtils.formatRampToFlot(ramp_list.getValue());
 			Notification.show("Formatted for flot: " + formatted);
 //			FlotUtils.formatFlotToRamp(formatted);
+			if (ramp_list.getValue().toString() == null){
+				UI.getCurrent().addWindow(new RampFlotWindow("[(0,0)]"));
+			} else
+				UI.getCurrent().addWindow(new RampFlotWindow(ramp_list.getValue().toString()));
 		}
 		
 	}

@@ -15,10 +15,12 @@ import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
+import com.aaron.mbpet.services.FlotUtils;
 import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.ui.ConfirmDeleteTRTWindow;
+import com.aaron.mbpet.ui.RampFlotWindow;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
 //import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
@@ -133,6 +135,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	}
 	
 
+	@SuppressWarnings("deprecation")
 	private Component buildLeftSide() {
 		VerticalLayout leftlayout = new VerticalLayout();
 		leftlayout.addStyleName("splitview-padding-left");
@@ -190,6 +193,21 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		parametersForm.addStyleName("light");
 		parametersForm.setWidth("97%");
 		leftlayout.addComponent(parametersForm);
+		parametersForm.getRampButton().addListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				TextField ramp = parametersForm.getRampList();
+				
+				String formatted = FlotUtils.formatRampToFlot(ramp.getValue());
+				Notification.show("Formatted for flot: " + formatted);
+//				FlotUtils.formatFlotToRamp(formatted);
+				if (ramp.getValue().toString() == null || ramp.getValue().toString().equals("")){
+					UI.getCurrent().addWindow(new RampFlotWindow("[(0,0)]"));
+				} else
+					UI.getCurrent().addWindow(new RampFlotWindow(ramp.getValue().toString()));
+				
+			}
+		});
 		
 		leftlayout.addComponent(buildGridButtons());
 		leftlayout.addComponent(buildTRTTable());
