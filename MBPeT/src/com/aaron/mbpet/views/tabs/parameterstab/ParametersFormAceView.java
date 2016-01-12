@@ -2,76 +2,47 @@ package com.aaron.mbpet.views.tabs.parameterstab;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.vaadin.aceeditor.AceEditor;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.domain.DbUtils;
-import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.FlotUtils;
 import com.aaron.mbpet.services.ParametersUtils;
-import com.aaron.mbpet.services.DemoDataGenerator.SaveObject2Database;
-import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
 import com.aaron.mbpet.ui.ConfirmDeleteTRTWindow;
 import com.aaron.mbpet.ui.RampFlotWindow;
-import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.models.ModelEditor;
-//import com.aaron.mbpet.views.parameters.ParametersAceEditorLayoutWITHOUTFORM;
-import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.aaron.mbpet.views.parameters.ParametersForm;
 import com.aaron.mbpet.views.parameters.TRTEditor;
 import com.aaron.mbpet.views.parameters.TRTForm;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.data.util.converter.ReverseConverter;
-import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.filter.Compare.Equal;
-import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.Position;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Grid.SingleSelectionModel;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.themes.ValoTheme;
 
 public class ParametersFormAceView extends HorizontalSplitPanel implements Component, Button.ClickListener {
@@ -89,7 +60,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	String prevModelsFolder;
 	String prevReportsFolder;
 	
-	public Grid grid;
+//	public Grid grid;
 //	private Table sessionsTable;
 	private Button saveButton;
 	private Button enableAceButton;
@@ -201,11 +172,15 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				String formatted = FlotUtils.formatRampToFlot(ramp.getValue());
 				Notification.show("Formatted for flot: " + formatted);
 //				FlotUtils.formatFlotToRamp(formatted);
-				if (ramp.getValue().toString() == null || ramp.getValue().toString().equals("")){
-					UI.getCurrent().addWindow(new RampFlotWindow("[(0,0)]"));
-				} else
-					UI.getCurrent().addWindow(new RampFlotWindow(ramp.getValue().toString()));
-				
+				try {
+					if (ramp.getValue().toString() == null){
+						UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+					} else
+						UI.getCurrent().addWindow(new RampFlotWindow(ramp.getValue().toString()));
+					
+				} catch(NullPointerException e){
+					UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+				}
 			}
 		});
 		

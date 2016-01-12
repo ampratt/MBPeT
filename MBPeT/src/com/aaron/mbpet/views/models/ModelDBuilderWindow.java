@@ -1,6 +1,5 @@
 package com.aaron.mbpet.views.models;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +11,8 @@ import org.vaadin.diagrambuilder.Node;
 import org.vaadin.diagrambuilder.Transition;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.diagrambuilder.DBuilderLayout;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.services.DBuilderUtils;
-import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
@@ -23,12 +20,10 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;

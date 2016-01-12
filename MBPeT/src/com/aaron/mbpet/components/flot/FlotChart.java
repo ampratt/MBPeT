@@ -7,9 +7,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List; 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import elemental.js.util.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonException;
+import elemental.json.JsonFactory;
+import elemental.json.JsonObject;
+import elemental.json.impl.JreJsonArray;
+import elemental.json.impl.JreJsonFactory;
+//import org.json.JsonArray; 
+//import org.json.JsonException;
+//import org.json.JSONObject;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
@@ -17,24 +24,26 @@ import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 
-import elemental.json.JsonArray;
 
 @JavaScript({//"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
-	"js/jquery.min.js",
-	"js/jquery.flot.js",
-	"js/flot_connector.js",
-	"js/jquery.flot.crosshair.min.js",
-	"js/jquery.flot.mouse.js",
-	"js/jquery.flot.JUMlib.js",
-	"js/jquery.flot.resize.js",
-//	"http://jumjum123.github.io/JUMFlot/javascripts/jquery.flot.JUMlib.js" 
-	})
+			"js/jquery.min.js",
+			"js/jquery.flot.js",
+			"js/flot_connector.js",
+			"js/jquery.flot.crosshair.min.js",
+			"js/jquery.flot.mouse.js",
+			"js/jquery.flot.JUMlib.js",
+			"js/jquery.flot.resize.js",
+//			"http://jumjum123.github.io/JUMFlot/javascripts/jquery.flot.JUMlib.js" 
+			})
 public class FlotChart extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 2824489559972070152L;
-	private JSONArray data;
-	private JSONObject options;
-	private JSONArray seriesOptions;
+	private JsonArray data;
+	private JsonArray seriesOptions;
+	private JsonObject options;
+//	private JsonArray data;
+//	private JSONObject options;
+//	private JsonArray seriesOptions;
 	
 	@SuppressWarnings("serial")
 	public FlotChart() {
@@ -49,18 +58,18 @@ public class FlotChart extends AbstractJavaScriptComponent {
             public void onDataDrop(int seriesIndex, int dataIndex) {    
             }
 			@Override
-			public void onDataDrop(int seriesIndex, int dataIndex, JSONArray dataPoint, double x1, double y1, JSONArray newData) {
+			public void onDataDrop(int seriesIndex, int dataIndex, JsonArray dataPoint, double x1, double y1, JsonArray newData) {
 //				Notification.show("Datapoint: [" + seriesIndex + ", " + dataIndex + "] was at location " + dataPoint + 
 //		    					"\nWas moved to the new datapoints:  [" + x1 + ", " + y1 + "]" + 
 //								"\nnewData is: " + newData, Notification.Type.HUMANIZED_MESSAGE);
 //			    getPosAfterDrop();
 			    
 				// IMPORTANT. Commit new data to state!
-				setDataJSON(newData);
+				setDataJson(newData);
 				
 			    //FOR TESTING - update chart state
-			    System.out.println("newData: " + newData);				
-			    System.out.println("newData from getData(Flot): " + getData());				
+			    System.out.println("newData: " + newData.toJson());				
+			    System.out.println("newData from getData(Flot): " + getData().toJson());				
 			}
         });
         
@@ -70,8 +79,8 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //				Notification.show("you asked for updates...", Type.HUMANIZED_MESSAGE);
 			}
 			@Override
-			public void onDataUpdate(JSONArray newData) {
-				setDataJSON(newData);
+			public void onDataUpdate(JsonArray newData) {
+				setDataJson(newData);
 				
 				Notification.show("from registerRpc");
 
@@ -81,20 +90,19 @@ public class FlotChart extends AbstractJavaScriptComponent {
 		});
         
         addFunction("onDataUpdate", new JavaScriptFunction() {
-            //@Override
+            @Override
             public void call(JsonArray arguments) {
                 int seriesIndex = (int) arguments.getNumber(0);
                 int dataIndex = (int) arguments.getNumber(1);
                 double newData = (double) arguments.getNumber(2);
             }
-//			@Override
-			public void call(JSONArray arguments) throws JSONException {
-			}
+//			public void call(JsonArray arguments) throws JsonException {
+//			}
         });
         
         
         addFunction("onDataDrop", new JavaScriptFunction() {
-            //@Override
+            @Override
             public void call(JsonArray arguments) {
                 int seriesIndex = (int) arguments.getNumber(0);
                 int dataIndex = (int) arguments.getNumber(1);
@@ -104,15 +112,14 @@ public class FlotChart extends AbstractJavaScriptComponent {
                 double newData = (double) arguments.getNumber(5);
 //                Notification.show("Dropped on [" + seriesIndex + ", " + dataIndex + "]");
             }
-//			@Override
-			public void call(JSONArray arguments) throws JSONException {
-				// TODO Auto-generated method stub
-			}
+//			public void call(JsonArray arguments) throws JsonException {
+//				// TODO Auto-generated method stub
+//			}
         });
         
         
         addFunction("onPlotClick", new JavaScriptFunction() {
-            //@Override
+            @Override
             public void call(JsonArray arguments) {
                 int seriesIndex = (int) arguments.getNumber(0);
                 int dataIndex = (int) arguments.getNumber(1);
@@ -122,10 +129,9 @@ public class FlotChart extends AbstractJavaScriptComponent {
                 double newData = (double) arguments.getNumber(5);
 //                Notification.show("Clicked on [" + seriesIndex + ", " + dataIndex + "]");
             }
-//			@Override
-			public void call(JSONArray arguments) throws JSONException {
-				// TODO Auto-generated method stub
-			}
+//			public void call(JsonArray arguments) throws JsonException {
+//				// TODO Auto-generated method stub
+//			}
 
         });
     }
@@ -136,6 +142,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //	}
 	public void update(int x, int y) {
 		callFunction("update", x, y);
+		System.out.println("called -> 'udpate() ...updating the javascript code affecting the chart");
 	}
 	
 	public void getCurrentData() {
@@ -169,54 +176,72 @@ public class FlotChart extends AbstractJavaScriptComponent {
      * DATA
      */
 	public void setData(String source) {
+		JsonArray data;	//JsonArray data;
 		try {
-			data = new JSONArray(source);
+			System.out.println("STRING Source:\n" + source);
+//			source = source.substring(1, source.length() - 1);
+//			System.out.println("JSON Source:\n" + source);
+			
+			JsonFactory factory = new JreJsonFactory();
+//			data = new JreJsonArray(source) ;	//JsonArray(source);
+			data = factory.parse(source);
+			System.out.println("JSON parsed:\n" + data.toJson());
+			this.data = data;
 			getState().setData(data);
-		} catch (JSONException e) {
+		} catch (JsonException e) {	//JsonException
 			e.printStackTrace();
 		}
 	}
 	
-	public JSONArray getData(){
+	public JsonArray getData(){
 		data = getState().getData();
 		return data;
 	}
 	
-	public void setDataJSON(JSONArray source) {
+	public void setDataJson(JsonArray source) {
 		data = source;
 		getState().setData(data);
 	}
 	
-	public void addNewData(String source) {
-		data = getData();
-		data.put(source);
-		setData(data);
-	}
+//	public void addNewData(String source) {
+//		data = getData();
+//		data.put(source);
+//		setData(data);
+//	}
 	public void addNewData(int x, int y) {
+		System.out.println("\ncalled -> 'addNewData()");
+
 		String newData = "[" + x +"," + y + "]";
-		System.out.println("data before update: " + data);
+		System.out.println("data before update: " + data.toJson());
 		
 		// JSON data must be manually formatted to add the new data inside the correct brackets
 		setData( putNewData(newData) );		// data.put(newData);
-		System.out.println("data after update:  " + data);
+		System.out.println("data after update:  " + data.toJson());
 		
 		// call js connector update function
-//		update(x, y);
+//		update(x, y);		
 	}
 	
     /*
      * OPTIONS
      */
-	public void setOptions(String opt) {
+	public void setOptions(String opt) {			
 		try {
-			options = new JSONObject(opt);
+			System.out.println("JSON Options:\n" + opt);
+			
+			JsonFactory factory = new JreJsonFactory();
+			options = factory.parse(opt);	//new JSONObject(opt);
+			System.out.println("JSON parsed:\n" + options.toJson());
+
 			getState().setOptions(options);
-		} catch (JSONException e) {
+		} catch (JsonException e) {
+			System.out.println("Exception caught!!!!!");
+
 			e.printStackTrace();
 		}
 	}
 	
-	public JSONObject getOptions(){
+	public JsonObject getOptions(){
 		return options;	
 	}
 	
@@ -226,22 +251,23 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	 */
 	public void setSeriesOptions(String source) {
 		try {
-			seriesOptions = new JSONArray(source);
+			JsonFactory factory = new JreJsonFactory();
+			seriesOptions = factory.parse(source); //new JsonArray(source);
 			getState().setData(seriesOptions);
-		} catch (JSONException e) {
+		} catch (JsonException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public JSONArray getSeriesOptions(){
+	public JsonArray getSeriesOptions(){
 		return seriesOptions;
 	}
 	
 	
 	public String putNewData(String newData) {
 		// get current data
-		String d = data.toString();
-//		System.out.println("this is data.toString(): " + d);
+		String d = data.toJson();	//toString();
+		System.out.println("this is data.toString(): " + d);
 
 		// remove outer right brackets - ']}]'
 		String deFormatted = d.substring(0, d.length() - 3);

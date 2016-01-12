@@ -1,15 +1,10 @@
 package com.aaron.mbpet.views.tabs.modelstab;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
@@ -17,24 +12,17 @@ import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
-import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.models.ModelDBuilderWindow;
-import com.aaron.mbpet.views.parameters.ParametersEditor;
-import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
-import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
@@ -49,7 +37,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Notification.Type;
 
 public class ModelAceEditorLayout extends VerticalLayout implements Button.ClickListener{
 

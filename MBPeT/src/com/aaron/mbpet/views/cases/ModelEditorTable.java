@@ -3,16 +3,11 @@
  */
 package com.aaron.mbpet.views.cases;
 
-import java.util.List;
-
-import org.eclipse.persistence.internal.sessions.factories.SessionsFactory;
-
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
-import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.models.ModelEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -23,7 +18,6 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

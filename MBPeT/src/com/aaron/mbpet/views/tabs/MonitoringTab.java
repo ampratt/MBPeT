@@ -1,5 +1,6 @@
 package com.aaron.mbpet.views.tabs;
 
+import com.aaron.mbpet.components.flot.FlotChart;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.Sizeable.Unit;
@@ -54,6 +55,22 @@ public class MonitoringTab extends Panel {
 //        progressstatus = new Label("not running");
 //        progressstatus.setVisible(false);
 //        vert.addComponent(progressstatus);
+        
+        FlotChart flot = new FlotChart();
+		flot.setWidth("300px");
+		flot.setHeight("300px");
+		String data =
+		"[ { \"data\":" +
+		"[" +
+		"[0, 5]," +
+		"[2, 7]," +
+		"[4, 8]," +
+		"[10, 5]" +
+		"] }" +
+		"]";
+		flot.setData(data);
+		vert.addComponent(flot);
+		
         
         vert.addComponent(buildPanels());
 //        vert.addComponent(vert);

@@ -1,15 +1,5 @@
 package com.aaron.mbpet.views.sessions;
 
-import java.util.Arrays;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
-
-import org.apache.commons.io.FileUtils;
-
-
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
@@ -18,42 +8,20 @@ import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillProcess;
 import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.UDPThreadWorker;
-import com.aaron.mbpet.services.UDPServer;
-import com.aaron.mbpet.services.MasterUtils;
-import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
-import com.aaron.mbpet.views.MBPeTMenu;
-import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
-import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.ListenerMethod.MethodException;
-import com.vaadin.event.SelectionEvent;
-import com.vaadin.event.SelectionEvent.SelectionListener;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;

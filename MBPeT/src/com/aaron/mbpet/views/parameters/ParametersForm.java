@@ -161,7 +161,7 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 	    	ramp_list.setInputPrompt("[(0,0), (100,200), ..]");
 		    wrap.addComponent(ramp_list);
 		
-			rampbutton = new Button("");	//, this);
+			rampbutton = new Button("", this);
 			rampbutton.setIcon(FontAwesome.LINE_CHART);
 			rampbutton.addStyleName("borderless");
 			rampbutton.addStyleName("colored");
@@ -251,13 +251,18 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 	@Override
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == rampbutton) {
-			String formatted = FlotUtils.formatRampToFlot(ramp_list.getValue());
-			Notification.show("Formatted for flot: " + formatted);
-//			FlotUtils.formatFlotToRamp(formatted);
-			if (ramp_list.getValue().toString() == null){
-				UI.getCurrent().addWindow(new RampFlotWindow("[(0,0)]"));
-			} else
-				UI.getCurrent().addWindow(new RampFlotWindow(ramp_list.getValue().toString()));
+//			String formatted = FlotUtils.formatRampToFlot(ramp_list.getValue());
+//			Notification.show("Formatted for flot: " + formatted);
+////			FlotUtils.formatFlotToRamp(formatted);
+//			try {
+//				if (ramp_list.getValue().toString() == null){
+//					UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+//				} else
+//					UI.getCurrent().addWindow(new RampFlotWindow(ramp_list.getValue().toString()));
+//				
+//			} catch(NullPointerException e){
+//				UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+//			}
 		}
 		
 	}
