@@ -18,6 +18,7 @@ import elemental.json.impl.JreJsonFactory;
 //import org.json.JsonException;
 //import org.json.JSONObject;
 
+import com.aaron.mbpet.services.FlotUtils;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.JavaScriptFunction;
@@ -66,6 +67,9 @@ public class FlotChart extends AbstractJavaScriptComponent {
 			    
 				// IMPORTANT. Commit new data to state!
 				setDataJson(newData);
+				
+				// update a variable to use for input field etc
+		        FlotUtils.triggerDataUpdate();
 				
 			    //FOR TESTING - update chart state
 			    System.out.println("newData: " + newData.toJson());				

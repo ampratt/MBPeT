@@ -66,8 +66,6 @@ public class MbpetUI extends UI implements PushLabelUpdater {
     public User sessionuser;
 //    public static Item sessionUserItem;
 	public JPAContainer<User> persons = JPAContainerFactory.make(User.class,MbpetUI.PERSISTENCE_UNIT);
-
-
 	public JPAContainer<TestCase> testcases = JPAContainerFactory.make(TestCase.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<TestSession> sessions = JPAContainerFactory.make(TestSession.class,MbpetUI.PERSISTENCE_UNIT); 
 	public JPAContainer<Parameters> parameterscontainer = JPAContainerFactory.make(Parameters.class,MbpetUI.PERSISTENCE_UNIT); 

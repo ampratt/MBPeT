@@ -1,5 +1,7 @@
 package com.aaron.mbpet.services;
 
+import com.aaron.mbpet.ui.RampFlotWindow;
+
 public final class FlotUtils {
 
 	
@@ -36,4 +38,14 @@ public final class FlotUtils {
 		
 		return formatted;
 	}
+	
+	/**
+	 * whenever a point is drag-n-drop'ed
+	 * this method is triggered to automatically update
+	 * the data variable to be sent elsewhere.
+	 */
+	public static void triggerDataUpdate() {
+		RampFlotWindow.updateDataInField();
+	}
+	
 }

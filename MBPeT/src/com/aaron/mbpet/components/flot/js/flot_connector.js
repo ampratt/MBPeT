@@ -31,8 +31,8 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 	var newPositionY = null; // datapoint1, datapoint2;
 	
 	element.bind("datadrop", function(event,pos,item) {
-		newPositionX = pos.x1.toFixed(2);
-		newPositionY = pos.y1.toFixed(2);	
+		newPositionX = Math.round(pos.x1.toFixed(2));		//pos.x1.toFixed(2);
+		newPositionY = Math.round(pos.y1.toFixed(2));		//pos.y1.toFixed(2);
 //		datapoint1 = item.datapoint[0].toFixed(2);
 //		datapoint2 = item.datapoint[1].toFixed(2);
 		

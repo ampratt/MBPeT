@@ -170,13 +170,13 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				TextField ramp = parametersForm.getRampList();
 				
 				String formatted = FlotUtils.formatRampToFlot(ramp.getValue());
-				Notification.show("Formatted for flot: " + formatted);
+//				Notification.show("Formatted for flot: " + formatted);
 //				FlotUtils.formatFlotToRamp(formatted);
 				try {
 					if (ramp.getValue().toString() == null){
 						UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
 					} else
-						UI.getCurrent().addWindow(new RampFlotWindow(ramp.getValue().toString()));
+						UI.getCurrent().addWindow(new RampFlotWindow(formatted));	//ramp.getValue().toString()));
 					
 				} catch(NullPointerException e){
 					UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
