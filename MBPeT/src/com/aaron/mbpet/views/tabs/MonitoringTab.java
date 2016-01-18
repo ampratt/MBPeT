@@ -1,17 +1,22 @@
 package com.aaron.mbpet.views.tabs;
 
 import com.aaron.mbpet.components.flot.FlotChart;
+import com.aaron.mbpet.services.FlotUtils;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 //import com.vaadin.tests.themes.valo.components.TestIcon;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
@@ -33,7 +38,10 @@ public class MonitoringTab extends Panel {
 	public Label slave;
 	private Label slavelabel;
 	private VerticalLayout slavevert;
+	private FlotChart usersChart;
 	
+	//testing
+	int x,prevY = 0;
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
 	
@@ -55,26 +63,14 @@ public class MonitoringTab extends Panel {
 //        progressstatus = new Label("not running");
 //        progressstatus.setVisible(false);
 //        vert.addComponent(progressstatus);
-        
-        FlotChart flot = new FlotChart();
-		flot.setWidth("300px");
-		flot.setHeight("300px");
-		String data =
-		"[ { \"data\":" +
-		"[" +
-		"[0, 5]," +
-		"[2, 7]," +
-		"[4, 8]," +
-		"[10, 5]" +
-		"] }" +
-		"]";
-		flot.setData(data);
-		vert.addComponent(flot);
-		
+
         
         vert.addComponent(buildPanels());
 //        vert.addComponent(vert);
 //        vert.setExpandRatio(vert, 1);
+        
+//        vert.addComponent(usersChart());
+       usersChart();
        
         vert.addComponent(new Label("<h2>Here below will be whatever graphs are desired...</h2>", ContentMode.HTML));
 
@@ -84,7 +80,7 @@ public class MonitoringTab extends Panel {
     public HorizontalLayout buildPanels() {
     	HorizontalLayout row = new HorizontalLayout();
         //row.setStyleName("monitor-panels");
-        row.setMargin(true);
+        row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
     	row.setWidth("100%");
 //    	addComponent(row);
@@ -112,6 +108,121 @@ public class MonitoringTab extends Panel {
         return row;
     }
     
+    public void usersChart() {
+//    	VerticalLayout v = new VerticalLayout();
+    	//TESTING
+		// update Button
+		Button updateButton = new Button("get Data Updates");
+		updateButton.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {		
+				
+				Notification.show("you asked for updates...", Type.HUMANIZED_MESSAGE);
+
+				fetchNewData(10);
+//				for (int i=0; i<25; i++) { 
+//					updatesChart.update();
+//				}
+				usersChart.getCurrentData();
+				
+				// update label
+//				currentData.setValue("Data from chart State:\n" + updatesChart.getData().toJson());	//current.setValue("Graph data is: " + flot.getData());
+			}
+		});
+		vert.addComponent(updateButton);
+		
+		
+    	HorizontalLayout hl = new HorizontalLayout();
+		hl.setSpacing(false);
+		hl.setWidth("100%");
+//		hl.setSizeUndefined();
+		vert.addComponent(hl);
+//		vert.setComponentAlignment(hl, Alignment.TOP_CENTER);
+		
+		// chart axis label
+		Label yLabel = new Label("Users");
+		yLabel.addStyleName("tiny");
+		yLabel.setWidth(4.0f, Unit.EM);
+		hl.addComponent(yLabel);
+		hl.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+		
+		// flot chart
+//		firstbuttonAction();
+		buildFlotChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+		hl.addComponent(usersChart);
+		hl.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
+		hl.setExpandRatio(usersChart, 1);
+		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+//		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
+//		rampValue = FlotUtils.formatFlotToRamp(chart.getData().toJson());
+
+		
+		// chart axis label
+		Label xLabel = new Label("Time (Seconds)");
+		xLabel.addStyleName("tiny");
+		xLabel.setSizeUndefined();
+		vert.addComponent(xLabel);
+		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+		
+//		return v;
+    }
+    
+	public void buildFlotChart(String data) {
+		usersChart = new FlotChart();
+		usersChart.setWidth("95%");
+		usersChart.setHeight("250px");
+		
+//		JsonFactory factory = new JreJsonFactory();
+//		JsonString jsString = factory.create(data);
+//		System.out.println("JSSTRING: " + jsString.asString());
+		
+//		String data1 = formatDataForGraph(data);		//"[{ data:" + data + "\", lines:{show:true}\", points:{show:true} }]";
+//		String d = "[[0,0],[5,5],[10,10],[20,20],[25,25],[30,40],[32,44],[37,50],[40,100],[45,110],[50,110],[55,100],[60,50],[70,20],[80,10]]";
+//		String data1 = d + ", \"label\": \"server data\", \"lines\": {\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"false\"";	//lines:{show:true, fill:true}, points:{show:true}, 	//formatDataForGraph("[[0,0], [10,30], [20,50]]");
+//		String data2 = data + ", \"label\": \"ramp function\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"true\"";
+		String data2 = data + ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+//				"\"clickable\":\"true\", \"editable\":\"true\""
+
+		usersChart.setData("[{ \"data\": " + data2 + " }]");	//(formatDataForGraph(data));
+//		chart.setData("[{ \"data\": " + data1 + "}, { \"data\": " + data2 + " }]");	//("[{ data:[[0,0], [10,30], [20,50]], lines:{show:true}, points:{show:true}, hoverable:true, clickable:true }]");	//(formatDataForGraph(data));
+		// options
+		String options =
+				"{" + 
+					//"series: { lines: {show: true}, points: {show: true} }" +
+					"\"crosshair\": {\"mode\": \"x\"}, " +
+					"\"legend\": { \"position\": \"nw\" }, " +
+					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"grid\": { " +
+//						"\"margin\": { \"top\":\"5\", \"left\":\"10\", \"bottom\":\"15\", \"right\":\"20\" }," +
+						"\"clickable\": \"false\"," +
+						"\"hoverable\": \"true\"," +
+						"\"editable\":\"false\"," +
+//						"backgroundColor:{" +
+//							"colors:[ \"#fef\", \"#eee\" ]" +
+//						"}" +
+					"}" +
+				"}";
+		usersChart.setOptions(options);
+	}
+	public void fetchNewData(int rounds) {
+		int y;
+		for (int i=0; i<rounds; i++) {
+			if (prevY <= 150) {
+				y = prevY + 10; 
+			} else {
+				y = prevY - 75; 
+			}
+			x += 1; 	
+
+			usersChart.addNewData(x, y);	// update the server side data
+			usersChart.update(x, y);			// update the js code to effect the chart 
+//			System.out.println(updatesChart.getData().toJson());
+	//		data.push([x, y]);
+			prevY = y;
+//			prevX = x;
+		}
+
+	}
     
     private Component responseTimes() {
         VerticalLayout vert = new VerticalLayout();

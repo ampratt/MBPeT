@@ -68,9 +68,9 @@ public class FlotChart extends AbstractJavaScriptComponent {
 				// IMPORTANT. Commit new data to state!
 				setDataJson(newData);
 				
-				// update a variable to use for input field etc
+				// update a variable to use for inputfield etc
 		        FlotUtils.triggerDataUpdate();
-				
+
 			    //FOR TESTING - update chart state
 			    System.out.println("newData: " + newData.toJson());				
 			    System.out.println("newData from getData(Flot): " + getData().toJson());				

@@ -32,7 +32,7 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 	
 	element.bind("datadrop", function(event,pos,item) {
 		newPositionX = Math.round(pos.x1.toFixed(2));		//pos.x1.toFixed(2);
-		newPositionY = Math.round(pos.y1.toFixed(2));		//pos.y1.toFixed(2);
+		newPositionY = Math.round(pos.y1.toFixed(2));		//pos.y1.toFixed(2);	
 //		datapoint1 = item.datapoint[0].toFixed(2);
 //		datapoint2 = item.datapoint[1].toFixed(2);
 		
@@ -49,6 +49,7 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 			rpcProxy.onDataDrop(item.seriesIndex, item.dataIndex, item.datapoint, newPositionX, newPositionY, data);
 //			self.onDataDrop(item.seriesIndex, item.dataIndex, item.datapoint, newPositionX, newPositionY, data);
 		}
+        
 //        alert(txt); 
 	});
 	
@@ -113,6 +114,8 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 		} while (i<10);
  */
 	}
+	
+	
 //	this.update = function() {
 //		data.push([10,15], [20,20], [30,30]);
 //		p.setData([data]);
