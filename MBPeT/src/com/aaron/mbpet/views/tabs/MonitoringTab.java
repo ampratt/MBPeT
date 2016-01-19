@@ -118,7 +118,7 @@ public class MonitoringTab extends Panel {
 				
 				Notification.show("you asked for updates...", Type.HUMANIZED_MESSAGE);
 
-				fetchNewData(10);
+				fetchNewData(3);
 //				for (int i=0; i<25; i++) { 
 //					updatesChart.update();
 //				}

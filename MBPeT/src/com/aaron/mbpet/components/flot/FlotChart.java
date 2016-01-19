@@ -42,6 +42,8 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	private JsonArray data;
 	private JsonArray seriesOptions;
 	private JsonObject options;
+	JsonFactory factory = new JreJsonFactory();
+
 //	private JsonArray data;
 //	private JSONObject options;
 //	private JsonArray seriesOptions;
@@ -186,7 +188,6 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //			source = source.substring(1, source.length() - 1);
 //			System.out.println("JSON Source:\n" + source);
 			
-			JsonFactory factory = new JreJsonFactory();
 //			data = new JreJsonArray(source) ;	//JsonArray(source);
 			data = factory.parse(source);
 			System.out.println("JSON parsed:\n" + data.toJson());
@@ -233,7 +234,6 @@ public class FlotChart extends AbstractJavaScriptComponent {
 		try {
 			System.out.println("JSON Options:\n" + opt);
 			
-			JsonFactory factory = new JreJsonFactory();
 			options = factory.parse(opt);	//new JSONObject(opt);
 			System.out.println("JSON parsed:\n" + options.toJson());
 
@@ -255,7 +255,6 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	 */
 	public void setSeriesOptions(String source) {
 		try {
-			JsonFactory factory = new JreJsonFactory();
 			seriesOptions = factory.parse(source); //new JsonArray(source);
 			getState().setData(seriesOptions);
 		} catch (JsonException e) {
