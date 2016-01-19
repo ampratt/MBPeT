@@ -29,6 +29,9 @@ public class TabLayout extends TabSheet {
 	
 	TestSession currsession;
 	
+    public TabLayout() {
+    }
+
     public TabLayout(TestSession currsession) {	//TestSession currsession
 //        setSizeFull();
 

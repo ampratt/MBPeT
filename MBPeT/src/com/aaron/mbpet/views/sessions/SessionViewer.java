@@ -8,6 +8,7 @@ import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillProcess;
 import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.UDPThreadWorker;
+import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -40,6 +41,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
     UDPThreadWorker udpWorker;
     
+    private ComboBox slaveSelect;
 //  private Button newSessionButton;
 //	private Button saveButton;
     public static ProgressBarThread progressThread;
@@ -47,7 +49,6 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     public static ProgressBar progressbar;
     public static Label progressstatus;
 	private static Label spinLabel;
-	private ComboBox slaveSelect;
 	private static Button startButton;
 	private static Button stopButton;
 	
@@ -252,8 +253,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 					currsession.getModels());
 			
 			// start receiving UDP messages
-//			udpWorker = new UDPThreadWorker();
-//			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
+			udpWorker = new UDPThreadWorker();
+			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
 
 			// start mbpet MASTER
 //			String command = "mbpet_cli.exe " +
@@ -295,10 +296,10 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			displaySpinner(false);
 			
 //			// stop progressbar
-//			progressThread.endThread();
+			progressThread.endThread();
 
 			// stop UDP
-//			udpWorker.endThread(false);
+			udpWorker.endThread(false);
 			
 			// stop mbpet MASTER
 			new KillProcess();
@@ -375,5 +376,12 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.removeStyleName("danger");
 	}
 
+//	public TabLayout getTabLayout() {
+//		return tabs;
+//	}
+//
+//	public void setTabLayout(TabLayout tabLayout) {
+//		this.tabs = tabLayout;
+//	}
 	
 }

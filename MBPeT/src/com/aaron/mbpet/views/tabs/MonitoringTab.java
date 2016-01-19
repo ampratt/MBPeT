@@ -1,10 +1,8 @@
 package com.aaron.mbpet.views.tabs;
 
 import com.aaron.mbpet.components.flot.FlotChart;
-import com.aaron.mbpet.services.FlotUtils;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 //import com.vaadin.tests.themes.valo.components.TestIcon;
@@ -12,36 +10,32 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 @JavaScript("http://cdn.alloyui.com/2.5.0/aui/aui-min.js")
 @StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
 public class MonitoringTab extends Panel {
 
 	VerticalLayout vert = new VerticalLayout();
+	private VerticalLayout slavevert;
 	public Label sentdata;
 	public Label receiveddata;
 	public Label throughput;
-	private Label success;
-	private Label error_count;
+	public Label success;
+	public Label error_count;
 	public Label targetuser;
 	public Label averageresponse;
 	public Label minmaxresponse;
 	public Label slave;
-	private Label slavelabel;
-	private VerticalLayout slavevert;
-	private FlotChart usersChart;
+	public Label slavelabel;
+	public FlotChart usersChart;
 	
-	//testing
-	int x,prevY = 0;
+
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
 	
@@ -204,6 +198,7 @@ public class MonitoringTab extends Panel {
 				"}";
 		usersChart.setOptions(options);
 	}
+	
 	public void fetchNewData(int rounds) {
 		int y;
 		for (int i=0; i<rounds; i++) {
@@ -221,9 +216,9 @@ public class MonitoringTab extends Panel {
 			prevY = y;
 //			prevX = x;
 		}
-
 	}
     
+	
     private Component responseTimes() {
         VerticalLayout vert = new VerticalLayout();
         //vert.setSizeFull();
@@ -435,6 +430,19 @@ public class MonitoringTab extends Panel {
         return slavevert;     
     }
     
+
+    
+    public void generateSlaveMonitoringInfo(int numslaves, String status) {
+    	String[] statuses = {"Connected", "Generating", "Saturated"};
+    	slavevert.removeAllComponents();
+    	
+    	for (int i=1; i<numslaves+1; i++) {
+    		Label slave = new Label("Slave " + i + " - <b>" + status + "</b>", ContentMode.HTML);	//statuses[i]);  
+    		slave.addStyleName("small");
+    		slavevert.addComponent(slave);        	
+      	}    
+    }
+    
     public void updateSlaveMonitoringInfo(int numslaves, String[] slaveresults) {
     	String[] statuses = {"Connected", "Generating", "Saturated"};
     	slavevert.removeAllComponents();
@@ -453,17 +461,6 @@ public class MonitoringTab extends Panel {
       	}    
     }
     
-    public void generateSlaveMonitoringInfo(int numslaves, String status) {
-    	String[] statuses = {"Connected", "Generating", "Saturated"};
-    	slavevert.removeAllComponents();
-    	
-    	for (int i=1; i<numslaves+1; i++) {
-    		Label slave = new Label("Slave " + i + " - <b>" + status + "</b>", ContentMode.HTML);	//statuses[i]);  
-    		slave.addStyleName("small");
-    		slavevert.addComponent(slave);        	
-      	}    
-    }
-    
     
     public void updateFields(String[] fields) {
     //(String averageresponse, String minmaxresponse, String sent, String received, String throughput, String targetuser, String slave ) {
@@ -477,10 +474,23 @@ public class MonitoringTab extends Panel {
     	this.receiveddata.setValue(fields[6]); 
     	this.targetuser.setValue(fields[7]);
 //    	this.slave.setValue(fields[7]);
-    	
-
     }
     
+    int y, x, prevY = 0;
+	public void updateChart(int users) {
+			x += 1; 	
+			y = users;
+			System.out.println("sent int:" + users);
+			System.out.println("New point:" + x + "," + users);
+
+			//TODO this first command is causing memory overload!
+//			usersChart.addNewData(x, y);	// update the server side data
+			usersChart.update(x, y);			// update the js code to effect the chart 
+			System.out.println(usersChart.getData().toJson());
+//			data.push([x, y]);
+//			prevY = y;
+	}
+	
     public void addNewMessageComponent(String string) {
     	vert.addComponent(new Label(string));
     }

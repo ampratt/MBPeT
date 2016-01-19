@@ -212,7 +212,7 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	  }
 
 		@Override
-		public void updateMonitoringPanels(final String[] values, final int numslaves, final String[] slaveresults) {	//, final double current
+		public void updateMonitoringFields(final String[] values, final int numslaves, final String[] slaveresults) {	//, final double current
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
@@ -220,7 +220,7 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();
 		        	montab.updateFields(values);
 		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
-
+		        	montab.updateChart(Integer.parseInt(values[7]));
 		        }
 		    });
 		}

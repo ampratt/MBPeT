@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface PushLabelUpdater {
 	
-	void updateMonitoringPanels(final String[] values, final int numslaves, final String[] slaveresults);
+	void updateMonitoringFields(final String[] values, final int numslaves, final String[] slaveresults);
 	
     void printNewestMessage(String message); //, double current);
 

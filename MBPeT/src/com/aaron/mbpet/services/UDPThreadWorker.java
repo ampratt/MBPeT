@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.views.tabs.TabLayout;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.UIDetachedException;
@@ -80,7 +81,7 @@ public class UDPThreadWorker {
             		        	   
                 		           // update monitoring tab fields - thread-safely	           
 //                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);
-            		        	   updater.updateMonitoringPanels(results, numslaves, slaveresults);
+            		        	   updater.updateMonitoringFields(results, numslaves, slaveresults);
             		        	   
             		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
             		        			   "average - " + results[0] + 
