@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
@@ -19,6 +20,7 @@ import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
+import com.aaron.mbpet.views.adapters.AdapterEditor;
 import com.aaron.mbpet.views.cases.ModelEditorTable;
 import com.aaron.mbpet.views.cases.SessionEditorTable;
 import com.aaron.mbpet.views.cases.TestCaseEditor;
@@ -79,6 +81,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 	
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
+	private JPAContainer<Adapter> adapterscontainer;
 	private JPAContainer<TestSession> sessions;
 	JPAContainer<TestCase> testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
 	BeanItem<TestSession> newSessionItem;
@@ -163,7 +166,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = true;
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
-		
+		adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
 		sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
@@ -183,7 +186,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.navToCasePage = false;
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
-		
+		adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
 		sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
@@ -365,6 +368,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 									// create empty parameters object
 									new ParametersEditor(sessions.getItem(id).getEntity());
 									
+									// create empty adapter object
+									new AdapterEditor(sessions.getItem(id).getEntity());
+									
 									// add to tree in right order
 									if (tree.hasChildren(parentcase.getId())) {
 										sortAddToTree(id);
@@ -412,12 +418,12 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 			              	  	tree.setItemCaption(testsession.getId(), sessions.getItem(testsession.getId()).getEntity().getTitle());
 			              	  	
 			              	  	// 4. UPDATE models (maybe not necessary)
-			              	  	ModelEditorTable.modelsTable.setContainerDataSource(ModelEditorTable.modelsTable.getContainerDataSource());
-			              	  	for (Model m : testsession.getModels()) {
-			              	  		m.setParentsession(sessions.getItem(testsession.getId()).getEntity());
-			              	  		System.out.println("Sessions' model's session title: " + m.getParentsession().getTitle());
-//			              	  		m.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
-			              	  	}
+//			              	  	ModelEditorTable.modelsTable.setContainerDataSource(ModelEditorTable.modelsTable.getContainerDataSource());
+//			              	  	for (Model m : testsession.getModels()) {
+//			              	  		m.setParentsession(sessions.getItem(testsession.getId()).getEntity());
+//			              	  		System.out.println("Sessions' model's session title: " + m.getParentsession().getTitle());
+////			              	  		m.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
+//			              	  	}
 			              	  	
 								// edit session directory for test and reports
 								if (!prevTitle.equals(testsession.getTitle())) {
@@ -428,9 +434,10 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 											testsession.getTitle());
 								}								
 								
-//			              	  	// update parameters ?
+//			              	  	// update parameters and adapter ?
 			              	  	System.out.println("Sessions' params's session title: " + testsession.getParameters().getOwnersession().getTitle());
-//		              	  		
+		              	  		System.out.println("Sessions' adapter session title: " + testsession.getAdapter().getOwnersession().getTitle());
+
 			              	  	id = testsession.getId();
 	
 							} else if (clonemode == true){
@@ -486,8 +493,17 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		cloneParams + "\n\n");
 					            new ParametersEditor(queriedSession, cloneParams);
 	
+					            // 6 clone adapter
+					            String cloneAdapter = "Fill in adapter for Test Session '" + queriedSession.getTitle() + "'";
+					            if (!(subject.getAdapter().getAdapter_file() == null) 
+					            		|| !(subject.getAdapter().getAdapter_file().equals("")) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
+					            	cloneAdapter = subject.getAdapter().getAdapter_file();
+					            }
+					            System.out.println("\n\n the cloned adapter is:\n" + 
+					            		cloneAdapter + "\n\n");
+					            new AdapterEditor(queriedSession, cloneAdapter);
 			        			
-					            // 6 add to tree in right order
+					            // 7 add to tree in right order
 					            if ( tree.hasChildren(parentcase.getId()) ) {
 					            	sortAddToTree(id);				            	
 					            } else {
@@ -500,13 +516,13 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            }
 			        			
 			              	  			              	  	
-			              	  	// 7 update parent Case to add Session to testCase List<Session> sessions
+			              	  	// 8 update parent Case to add Session to testCase List<Session> sessions
 			              	  	parentcase.addSession(queriedSession);
 			//              	  	List<TestSession> listofsessions = parentCase.getSessions();
 			//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
 			//              	  	parentCase.setSessions(listofsessions);
 			              	  	
-								// create session directory for test and reports
+								// 9 create session directory for test and reports
 								new FileSystemUtils().createSessionTestDir(
 										queriedSession.getParentcase().getOwner().getUsername(),
 										queriedSession.getParentcase().getTitle(), 

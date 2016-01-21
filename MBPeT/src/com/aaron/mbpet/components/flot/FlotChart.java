@@ -20,6 +20,8 @@ import elemental.json.impl.JreJsonFactory;
 
 import com.aaron.mbpet.services.FlotUtils;
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Notification;
@@ -43,6 +45,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	private JsonArray seriesOptions;
 	private JsonObject options;
 	JsonFactory factory = new JreJsonFactory();
+	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 //	private JsonArray data;
 //	private JSONObject options;
@@ -52,8 +55,16 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	public FlotChart() {
         registerRpc(new FlotClickRpc() {
         	@Override
-            public void onPlotClick(int seriesIndex, int dataIndex) {
-                Notification.show("Clicked on [seriesIndex,dataIndex]: [" + seriesIndex + ", " + dataIndex + "]", Notification.Type.TRAY_NOTIFICATION);
+            public void onPlotClick(int seriesIndex, int dataIndex, JsonArray datapoint) {
+                Notification notification = new Notification("");
+                notification.setDescription("\nRamp value: " + datapoint.toJson());
+//                notification.setHtmlContentAllowed(true);
+                notification.setStyleName("dark small");		//("tray dark small closable login-help");
+                notification.setPosition(Position.BOTTOM_CENTER);
+                notification.setDelayMsec(1000);
+                notification.show(Page.getCurrent());
+//                Notification.show("Clicked on [seriesIndex,dataIndex]: [" + seriesIndex + ", " + dataIndex + "]" +
+//                					"\ndatapoint: " + datapoint.toJson(), Notification.Type.TRAY_NOTIFICATION);
             }
         });
                 
@@ -182,7 +193,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
      * DATA
      */
 	public void setData(String source) {
-		JsonArray data;	//JsonArray data;
+//		JsonArray data;	//JsonArray data;
 		try {
 			System.out.println("STRING Source:\n" + source);
 //			source = source.substring(1, source.length() - 1);
@@ -191,7 +202,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //			data = new JreJsonArray(source) ;	//JsonArray(source);
 			data = factory.parse(source);
 			System.out.println("JSON parsed:\n" + data.toJson());
-			this.data = data;
+//			this.data = data;
 			getState().setData(data);
 		} catch (JsonException e) {	//JsonException
 			e.printStackTrace();
@@ -217,10 +228,10 @@ public class FlotChart extends AbstractJavaScriptComponent {
 		System.out.println("\ncalled -> 'addNewData()");
 
 		String newData = "[" + x +"," + y + "]";
-		System.out.println("data before update: " + data.toJson());
 		
 		// JSON data must be manually formatted to add the new data inside the correct brackets
-		setData( putNewData(newData) );		// data.put(newData);
+		System.out.println("data before update: " + data.toJson());
+		setData( addNewDataToJson(newData) );		// data.put(newData);
 		System.out.println("data after update:  " + data.toJson());
 		
 		// call js connector update function
@@ -267,20 +278,44 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	}
 	
 	
-	public String putNewData(String newData) {
+	public String addNewDataToJson(String newData) {
 		// get current data
-		String d = data.toJson();	//toString();
-		System.out.println("this is data.toString(): " + d);
+		System.out.println("data->" + data.toJson());
 
+		JsonArray jarray = factory.parse(data.toJson());
+		JsonObject obj = jarray.get(0);
+		JsonArray dataArray = factory.parse(obj.get("data").toJson());
+		String d = dataArray.toJson();
+		System.out.println("data->" + d);
+			
+		
 		// remove outer right brackets - ']}]'
-		String deFormatted = d.substring(0, d.length() - 3);
-		System.out.println("deFormatted: " + deFormatted);
+		String formatted = d.substring(0, d.length() - 1);
+		System.out.println("deFormatted: " + formatted);
 		
 		// add newData and reformat finished data
-		String formatted = new StringBuilder().append(deFormatted).append(","+ newData).append("]}]").toString();
+		formatted = new StringBuilder().append(formatted).append(","+ newData).append("]").toString();
 		System.out.println("formatted: " + formatted);
 
-		return formatted;
+		String jdata = "[{ \"data\": " + formatted + dataOptions + " }]";
+				//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+				//"\"clickable\":\"true\", \"editable\":\"true\""
+		System.out.println("jdata: " + jdata);
+
+//		usersChart.setData("[{ \"data\": " + jdata + " }]");
+
+//		String d = data.toJson();	//toString();
+//		System.out.println("this is data.toString(): " + d);
+//
+//		// remove outer right brackets - ']}]'
+//		String formatted = d.substring(0, d.length() - 3);
+//		System.out.println("deFormatted: " + formatted);
+//		
+//		// add newData and reformat finished data
+//		formatted = new StringBuilder().append(formatted).append(","+ newData).append("]}]").toString();
+//		System.out.println("formatted: " + formatted);
+
+		return jdata;
 	}
 	
 //    public void addSeries(double... points) {

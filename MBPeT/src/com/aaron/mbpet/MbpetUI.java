@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
@@ -69,6 +70,7 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	public JPAContainer<TestCase> testcases = JPAContainerFactory.make(TestCase.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<TestSession> sessions = JPAContainerFactory.make(TestSession.class,MbpetUI.PERSISTENCE_UNIT); 
 	public JPAContainer<Parameters> parameterscontainer = JPAContainerFactory.make(Parameters.class,MbpetUI.PERSISTENCE_UNIT); 
+	public JPAContainer<Adapter> adapters = JPAContainerFactory.make(Adapter.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<Model> models = JPAContainerFactory.make(Model.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<TRT> trtcontainer = JPAContainerFactory.make(TRT.class,MbpetUI.PERSISTENCE_UNIT);
     
@@ -312,6 +314,12 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 			this.parameterscontainer = parameterscontainer;
 		}
 
+		public JPAContainer<Adapter> getAdapterscontainer() {
+			return adapters;
+		}
+		public void setAdapterscontainer(JPAContainer<Adapter> adapterscontainer) {
+			this.adapters = adapterscontainer;
+		}
 		
 		public JPAContainer<TRT> getTrtcontainer() {
 			return trtcontainer;

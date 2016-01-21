@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
@@ -48,6 +49,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	JPAContainer<TestSession> sessions;
 	JPAContainer<Model> models;
 	JPAContainer<Parameters> parameters;
+	JPAContainer<Adapter> adapters;
 	JPAContainer<TRT> trtcontainer;
 	private User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
 	TestCase parentcase;
@@ -69,6 +71,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
         this.models = ((MbpetUI) UI.getCurrent()).getModels();
         this.parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
+        this.adapters = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
         this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
         
         this.targetId = targetId; 
@@ -335,7 +338,7 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 			}
 			trtcontainer.removeAllContainerFilters();
 			
-			// update session's list of models
+			// update session's list of trt's
 			p.setTarget_response_times(null);
 			
             try {
@@ -348,6 +351,18 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
             	// remove from db
             	parameters.removeItem(p.getId());
 
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+            
+            // 4 delete adapter
+        	Adapter a = ses.getAdapter();
+            try {
+    			System.out.println("### DELETING Actual ADAPTER ###");
+            	ses.setAdapter(null);
+            	
+            	// remove from db
+            	adapters.removeItem(a.getId());
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}

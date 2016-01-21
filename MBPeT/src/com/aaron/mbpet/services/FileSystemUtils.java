@@ -121,6 +121,17 @@ public class FileSystemUtils {
 		}
 	}
 	
+	public void writeAdapterToDisk(String username, String sut, String session, String adapter_file) {
+		try {
+			FileUtils.writeStringToFile(
+					new File(basepath + username + "/" + sut + "/" + session + "/adapter.py"), 
+					adapter_file);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void writeModelsToDisk(String username, String sut, String session, 
 			String models_folder, List<Model> mlist) {
 		try {
@@ -161,6 +172,7 @@ public class FileSystemUtils {
 			e.printStackTrace();
 		}
 	}
+
 	
 	
 //	File dir = new File(basepath + username + "/");

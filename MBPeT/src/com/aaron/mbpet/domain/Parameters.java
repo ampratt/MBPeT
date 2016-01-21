@@ -32,7 +32,7 @@ public class Parameters {
     @JoinColumn(name = "ownersession", referencedColumnName = "ID")
     private TestSession ownersession;
 
-	@Column(name = "settings_file", columnDefinition="MEDIUMTEXT")	//, columnDefinition="BLOB"
+	@Column(name = "settings_file", columnDefinition="TEXT")	//, columnDefinition="MEDIUMTEXT"
 	private String settings_file;
 	
 	

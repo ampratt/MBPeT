@@ -23,7 +23,7 @@ public class TabLayout extends TabSheet {
 	ReportsTab reportsTab;	// = new ReportsTab();	//final
 	ModelsTab modelTab;// = new ModelsTab();
 	ParametersTab parametersTab;
-//	TestAdapterTab adapter;// = new TestAdapterTab();
+	AdapterTab adapterTab;
 //	RampTab ramp;// = new RampTab();
 //	SettingsTab settings;// = new SettingsTab();
 	
@@ -64,13 +64,13 @@ public class TabLayout extends TabSheet {
 
 		modelTab = new ModelsTab(currsession);
 		parametersTab = new ParametersTab(currsession);
-//		adapter = new TestAdapterTab();
+		adapterTab = new AdapterTab(currsession);
 //		ramp = new RampTab();
 //		settings = new SettingsTab(currsession);
 		
 		confTabs.addTab(modelTab, "Models");
 		confTabs.addTab(parametersTab, "Test Parameters");
-//		confTabs.addTab(adapter, "Test Adapter");
+		confTabs.addTab(adapterTab, "Test Adapter");
 //		confTabs.addTab(ramp, "Ramp Function");
 //		confTabs.addTab(settings, "Settings");
 		return confTabs;

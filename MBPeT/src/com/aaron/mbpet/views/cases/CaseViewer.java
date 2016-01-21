@@ -40,8 +40,8 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
     TestCase currSUT;
 
     private Table sessionsTable;
-    private Button stopButton;
-    private Button startButton;
+//    private Button stopButton;
+//    private Button startButton;
 //	private Button saveButton;
 //	private Button newSessionButton;
 //	private Button editButton;
@@ -95,46 +95,12 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 		
 //		pageTitle.addStyleName("test-case-title");
 		pageTitle.addStyleName("h2");
-		
-//		newSessionButton = new Button("", this);
-//		newSessionButton.addStyleName("tiny");
-//		newSessionButton.setIcon(FontAwesome.PLUS);
-//		newSessionButton.setDescription("create new Test Session");
-//		saveButton = new Button("Save settings", this);
-//		startButton = new Button("Run Test", this);
-//		stopButton = new Button("Stop Test", this);
-		
-//		saveButton.addStyleName("tiny");
-////		saveButton.addStyleName("friendly");
-//		startButton.addStyleName("tiny");
-////		startButton.addStyleName("primary");
-//		stopButton.addStyleName("tiny");
-//		
-//		saveButton.setIcon(FontAwesome.SAVE);
-//		startButton.setIcon(FontAwesome.PLAY);
-//		stopButton.setIcon(FontAwesome.STOP);
-	
-//
-//		HorizontalLayout buttons = new HorizontalLayout();
-//		buttons.setSpacing(true);
-//		buttons.addComponent(newSessionButton); //saveButton, startButton, stopButton);	//newSessionButton 
-		
+
 		topBar.addComponent(pageTitle); //(pageTitle);
-//		topBar.addComponent(buttons);
-//		topBar.addComponent(newUseCaseButton);
-//		topBar.addComponent(saveButton);
-//		topBar.addComponent(startButton);
-		
+
 		topBar.setComponentAlignment(pageTitle, Alignment.MIDDLE_LEFT);
-//		topBar.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT);	//(newUseCaseButton, Alignment.MIDDLE_RIGHT);
-//		topBar.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
-//		topBar.setComponentAlignment(startButton, Alignment.MIDDLE_RIGHT);
-		
-		topBar.setExpandRatio(pageTitle, 2);
-//		topBar.setExpandRatio(buttons, 2);	//(newUseCaseButton, 2);
-//		topBar.setExpandRatio(saveButton, 0);	
-//		topBar.setExpandRatio(startButton, 0);
-//		topBar.setExpandRatio(stopButton, 0);	    
+
+		topBar.setExpandRatio(pageTitle, 2);    
 	    
 		return topBar;
 	}
@@ -170,15 +136,16 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
     
 	public void buttonClick(ClickEvent event) {
  
-        if (event.getButton() == startButton) {
-			//testing purposes
-			Notification.show("This will launch the test session to the master", Type.WARNING_MESSAGE);
-
-        } else if (event.getButton() == stopButton) {
-			//testing purposes
-			Notification.show("This will stop the test", Type.WARNING_MESSAGE);
-
-        }
+//        if (event.getButton() == startButton) {
+//			//testing purposes
+//			Notification.show("This will launch the test session to the master", Type.WARNING_MESSAGE);
+//
+//        } else if (event.getButton() == stopButton) {
+//			//testing purposes
+//			Notification.show("This will stop the test", Type.WARNING_MESSAGE);
+//
+//        }
+		
 //        if (event.getButton() == editButton) {
 //			TestSession session = sessions.getItem(sessionsTable.getValue()).getEntity();	//.getBean();
 //	        UI.getCurrent().addWindow(new TestSessionEditor(

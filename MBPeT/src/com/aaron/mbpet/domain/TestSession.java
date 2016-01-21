@@ -42,7 +42,9 @@ public class TestSession {
 
 	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
 	private Parameters parameters;
-    
+
+	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
+	private Adapter adapter;
     
     public TestSession() {
     }
@@ -84,7 +86,6 @@ public class TestSession {
 	 public TestCase getParentcase() {
 		return parentcase;
 	}
-
 	public void setParentcase(TestCase parentcase) {
 		this.parentcase = parentcase;
 	}
@@ -92,16 +93,20 @@ public class TestSession {
 	public Parameters getParameters() {
 		return parameters;
 	}
-
 	public void setParameters(Parameters parameters) {
 		this.parameters = parameters;
 	}
 
+	public Adapter getAdapter() {
+		return adapter;
+	}
+	public void setAdapter(Adapter adapter) {
+		this.adapter = adapter;
+	}
 	
     public List<Model> getModels() {
 		return models;
 	}
-
 	public void setModels(List<Model> models) {
 		this.models = models;
 	}

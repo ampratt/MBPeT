@@ -151,7 +151,7 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 	 */
 	element.bind('plotclick', function(event, pos, item) {
 		if (item) {
-			rpcProxy.onPlotClick(item.seriesIndex, item.dataIndex);
+			rpcProxy.onPlotClick(item.seriesIndex, item.dataIndex, item.datapoint);
 //			self.onPlotClick(item.seriesIndex, item.dataIndex);
 //			highlight(item.series, item.datapoint);
 //			alert("you clicked at: " + pos.x + ", " + pos.y + "- " + pos.x1 + ", " + pos.y1);

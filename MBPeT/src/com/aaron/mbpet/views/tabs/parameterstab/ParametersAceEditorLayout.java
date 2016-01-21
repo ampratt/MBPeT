@@ -20,6 +20,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.AceUtils;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.services.ParametersUtils;
@@ -93,7 +94,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		this.currsession = currsession;
 		this.currentparams = currsession.getParameters();//parameters.getItem(currsession.getParameters().getId()).getEntity(); //currsession.getParameters();
 		this.beanItem = beanItem;
-		this.formAceView= formAceView; 
+		this.formAceView = formAceView; 
 		this.prevModelsFolder = currentparams.getModels_folder();
 		this.prevReportsFolder = currentparams.getTest_report_folder();
 //		Notification.show("prevModelsFolder is:" + prevModelsFolder);
@@ -127,7 +128,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
         themeBox.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-            	setAceTheme(event.getProperty().getValue().toString());
+            	AceUtils.setAceTheme(editor, event.getProperty().getValue().toString());
             }
         });
         
@@ -316,45 +317,45 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		} 
 	}
 	
-	private void setAceTheme(String theme) {	
-		
-		switch (theme) {
-		case "ambiance":
-			editor.setTheme(AceTheme.ambiance);
-            break;
-        case "chrome":
-			editor.setTheme(AceTheme.chrome);
-            break;
-        case "clouds":
-			editor.setTheme(AceTheme.clouds);
-            break;
-        case "cobalt":
-			editor.setTheme(AceTheme.cobalt);
-			break;
-        case "dreamweaver":
-			editor.setTheme(AceTheme.dreamweaver);
-			break;
-        case "eclipse":
-			editor.setTheme(AceTheme.eclipse);
-			break;
-        case "github":
-			editor.setTheme(AceTheme.github);
-			break;
-        case "terminal":
-			editor.setTheme(AceTheme.terminal);
-			break;
-        case "twilight":
-			editor.setTheme(AceTheme.twilight);
-			break;
-        case "xcode":
-			editor.setTheme(AceTheme.xcode);
-			break;
-		
-        default:
-			editor.setTheme(AceTheme.clouds);
-		}
-    	
-	}
+//	private void setAceTheme(String theme) {	
+//		
+//		switch (theme) {
+//		case "ambiance":
+//			editor.setTheme(AceTheme.ambiance);
+//            break;
+//        case "chrome":
+//			editor.setTheme(AceTheme.chrome);
+//            break;
+//        case "clouds":
+//			editor.setTheme(AceTheme.clouds);
+//            break;
+//        case "cobalt":
+//			editor.setTheme(AceTheme.cobalt);
+//			break;
+//        case "dreamweaver":
+//			editor.setTheme(AceTheme.dreamweaver);
+//			break;
+//        case "eclipse":
+//			editor.setTheme(AceTheme.eclipse);
+//			break;
+//        case "github":
+//			editor.setTheme(AceTheme.github);
+//			break;
+//        case "terminal":
+//			editor.setTheme(AceTheme.terminal);
+//			break;
+//        case "twilight":
+//			editor.setTheme(AceTheme.twilight);
+//			break;
+//        case "xcode":
+//			editor.setTheme(AceTheme.xcode);
+//			break;
+//		
+//        default:
+//			editor.setTheme(AceTheme.clouds);
+//		}
+//    	
+//	}
 
 	
 	

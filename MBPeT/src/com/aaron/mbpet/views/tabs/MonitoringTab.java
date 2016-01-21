@@ -34,7 +34,7 @@ public class MonitoringTab extends Panel {
 	public Label slave;
 	public Label slavelabel;
 	public FlotChart usersChart;
-	
+	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
@@ -112,7 +112,7 @@ public class MonitoringTab extends Panel {
 				
 				Notification.show("you asked for updates...", Type.HUMANIZED_MESSAGE);
 
-				fetchNewData(3);
+				fetchNewData(20);
 //				for (int i=0; i<25; i++) { 
 //					updatesChart.update();
 //				}
@@ -162,7 +162,7 @@ public class MonitoringTab extends Panel {
     
 	public void buildFlotChart(String data) {
 		usersChart = new FlotChart();
-		usersChart.setWidth("95%");
+		usersChart.setWidth("90%");
 		usersChart.setHeight("250px");
 		
 //		JsonFactory factory = new JreJsonFactory();
@@ -173,7 +173,8 @@ public class MonitoringTab extends Panel {
 //		String d = "[[0,0],[5,5],[10,10],[20,20],[25,25],[30,40],[32,44],[37,50],[40,100],[45,110],[50,110],[55,100],[60,50],[70,20],[80,10]]";
 //		String data1 = d + ", \"label\": \"server data\", \"lines\": {\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"false\"";	//lines:{show:true, fill:true}, points:{show:true}, 	//formatDataForGraph("[[0,0], [10,30], [20,50]]");
 //		String data2 = data + ", \"label\": \"ramp function\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"true\"";
-		String data2 = data + ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+		
+		String data2 = data + dataOptions;//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 //				"\"clickable\":\"true\", \"editable\":\"true\""
 
 		usersChart.setData("[{ \"data\": " + data2 + " }]");	//(formatDataForGraph(data));
@@ -182,7 +183,7 @@ public class MonitoringTab extends Panel {
 		String options =
 				"{" + 
 					//"series: { lines: {show: true}, points: {show: true} }" +
-					"\"crosshair\": {\"mode\": \"x\"}, " +
+//					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
 					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
@@ -207,6 +208,9 @@ public class MonitoringTab extends Panel {
 			} else {
 				y = prevY - 75; 
 			}
+			if (x<1)
+				usersChart.update(0, 0);			// update the js code to effect the chart 
+
 			x += 1; 	
 
 			usersChart.addNewData(x, y);	// update the server side data
@@ -478,15 +482,18 @@ public class MonitoringTab extends Panel {
     
     int y, x, prevY = 0;
 	public void updateChart(int users) {
-			x += 1; 	
-			y = users;
-			System.out.println("sent int:" + users);
-			System.out.println("New point:" + x + "," + users);
+		if (x<1)	//draw point (0,0) on graph
+			usersChart.update(0,0);			// update the js code to effect the chart 
 
-			//TODO this first command is causing memory overload!
-//			usersChart.addNewData(x, y);	// update the server side data
-			usersChart.update(x, y);			// update the js code to effect the chart 
-			System.out.println(usersChart.getData().toJson());
+		x += 1; 	
+		y = users;
+		System.out.println("sent int:" + users);
+		System.out.println("New point:" + x + "," + users);
+
+		//TODO this first command is causing memory overload!
+		usersChart.addNewData(x, y);	// update the server side data
+		usersChart.update(x, y);			// update the js code to effect the chart 
+		System.out.println(usersChart.getData().toJson());
 //			data.push([x, y]);
 //			prevY = y;
 	}
