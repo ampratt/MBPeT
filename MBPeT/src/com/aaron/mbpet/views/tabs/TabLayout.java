@@ -27,12 +27,16 @@ public class TabLayout extends TabSheet {
 //	RampTab ramp;// = new RampTab();
 //	SettingsTab settings;// = new SettingsTab();
 	
+    
+    private ReportsTab currentReportsComponent; 	//Field to store current component
+    
 	TestSession currsession;
 	
     public TabLayout() {
     }
 
-    public TabLayout(TestSession currsession) {	//TestSession currsession
+    @SuppressWarnings("deprecation")
+	public TabLayout(final TestSession currsession) {	//TestSession currsession
 //        setSizeFull();
 
         this.currsession = currsession;
@@ -42,8 +46,8 @@ public class TabLayout extends TabSheet {
         addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
 //        addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
  
-        monitoringTab = new MonitoringTab();
-        reportsTab = new ReportsTab(currsession);
+        monitoringTab = new MonitoringTab();	//reportsTab
+//        reportsTab = new ReportsTab(currsession);
 
         VerticalLayout configTab = new VerticalLayout();
         configTab.setHeight("100%");
@@ -51,8 +55,20 @@ public class TabLayout extends TabSheet {
 
         addTab(configTab, "Configuration");
         addTab(getMonitoringTab(), "Monitoring");
-        addTab(reportsTab, "Reports");
-        
+//        addTab(reportsTab, "Reports");
+
+        //during initialization
+        currentReportsComponent = new ReportsTab(currsession);
+        addTab(currentReportsComponent, "Reports");
+
+        addListener(new TabSheet.SelectedTabChangeListener() {
+            @Override
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+                if (event.getTabSheet().getSelectedTab() == currentReportsComponent) {
+                	refreshReports();
+                }
+            }
+        });
         
     }
 
@@ -85,4 +101,10 @@ public class TabLayout extends TabSheet {
 		this.monitoringTab = monitoringTab;
 	}
     
+	public void refreshReports(){
+    	ReportsTab newReportsComponent = new ReportsTab(currsession);
+        replaceComponent(currentReportsComponent, newReportsComponent);
+        currentReportsComponent = newReportsComponent;
+	}
+	
 }

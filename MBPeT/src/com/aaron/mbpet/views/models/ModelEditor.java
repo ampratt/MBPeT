@@ -17,6 +17,7 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
@@ -93,6 +94,9 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	private TestSession prevParentSession;
 	private String wrongTitle = "";
 	private String prevTitle = "";
+	
+	FileSystemUtils fileUtils = new FileSystemUtils();
+	ModelUtils modelUtils = new ModelUtils();
 	
 	boolean editmode = false;
 	boolean navToCasePage = false;
@@ -176,7 +180,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		
 		this.currmodel = new Model();
 		currmodel.setTitle("clone_" + subject.getTitle());
-		currmodel.setDotschema(ModelUtils.renameAceTitle("clone_"+subject.getTitle(), subject.getDotschema()));		//subject.getDotschema()
+		currmodel.setDotschema(modelUtils.renameAceTitle("clone_"+subject.getTitle(), subject.getDotschema()));		//subject.getDotschema()
 		currmodel.setParentsession(subject.getParentsession());
 		currmodel.setParentsut(subject.getParentsut());
 
@@ -492,7 +496,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							// 1. add to container
 							models.addEntity(modelBeanItem.getBean());	//jpa container	
 							
-							// 3. update parent Case to add Session to testCase List<Session> sessions
+							// 2. update parent Case to add Session to testCase List<Session> sessions
 				            query.setParameter("title", currmodel.getTitle());
 				            query.setParameter("parentsession", currmodel.getParentsession());
 				            queriedModel = (Model) query.getSingleResult();				            
@@ -500,13 +504,21 @@ public class ModelEditor extends Window implements Button.ClickListener {
 				            System.out.println("the generated id is: " + id);
 				            		        			
 				            
-		              	  	// update parent Case to add Session to testCase List<Session> sessions
+		              	  	// 3. update parent Case to add Session to testCase List<Session> sessions
 		              	  	parentsession.addModel(queriedModel);
 		              	  	parentcase.addModel(queriedModel);
 		//              	  	List<TestSession> listofsessions = parentCase.getSessions();
 		//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
 		//              	  	parentCase.setSessions(listofsessions);
 		              	  	
+							// 4. write model file to disk
+							fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+									parentcase.getOwner().getUsername(),
+									parentcase.getTitle(), 
+									parentsession.getTitle(),
+									parentsession.getParameters().getModels_folder(),
+									queriedModel);
+							
 			            	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
 			            	for (Model m : parentsession.getModels()) {
 				            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
@@ -518,21 +530,29 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			            	
 						} else if (editmode == true){
 							// EDIT existing object
+					           System.out.println("\n\n#### WE ARE IN EDIT MODE ####\n\n");
 
-							// 3 UPDATE container
+							// 1 UPDATE container
 							models.addEntity(modelBeanItem.getBean());
 							System.out.println("Entity is now: " + models.getItem(currmodel.getId()).getEntity().getTitle());
 							System.out.println("model is now: " + currmodel.getTitle());
 
 							
-		              	  	// 1.1 UPDATE parent Session reference
+		              	  	// 2 UPDATE parent Session reference
 							parentsession.updateModelData(models.getItem(currmodel.getId()).getEntity());
 //		              	  	sessions.addEntity(parentsession);
 
-							// 1.2 UPDATE parent Case reference
+							// 3 UPDATE parent Case reference
 							parentcase.updateModelData(models.getItem(currmodel.getId()).getEntity());
 //							parentCase.removeSession(sessions.getItem(testsession.getId()).getEntity());
 							
+							// 4. write model file to disk
+							fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+									parentcase.getOwner().getUsername(),
+									parentcase.getTitle(), 
+									parentsession.getTitle(),
+									parentsession.getParameters().getModels_folder(),
+									queriedModel);
 		
 						} else if (clonemode == true){
 							// CLONE 
@@ -587,6 +607,14 @@ public class ModelEditor extends Window implements Button.ClickListener {
 			            	for (Model m : parentsession.getModels()) {
 				            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
 			            	}
+			            	
+							// 5. write model file to disk
+							fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+									parentcase.getOwner().getUsername(),
+									parentcase.getTitle(), 
+									parentsession.getTitle(),
+									parentsession.getParameters().getModels_folder(),
+									queriedModel);
 						}
 		                
 	

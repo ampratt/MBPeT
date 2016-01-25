@@ -113,7 +113,7 @@ public class MainView extends HorizontalLayout implements View {
 		addStyleName("mainview");
 //    	setWidth(100%);
     	
-		tree = new Tree("SUT's:");
+		tree = new Tree("My Systems Under Test (SUT)");
 //		menu = new MBPeTMenu(tree);
 //		menu.setWidth("250px");
 //		addComponent(menu);

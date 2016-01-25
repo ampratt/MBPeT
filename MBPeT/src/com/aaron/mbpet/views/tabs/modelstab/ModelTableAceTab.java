@@ -52,7 +52,8 @@ public class ModelTableAceTab extends Panel implements Button.ClickListener{
     private Button deleteButton;
     Table modelsTable;
 //    public static Table modelsTable;
-
+    ModelUtils modelUtils = new ModelUtils();
+    
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
 	ModelAceEditorLayout editorLayout;
@@ -256,8 +257,8 @@ public class ModelTableAceTab extends Panel implements Button.ClickListener{
         	
         	Model selected = models.getItem(modelsTable.getValue()).getEntity();
         	Model m = new Model();
-        	m.setTitle("clone_" + selected.getTitle());
-        	m.setDotschema(ModelUtils.renameAceTitle("clone_" + selected.getTitle(), selected.getDotschema()));		//(selected.getDotschema());
+        	m.setTitle(selected.getTitle() + "_clone");
+        	m.setDotschema(modelUtils.renameAceTitle(selected.getTitle() + "_clone", selected.getDotschema()));		//(selected.getDotschema());
         	m.setParentsession(selected.getParentsession());
         	m.setParentsut(selected.getParentsut());
         	

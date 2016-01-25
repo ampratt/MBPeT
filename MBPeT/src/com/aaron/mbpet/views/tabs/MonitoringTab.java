@@ -36,10 +36,11 @@ public class MonitoringTab extends Panel {
 	public FlotChart usersChart;
 	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
+	ReportsTab reportsTab;
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
 	
-    public MonitoringTab() {
+    public MonitoringTab() {	//ReportsTab reportsTab
     	//setHeight(100.0f, Unit.PERCENTAGE);
         setSizeFull();
 		setContent(vert);
@@ -47,6 +48,8 @@ public class MonitoringTab extends Panel {
         vert.setMargin(true);
         vert.setSpacing(true);
 		
+//        this.reportsTab = reportsTab; 
+        
 //        // Create the indicator, disabled until progress is started
 //        progressbar = new ProgressBar(new Float(0.0));
 //        progressbar.setEnabled(false);

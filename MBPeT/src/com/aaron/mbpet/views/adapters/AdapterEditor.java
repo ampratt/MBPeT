@@ -118,6 +118,12 @@ public class AdapterEditor {
 				// add NEW bean object to db through jpa container
 				if ((createmode==true) || (editmode==false && formEdit==false)) {
 					try {
+//						String adap = currentAdapter.getAdapter_file();
+//						if(adap == null || adap.equals("")){
+//							System.out.println("adapter was null");
+//							currentAdapter.setAdapter_file("not empty anymore");
+//							beanItem.getItemProperty("adapter_file").setValue("not empty anymore");
+//						}
 						binder.commit();
 					} catch (CommitException | NullPointerException e) {
 						e.printStackTrace();
@@ -145,7 +151,7 @@ public class AdapterEditor {
               	  	ownersession.setAdapter(a);	//Adapter.getItem(queriedParams.getId()).getEntity()
               	  	sessions.addEntity(ownersession);
               	  	
-              	  	// save settings.py file to directory              	  	
+              	  	// save adapter.py file to directory              	  	
               	  	fileUtils.writeAdapterToDisk(
 	              	  		ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 
@@ -164,7 +170,7 @@ public class AdapterEditor {
 					ownersession.setAdapter(adapterscontainer.getItem(currentAdapter.getId()).getEntity());
 					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
 
-					// write settings file to disk
+					// write adapter file to disk
 					fileUtils.writeAdapterToDisk(	//username, sut, session, settings_file)
 							ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 

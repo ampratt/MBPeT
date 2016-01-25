@@ -339,7 +339,11 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 			trtcontainer.removeAllContainerFilters();
 			
 			// update session's list of trt's
-			p.setTarget_response_times(null);
+            try {
+            	p.setTarget_response_times(null);
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
 			
             try {
     			System.out.println("### DELETING Actual PARAMETERS ###");

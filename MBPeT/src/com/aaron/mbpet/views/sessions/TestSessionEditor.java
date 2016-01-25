@@ -481,6 +481,15 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 						            // update parent Case to add Session to testCase List<Session> sessions
 						            parentcase.addModel(queriedModel);
 						            queriedSession.addModel(queriedModel);
+						            
+//						            //write model to disk
+//						            FileSystemUtils fileUtils = new FileSystemUtils();
+//						            fileUtils.writeModelToDisk(
+//						            		parentcase.getOwner().getUsername(), 
+//						            		parentcase.getTitle(), 
+//						            		queriedSession.getTitle(), 
+//						            		queriedSession.getParameters().getModels_folder(), 
+//						            		queriedModel);
 					            }
 					            sessions.addEntity(queriedSession);
 	
@@ -503,6 +512,15 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		cloneAdapter + "\n\n");
 					            new AdapterEditor(queriedSession, cloneAdapter);
 			        			
+					            // 7 write models to disk
+					            FileSystemUtils fileUtils = new FileSystemUtils();
+					            fileUtils.writeModelsToDisk(
+					            		parentcase.getOwner().getUsername(), 
+					            		parentcase.getTitle(), 
+					            		queriedSession.getTitle(), 
+					            		queriedSession.getParameters().getModels_folder(), 
+					            		subject.getModels());
+					            
 					            // 7 add to tree in right order
 					            if ( tree.hasChildren(parentcase.getId()) ) {
 					            	sortAddToTree(id);				            	

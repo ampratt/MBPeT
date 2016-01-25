@@ -29,6 +29,13 @@
         }
       }
     }
+	
+	.report-newest {
+		.v-image {
+			@include box-shadow(0 2px 7px 1px rgba(0,0,0,.5));
+			outline: 2px solid #5198df;
+		}
+	}
 */
 
 }

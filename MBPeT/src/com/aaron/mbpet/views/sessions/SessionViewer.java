@@ -236,21 +236,21 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start round spinner till messages arrive
 			displaySpinner(true);
 			
-			// delete old model files
-			FileSystemUtils fileUtils = new FileSystemUtils();
-			fileUtils.cleanModelsDirectory(					
-					currsession.getParentcase().getOwner().getUsername(),
-					currsession.getParentcase().getTitle(),
-					currsession.getTitle(),
-					currsession.getParameters().getModels_folder());
-			
-			// write models to disk
-			fileUtils.writeModelsToDisk(	//username, sut, session, models_folder, mlist);
-					currsession.getParentcase().getOwner().getUsername(),
-					currsession.getParentcase().getTitle(),
-					currsession.getTitle(),
-					currsession.getParameters().getModels_folder(),
-					currsession.getModels());
+//			// delete old model files
+//			FileSystemUtils fileUtils = new FileSystemUtils();
+//			fileUtils.cleanModelsDirectory(					
+//					currsession.getParentcase().getOwner().getUsername(),
+//					currsession.getParentcase().getTitle(),
+//					currsession.getTitle(),
+//					currsession.getParameters().getModels_folder());
+//			
+//			// write models to disk
+//			fileUtils.writeModelsToDisk(	//username, sut, session, models_folder, mlist);
+//					currsession.getParentcase().getOwner().getUsername(),
+//					currsession.getParentcase().getTitle(),
+//					currsession.getTitle(),
+//					currsession.getParameters().getModels_folder(),
+//					currsession.getModels());
 			
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker();

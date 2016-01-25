@@ -101,8 +101,10 @@ public class UDPThreadWorker {
 	        	                   updater.printFinalMessage("\nTest Session is finished!", numslaves);
 	        	        	       
 	        	                   // navigate to reports
-	        	                   if (navToReports)
+	        	                   if (navToReports) {
+	        	                	   SessionViewer.tabs.refreshReports();
 	        	                	   SessionViewer.tabs.setSelectedTab(2);
+	        	                   }
 	        	                   SessionViewer.displayProgressBar(false);
 	        	                   serverSocket.close();
             		           }
@@ -127,7 +129,14 @@ public class UDPThreadWorker {
                                 updater.printFinalMessage("\nTimeout reached!!!", numslaves);
             	                serverSocket.close();
             	                SessionViewer.progressThread.endThread();
-            	            }
+            	            } 
+//            				catch(SocketException e){
+//            	                // socket closed.
+//            	                System.out.println("socket closed. " + e);
+////                                updater.printFinalMessage("\nTimeout reached!!!", numslaves);
+//            	                serverSocket.close();
+//            	                SessionViewer.progressThread.endThread();
+//            	            }
 //            				finally {
 //            					serverSocket.close();
 //            				}
@@ -150,10 +159,12 @@ public class UDPThreadWorker {
 
             		if (stopFlag)
             			SessionViewer.progressThread.endThread();
-                    if (navToReports)
+                    if (navToReports) {
+                    	SessionViewer.tabs.refreshReports();
                     	SessionViewer.tabs.setSelectedTab(2);
+                    }
 
-                } 
+                }
 //                catch (final InterruptedException e) {
 //                    e.printStackTrace();
 //                    updater.printnewestMessage("Thread was interrupted");

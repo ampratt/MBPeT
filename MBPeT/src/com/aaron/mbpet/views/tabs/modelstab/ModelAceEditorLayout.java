@@ -205,14 +205,15 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 //			String corrected = ModelUtils.renameAceTitle(titleField.getValue(), editor.getValue());		//(selected.getDotschema());
 //			editor.setValue(corrected);
 			
+			ModelUtils modelUtils = new ModelUtils();
 			if ( createNewModel == true ) {
 //				editor.setValue(corrected);
-				editedmodel = ModelUtils.createNewModel(currmodel, currsession, binder); //currmodel.getParentsession(),
+				editedmodel = modelUtils.createNewModel(currmodel, currsession, binder); //currmodel.getParentsession(),
 				createNewModel = false;
 			} else {
 //				editor.setValue(corrected);
 				//save
-				editedmodel = ModelUtils.editModel(currmodel, currsession, binder); //currmodel.getParentsession(),				
+				editedmodel = modelUtils.editModel(currmodel, currsession, binder); //currmodel.getParentsession(),				
 			}
 			
 			
@@ -350,7 +351,8 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		createNewModel = b;
 
 		// check editor title matches text field title
-		Model editedmodel = ModelUtils.createNewModel(model, currsession, binder); //currmodel.getParentsession(),
+		ModelUtils modelUtils = new ModelUtils();
+		Model editedmodel = modelUtils.createNewModel(model, currsession, binder); //currmodel.getParentsession(),
 		createNewModel = false;
 		
 		try {

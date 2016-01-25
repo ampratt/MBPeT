@@ -48,27 +48,27 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class ModelUtils {
 
-	private static JPAContainer<Model> models;
-	private static JPAContainer<TestSession> sessions;
-	private static JPAContainer<TestCase> testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
-	static BeanItem<Model> modelBeanItem;
-	static Model currmodel;
-	static TestCase parentcase;
-	static TestSession parentsession;
+	private JPAContainer<Model> models;
+	private JPAContainer<TestSession> sessions;
+	private JPAContainer<TestCase> testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
+	BeanItem<Model> modelBeanItem;
+	Model currmodel;
+	TestCase parentcase;
+	TestSession parentsession;
 	
-	static FieldGroup binder;	
+	FieldGroup binder;	
 	private IndexedContainer ic;
 
-	static boolean editmode = false;
-	private static String prevTitle = "";
-	private static String wrongTitle = "";
+	boolean editmode = false;
+	private String prevTitle = "";
+	private String wrongTitle = "";
 	boolean navToCasePage = false;
 	boolean clonemode = false;
 
+	FileSystemUtils fileUtils = new FileSystemUtils();
  
-	
-	
-	public static Model createNewModel(Model model, TestSession currsession, FieldGroup fieldbinder) {	//Model model, 
+		
+	public Model createNewModel(Model model, TestSession currsession, FieldGroup fieldbinder) {	//Model model, 
 		models = ((MbpetUI) UI.getCurrent()).getModels();
 		currmodel = model; //new Model(); 
 		modelBeanItem = new BeanItem<Model>(currmodel);
@@ -153,6 +153,14 @@ public class ModelUtils {
 	            	for (Model m : parentsession.getModels()) {
 		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
 	            	}
+	            	
+					// 4. write model file to disk
+					fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+							parentcase.getOwner().getUsername(),
+							parentcase.getTitle(), 
+							parentsession.getTitle(),
+							parentsession.getParameters().getModels_folder(),
+							queriedModel);
 					
 					confirmNotification("Model '" + queriedModel.getTitle()+ "'", "saved");
 					
@@ -195,7 +203,7 @@ public class ModelUtils {
 	
 	
 	
-	public static Model editModel(Model model, TestSession currsession, FieldGroup fieldbinder) {
+	public Model editModel(Model model, TestSession currsession, FieldGroup fieldbinder) {
         
 		models = ((MbpetUI) UI.getCurrent()).getModels();
         currmodel = models.getItem(model.getId()).getEntity();
@@ -278,6 +286,24 @@ public class ModelUtils {
 		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
 	            	}
 	            	
+					// 4. write model file to disk
+	            		// 4.1 first delete old file is it doesn't match the file name
+	            		if (!prevTitle.equals(currmodel.getTitle())){
+	            			fileUtils.deleteModelFromDisk(
+	            					parentcase.getOwner().getUsername(),
+	    							parentcase.getTitle(), 
+	    							parentsession.getTitle(),
+	    							parentsession.getParameters().getModels_folder(),
+	    							prevTitle);
+	            		}
+	            		// 4.2 then write new file to disk
+						fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+							parentcase.getOwner().getUsername(),
+							parentcase.getTitle(), 
+							parentsession.getTitle(),
+							parentsession.getParameters().getModels_folder(),
+							editedmodel);
+	            	
 					confirmNotification("Model '" + editedmodel.getTitle() + "'", "saved");					
 				
 				} else {
@@ -316,7 +342,7 @@ public class ModelUtils {
 
 		
 		
-		private static void confirmNotification(String deletedItem, String message) {
+		private void confirmNotification(String deletedItem, String message) {
 	        // welcome notification
 	        Notification notification = new Notification(deletedItem, Type.TRAY_NOTIFICATION);
 	        notification
@@ -330,7 +356,7 @@ public class ModelUtils {
 
 
 
-		public static String renameAceTitle(String titleFieldvalue, String editorvalue) {
+		public String renameAceTitle(String titleFieldvalue, String editorvalue) {
 
 			String newString = "";
 			String firstline = "";
@@ -346,6 +372,8 @@ public class ModelUtils {
 //				// replace title in first line
 				String[] words = lines[0].split(" ");
 				firstline = words[0];
+				if (!firstline.contains("graph"))
+					firstline = "digraph";
 				firstline += " " + titleFieldvalue + " {";
 
 				// restructure lines
@@ -378,7 +406,7 @@ public class ModelUtils {
 		
 		
 		
-		private static void checkTitles() {
+		private void checkTitles() {
 			List<Object> bfields = new ArrayList<Object>(binder.getBoundPropertyIds());
 //			for (Object id : bfields) {
 //				System.out.println(id.toString() + " " + binder.getField(id).getValue());

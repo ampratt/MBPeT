@@ -8,6 +8,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -78,8 +79,7 @@ public class ConfirmDeleteModelWindow extends Window {
 
 	        		// for notification
 	        		String deleteditem = model.getTitle();
-	        		
-	                                            
+	        		                           
 	                // 1. remove child from Case and Session's list of Models
 	        		TestCase parentcase = testcases.getItem(model.getParentsut().getId()).getEntity();
 	        		TestSession parentsession = sessions.getItem(model.getParentsession().getId()).getEntity();
@@ -87,9 +87,18 @@ public class ConfirmDeleteModelWindow extends Window {
 	                parentcase.removeModel(model);
 	                parentsession.removeModel(model);
 	                
-	                // 3. delete model from container
+	                // 2. delete model from container
 	                models.removeItem(model.getId());
 	                
+	                // 3. delete file from disk
+	                FileSystemUtils fileUtils = new FileSystemUtils();
+        			fileUtils.deleteModelFromDisk(
+        					parentcase.getOwner().getUsername(),
+							parentcase.getTitle(), 
+							parentsession.getTitle(),
+							parentsession.getParameters().getModels_folder(),
+							deleteditem);
+            		
 //	                menutree.select(parentid);
 	                //navigate to parent
 	                if (navtohomepage == true) {

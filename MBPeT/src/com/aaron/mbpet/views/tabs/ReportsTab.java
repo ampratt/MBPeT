@@ -3,7 +3,10 @@ package com.aaron.mbpet.views.tabs;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.aaron.mbpet.domain.TestSession;
@@ -30,6 +33,7 @@ public class ReportsTab extends Panel {
 	VerticalLayout vert;
 	String basepath = "/dev/mbpet_projects/";
 	TestSession currsession;
+	CssLayout catalog;
 	
     public ReportsTab(TestSession currsession) {
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -62,13 +66,51 @@ public class ReportsTab extends Panel {
 	} 	
 	
     private Component buildReportsCatalog() {
-        CssLayout catalog = new CssLayout();
+        catalog = new CssLayout();
 //        catalog.setCaption("Catalog");
         catalog.addStyleName("catalog");
         catalog.setWidth("100%");
         
+        getReports();
+        
+        return catalog;
+    }
+    
 
-        File[] directories = new File(basepath + "/" + currsession.getParentcase().getOwner().getUsername() +
+	private String formatReportTitle(String reportname) {
+//		String formatted;
+
+		int pos = reportname.replaceFirst("^(\\D+).*$", "$1").length();
+
+	     SimpleDateFormat inputFT = new SimpleDateFormat ("yyyy-MM-dd_hh-mm-ss"); 
+	     SimpleDateFormat outputFT = new SimpleDateFormat ("dd.MM.yyyy, HH:mm"); 
+	
+	      String input = reportname.substring(pos, reportname.length()-5); 
+	      System.out.print(input + " Parses as "); 
+	      Date t = null; 
+	
+	      try { 
+	          t = inputFT.parse(input); 
+	          System.out.println(t); 
+	          System.out.println("my format is: " + outputFT.format(t));
+	      } catch (ParseException e) { 
+	          System.out.println("Unparseable using " + inputFT); 
+	      }
+	      
+		String formatted = "Test Report<br><span>" + outputFT.format(t) + "</span>"; //5=.html
+
+	      
+	      
+//		int pos = reportname.replaceFirst("^(\\D+).*$", "$1").length();
+//		formatted = "Test Report<br><span>" + reportname.substring(pos, reportname.length()-5) + "</span>"; //5=.html
+//		System.out.println("first int is at pos:" + pos);
+//		System.out.println("formatted:" + formatted);
+		
+		return formatted;
+	}
+
+	public void getReports(){
+		File[] directories = new File(basepath + "/" + currsession.getParentcase().getOwner().getUsername() +
         		"/" + currsession.getParentcase().getTitle() + 
         		"/" + currsession.getTitle() +
         		"/" + currsession.getParameters().getTest_report_folder() + "/"
@@ -82,7 +124,7 @@ public class ReportsTab extends Panel {
         File[] singlereport = null;
         File[] reports = null;
         List<File> reportlist = new ArrayList<File>();
-        for (int i=0; i<directories.length; i++) {
+        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
             System.err.println("finding report round:" + (i+1));
         	String currentpath = directories[i].getAbsolutePath();
            	File dir = new File(currentpath);
@@ -98,14 +140,25 @@ public class ReportsTab extends Panel {
         }
         try {
         	System.err.println("reports files:" + reportlist.size());
+        	boolean newest = true;
 			for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
 				VerticalLayout frame = new VerticalLayout();
 			    frame.addStyleName("report-thumb");	//.addStyleName("frame");
+//			    if (newest) {
+//			    	frame.addStyleName("report-newest");
+//			    	newest = false;
+//			    }
 			    frame.setMargin(true);
 			    frame.setWidth(225.0f, Unit.PIXELS);
 //			    frame.setWidthUndefined();
 
-			    Image thumb = new Image(null, new ThemeResource("img/draft-report-thumb.png"));
+			    Image thumb;
+			    if (newest) {
+				    thumb = new Image(null, new ThemeResource("img/draft-report-thumb-newest.png"));
+		        	newest=false;
+			    } else {
+			    	thumb = new Image(null, new ThemeResource("img/draft-report-thumb.png"));			    	
+			    }
 			    thumb.setWidth(130.0f, Unit.PIXELS);	//(140.0f, Unit.PIXELS);
 			    thumb.setHeight(162.0f, Unit.PIXELS);	//(175.0f, Unit.PIXELS);
 			    frame.addComponent(thumb);
@@ -130,18 +183,5 @@ public class ReportsTab extends Panel {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
-        return catalog;
-    }
-
-	private String formatReportTitle(String reportname) {
-		String formatted;
-		
-		int pos = reportname.replaceFirst("^(\\D+).*$", "$1").length();
-		formatted = "Test Report<br><span>" + reportname.substring(pos, reportname.length()-5) + "</span>"; //5=.html
-//		System.out.println("first int is at pos:" + pos);
-//		System.out.println("formatted:" + formatted);
-		
-		return formatted;
 	}
-
 }

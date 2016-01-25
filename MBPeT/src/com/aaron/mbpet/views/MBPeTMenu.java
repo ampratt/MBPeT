@@ -38,6 +38,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
@@ -178,7 +179,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	
 	private VerticalLayout menuButtons() {
 		final VerticalLayout buttons = new VerticalLayout();
-			
+		buttons.setSpacing(false);
+		
 		// landing page button
 		@SuppressWarnings("serial")
 		Button landingButton = new Button("Start page", new Button.ClickListener() {
@@ -227,6 +229,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		// layout holder for menu items
 		VerticalLayout vc = new VerticalLayout();
 		vc.setHeight("100%");
+		vc.setSpacing(false);
 		
 
 		

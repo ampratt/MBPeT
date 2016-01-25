@@ -132,6 +132,20 @@ public class FileSystemUtils {
 		}
 	}
 	
+	public void writeModelToDisk(String username, String sut, String session, 
+			String models_folder, Model m) {
+		try {
+			FileUtils.writeStringToFile(
+					new File(basepath + username + "/" + sut + "/" + session + "/" + 
+							models_folder + "/" + m.getTitle() + ".gv"), 
+							m.getDotschema());
+			System.out.println("WRITE THIS DOTSCHEMA TO FILE:\n" + m.getDotschema());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+	
 	public void writeModelsToDisk(String username, String sut, String session, 
 			String models_folder, List<Model> mlist) {
 		try {
@@ -144,6 +158,22 @@ public class FileSystemUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteModelFromDisk(String username, String sut, String session, 
+			String models_folder, String previousTitle) {
+		// TODO delete single file from disk
+		try {    		
+    		File file = new File(basepath + username + "/" + sut + "/" + session + "/" + models_folder +
+    				"/" + previousTitle + ".gv");
+    		if(file.delete()){
+    			System.out.println(file.getName() + " is deleted!");
+    		}else{
+    			System.out.println("Delete operation is failed.");
+    		}
+    	}catch(Exception e){    		
+    		e.printStackTrace();
+    	}
 	}
 	
 	public void cleanModelsDirectory(String username, String sut, String session, String models_folder) {
@@ -172,6 +202,10 @@ public class FileSystemUtils {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
 
 	
 	
