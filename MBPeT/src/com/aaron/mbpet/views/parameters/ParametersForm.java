@@ -159,7 +159,6 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 			ramp_list.addStyleName("borderless");
 			ramp_list.addStyleName("small");
 	    	ramp_list.setInputPrompt("[(0,0), (100,200), ..]");
-		    wrap.addComponent(ramp_list);
 		
 			rampbutton = new Button("", this);
 			rampbutton.setIcon(FontAwesome.LINE_CHART);
@@ -167,6 +166,7 @@ public class ParametersForm extends FormLayout implements Button.ClickListener {
 			rampbutton.addStyleName("colored");
 			rampbutton.setDescription("Plot ramp function on chart");
 			wrap.addComponent(rampbutton);
+			wrap.addComponent(ramp_list);
 			wrap.setComponentAlignment(rampbutton, Alignment.MIDDLE_RIGHT);
 			wrap.setExpandRatio(ramp_list, 1);
 		addComponent(wrap);

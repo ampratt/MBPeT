@@ -49,7 +49,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 
 	private JPAContainer<Parameters> parameterscontainer;
 	private JPAContainer<TRT> trtcontainer;
-	private TestSession currsession;
+	private TestSession currSession;
 	private Parameters currentparams;
 	private BeanItem<Parameters> beanItem;
 	private TRT selectedTRT;
@@ -73,17 +73,17 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	private Table trtTable;
 	public static ParametersAceEditorLayout editorLayout;
 	
-	public ParametersFormAceView(TestSession currsession){
+	public ParametersFormAceView(TestSession currSession){
 		setSizeFull();
 		setSplitPosition(45, Unit.PERCENTAGE);
 //		setSpacing(true);
 //		setMargin(true);
 		
 		
-		this.currsession = currsession;
+		this.currSession = currSession;
 		this.parameterscontainer = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
 		this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
-		this.currentparams = parameterscontainer.getItem(currsession.getParameters().getId()).getEntity();
+		this.currentparams = parameterscontainer.getItem(currSession.getParameters().getId()).getEntity();
 		this.editor = new AceEditor();
 				
 		setFirstComponent(buildLeftSide());
@@ -95,7 +95,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		VerticalLayout rightlayout = new VerticalLayout();
 		rightlayout.setSizeFull();
 		
-		editorLayout = new ParametersAceEditorLayout(editor, "python", beanItem, currsession, this);
+		editorLayout = new ParametersAceEditorLayout(editor, "python", beanItem, currSession, this);
 		editorLayout.toggleEditorFields(true);
 		editorLayout.setWidth("97%");
 		
@@ -174,12 +174,12 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //				FlotUtils.formatFlotToRamp(formatted);
 				try {
 					if (ramp.getValue().toString() == null){
-						UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+						UI.getCurrent().addWindow(new RampFlotWindow(currSession, currentparams, "[[0,0]]", editorLayout, ParametersFormAceView.this));
 					} else
-						UI.getCurrent().addWindow(new RampFlotWindow(formatted));	//ramp.getValue().toString()));
+						UI.getCurrent().addWindow(new RampFlotWindow(currSession, currentparams, ramp.getValue().toString(), editorLayout, ParametersFormAceView.this));	//formatted ramp.getValue().toString()));
 					
 				} catch(NullPointerException e){
-					UI.getCurrent().addWindow(new RampFlotWindow("[[0,0]]"));
+					UI.getCurrent().addWindow(new RampFlotWindow(currSession, currentparams, "[[0,0]]", editorLayout, ParametersFormAceView.this));
 				}
 			}
 		});
@@ -524,7 +524,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //									+ " " + currentparams.getSettings_file());
 				
 				// 2 UPDATE parentcase reference
-				currsession.setParameters(parameterscontainer.getItem(currentparams.getId()).getEntity());		
+				currSession.setParameters(parameterscontainer.getItem(currentparams.getId()).getEntity());		
 //				System.out.println("Session's Params are now: " + currsession.getParameters().getId() + " " + currsession.getParameters().getSettings_file());
 				
 				currentparams.setTarget_response_times(trtList);
@@ -548,9 +548,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
 				if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
 					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
-							currsession.getParentcase().getOwner().getUsername(),
-							currsession.getParentcase().getTitle(), 
-							currsession.getTitle(), 
+							currSession.getParentcase().getOwner().getUsername(),
+							currSession.getParentcase().getTitle(), 
+							currSession.getTitle(), 
 							prevModelsFolder,
 							currentparams.getModels_folder());
 					
@@ -563,9 +563,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
 				if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
 					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
-							currsession.getParentcase().getOwner().getUsername(),
-							currsession.getParentcase().getTitle(), 
-							currsession.getTitle(), 
+							currSession.getParentcase().getOwner().getUsername(),
+							currSession.getParentcase().getTitle(), 
+							currSession.getTitle(), 
 							prevReportsFolder,
 							currentparams.getTest_report_folder());
 					
@@ -576,9 +576,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				
 				// write settings file to disk
 				fileUtils.writeSettingsToDisk(	//username, sut, session, settings_file)
-						currsession.getParentcase().getOwner().getUsername(),
-						currsession.getParentcase().getTitle(), 
-						currsession.getTitle(), 
+						currSession.getParentcase().getOwner().getUsername(),
+						currSession.getParentcase().getTitle(), 
+						currSession.getTitle(), 
 						currentparams.getSettings_file());
 				
 				// write confirmation message
@@ -619,7 +619,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
     private void setFilterBySession() {
     	parameterscontainer.removeAllContainerFilters();
 //    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
-    	Equal casefilter = new Equal("ownersession", currsession);//  ("parentcase", getTestCaseByTitle(), true, false);
+    	Equal casefilter = new Equal("ownersession", currSession);//  ("parentcase", getTestCaseByTitle(), true, false);
     	
     	parameterscontainer.addContainerFilter(casefilter);
     }
@@ -631,6 +631,94 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
     	
     	trtcontainer.addContainerFilter(paramfilter);
     }
+    
+    
+//    public void saveParameters() {
+//	    try {
+//			binder.commit();
+//			
+//			// 1 UPDATE container
+//			parameterscontainer.addEntity(beanItem.getBean());
+//			this.currentparams = parameterscontainer.getItem(beanItem.getBean().getId()).getEntity();
+////			System.out.println("Parameters are now: " + currentparams.getId() 
+////								+ " " + currentparams.getSettings_file());
+//			
+//			// 2 UPDATE parentcase reference
+//			currsession.setParameters(parameterscontainer.getItem(currentparams.getId()).getEntity());		
+////			System.out.println("Session's Params are now: " + currsession.getParameters().getId() + " " + currsession.getParameters().getSettings_file());
+//			
+//			currentparams.setTarget_response_times(trtList);
+//			System.out.println("PARAM TRTs after commit:");
+//			for (TRT trt : currentparams.getTarget_response_times()){
+//				System.out.println(trt.getAction());
+//
+//			}
+//			// insert form data into settings file
+//			String settings = ParametersUtils.insertFormDataToAce(currentparams, editorLayout.getEditorValue());
+//			currentparams.setSettings_file(settings);
+//			parameterscontainer.addEntity(currentparams);
+//
+//			// add settings to editor view
+//			editorLayout.toggleEditorFields(true);
+//			editorLayout.setEditorValue(settings);
+//			
+//			// edit models directory name
+//      	  	FileSystemUtils fileUtils = new FileSystemUtils();
+//
+//			System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
+//			if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
+//				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+//						currsession.getParentcase().getOwner().getUsername(),
+//						currsession.getParentcase().getTitle(), 
+//						currsession.getTitle(), 
+//						prevModelsFolder,
+//						currentparams.getModels_folder());
+//				
+////				Notification.show("Previous->new folder: " + prevModelsFolder +"->"+currentparams.getModels_folder());
+//				prevModelsFolder = currentparams.getModels_folder();
+//				editorLayout.setPrevModelsFolder(prevModelsFolder);
+//			}
+//			
+//			// edit reports directory name
+//			System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
+//			if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
+//				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
+//						currsession.getParentcase().getOwner().getUsername(),
+//						currsession.getParentcase().getTitle(), 
+//						currsession.getTitle(), 
+//						prevReportsFolder,
+//						currentparams.getTest_report_folder());
+//				
+////				Notification.show("Previous->new folder: " + prevReportsFolder +"->"+currentparams.getTest_report_folder());
+//				prevReportsFolder = currentparams.getTest_report_folder();
+//				editorLayout.setPrevReportsFolder(prevReportsFolder);
+//			}
+//			
+//			// write settings file to disk
+//			fileUtils.writeSettingsToDisk(	//username, sut, session, settings_file)
+//					currsession.getParentcase().getOwner().getUsername(),
+//					currsession.getParentcase().getTitle(), 
+//					currsession.getTitle(), 
+//					currentparams.getSettings_file());
+//			
+//			// write confirmation message
+//	        Notification notification = new Notification("Parameters",Type.TRAY_NOTIFICATION);
+//	        notification.setDescription("were edited");
+//	        notification.setStyleName("dark small");	//tray  closable login-help
+//	        notification.setPosition(Position.BOTTOM_RIGHT);
+//	        notification.setDelayMsec(500);
+//	        notification.show(Page.getCurrent());
+//        
+//		} catch (CommitException  | InvalidValueException e) {
+//			e.printStackTrace();
+//	        Notification notification = new Notification("Heads Up!");
+//	        notification.setDescription("Some fields had improper values");
+//	        notification.setStyleName("failure");	//tray  closable login-help
+////	        notification.setPosition(Position.BOTTOM_RIGHT);
+////	        notification.setDelayMsec(500);
+//	        notification.show(Page.getCurrent());
+//		} 
+//    }
 	
 
 
