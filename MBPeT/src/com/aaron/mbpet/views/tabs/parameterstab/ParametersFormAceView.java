@@ -71,7 +71,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
 	private Table trtTable;
-	public static ParametersAceEditorLayout editorLayout;
+	public ParametersAceEditorLayout editorLayout;
 	
 	public ParametersFormAceView(TestSession currSession){
 		setSizeFull();

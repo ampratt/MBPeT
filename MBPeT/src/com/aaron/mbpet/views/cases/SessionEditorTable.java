@@ -39,7 +39,7 @@ public class SessionEditorTable extends Panel implements Button.ClickListener {
 	Tree tree; 
 	TestCase testcase;
 	
-	public static Table sessionsTable;
+	public Table sessionsTable;
 	private TextField searchField;
 	private Button editButton;
 	private Button cloneButton;

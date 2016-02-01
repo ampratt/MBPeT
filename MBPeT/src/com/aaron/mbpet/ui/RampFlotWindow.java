@@ -54,17 +54,24 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 	
 	VerticalLayout layout = new VerticalLayout();
 	HorizontalLayout hl = new HorizontalLayout();
-	final static Label currentData = new Label();
-	final static TextField inputField = new TextField();
+	
+	private FlotChart chart;
+	final Label currentData = new Label();
+	final TextField inputField = new TextField();
+	private String rampValue;
+	private JsonFactory factory = new JreJsonFactory();
+//	static String rampValue;
+//	static JsonFactory factory = new JreJsonFactory();
+//	private static FlotChart chart;
+//	final static Label currentData = new Label();
+//	final static TextField inputField = new TextField();	
 	private Button drawButton;
 	private Button pointButton;
 	private Button saveButton;
-	private static FlotChart chart;
-	static String rampValue;
-	static JsonFactory factory = new JreJsonFactory();
 
 	ParametersAceEditorLayout editorLayout;
 	ParametersFormAceView formAceView;
+	FlotUtils flotUtils;	// = new FlotUtils();
 	
 	public RampFlotWindow(TestSession currSession, Parameters currParameters, String rampValue, 
 			ParametersAceEditorLayout editorLayout, ParametersFormAceView formAceView) {
@@ -83,6 +90,8 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
         this.formAceView = formAceView;
         this.parameterscontainer = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
 
+        flotUtils = new FlotUtils(RampFlotWindow.this);
+        
         setContent(buildWindowContent());
         bindFields();
         
@@ -145,7 +154,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 
 		HorizontalLayout fieldButtons = new HorizontalLayout();
 		fieldButtons.setSpacing(false);
-		buttons.addComponent(fieldButtons);
+//		buttons.addComponent(fieldButtons);
 		
 		// set input data
 //		inputField = new TextField();
@@ -154,8 +163,8 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 		inputField.setCaption("Ramp value");		//("Give graph data in format: '[[0,0], [10,30], [20,50]]'");
 //		inputField.setValue(FlotUtils.formatFlotToRamp(rampValue));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
 		//inputField.setInputPrompt("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
-		inputField.addTextChangeListener(myTextChangeListener);
-		inputField.addValueChangeListener(myValueChangeListener);
+//		inputField.addTextChangeListener(myTextChangeListener);
+//		inputField.addValueChangeListener(myValueChangeListener);
 		fieldButtons.addComponent(inputField);
 		
 		// button to draw graph
@@ -179,11 +188,13 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 		saveButton.setIcon(FontAwesome.SAVE);
 		saveButton.setEnabled(false);
 		
-		buttons.addComponents(pointButton, saveButton);
-		buttons.setComponentAlignment(pointButton, Alignment.BOTTOM_LEFT);
-		buttons.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
-		buttons.setExpandRatio(saveButton, 1);
-		buttons.setExpandRatio(pointButton, 0);	//fieldButtons, 1
+		buttons.addComponents(fieldButtons, pointButton);	//, saveButton);
+		buttons.setComponentAlignment(fieldButtons, Alignment.BOTTOM_RIGHT);
+		buttons.setComponentAlignment(pointButton, Alignment.BOTTOM_RIGHT);
+		buttons.setExpandRatio(fieldButtons, 1);	//fieldButtons, 1
+//		buttons.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
+//		buttons.setExpandRatio(saveButton, 1);
+//		buttons.setExpandRatio(pointButton, 0);	//fieldButtons, 1
 		
 		// lable to display graph data TESTING PURPOSES
 //		layout.addComponent(currentData);
@@ -224,7 +235,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 ////				buildFlotChart(dataArray.toJson());
 //				buttonAction(dataArray.toJson());
 
-				inputField.setValue(FlotUtils.formatFlotToRamp(dataArray.toJson()));	//(obj.get("data").toJson()));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
+				inputField.setValue(flotUtils.formatFlotToRamp(dataArray.toJson()));	//(obj.get("data").toJson()));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
 
 			}
 		});
@@ -263,7 +274,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 	
 	
 	public void buildFlotChart(String data) {
-		chart = new FlotChart();
+		chart = new FlotChart(flotUtils);
 		chart.setWidth("95%");
 		chart.setHeight("300px");
 		
@@ -308,6 +319,10 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == drawButton) {
 			buttonAction(inputField.getValue());
+//			saveButton.setEnabled(true);
+
+			// execute save
+			saveParameters();
 
 		} else if (event.getButton() == saveButton) {
 			saveParameters();
@@ -336,7 +351,11 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 
 //			JsonArray newPoint = factory.createArray();
 //			JsonArray newRamp = dataArray. set(dataArray.length(), );	//dataArray.getArray(dataArray.length()-1);
-			buttonAction(FlotUtils.formatFlotToRamp(newRamp));
+			buttonAction(flotUtils.formatFlotToRamp(newRamp));
+			
+			// execute save
+			saveParameters();
+
 		}
 		
 	}
@@ -344,14 +363,14 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 
 	public void firstbuttonAction() {
 		//flotData = flotInput.getValue();
-		buildFlotChart(FlotUtils.formatRampToFlot(rampValue));
+		buildFlotChart(flotUtils.formatRampToFlot(rampValue));
 		hl.addComponent(chart);
 		hl.setExpandRatio(chart, 1);
 //				layout.addComponent(new Label("this is the chart options JSON: " + chart.getOptions().toString()));
 		// update label
 		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
 		System.out.println("Data from chart State:\n" + chart.getData().toJson());
-		rampValue = FlotUtils.formatFlotToRamp(chart.getData().toJson());
+		rampValue = flotUtils.formatFlotToRamp(chart.getData().toJson());
 	}
 	
 	public void buttonAction(String inputvalue) {
@@ -360,7 +379,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 			hl.removeComponent(hl.getComponent(1));
 		}
 		rampValue = inputvalue;	//inputField.getValue();
-		buildFlotChart(FlotUtils.formatRampToFlot(rampValue));
+		buildFlotChart(flotUtils.formatRampToFlot(rampValue));
 		hl.addComponent(chart);
 		hl.setExpandRatio(chart, 1);
 //					layout.addComponent(new Label("this is the chart options JSON: " + chart.getOptions().toString()));
@@ -372,7 +391,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 	
 	
 	
-	public static void updateDataInField() {
+	public void updateDataInField() {
 		JsonArray jarray = factory.parse(chart.getData().toJson());
 			System.out.println(jarray + "-" + jarray.toJson());
 		JsonObject obj = jarray.get(0);
@@ -380,9 +399,12 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 			System.out.println("DROP TRIGGERED UPDATE->" + dataArray.toJson());
 		
 //			inputField.setValue(dataArray.toJson()); 
-		rampValue = FlotUtils.formatFlotToRamp(dataArray.toJson());
-		inputField.setValue(FlotUtils.formatFlotToRamp(dataArray.toJson()));	//(obj.get("data").toJson()));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
+		rampValue = flotUtils.formatFlotToRamp(dataArray.toJson());
+		inputField.setValue(flotUtils.formatFlotToRamp(dataArray.toJson()));	//(obj.get("data").toJson()));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
 		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//current.setValue("Graph data is: " + flot.getData());
+		
+		// execute save
+		saveParameters();
 	}
 
 	

@@ -10,10 +10,12 @@ public class ProgressBarThread extends Thread {
 	boolean stopFlag = false;
 	boolean completeFlag = false;
 	
+	SessionViewer sessionViewer;
     // Volatile because read in another thread in access()
     volatile double current = 0.0;
 
-    public ProgressBarThread(double testduration) {
+    public ProgressBarThread(SessionViewer sessionViewer, double testduration) {
+    	this.sessionViewer = sessionViewer;
     	this.testduration = testduration + 8;	// = 40;
     	this.increaseAmount = (1.0 / (this.testduration/2));	//(1.0 / (this.testduration/3));
 
@@ -42,13 +44,13 @@ public class ProgressBarThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                    SessionViewer.progressbar.setValue(new Float(current));
+                	sessionViewer.progressbar.setValue(new Float(current));
                     if (current < 1.0)
-                    	SessionViewer.progressstatus.setValue("" +
+                    	sessionViewer.progressstatus.setValue("" +
                             ((int)(current*100)) + "%");	//done
                     else {
-                    	SessionViewer.progressstatus.setValue("100%");
-                    	SessionViewer.resetStartStopButton();
+                    	sessionViewer.progressstatus.setValue("100%");
+                    	sessionViewer.resetStartStopButton();
                 	}
                 }
             });
@@ -60,10 +62,10 @@ public class ProgressBarThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                    SessionViewer.progressbar.setValue(new Float(0.0));
+                	sessionViewer.progressbar.setValue(new Float(0.0));
                     if (current < 1.0) {
-                    	SessionViewer.progressstatus.setValue("stopped");	//done
-                    	SessionViewer.resetStartStopButton();
+                    	sessionViewer.progressstatus.setValue("stopped");	//done
+                    	sessionViewer.resetStartStopButton();
                     }
                 }
             });

@@ -44,15 +44,15 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     private ComboBox slaveSelect;
 //  private Button newSessionButton;
 //	private Button saveButton;
-    public static ProgressBarThread progressThread;
-    public static ProgressBar spinner;
-    public static ProgressBar progressbar;
-    public static Label progressstatus;
-	private static Label spinLabel;
-	private static Button startButton;
-	private static Button stopButton;
+    public ProgressBarThread progressThread;
+    public ProgressBar spinner;
+    public ProgressBar progressbar;
+    public Label progressstatus;
+	private Label spinLabel;
+	private Button startButton;
+	private Button stopButton;
 	
-	public static TabLayout tabs;
+	public TabLayout tabs;
 	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
@@ -253,7 +253,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //					currsession.getModels());
 			
 			// start receiving UDP messages
-			udpWorker = new UDPThreadWorker();
+			udpWorker = new UDPThreadWorker(this);
 			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
 
 			// start mbpet MASTER
@@ -296,7 +296,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			displaySpinner(false);
 			
 //			// stop progressbar
-			progressThread.endThread();
+			this.progressThread.endThread();
 
 			// stop UDP
 			udpWorker.endThread(false);
@@ -317,7 +317,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     	spinLabel.setVisible(b);
     }
 	
-	public static void displayProgressBar(boolean b) {
+	public void displayProgressBar(boolean b) {
 		// reveal progressbar
     	progressbar.setVisible(b);	//setVisible(true);
     	progressstatus.setVisible(b);	
@@ -327,8 +327,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
         	spinLabel.setVisible(false);
 
    	        // start progress indicator
-   	        SessionViewer.progressThread = new ProgressBarThread(40);
-   	        SessionViewer.progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
+   	        progressThread = new ProgressBarThread(this, currsession.getParameters().getTest_duration()); 		//40);
+   	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
     	}
 	}
 
@@ -370,7 +370,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		return sessions.getItem(id).getEntity();
 	}
 	
-	public static void resetStartStopButton() {
+	public void resetStartStopButton() {
 		startButton.setEnabled(true);
 		stopButton.setEnabled(false);
 		stopButton.removeStyleName("danger");

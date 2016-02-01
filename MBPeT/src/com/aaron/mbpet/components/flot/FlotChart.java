@@ -47,12 +47,25 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	JsonFactory factory = new JreJsonFactory();
 	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
+	FlotUtils flotUtils;	// = new FlotUtils();
+
 //	private JsonArray data;
 //	private JSONObject options;
 //	private JsonArray seriesOptions;
 	
 	@SuppressWarnings("serial")
 	public FlotChart() {
+		flotUtils = new FlotUtils();
+		registerFunctions();
+    }
+	@SuppressWarnings("serial")
+	public FlotChart(FlotUtils flotUtils) {
+		this.flotUtils = flotUtils;
+		registerFunctions();
+    }
+	
+	
+	public void registerFunctions(){
         registerRpc(new FlotClickRpc() {
         	@Override
             public void onPlotClick(int seriesIndex, int dataIndex, JsonArray datapoint) {
@@ -82,7 +95,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 				setDataJson(newData);
 				
 				// update a variable to use for inputfield etc
-		        FlotUtils.triggerDataUpdate();
+				flotUtils.triggerDataUpdate();
 
 			    //FOR TESTING - update chart state
 			    System.out.println("newData: " + newData.toJson());				
@@ -151,7 +164,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //			}
 
         });
-    }
+	}
 	
 	
 //	public void update() {

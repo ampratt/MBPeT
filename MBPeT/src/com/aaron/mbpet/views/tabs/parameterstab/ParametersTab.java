@@ -11,13 +11,13 @@ import com.vaadin.ui.VerticalLayout;
 public class ParametersTab extends Panel {
 
 	AceEditor editor;
-	private TestSession currsession;
+//	private TestSession currsession;
 	
 	public ParametersTab(TestSession currsession) {		//TestSession currsession
 //		setSizeFull();
 //		setMargin(true);
 //		setSpacing(true);
-		this.currsession = currsession;
+//		this.currsession = currsession;
 		editor = new AceEditor();
 		
 		setHeight("100%");

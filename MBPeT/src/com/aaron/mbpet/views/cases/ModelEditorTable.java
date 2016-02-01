@@ -39,7 +39,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 
 	
 	Tree tree; 
-	public static Table modelsTable;
+	public Table modelsTable;
 	private TextField searchField;
 	private Button editButton;
 	private Button cloneButton;

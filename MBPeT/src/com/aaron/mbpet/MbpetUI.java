@@ -214,12 +214,12 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	  }
 
 		@Override
-		public void updateMonitoringFields(final String[] values, final int numslaves, final String[] slaveresults) {	//, final double current
+		public void updateMonitoringFields(final String[] values, final int numslaves, final String[] slaveresults, final SessionViewer sessionViewer) {	//, final double current
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
 		        	//update the UI
-		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();
+		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.updateFields(values);
 		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
 		        	montab.updateChart(Integer.parseInt(values[7]));
@@ -228,14 +228,14 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		}
 		
 		@Override
-		public void printNewestMessage(final String message) {	//, final double current
+		public void printNewestMessage(final String message, final SessionViewer sessionViewer) {	//, final double current
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
 		        	//update the UI
 //		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();	// TabLayout.getMonitoringTab();
 
-		        	SessionViewer.tabs.getMonitoringTab().addNewMessageComponent(message);
+		        	sessionViewer.tabs.getMonitoringTab().addNewMessageComponent(message);
 		        	
 //		        	mainview.addNewMessageComponent(string);
 		        	
@@ -252,12 +252,12 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 	    
 		
 		@Override
-		public void printFinalMessage(final String message, final int numslaves) {
+		public void printFinalMessage(final String message, final int numslaves, final SessionViewer sessionViewer) {
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
 		        	//update the UI
-		        	MonitoringTab montab = SessionViewer.tabs.getMonitoringTab();
+		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.addNewMessageComponent(message);
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
                     

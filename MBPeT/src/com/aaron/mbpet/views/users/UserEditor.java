@@ -71,7 +71,13 @@ public class UserEditor extends Window implements Button.ClickListener,
     public UserEditor(Item personItem, String lableText, boolean mode) {
     	this.editMode = mode;
 //    	this.setModal(true);
-    	this.setResizable(false);
+    	center();
+        setResizable(true);
+        setClosable(true);
+        setModal(true);
+//      setSizeUndefined();
+        setWidth(25, Unit.EM);
+      
     	this.currsessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
     	
     	VerticalLayout layout = new VerticalLayout();
@@ -106,9 +112,10 @@ public class UserEditor extends Window implements Button.ClickListener,
         layout.addComponent(new Label("<h3>" + lableText + "</h3>", 
 				ContentMode.HTML));
         layout.addComponent(editorForm);
+        layout.setComponentAlignment(editorForm, Alignment.MIDDLE_CENTER);
         layout.addComponent(buttons);
         
-        setSizeUndefined();
+
         setContent(layout); //editorForm
         setCaption(buildCaption());
     }

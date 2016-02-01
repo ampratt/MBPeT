@@ -4,7 +4,16 @@ import com.aaron.mbpet.ui.RampFlotWindow;
 
 public final class FlotUtils {
 
+	RampFlotWindow rampFlotWindow;
 	
+	public FlotUtils(RampFlotWindow rampFlotWindow) {
+		this.rampFlotWindow = rampFlotWindow;
+	}
+	public FlotUtils(){
+		
+	}
+
+
 	/**
 	 * Convert the proper Ramp format of 	-> [(0,0), (1,1), ..]
 	 * to bracketed format for flotcharts 	-> [[0,0], [1,1], ..]
@@ -44,8 +53,8 @@ public final class FlotUtils {
 	 * this method is triggered to automatically update
 	 * the data variable to be sent elsewhere.
 	 */
-	public static void triggerDataUpdate() {
-		RampFlotWindow.updateDataInField();
+	public void triggerDataUpdate() {
+		rampFlotWindow.updateDataInField();
 	}
 	
 }
