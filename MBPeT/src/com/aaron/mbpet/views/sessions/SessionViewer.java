@@ -271,10 +271,10 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //	        t.start();
 
 			// start mbpet SLAVE
-//			String slavecommand = "./mbpet_slave " + "127.0.0.1";
-//			Notification.show("Starting Slave", slavecommand, Type.TRAY_NOTIFICATION);
-//			SlaveUtils slaveUtils = new SlaveUtils();
-//			slaveUtils.startSlave(slavecommand);
+			String slavecommand = "./mbpet_slave " + "127.0.0.1";
+			Notification.show("Starting Slave", slavecommand, Type.TRAY_NOTIFICATION);
+			SlaveUtils slaveUtils = new SlaveUtils();
+			slaveUtils.startSlave(slavecommand);
 	        
 	        
 	        // start SLAVE(s)
