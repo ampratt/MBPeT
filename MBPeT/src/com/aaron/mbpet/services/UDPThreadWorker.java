@@ -224,11 +224,14 @@ public class UDPThreadWorker {
     	//    	stopFlag = true;
     }
 
-    public void endThread(boolean navToReports) {
-    	setStopFlag(true);
-//stopFlag = true;
-    	this.navToReports = navToReports;
-    }
+//  public void endThread(boolean navToReports) {
+//	setStopFlag(true);
+////stopFlag = true;
+//	this.navToReports = navToReports;
+//}
+public void navToReports(boolean navToReports) {
+	this.navToReports = navToReports;
+}
 
 
 	public boolean isStopFlag() {

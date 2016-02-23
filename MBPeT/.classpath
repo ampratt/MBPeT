@@ -22,17 +22,13 @@
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=MBPeT&amp;ivyXmlPath=ivy.xml&amp;confs=nodeploy&amp;ivySettingsPath=%24%7Bworkspace_loc%3AMBPeT%2Fivysettings.xml%7D&amp;loadSettingsOnDemand=false&amp;ivyUserDir=&amp;propertyFiles="/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/eclipselink">
 		<attributes>
-			<attribute name="owner.project.facets" value="#system#;jpt.jpa"/>
+			<attribute name="owner.project.facets" value="jpt.jpa;#system#"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate 4.3.6">
-		<attributes>
-			<attribute name="owner.project.facets" value="#system#;jpt.jpa"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate 4.3.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mysql-jdbc">
 		<attributes>
-			<attribute name="owner.project.facets" value="#system#;jpt.jpa"/>
+			<attribute name="owner.project.facets" value="jpt.jpa;#system#"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/MySQL JDBC Driver"/>
@@ -41,5 +37,11 @@
 	<classpathentry kind="lib" path="src/com/aaron/mbpet/js/alloy-ui-master"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/font-awesome-label-1.2.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/java-json.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate-4.3.6">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+			<attribute name="owner.project.facets" value="jpt.jpa"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -4,14 +4,19 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
-public class KillProcess {
+public class KillMBPeTProcesses {
 
 	public static void main(String[] args) {
-		 String processName = "mbpet_cli.exe";
+		 String masterProcessName = "mbpet_cli.exe";
+		 String slaveProcessName = "mbpet_slave";
 		 try {
-			if (isProcessRunning(processName)) {
-				System.out.print(processName + " is being killed");
-				killProcess(processName);
+			if (isProcessRunning(masterProcessName)) {
+				System.out.print(masterProcessName + " is being killed");
+				killProcess(masterProcessName);
+			 }
+			if (isProcessRunning(slaveProcessName)) {
+				System.out.print(slaveProcessName + " is being killed");
+				killProcess(slaveProcessName);
 			 }
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -43,7 +48,11 @@ public class KillProcess {
 
 	public static void killProcess(String serviceName) throws Exception {
 
-	  Runtime.getRuntime().exec(KILL + serviceName);
+		//get pid of running service
+//		Runtime.getRuntime().exec(pidof"+ serviceName);
+		
+		//kill it
+		Runtime.getRuntime().exec(KILL + serviceName);
 
 	 }
 }

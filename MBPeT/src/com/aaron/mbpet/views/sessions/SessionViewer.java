@@ -5,8 +5,10 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.GenerateComboBoxContainer;
-import com.aaron.mbpet.services.KillProcess;
+import com.aaron.mbpet.services.KillMBPeTProcesses;
+import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.services.ProgressBarThread;
+import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
@@ -257,17 +259,22 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
 
 			// start mbpet MASTER
-//			String command = "mbpet_cli.exe " +
-//					"test_project " +
-//					slaveSelect.getValue().toString() + 
-//					" -b localhost:9999 -s";
-//			Notification.show("Running start command", command, Type.TRAY_NOTIFICATION);
-//			MasterUtils masterUtils = new MasterUtils(command);
-//			masterUtils.startMaster(command);
+			String mastercommand = "mbpet_cli.exe " +
+					"test_project " +
+					slaveSelect.getValue().toString() + 
+					" -b localhost:9999 -s";
+			Notification.show("Starting Master", mastercommand, Type.TRAY_NOTIFICATION);
+			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
+			masterUtils.startMaster(mastercommand);
 
 			//	        Thread t = new Thread(masterUtils);
 //	        t.start();
 
+			// start mbpet SLAVE
+//			String slavecommand = "./mbpet_slave " + "127.0.0.1";
+//			Notification.show("Starting Slave", slavecommand, Type.TRAY_NOTIFICATION);
+//			SlaveUtils slaveUtils = new SlaveUtils();
+//			slaveUtils.startSlave(slavecommand);
 	        
 	        
 	        // start SLAVE(s)
@@ -296,13 +303,14 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			displaySpinner(false);
 			
 //			// stop progressbar
-			this.progressThread.endThread();
+//			progressThread.endThread();
 
 			// stop UDP
-			udpWorker.endThread(false);
+			udpWorker.endThread();
+			udpWorker.navToReports(false);
 			
-			// stop mbpet MASTER
-			new KillProcess();
+			// stop mbpet MASTER and SLAVE
+			new KillMBPeTProcesses();
 			
 			
 			// stop SLAVE(s)

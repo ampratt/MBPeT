@@ -18,12 +18,13 @@ public class MasterUtils implements Runnable {
 
 	String command;
 	
-	public MasterUtils(String command) {
+	public MasterUtils(){		//(String command) {
 
-		this.command = command;
+//		this.command = command;
+		
 		
 //		MasterUtils obj = new MasterUtils();
-		String domainName = "google.com";
+//		String domainName = "google.com";
 		
 		//in mac oxs
 //		String command = "ping -c 3 " + domainName;
@@ -87,7 +88,7 @@ public class MasterUtils implements Runnable {
 //        	        		"dir & echo example of & echo working dir");
         	        pb.directory(new File("C:\\dev\\mbpet"));
         	
-        			System.out.println("Run echo command");
+        			System.out.println("### Running master command...");
 //        			pb.redirectErrorStream(true);
         			p = pb.start();
         			p.getInputStream().close(); 
@@ -96,7 +97,7 @@ public class MasterUtils implements Runnable {
 
         			try {
         				int exitVal = p.waitFor();            
-        				System.out.println("Process exitValue: " + exitVal);
+        				System.err.println("Master Process exitValue: " + exitVal);
         			} catch (InterruptedException e) {
         				e.printStackTrace();
         			}
