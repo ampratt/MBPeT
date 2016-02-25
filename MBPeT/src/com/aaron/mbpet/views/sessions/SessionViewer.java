@@ -254,27 +254,39 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //					currsession.getParameters().getModels_folder(),
 //					currsession.getModels());
 			
+//			// copy master files to User directory for unique execution
+//			FileSystemUtils fileUtils = new FileSystemUtils();
+//			fileUtils.copyMasterToUserDir(currsession.getParentcase().getOwner().getUsername());
+////			"C:\\dev\\mbpet\\users\\"
+			
+			
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker(this);
 			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
+//			int udpPort = udpWorker.getUDPPort();
 
 			// start mbpet MASTER
-			String mastercommand = "mbpet_cli.exe " +
-					"test_project " +
-					slaveSelect.getValue().toString() + 
-					" -b localhost:9999 -s";
-			Notification.show("Starting Master", mastercommand, Type.TRAY_NOTIFICATION);
+//			String mastercommand = "mbpet_cli.exe " +
+//					"test_project " +
+//					slaveSelect.getValue().toString() + 
+//					" -p " + 
+//					" -b localhost:" + udpPort + 
+//					" -s";
+			System.out.println("udp port is now: " + udpWorker.getUDPPort());
 			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
-			masterUtils.startMaster(mastercommand);
-
+			masterUtils.startMaster(slaveSelect.getValue().toString(), udpWorker.getUDPPort(), currsession.getParentcase().getOwner().getUsername());	//(mastercommand);
+			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
+//			int masterport = masterUtils.getMasterPort();
+			
 			//	        Thread t = new Thread(masterUtils);
 //	        t.start();
 
 			// start mbpet SLAVE
-			String slavecommand = "./mbpet_slave " + "127.0.0.1";
-			Notification.show("Starting Slave", slavecommand, Type.TRAY_NOTIFICATION);
+//			String slavecommand = "./mbpet_slave " + "127.0.0.1 -p " + masterUtils.getMasterPort();
+			System.out.println("master port is now: " + masterUtils.getMasterPort());
 			SlaveUtils slaveUtils = new SlaveUtils();
-			slaveUtils.startSlave(slavecommand);
+			slaveUtils.startSlave(masterUtils.getMasterPort());		//(slavecommand);
+			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
 	        
 	        
 	        // start SLAVE(s)

@@ -167,7 +167,11 @@ public class UserEditor extends Window implements Button.ClickListener,
 //        					lname);	//MainView.setDisplayName            	        		
         		} else {
         			//create user directory in file system
-        			new FileSystemUtils().createUserDir(personItem.getItemProperty("username").getValue().toString());
+        			FileSystemUtils fileUtils = new FileSystemUtils();
+        			fileUtils.createUserDir(personItem.getItemProperty("username").getValue().toString());
+        			
+        			//copy mbpet master to user dir
+        			fileUtils.copyMasterToUserDir(personItem.getItemProperty("username").getValue().toString());
         		}
         			
             } catch (MethodException | PersistenceException e) {

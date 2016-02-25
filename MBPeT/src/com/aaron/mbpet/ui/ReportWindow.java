@@ -46,7 +46,7 @@ public class ReportWindow extends Window {
 //    	panel.setSizeFull();
 //    	panel.addStyleName(ValoTheme.PANEL_BORDERLESS);
     	        
-//    	file = new File("C:/dev/mbpet_projects/apratt/yaas/test_project/test_reports/test_project_test_report_2016-01-25_14-37-40/error_rate.png");
+//    	file = new File("C:/dev/mbpet/users/apratt/yaas/test_project/test_reports/test_project_test_report_2016-01-25_14-37-40/error_rate.png");
         
 
     	
@@ -75,7 +75,7 @@ public class ReportWindow extends Window {
   
 
 //		BrowserFrame browser = new BrowserFrame("Embedded Page", 
-//				new ExternalResource("C://dev//mbpet_projects//apratt//yaas//test_project///test_reports//test_project_test_report_2016-01-25_14-37-40//master_test_report_2016-01-25_14-37-40.html"));
+//				new ExternalResource("C://dev//mbpet//users//apratt//yaas//test_project///test_reports//test_project_test_report_2016-01-25_14-37-40//master_test_report_2016-01-25_14-37-40.html"));
 //		content.addComponent(browser);
     	
         setContent(content);
@@ -117,7 +117,7 @@ public class ReportWindow extends Window {
 
 	public static void open(final File file) {
 //		File f = new File("file:///" + file);
-//		File f = new File("mbpet_projects/apratt/yaas/test_project/test_reports/test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
+//		File f = new File("mbpet/users/apratt/yaas/test_project/test_reports/test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
 		System.out.println("file is: " + file);
         Window w = new ReportWindow(file);
         UI.getCurrent().addWindow(w);

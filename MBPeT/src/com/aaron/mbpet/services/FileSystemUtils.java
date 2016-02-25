@@ -11,8 +11,9 @@ import com.aaron.mbpet.domain.Model;
 
 public class FileSystemUtils {
 
-	String basepath = "/dev/mbpet_projects/";
-	
+	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
+	String mbpetBasepath = "/dev/mbpet/";		//"/dev/mbpet_projects/";
+
 	public FileSystemUtils(){
 //		createUserDir("javacreatedme");
 	}
@@ -20,7 +21,7 @@ public class FileSystemUtils {
 	public void createUserDir(String username) {
 		// Create one directory
 		File file;
-		boolean success = (file = new File(basepath + username)).mkdir();
+		boolean success = (file = new File(usersBasepath + username)).mkdir();
 		if (success) {
 			System.out.println("Directory: \"" + username + "\" created");
 			System.out.println("Directory: " + file.getAbsolutePath());
@@ -30,7 +31,7 @@ public class FileSystemUtils {
 	public void createSUTDir(String username, String sut) {
 		// Create one directory
 		File file;
-		boolean success = (file = new File(basepath + username + "/" + sut)).mkdir();
+		boolean success = (file = new File(usersBasepath + username + "/" + sut)).mkdir();
 		if (success)
 			System.out.println("Directory: " + file.getAbsolutePath());
 	}
@@ -39,7 +40,7 @@ public class FileSystemUtils {
 		// Create one directory
 		File file;
 		boolean success = (
-				file = new File(basepath + username + "/" + sut + "/" + testSession_dir)).mkdir();
+				file = new File(usersBasepath + username + "/" + sut + "/" + testSession_dir)).mkdir();
 		if (success)
 			System.out.println("Directory: " + file.getAbsolutePath());
 	}
@@ -47,7 +48,7 @@ public class FileSystemUtils {
 	public void createModelsDir(String username, String sut, String session, String models_dir) {
 		File file;
 		boolean success = (
-				file = new File(basepath + username + "/" + sut + "/" + session + "/" + models_dir)).mkdir();
+				file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + models_dir)).mkdir();
 		if (success)
 			System.out.println("Directory: " + file.getAbsolutePath());
 	}
@@ -55,7 +56,7 @@ public class FileSystemUtils {
 	public void createReportsDir(String username, String sut, String session, String reports_dir) {
 		File file;
 		boolean success = (
-				file = new File(basepath + username + "/" + sut + "/" + session + "/" + reports_dir)).mkdir();
+				file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + reports_dir)).mkdir();
 		if (success)
 			System.out.println("Directory: " + file.getAbsolutePath());
 	}
@@ -65,7 +66,7 @@ public class FileSystemUtils {
 	 * RENAMING
 	 */
 	public void renameSUTDir(String username, String prevSutName, String newSutName) {
-		File dir = new File(basepath + username + "/" + prevSutName);
+		File dir = new File(usersBasepath + username + "/" + prevSutName);
 		if (!dir.isDirectory()) {
 			System.err.println("There is no directory @ given path");
 			createSUTDir(username, newSutName);
@@ -75,7 +76,7 @@ public class FileSystemUtils {
 	}
 	
 	public void renameSessionDir(String username, String sut, String prevSessionName, String newSessionName) {
-		File dir = new File(basepath + username + "/" + sut + "/" + prevSessionName);
+		File dir = new File(usersBasepath + username + "/" + sut + "/" + prevSessionName);
 		if (!dir.isDirectory()) {
 			System.err.println("There is no directory @ given path");
 			createSessionTestDir(username, sut, newSessionName);
@@ -86,7 +87,7 @@ public class FileSystemUtils {
 
 	public void renameModelsDir(String username, String sut, String session, 
 			String prevModelsDir, String newModelsDir) {
-		File dir = new File(basepath + username + "/" + sut + "/" + session + "/" + prevModelsDir);
+		File dir = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + prevModelsDir);
 		if (!dir.isDirectory()) {
 			System.err.println("There is no directory @ given path");
 //			createModelsDir(username, sut, session, newModelsDir);
@@ -97,7 +98,7 @@ public class FileSystemUtils {
 	
 	public void renameReportsDir(String username, String sut, String session, 
 			String prevReportsDir, String newReportsDir) {
-		File dir = new File(basepath + username + "/" + sut + "/" + session + "/" + prevReportsDir);
+		File dir = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + prevReportsDir);
 		if (!dir.isDirectory()) {
 			System.err.println("There is no directory @ given path");
 //			createModelsDir(username, sut, session, newModelsDir);
@@ -113,7 +114,7 @@ public class FileSystemUtils {
 	public void writeSettingsToDisk(String username, String sut, String session, String settings_file) {
 		try {
 			FileUtils.writeStringToFile(
-					new File(basepath + username + "/" + sut + "/" + session + "/settings.py"), 
+					new File(usersBasepath + username + "/" + sut + "/" + session + "/settings.py"), 
 					settings_file);
 			
 		} catch (IOException e) {
@@ -124,7 +125,7 @@ public class FileSystemUtils {
 	public void writeAdapterToDisk(String username, String sut, String session, String adapter_file) {
 		try {
 			FileUtils.writeStringToFile(
-					new File(basepath + username + "/" + sut + "/" + session + "/adapter.py"), 
+					new File(usersBasepath + username + "/" + sut + "/" + session + "/adapter.py"), 
 					adapter_file);
 			
 		} catch (IOException e) {
@@ -136,7 +137,7 @@ public class FileSystemUtils {
 			String models_folder, Model m) {
 		try {
 			FileUtils.writeStringToFile(
-					new File(basepath + username + "/" + sut + "/" + session + "/" + 
+					new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
 							models_folder + "/" + m.getTitle() + ".gv"), 
 							m.getDotschema());
 			System.out.println("WRITE THIS DOTSCHEMA TO FILE:\n" + m.getDotschema());
@@ -151,7 +152,7 @@ public class FileSystemUtils {
 		try {
 			for (Model m : mlist) {
 				FileUtils.writeStringToFile(
-						new File(basepath + username + "/" + sut + "/" + session + "/" + 
+						new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
 								models_folder + "/" + m.getTitle() + ".gv"), 
 						m.getDotschema());
 			}
@@ -164,7 +165,7 @@ public class FileSystemUtils {
 			String models_folder, String previousTitle) {
 		// TODO delete single file from disk
 		try {    		
-    		File file = new File(basepath + username + "/" + sut + "/" + session + "/" + models_folder +
+    		File file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + models_folder +
     				"/" + previousTitle + ".gv");
     		if(file.delete()){
     			System.out.println(file.getName() + " is deleted!");
@@ -179,7 +180,7 @@ public class FileSystemUtils {
 	public void cleanModelsDirectory(String username, String sut, String session, String models_folder) {
 		try {
 			FileUtils.cleanDirectory(
-					new File(basepath + username + "/" + sut + "/" + session + "/" + models_folder));
+					new File(usersBasepath + username + "/" + sut + "/" + session + "/" + models_folder));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,7 +189,7 @@ public class FileSystemUtils {
 	public void deleteSessionDirectory(String username, String sut, String session) {
 		try {
 			FileUtils.deleteDirectory(	//cleanDirectory(
-					new File(basepath + username + "/" + sut + "/" + session));
+					new File(usersBasepath + username + "/" + sut + "/" + session));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -197,10 +198,22 @@ public class FileSystemUtils {
 	public void deleteSUTDirectory(String username, String sut) {
 		try {
 			FileUtils.deleteDirectory(	//cleanDirectory(
-					new File(basepath + username + "/" + sut));
+					new File(usersBasepath + username + "/" + sut));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void copyMasterToUserDir(String username) {
+		try {
+//			File src = new
+			FileUtils.copyDirectory(
+					new File(mbpetBasepath + "/master"), 
+					new File(usersBasepath + "/" + username + "/master"));
+			System.out.println("copied master to user dir");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 
 

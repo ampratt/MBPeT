@@ -17,7 +17,8 @@ import com.vaadin.ui.UIDetachedException;
 public class SlaveUtils implements Runnable {
 
 	String command;
-	
+	public int masterport;
+
 	public SlaveUtils(){		//(String command) {
 //			this.command = command;
 	}
@@ -50,23 +51,28 @@ public class SlaveUtils implements Runnable {
 		}		
 	}
 	
-	public void startSlave(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
+	public void startSlave(final int masterport) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //	    	new Thread() {
 		new Thread(new Runnable() {
             @Override
             public void run() {
             	Process p;
         		try {
+        			command = 
+        					"./mbpet_slave " + 
+							"127.0.0.1 -p " + 
+							masterport;
         	        ProcessBuilder pb = new ProcessBuilder(
 //        	        		"cmd.exe", "/c", command);
         	        		
 //	        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        	        		"dir & echo example of & echo working dir");
-        	        			"echo", "./mbpet_slave", "127.0.0.1");
+//        	        			"echo", "./mbpet_slave", "127.0.0.1");
+    	        			"echo", command);
         	        pb.directory(new File("C:\\dev\\mbpet\\slave"));
         	
-        			System.out.println("### Running slave command...");
+        			System.out.println("### Running slave command: " + command);
 //	        			pb.redirectErrorStream(true);
         			p = pb.start();
 //        			p.getInputStream().close(); 
@@ -122,6 +128,13 @@ public class SlaveUtils implements Runnable {
             };
         }).start();
      
+	}
+
+	public String getCommand() {
+		return command;
+	}
+	public void setCommand(String command) {
+		this.command = command;
 	}
 	
 

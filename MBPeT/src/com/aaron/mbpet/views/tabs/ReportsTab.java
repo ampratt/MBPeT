@@ -31,7 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 public class ReportsTab extends Panel {
 	
 	VerticalLayout vert;
-	String basepath = "/dev/mbpet_projects/";
+	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 	TestSession currsession;
 	CssLayout catalog;
 	
@@ -110,7 +110,7 @@ public class ReportsTab extends Panel {
 	}
 
 	public void getReports(){
-		File[] directories = new File(basepath + "/" + currsession.getParentcase().getOwner().getUsername() +
+		File[] directories = new File(usersBasepath + "/" + currsession.getParentcase().getOwner().getUsername() +
         		"/" + currsession.getParentcase().getTitle() + 
         		"/" + currsession.getTitle() +
         		"/" + currsession.getParameters().getTest_report_folder() + "/"

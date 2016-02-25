@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
@@ -17,6 +18,7 @@ import com.vaadin.ui.UIDetachedException;
 public class MasterUtils implements Runnable {
 
 	String command;
+	public int masterPort;
 	
 	public MasterUtils(){		//(String command) {
 
@@ -48,6 +50,7 @@ public class MasterUtils implements Runnable {
 		
 	}
 	
+
 	@Override
 	public void run() {
 		Process p;
@@ -75,20 +78,35 @@ public class MasterUtils implements Runnable {
 		}		
 	}
 	
-	public void startMaster(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
+	
+	
+	public void startMaster(final String numSlaves, final int udpPort, final String username) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //    	new Thread() {
 		new Thread(new Runnable() {
             @Override
             public void run() {
             	Process p;
         		try {
+        			command = "mbpet_cli.exe " +
+						"test_project " +
+						numSlaves + 
+						" -p " + getAvailablePort() +
+						" -b localhost:" + udpPort + 
+						" -s";
         	        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
+//        	        		"mbpet_cli.exe " +
+//        					"test_project " +
+//        					numSlaves + 
+//        					" -p " + udpPort +
+//        					" -b localhost:" + getAvailablePort() + 
+//        					" -s");
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"dir & echo example of & echo working dir");
-        	        pb.directory(new File("C:\\dev\\mbpet"));
+        	        
+        	        pb.directory(new File("C:\\dev\\mbpet\\users\\" + username + "\\master"));		//("C:\\dev\\mbpet"));
         	
-        			System.out.println("### Running master command...");
+        			System.out.println("### Running master command: " + command);
 //        			pb.redirectErrorStream(true);
         			p = pb.start();
         			p.getInputStream().close(); 
@@ -189,7 +207,46 @@ public class MasterUtils implements Runnable {
 	}
 	
 	
+	
+	public int getAvailablePort() {
+		int openport = 0;
+	    for (int port=6000; port<7000; port++) {		//(int port : ports)
+			try {
+				System.out.println("Trying port: " + port);
+				ServerSocket srv = new ServerSocket(port);	//System.out.println("socket open on port " + port);
+				srv.close();		//System.out.println(srv.getLocalPort());
+				srv = null;			//System.out.println("socket closed on port " + port);
+				openport = port;
+//				setMasterPort(port);
+				break;
+//				return true;
+			} catch (IOException e) {
+				System.out.println(e);
+				continue;	//return false;
+			}
+	    }
+		System.out.println("Returning port [" + openport + "] for master use");
+		setMasterPort(openport);
+	    return openport;
+	}
 
+	public void setMasterPort(int port) {
+		this.masterPort = port;
+		System.out.println("Master port set to: " + masterPort);
+
+	}
+	public int getMasterPort(){
+		return masterPort;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+	public void setCommand(String command) {
+		this.command = command;
+	}
+	
+	
 //	private void initProcessBuilder() throws IOException, InterruptedException {
 //
 //        ProcessBuilder pb = new ProcessBuilder("cmd.exe",

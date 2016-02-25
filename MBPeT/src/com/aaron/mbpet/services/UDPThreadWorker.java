@@ -21,6 +21,7 @@ public class UDPThreadWorker {
     DatagramSocket serverSocket;
     
     SessionViewer sessionViewer;
+	int udpPort;
     
 	public UDPThreadWorker(SessionViewer sessionViewer) {
 		this.sessionViewer = sessionViewer;
@@ -49,7 +50,7 @@ public class UDPThreadWorker {
 
             			try {
             				serverSocket = create();
-            			    System.out.println("listening on port: " + serverSocket.getLocalPort());
+            			    System.out.println("listening on UDP port: " + serverSocket.getLocalPort());
 //            			    component.getUI().getSession().getLock().lock();
 //            			    try {
 //            			       doStuffWith(component);
@@ -207,9 +208,10 @@ public class UDPThreadWorker {
     }
 	
 	public DatagramSocket create() throws IOException {		//(int[] ports) throws IOException {
-	    for (int port=9999; port<10100; port++) {		//(int port : ports)
+	    for (int port=9999; port<11000; port++) {		//(int port : ports)
 	        try {
-	        	System.out.println("port " + port + " should be open");
+	        	setUDPPort(port);
+	        	System.out.println("selecting UDP port: " + port);
 	            return new DatagramSocket(port);
 	        } catch (IOException ex) {
 	            continue; // try next port
@@ -217,6 +219,13 @@ public class UDPThreadWorker {
 	    }
 	    // if the program gets here, no port in the range was found
 	    throw new IOException("no free port found");
+	}
+	
+    public void setUDPPort(int port) {
+		this.udpPort = port;
+	}
+    public int getUDPPort() {
+    	return this.udpPort;
 	}
 	
     public void endThread() {
