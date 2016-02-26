@@ -31,7 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 public class ReportsTab extends Panel {
 	
 	VerticalLayout vert;
-	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
+	String usersBasepath = "C:\\dev\\mbpet\\users\\";	//"C:/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 	TestSession currsession;
 	CssLayout catalog;
 	
@@ -110,7 +110,8 @@ public class ReportsTab extends Panel {
 	}
 
 	public void getReports(){
-		File[] directories = new File(usersBasepath + "/" + currsession.getParentcase().getOwner().getUsername() +
+		File[] directories = new File(usersBasepath + 
+				"/" + currsession.getParentcase().getOwner().getUsername() +
         		"/" + currsession.getParentcase().getTitle() + 
         		"/" + currsession.getTitle() +
         		"/" + currsession.getParameters().getTest_report_folder() + "/"
@@ -122,7 +123,7 @@ public class ReportsTab extends Panel {
         });
         System.err.println("directories with reports:" + directories.length);
         File[] singlereport = null;
-        File[] reports = null;
+//        File[] reports = null;
         List<File> reportlist = new ArrayList<File>();
         for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
             System.err.println("finding report round:" + (i+1));

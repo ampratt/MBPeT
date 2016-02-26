@@ -21,7 +21,7 @@ public class UDPThreadWorker {
     DatagramSocket serverSocket;
     
     SessionViewer sessionViewer;
-	int udpPort;
+	public int udpPort;
     
 	public UDPThreadWorker(SessionViewer sessionViewer) {
 		this.sessionViewer = sessionViewer;
@@ -49,7 +49,8 @@ public class UDPThreadWorker {
 //            			serverSocket = new DatagramSocket(9999);
 
             			try {
-            				serverSocket = create();
+            				serverSocket = new DatagramSocket();	//create();
+            				setUDPPort(serverSocket.getLocalPort());
             			    System.out.println("listening on UDP port: " + serverSocket.getLocalPort());
 //            			    component.getUI().getSession().getLock().lock();
 //            			    try {
@@ -154,8 +155,8 @@ public class UDPThreadWorker {
             				}
             	            catch (SocketTimeoutException e) {
             	                // timeout exception.
-            	                System.out.println("Timeout reached!!! " + e);
-                                updater.printFinalMessage("\nTimeout reached!!!", numslaves, sessionViewer);
+            	                System.out.println("UDP Timeout reached!!! " + e);
+                                updater.printFinalMessage("\nUDP Timeout reached!!!", numslaves, sessionViewer);
             	                serverSocket.close();
             	                sessionViewer.progressThread.endThread();
             	            } 
@@ -211,7 +212,7 @@ public class UDPThreadWorker {
 	    for (int port=9999; port<11000; port++) {		//(int port : ports)
 	        try {
 	        	setUDPPort(port);
-	        	System.out.println("selecting UDP port: " + port);
+//	        	System.out.println("selecting UDP port: " + port);
 	            return new DatagramSocket(port);
 	        } catch (IOException ex) {
 	            continue; // try next port
@@ -223,6 +224,8 @@ public class UDPThreadWorker {
 	
     public void setUDPPort(int port) {
 		this.udpPort = port;
+		System.out.println("UDP port set to: " + udpPort);
+
 	}
     public int getUDPPort() {
     	return this.udpPort;

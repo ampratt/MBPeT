@@ -6,9 +6,11 @@ import java.io.InputStreamReader;
 
 public class KillMBPeTProcesses {
 
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
+	public KillMBPeTProcesses() {
 		 String masterProcessName = "mbpet_cli.exe";
 		 String slaveProcessName = "mbpet_slave";
+		 String udpProcessName = "python.exe";
 		 try {
 			if (isProcessRunning(masterProcessName)) {
 				System.out.print(masterProcessName + " is being killed");
@@ -17,6 +19,10 @@ public class KillMBPeTProcesses {
 			if (isProcessRunning(slaveProcessName)) {
 				System.out.print(slaveProcessName + " is being killed");
 				killProcess(slaveProcessName);
+			 }
+			if (isProcessRunning(udpProcessName)) {
+				System.out.print(udpProcessName + " is being killed");
+				killProcess(udpProcessName);
 			 }
 		} catch (Exception e1) {
 			e1.printStackTrace();

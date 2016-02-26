@@ -23,33 +23,6 @@ public class SlaveUtils implements Runnable {
 //			this.command = command;
 	}
 	
-	@Override
-	public void run() {
-		Process p;
-		try {
-	        ProcessBuilder pb = new ProcessBuilder(
-//	        			"cmd.exe", "/c", command);
-	        		
-//		        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
-//		        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
-		        		"dir & echo example of & echo working dir");
-	        pb.directory(new File("C:\\dev\\mbpet\\slave"));
-	
-			System.out.println("Run echo command");
-//				pb.redirectErrorStream(true);
-			p = pb.start();
-
-//				try {
-//					int exitVal = p.waitFor();            
-//					System.out.println("Process exitValue: " + exitVal);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-	}
 	
 	public void startSlave(final int masterport) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //	    	new Thread() {
@@ -137,5 +110,31 @@ public class SlaveUtils implements Runnable {
 		this.command = command;
 	}
 	
+	@Override
+	public void run() {
+		Process p;
+		try {
+	        ProcessBuilder pb = new ProcessBuilder(
+//	        			"cmd.exe", "/c", command);
+	        		
+//		        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
+//		        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
+		        		"dir & echo example of & echo working dir");
+	        pb.directory(new File("C:\\dev\\mbpet\\slave"));
+	
+			System.out.println("Run echo command");
+//				pb.redirectErrorStream(true);
+			p = pb.start();
 
+//				try {
+//					int exitVal = p.waitFor();            
+//					System.out.println("Process exitValue: " + exitVal);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
 }

@@ -272,31 +272,45 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //					" -p " + 
 //					" -b localhost:" + udpPort + 
 //					" -s";
-			System.out.println("udp port is now: " + udpWorker.getUDPPort());
-			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
-			masterUtils.startMaster(slaveSelect.getValue().toString(), udpWorker.getUDPPort(), currsession.getParentcase().getOwner().getUsername());	//(mastercommand);
-			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
-//			int masterport = masterUtils.getMasterPort();
+			int udpPort=0;
+//			do {
+//				udpPort = udpWorker.getUDPPort();
+//				System.out.println("checking udp port. currently: " + udpWorker.getUDPPort());
+//			} while (udpWorker.getUDPPort() == 0);
+			while (!(udpWorker.getUDPPort() > 0)) {
+				System.out.print("waiting udp port selection...");
+			} 
+			udpPort = udpWorker.getUDPPort();
+			System.out.println("\nudp port selected..." + udpPort);
+
 			
-			//	        Thread t = new Thread(masterUtils);
+			System.out.println("udp port --being sent to master-- is: " + udpPort);		//.getUDPPort());
+			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
+			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
+//			int masterport = masterUtils.getAvailablePort();
+			masterUtils.startMasterStreamGobbler(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
+//			masterUtils.startMaster(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);
+
+//	        Thread t = new Thread(masterUtils);
 //	        t.start();
 
 			// start mbpet SLAVE
 //			String slavecommand = "./mbpet_slave " + "127.0.0.1 -p " + masterUtils.getMasterPort();
-			System.out.println("master port is now: " + masterUtils.getMasterPort());
+			int masterPort=0;
+			while (!(masterUtils.getMasterPort() > 0)) {
+				System.out.print("waiting master port selection...");
+			}masterPort = masterUtils.getMasterPort();
+			System.out.println("\nmaster port selected..." + masterPort);
+			
+			System.out.println("master port --being sent to slave-- is: " + masterPort);
 			SlaveUtils slaveUtils = new SlaveUtils();
-			slaveUtils.startSlave(masterUtils.getMasterPort());		//(slavecommand);
+			slaveUtils.startSlave(masterPort);		//(slavecommand);
 			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
-	        
-	        
-	        // start SLAVE(s)
-	        
-	        
+
 
 //	        // start progress indicator - DO THIS IN UDP CLIENT UPON RECEPTION OF FIRST MESSAGE
 //	        progressThread = new ProgressBarThread(40);
 //	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
-
         	
 //			MbpetUI mbpetui = new MbpetUI();
 //			MbpetUI.PushThread push = mbpetui.new PushThread();
