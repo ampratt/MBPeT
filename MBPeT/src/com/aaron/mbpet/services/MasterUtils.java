@@ -12,8 +12,11 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.vaadin.annotations.Push;
 import com.vaadin.ui.UIDetachedException;
 
 public class MasterUtils implements Runnable {
@@ -52,7 +55,8 @@ public class MasterUtils implements Runnable {
 		
 	}
 	
-	public void startMasterStreamGobbler(final String numSlaves, final int udpPort, 
+	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, 
+										final String numSlaves, final int udpPort, 
 										final String username, final TestSession currsession) {		//(final String command) {
 		new Thread(new Runnable(){
 			@Override
@@ -79,16 +83,21 @@ public class MasterUtils implements Runnable {
 
         	        pb.redirectErrorStream(true);
 					
+        	        //close socket to free up port #
+    				ss.close();		//System.out.println(srv.getLocalPort());
+    				ss = null;
+    				
         			final Process p = pb.start();
-					System.out.println("### Running master command...");
+					System.out.println("### Running master command...from dir> \\" + username + "\\master");
 					
+//					final PushMasterUpdater updater = mbpetUI;
 					// any error message?
 		            StreamGobbler errorGobbler = new 
-		                StreamGobbler(p.getErrorStream(), "ERROR");            
+		                StreamGobbler(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);            
 		            
 		            // any output?
 		            StreamGobbler outputGobbler = new 
-		                StreamGobbler(p.getInputStream(), "OUTPUT");
+		                StreamGobbler(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);
 		                
 		            // kick them off
 		            errorGobbler.start();
@@ -107,7 +116,55 @@ public class MasterUtils implements Runnable {
 		}).start();
 	}
 	
+	
+    private String getTestDir(TestSession currSession) {	//(String username, TestSession currSession){
+    	String path =  "..\\" +		//usersBasepath + username +
+	    			"\\" + currSession.getParentcase().getTitle() +
+	    			"\\" + currSession.getTitle();
+    	return path;
+    }
+	
+	ServerSocket ss = null;
+	public int getAvailablePort() {
+		int openport = 0;
+	    for (int port=6000; port<7000; port++) {		//(int port : ports)
+			try {
+				System.out.println("\nTrying port: " + port);
+				ss = new ServerSocket(port);	//System.out.println("socket open on port " + port);
+//				ss.close();		//System.out.println(srv.getLocalPort());
+//				ss = null;			//System.out.println("socket closed on port " + port);
+//				openport = port;
+//				setMasterPort(port);
+				break;
+//				return true;
+			} catch (IOException e) {
+				System.out.println(e);
+				continue;	//return false;
+			}
+	    }
+		System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
+		setMasterPort(ss.getLocalPort());
+	    return ss.getLocalPort();
+	}
 
+	public void setMasterPort(int port) {
+		this.masterPort = port;
+		System.out.println("Master port set to: " + masterPort);
+
+	}
+	public int getMasterPort(){
+		return masterPort;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+	public void setCommand(String command) {
+		this.command = command;
+	}
+	
+	
+	
 	
 	public void startMaster(final String numSlaves, final int udpPort, final String username, final TestSession currsession) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //    	new Thread() {
@@ -233,51 +290,6 @@ public class MasterUtils implements Runnable {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-	}
-	
-    private String getTestDir(TestSession currSession) {	//(String username, TestSession currSession){
-    	String path =  "..\\" +		//usersBasepath + username +
-	    			"\\" + currSession.getParentcase().getTitle() +
-	    			"\\" + currSession.getTitle();
-    	return path;
-    }
-	
-	public int getAvailablePort() {
-		int openport = 0;
-	    for (int port=6000; port<7000; port++) {		//(int port : ports)
-			try {
-				System.out.println("\nTrying port: " + port);
-				ServerSocket srv = new ServerSocket(port);	//System.out.println("socket open on port " + port);
-				srv.close();		//System.out.println(srv.getLocalPort());
-				srv = null;			//System.out.println("socket closed on port " + port);
-				openport = port;
-//				setMasterPort(port);
-				break;
-//				return true;
-			} catch (IOException e) {
-				System.out.println(e);
-				continue;	//return false;
-			}
-	    }
-		System.out.println("\nReturning port [" + openport + "] for master use");
-		setMasterPort(openport);
-	    return openport;
-	}
-
-	public void setMasterPort(int port) {
-		this.masterPort = port;
-		System.out.println("Master port set to: " + masterPort);
-
-	}
-	public int getMasterPort(){
-		return masterPort;
-	}
-
-	public String getCommand() {
-		return command;
-	}
-	public void setCommand(String command) {
-		this.command = command;
 	}
 	
 	

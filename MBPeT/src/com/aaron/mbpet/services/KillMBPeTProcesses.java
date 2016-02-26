@@ -13,15 +13,15 @@ public class KillMBPeTProcesses {
 		 String udpProcessName = "python.exe";
 		 try {
 			if (isProcessRunning(masterProcessName)) {
-				System.out.print(masterProcessName + " is being killed");
+				System.out.print(masterProcessName + " is being killed\n");
 				killProcess(masterProcessName);
 			 }
 			if (isProcessRunning(slaveProcessName)) {
-				System.out.print(slaveProcessName + " is being killed");
+				System.out.print(slaveProcessName + " is being killed\n");
 				killProcess(slaveProcessName);
 			 }
 			if (isProcessRunning(udpProcessName)) {
-				System.out.print(udpProcessName + " is being killed");
+				System.out.print(udpProcessName + " is being killed\n");
 				killProcess(udpProcessName);
 			 }
 		} catch (Exception e1) {

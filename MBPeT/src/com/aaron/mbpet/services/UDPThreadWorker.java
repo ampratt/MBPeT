@@ -70,7 +70,7 @@ public class UDPThreadWorker {
             			
             			int x=1;
             			boolean firstMessage = true;
-            			serverSocket.setSoTimeout(50000);   // set the timeout in millisecounds.  
+            			serverSocket.setSoTimeout(60000);   //50000 set the timeout in millisecounds.  
             			while(true && stopFlag==false) {
 
             				if( isStopFlag()==true )

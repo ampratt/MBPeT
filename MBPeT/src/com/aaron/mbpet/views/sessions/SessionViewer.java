@@ -10,6 +10,7 @@ import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
+import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -285,12 +286,19 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
 			
 			System.out.println("udp port --being sent to master-- is: " + udpPort);		//.getUDPPort());
+			MasterTerminalWindow masterTerminalWindow = new MasterTerminalWindow();
 			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
 			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
 //			int masterport = masterUtils.getAvailablePort();
-			masterUtils.startMasterStreamGobbler(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
+			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, 
+					slaveSelect.getValue().toString(), 
+					udpPort, 
+					currsession.getParentcase().getOwner().getUsername(), 
+					currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
 //			masterUtils.startMaster(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);
-
+			//open master terminal window
+			UI.getCurrent().addWindow(masterTerminalWindow);	//(new MasterTerminalWindow());
+			
 //	        Thread t = new Thread(masterUtils);
 //	        t.start();
 

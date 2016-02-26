@@ -16,7 +16,9 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.DemoDataGenerator;
 import com.aaron.mbpet.services.PushLabelUpdater;
+import com.aaron.mbpet.services.PushMasterUpdater;
 import com.aaron.mbpet.services.UDPServer;
+import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
@@ -61,7 +63,7 @@ import com.vaadin.ui.UI;
 @SuppressWarnings("serial")
 @Theme("mbpet")
 @Push	//(PushMode.MANUAL)
-public class MbpetUI extends UI implements PushLabelUpdater {
+public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
     public User sessionuser;
@@ -238,19 +240,16 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		        	sessionViewer.tabs.getMonitoringTab().addNewMessageComponent(message);
 		        	
 //		        	mainview.addNewMessageComponent(string);
-		        	
 //		        	SessionViewer.progressbar.setValue(new Float(current));
 //                    if (current < 1.0)
 //                    	SessionViewer.progressstatus.setValue("" +
 //                            ((int)(current*100)) + "% done");
 //                    else
 //                    	SessionViewer.progressstatus.setValue("all done");
-                    
 		        }
 		    });
 		}
-	    
-		
+	    		
 		@Override
 		public void printFinalMessage(final String message, final int numslaves, final SessionViewer sessionViewer) {
 		    access(new Runnable() {
@@ -260,11 +259,25 @@ public class MbpetUI extends UI implements PushLabelUpdater {
 		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.addNewMessageComponent(message);
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
-                    
 		        }
 		    });
 		}
 	    
+		@Override
+		public void printNextInput(final String message, final MasterTerminalWindow masterWindow) {	//, final double current
+		    access(new Runnable() {
+		        @Override
+		        public void run() {
+		        	//update the UI
+		        	masterWindow.insertDataToEditor(message);
+		        	
+//		        	MonitoringTab montab = masterWindow.tabs.getMonitoringTab();
+//		        	montab.addNewMessageComponent(message);
+//		        	sessionViewer.tabs.getMonitoringTab().addNewMessageComponent(message);
+		        	
+		        }
+		    });
+		}
 		
 		public User getSessionUser() {
 			return sessionuser;
