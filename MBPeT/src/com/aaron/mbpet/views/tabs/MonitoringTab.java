@@ -1,15 +1,31 @@
 package com.aaron.mbpet.views.tabs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.aceeditor.AceMode;
+import org.vaadin.aceeditor.AceTheme;
+
 import com.aaron.mbpet.components.flot.FlotChart;
+import com.aaron.mbpet.services.AceUtils;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
 //import com.vaadin.tests.themes.valo.components.TestIcon;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -36,7 +52,15 @@ public class MonitoringTab extends Panel {
 	public FlotChart usersChart;
 	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
+	VerticalLayout terminallayout;
+	AceEditor editor;
+	private ComboBox themeBox;	
+	List<String> themeList;
+	String[] themes = {"twilight", "terminal", "ambiance", "chrome", "clouds", "cobalt", "dreamweaver", "eclipse", "github", "xcode"};
+
+	
 	ReportsTab reportsTab;
+	private Panel panel;
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
 	
@@ -67,9 +91,12 @@ public class MonitoringTab extends Panel {
 //        vert.setExpandRatio(vert, 1);
         
 //        vert.addComponent(usersChart());
-       usersChart();
+        buildUsersChart();
        
-        vert.addComponent(new Label("<h2>Here below will be whatever graphs are desired...</h2>", ContentMode.HTML));
+//        buildMbpetTerminalOutput();
+//        buildMbpetTerminal();
+        
+//        vert.addComponent(new Label("<h2>Here below will be whatever graphs are desired...</h2>", ContentMode.HTML));
 
     }
     
@@ -105,7 +132,7 @@ public class MonitoringTab extends Panel {
         return row;
     }
     
-    public void usersChart() {
+    public void buildUsersChart() {
 //    	VerticalLayout v = new VerticalLayout();
     	//TESTING
 		// update Button
@@ -225,6 +252,78 @@ public class MonitoringTab extends Panel {
 		}
 	}
     
+	public void buildMbpetTerminalOutput(){
+        panel = new Panel("Terminal style");
+        panel.setHeight("325px");
+//        panel.setIcon(testIcon.get());
+        panel.addStyleName("terminalcolor");
+//        panel.addStyleName("well");
+//        panel.setContent(panelContent());
+        
+        vert.addComponent(panel);
+		
+		terminallayout = new VerticalLayout();
+		terminallayout.setMargin(false);
+		terminallayout.setSpacing(false);
+//        terminallayout.setSizeFull();
+        terminallayout.addStyleName("terminal-background");
+        
+        Label label = new Label("mbpet>...");
+        label.addStyleName("tiny");
+        label.addStyleName("terminal-font");
+        terminallayout.addComponent(label);
+        
+        panel.setContent(terminallayout);
+        
+	}
+	
+	public void buildMbpetTerminal(){
+		// theme button
+		CssLayout css = new CssLayout();
+		themeList = Arrays.asList(themes);
+        themeBox = new ComboBox("", themeList);
+//        themeBox.setContainerDataSource(themeList);
+//        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
+        themeBox.setWidth(9, Unit.EM);
+        themeBox.addStyleName("tiny");
+//        themeBox.setInputPrompt("No style selected");
+        themeBox.setFilteringMode(FilteringMode.CONTAINS);
+        themeBox.setImmediate(true);
+        themeBox.setNullSelectionAllowed(false);
+        themeBox.setValue(themeList.get(0));        
+        themeBox.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+            	AceUtils.setAceTheme(editor, event.getProperty().getValue().toString());
+            }
+        });
+        css.addComponent(themeBox);
+		vert.addComponent(css);	//themeBox
+		vert.setComponentAlignment(css, Alignment.TOP_LEFT);
+		
+		
+		// Ace Editor
+		editor = new AceEditor();		
+		// use static hosted files for theme, mode, worker
+//					editor.setThemePath("/static/ace");
+//					editor.setModePath("/static/ace");
+//					editor.setWorkerPath("/static/ace");
+		editor.setWidth(25, Unit.EM);
+		editor.setHeight("225px");
+//		editor.setReadOnly(true); 
+		editor.setMode(AceMode.python);
+		editor.setTheme(AceTheme.twilight);	
+		editor.setWordWrap(true);
+//		Collection<String> editorSource = new ArrayList<String>();
+//		editor.setPropertyDataSource(editorSource);
+//				setEditorMode(fileFormat);
+//				editor.setUseWorker(true);
+//				editor.setWordWrap(false);
+//				editor.setShowInvisibles(false);
+//				System.out.println(editor.getValue());
+		vert.addComponent(editor);
+		vert.setExpandRatio(editor, 1);
+	}
 	
     private Component responseTimes() {
         VerticalLayout vert = new VerticalLayout();
@@ -504,4 +603,22 @@ public class MonitoringTab extends Panel {
     public void addNewMessageComponent(String string) {
     	vert.addComponent(new Label(string));
     }
+
+
+    StringBuilder sb = new StringBuilder();
+	public void insertDataToEditor(String message) {
+//		vert.addComponent(new Label(message));
+		
+        Label label = new Label("mbpet>" + message);
+        label.addStyleName("tiny");
+        label.addStyleName("terminal-font");
+        terminallayout.addComponent(label);
+
+		
+//		sb.append("\n");
+//		sb.append(message);
+//		editor.setValue(sb.toString());
+	}
+	
+	
 }

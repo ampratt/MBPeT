@@ -63,7 +63,7 @@ import com.vaadin.ui.UI;
 @SuppressWarnings("serial")
 @Theme("mbpet")
 @Push	//(PushMode.MANUAL)
-public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater {
+public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{		//, PushMasterUpdater {
 
 	public static final String PERSISTENCE_UNIT = "mbpet";
     public User sessionuser;
@@ -264,11 +264,13 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater {
 		}
 	    
 		@Override
-		public void printNextInput(final String message, final MasterTerminalWindow masterWindow) {	//, final double current
+		public void printNextMasterOutput(final String message, final MasterTerminalWindow masterWindow) {	//final SessionViewer sessionViewer ){
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
 		        	//update the UI
+//		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
+//		        	montab.insertDataToEditor(message);
 		        	masterWindow.insertDataToEditor(message);
 		        	
 //		        	MonitoringTab montab = masterWindow.tabs.getMonitoringTab();

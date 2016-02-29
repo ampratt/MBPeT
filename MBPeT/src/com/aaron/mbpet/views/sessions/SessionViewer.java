@@ -290,7 +290,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
 			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
 //			int masterport = masterUtils.getAvailablePort();
-			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, 
+			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
 					slaveSelect.getValue().toString(), 
 					udpPort, 
 					currsession.getParentcase().getOwner().getUsername(), 
@@ -417,6 +417,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.setEnabled(false);
 		stopButton.removeStyleName("danger");
 	}
+
 
 //	public TabLayout getTabLayout() {
 //		return tabs;

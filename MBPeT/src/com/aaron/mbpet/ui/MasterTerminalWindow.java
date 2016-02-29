@@ -56,7 +56,7 @@ public class MasterTerminalWindow extends Window {
 	    setResizable(true);
 	    setClosable(true);
 	    setCloseShortcut(KeyCode.ESCAPE, null);
-	    setHeight(35, Unit.EM);	//(40.0f, Unit.PERCENTAGE);
+	    setHeight(30, Unit.EM);	//(40.0f, Unit.PERCENTAGE);
 	    setWidth(30, Unit.EM);
 	    setPosition(1, 1);
 	//      setContent(buildWindowContent(tree, "New Instance"));
@@ -122,9 +122,10 @@ public class MasterTerminalWindow extends Window {
 //					editor.setWorkerPath("/static/ace");
 		editor.setWidth("100%");
 		editor.setHeight("100%");	//("425px");
-		editor.setReadOnly(true); 
+//		editor.setReadOnly(true); 
 		editor.setMode(AceMode.python);
 		editor.setTheme(AceTheme.twilight);	
+		editor.setWordWrap(true);
 //				setEditorMode(fileFormat);
 //				editor.setUseWorker(true);
 //				editor.setWordWrap(false);
@@ -133,6 +134,11 @@ public class MasterTerminalWindow extends Window {
 		layout.addComponent(editor);
 		layout.setExpandRatio(editor, 1);
 		
+//		sb.append("\n\n\n\n\n\n\n\n\n\n");
+//		editor.setValue(sb.toString());
+//		editor.setCursorRowCol(0, 0);
+//		editor.setCursorPosition(sb.length()-10);
+
 		// Use worker (if available for the current mode)
 		//editor.setUseWorker(true);
 //		editor.addTextChangeListener(new TextChangeListener() {
@@ -179,9 +185,21 @@ public class MasterTerminalWindow extends Window {
 
 	}
 
-	public void insertDataToEditor(String update){
-		editor.setValue(update);
-	}
 
-	
+    StringBuilder sb = new StringBuilder();
+	public void insertDataToEditor(String message) {
+//		vert.addComponent(new Label(message));
+
+		// add new content
+		sb.append("\n");
+		sb.append(message);
+		editor.setValue(sb.toString());
+		
+		//navigate to bottom of terminal
+//		editor.setCursorPosition(sb.length()-10);
+		editor.scrollToPosition(editor.getCursorPosition());
+		
+//		editor.setValue(newFieldValue) editor.getCursorPosition()
+//		editor.getSelection();
+	}
 }

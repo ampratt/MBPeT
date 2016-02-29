@@ -37,6 +37,7 @@ $v-font-size: 15px;
 @import "views/windows";
 @import "views/caseviewer";
 @import "views/reports";
+@import "views/monitoringtab";
 
 
 @mixin mbpet {
@@ -49,6 +50,7 @@ $v-font-size: 15px;
   @include mbpet-windows-view;
   @include mbpet-caseviewer-view;
   @include mbpet-reports-view;
+  @include mbpet-monitoringtab-view;
 
   
   /* Insert your theme rules here */

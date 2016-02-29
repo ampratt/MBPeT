@@ -55,7 +55,7 @@ public class MasterUtils implements Runnable {
 		
 	}
 	
-	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, 
+	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, final SessionViewer sessionViewer,
 										final String numSlaves, final int udpPort, 
 										final String username, final TestSession currsession) {		//(final String command) {
 		new Thread(new Runnable(){
@@ -93,16 +93,18 @@ public class MasterUtils implements Runnable {
 //					final PushMasterUpdater updater = mbpetUI;
 					// any error message?
 		            StreamGobbler errorGobbler = new 
-		                StreamGobbler(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);            
+		                StreamGobbler(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);            
 		            
 		            // any output?
 		            StreamGobbler outputGobbler = new 
-		                StreamGobbler(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);
+		                StreamGobbler(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);
 		                
 		            // kick them off
-		            errorGobbler.start();
-		            outputGobbler.start();
-		                                    
+//		            errorGobbler.start();
+//		            outputGobbler.start();
+//		            outputGobbler.startStreamGobbler();
+//		            errorGobbler.startStreamGobbler();                        
+		            
 		            // any error???
 		            int exitVal = p.waitFor();
 		            System.out.println("ExitValue: " + exitVal);        

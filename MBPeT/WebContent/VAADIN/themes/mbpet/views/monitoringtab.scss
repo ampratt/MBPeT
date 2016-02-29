@@ -1,0 +1,29 @@
+@mixin mbpet-monitoringtab-view {
+	
+	$terminalblack: ##141414;
+	$terminalgrey: ##2A2A2A;
+	$terminalwhite: ##F8F8F8;
+	$color1: hsl(220, 5%, 38%);
+	$color2: #5d73c0;
+	$color3: #3dbc1a;
+	$color4: #d2f4f3;
+	$color5: #fe902a;
+	$colors: $terminalblack, $terminalgrey, $terminalwhite, $color1, $color2, $color3, $color4, $color5;
+  
+	.v-panel-caption-terminalcolor {
+		@include valo-panel-caption-style($background-color: $terminalgrey);
+	}
+
+	.v-verticallayout-terminal-background {
+		padding: 5px 5px 5px 15px;
+		background-color: $terminalblack;
+		/*border-bottom: 1px solid #DFDFDF; */
+	}
+
+	.terminal-font.terminal-font {
+		<!-- background-color: white; -->
+		color: #4783ee;
+	}
+		
+}
+

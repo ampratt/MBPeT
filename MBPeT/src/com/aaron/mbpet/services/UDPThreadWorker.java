@@ -97,7 +97,7 @@ public class UDPThreadWorker {
             		//           JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sentence);
             		           
             		           // update monitoring tab fields - thread-safely	           
-            		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
+//            		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
 //            		           PushdemointerfacedUI.addNewMessageComponent("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
 //            		           UI.getCurrent().push();
             		           if (firstMessage) {
@@ -112,23 +112,24 @@ public class UDPThreadWorker {
 //                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);
             		        	   updater.updateMonitoringFields(results, numslaves, slaveresults, sessionViewer);
             		        	   
-            		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
-            		        			   "average - " + results[0] + 
-            		        			   "\n; min/max - " + results[1] + 
-            		        			   "\n; throughput - " + results[2] + 
-            		        			   "\n; success - " + results[3] + 
-            		        			   "\n; error - " + results[4] + 
-            		        			   "\n; sent - " + results[5] + 
-            		        			   "\n; received - " + results[6] + 		        			
-            		        			   "\n; users targeted - " + results[7] + 
-            		        			   "\n\n",
-            		        			   sessionViewer);
+//            		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
+//            		        			   "average - " + results[0] + 
+//            		        			   "\n; min/max - " + results[1] + 
+//            		        			   "\n; throughput - " + results[2] + 
+//            		        			   "\n; success - " + results[3] + 
+//            		        			   "\n; error - " + results[4] + 
+//            		        			   "\n; sent - " + results[5] + 
+//            		        			   "\n; received - " + results[6] + 		        			
+//            		        			   "\n; users targeted - " + results[7] + 
+//            		        			   "\n\n",
+//            		        			   sessionViewer);
 
 //            	                    serverSocket.close();
             		           } else {
             		        	   sessionViewer.progressThread.setComplete();
 	        		               // 2. Inform that we have stopped running
-	        	                   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
+                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
+            		        	   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
 	        	        	       
 	        	                   // navigate to reports
 	        	                   if (navToReports) {
