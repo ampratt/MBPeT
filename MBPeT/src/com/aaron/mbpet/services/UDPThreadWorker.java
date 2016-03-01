@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
@@ -208,6 +209,30 @@ public class UDPThreadWorker {
             };
         }.start();
     }
+	
+	DatagramSocket ds = null;
+	public DatagramSocket createDatagram() {
+		int openport = 0;
+		for (int port=9999; port<11000; port++) {		//(int port : ports)
+			try {
+				System.out.println("\nTrying port: " + port);
+				ds = new DatagramSocket(port);	//System.out.println("socket open on port " + port);
+//				setUDPPort(ds.getLocalPort());
+//				ss.close();		//System.out.println(srv.getLocalPort());
+//				ss = null;			//System.out.println("socket closed on port " + port);
+//				openport = port;
+//				setMasterPort(port);
+				break;
+//				return true;
+			} catch (IOException e) {
+				System.out.println(e);
+				continue;	//return false;
+			}
+	    }
+		System.out.println("\nReturning port [" + ds.getLocalPort() + "] for master use");
+//		setMasterPort(ds);
+	    return ds;
+	}
 	
 	public DatagramSocket create() throws IOException {		//(int[] ports) throws IOException {
 	    for (int port=9999; port<11000; port++) {		//(int port : ports)

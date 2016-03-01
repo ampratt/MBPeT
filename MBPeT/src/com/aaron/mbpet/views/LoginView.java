@@ -1,5 +1,7 @@
 package com.aaron.mbpet.views;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +13,8 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.PasswordValidator;
 import com.aaron.mbpet.components.UsernameValidator;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
+import com.aaron.mbpet.ui.SpinnerLoginWindow;
 import com.aaron.mbpet.views.users.UserEditor;
 import com.aaron.mbpet.views.users.UserEditor.EditorSavedEvent;
 import com.aaron.mbpet.views.users.UserEditor.EditorSavedListener;
@@ -26,6 +30,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Position;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -33,7 +38,10 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupView;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -46,12 +54,12 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
 
     public static final String NAME = ""; 
     
-    VerticalLayout layoutPanel;
+//    VerticalLayout layoutPanel;
     TextField username;
     PasswordField password;
     Button loginButton;
     private JPAContainer<User> persons;
-    
+
 	@Override
     public void enter(ViewChangeEvent event) {
         // TESTING
@@ -269,7 +277,6 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
         	
             // Navigate to main view
             UI.getCurrent().getNavigator().navigateTo(MainView.NAME + "/" + "landingPage");	//SimpleLoginMainView.NAME
-
         } else {
             // some error happened
 //            this.password.setValue(null);

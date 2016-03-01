@@ -1,7 +1,11 @@
 package com.aaron.mbpet.views;
 
+import java.io.File;
+
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.User;
+import com.aaron.mbpet.services.FileSystemUtils;
+import com.aaron.mbpet.ui.SpinnerLoginWindow;
 import com.aaron.mbpet.views.cases.CaseViewer;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.navigator.View;
@@ -16,11 +20,13 @@ import com.vaadin.ui.UI;
 public class MainView extends HorizontalLayout implements View {
 
     public static String NAME = "home";	//MBPeT
+	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 //    public static String displayName = "";
 //    public static User sessionuser;
 //    public static Item sessionUserItem;
 //    private Item sessionUser;
-    
+	User sessionuser;
+	
     Panel menuLayout = new Panel();	//VerticalLayout
 	Panel contentLayout;	// = new Panel();
 	Tree tree;
@@ -42,8 +48,7 @@ public class MainView extends HorizontalLayout implements View {
 //        parameterscontainer = JPAContainerFactory.make(Parameters.class,
 //        		MbpetUI.PERSISTENCE_UNIT); 
 //        trtcontainer = JPAContainerFactory.make(TRT.class,
-//        		MbpetUI.PERSISTENCE_UNIT);
-
+//        		MbpetUI.PERSISTENCE_UNIT);        
         
     	initContent();
     	
@@ -70,18 +75,36 @@ public class MainView extends HorizontalLayout implements View {
 //    		}
 //    		displayName = sessionUser.getFirstname() + " " +
 //    						lname;
-    		if (firstenter){
-    			MenuLayout();
-    			firstenter = false;
-    		} else{
-    			User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
-    			menu.updateMenuDisplayName(sessionuser.getFirstname() +  " " + sessionuser.getLastname() );
-    		}
+    	sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
+		if (firstenter){
+			MenuLayout();
+			firstenter = false;
+		} else{
+			menu.updateMenuDisplayName(sessionuser.getFirstname() +  " " + sessionuser.getLastname() );
+		}
     		
 //      	menu.setUserDisplayName(username);    		
 //    	}
     	
-
+        // copy mbpet master dir to user dir if it doesnt yet exist
+        File f = new File(usersBasepath + "\\" + sessionuser.getUsername() + "\\master");
+        if(!f.exists()) {
+        	new Thread(){
+	            @Override
+	            public void run() {
+//	            	System.out.println("!!! THE DIRECTORY EXISTS !!!");
+//	            	SpinnerLoginWindow copyWindow = new SpinnerLoginWindow(sessionuser.getUsername());
+//	            	UI.getCurrent().addWindow(copyWindow);
+	        	FileSystemUtils fileUtils = new FileSystemUtils();
+	        	fileUtils.copyMasterToUserDir(sessionuser.getUsername());            	
+	            };
+        	}.start();
+//        	try {
+//        		Thread.sleep(2000);
+////            	copyWindow.close();
+//        	} catch (InterruptedException e) {
+//        	}
+        }
     	
        	if (event.getParameters().equals("landingPage")
     			|| event.getParameters() == null || event.getParameters().isEmpty()) {
@@ -113,7 +136,7 @@ public class MainView extends HorizontalLayout implements View {
 		addStyleName("mainview");
 //    	setWidth(100%);
     	
-		tree = new Tree("My Systems Under Test (SUT)");
+		tree = new Tree("My Systems Under Test (SUTs)");
 //		menu = new MBPeTMenu(tree);
 //		menu.setWidth("250px");
 //		addComponent(menu);

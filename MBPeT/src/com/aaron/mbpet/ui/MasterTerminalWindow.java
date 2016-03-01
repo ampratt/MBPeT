@@ -51,7 +51,7 @@ public class MasterTerminalWindow extends Window {
 	public MasterTerminalWindow() {
 //      super("Create new Instance of this Test Case"); // Set window caption
 	    setCaption("MBPeT Master Output");
-	    center();
+//	    center();
 	//      addStyleName("reportwindow");
 	    setResizable(true);
 	    setClosable(true);

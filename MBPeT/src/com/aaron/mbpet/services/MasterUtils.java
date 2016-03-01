@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -17,6 +18,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.annotations.Push;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.UIDetachedException;
 
 public class MasterUtils implements Runnable {
@@ -88,23 +90,34 @@ public class MasterUtils implements Runnable {
     				ss = null;
     				
         			final Process p = pb.start();
-					System.out.println("### Running master command...from dir> \\" + username + "\\master");
-					
+					System.out.println("### Running master command...from dir>" + pb.directory());
+//					System.out.println("### Running master command...from dir> \\" + username + "\\master");
+										
+					//update UI thread-safely
+	                 UI.getCurrent().access(new Runnable() {
+	                     @Override
+	                     public void run() {
+	                    	 masterTerminalWindow.insertDataToEditor("mbpet>" + command + "\n");
+	                     }
+	                 });
+	                 
 //					final PushMasterUpdater updater = mbpetUI;
 					// any error message?
-		            StreamGobbler errorGobbler = new 
-		                StreamGobbler(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);            
+		            StreamGobbler2 errorGobbler = new 
+		                StreamGobbler2(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);            
 		            
 		            // any output?
-		            StreamGobbler outputGobbler = new 
-		                StreamGobbler(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);
+		            StreamGobbler2 outputGobbler = new 
+		                StreamGobbler2(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);
 		                
 		            // kick them off
 //		            errorGobbler.start();
 //		            outputGobbler.start();
-//		            outputGobbler.startStreamGobbler();
-//		            errorGobbler.startStreamGobbler();                        
+		            outputGobbler.startStreamGobbler();
+		            errorGobbler.startStreamGobbler();                        
 		            
+					getPid(p);
+
 		            // any error???
 		            int exitVal = p.waitFor();
 		            System.out.println("ExitValue: " + exitVal);        
@@ -120,8 +133,8 @@ public class MasterUtils implements Runnable {
 	
 	
     private String getTestDir(TestSession currSession) {	//(String username, TestSession currSession){
-    	String path =  "..\\" +		//usersBasepath + username +
-	    			"\\" + currSession.getParentcase().getTitle() +
+    	String path =  //"..\\" +		//usersBasepath + username +
+	    			"..\\" + currSession.getParentcase().getTitle() +
 	    			"\\" + currSession.getTitle();
     	return path;
     }
@@ -376,4 +389,38 @@ public class MasterUtils implements Runnable {
 		}		
 	}
 
+	
+	public static int getPid(Process process) {
+	    try {
+	        Class<?> cProcessImpl = process.getClass();
+	        Field fPid = cProcessImpl.getDeclaredField("PID");
+	        if (!fPid.isAccessible()) {
+	            fPid.setAccessible(true);
+	        }
+	        System.out.println("!!! this process' pid is:" + fPid.getInt(process));
+	        return fPid.getInt(process);
+	    } catch (Exception e) {
+	    	System.err.println(e);
+	        return -1;
+	    }
+	}
+	
+	//Unix
+	 public static long getPidOfProcess(Process p) {
+		    long pid = -1;
+
+		    try {
+		      if (p.getClass().getName().equals("java.lang.UNIXProcess")) {
+		        Field f = p.getClass().getDeclaredField("pid");
+		        f.setAccessible(true);
+		        pid = f.getLong(p);
+		        f.setAccessible(false);
+		      }
+		    } catch (Exception e) {
+		      pid = -1;
+		    }
+		    return pid;
+		  }
+	
+	
 }

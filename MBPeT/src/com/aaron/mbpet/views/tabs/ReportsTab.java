@@ -83,7 +83,7 @@ public class ReportsTab extends Panel {
 		int pos = reportname.replaceFirst("^(\\D+).*$", "$1").length();
 
 	     SimpleDateFormat inputFT = new SimpleDateFormat ("yyyy-MM-dd_hh-mm-ss"); 
-	     SimpleDateFormat outputFT = new SimpleDateFormat ("dd.MM.yyyy, HH:mm"); 
+	     SimpleDateFormat outputFT = new SimpleDateFormat ("dd.MM.yyyy, hh:mm a"); 
 	
 	      String input = reportname.substring(pos, reportname.length()-5); 
 	      System.out.print(input + " Parses as "); 
@@ -121,68 +121,75 @@ public class ReportsTab extends Panel {
                 return file.isDirectory();
             }
         });
-        System.err.println("directories with reports:" + directories.length);
-        File[] singlereport = null;
-//        File[] reports = null;
-        List<File> reportlist = new ArrayList<File>();
-        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
-            System.err.println("finding report round:" + (i+1));
-        	String currentpath = directories[i].getAbsolutePath();
-           	File dir = new File(currentpath);
+		if (directories.length>0) {
 
-           	singlereport = dir.listFiles(new FilenameFilter() {
-           		public boolean accept(File dir, String name){
-           			return name.endsWith(".html");
-           	  	}
-           	});
-            System.err.println("singlereport:" + singlereport[0]);
-            reportlist.add(singlereport[0]);
-
-        }
-        try {
-        	System.err.println("reports files:" + reportlist.size());
-        	boolean newest = true;
-			for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
-				VerticalLayout frame = new VerticalLayout();
-			    frame.addStyleName("report-thumb");	//.addStyleName("frame");
-//			    if (newest) {
-//			    	frame.addStyleName("report-newest");
-//			    	newest = false;
-//			    }
-			    frame.setMargin(true);
-			    frame.setWidth(225.0f, Unit.PIXELS);
-//			    frame.setWidthUndefined();
-
-			    Image thumb;
-			    if (newest) {
-				    thumb = new Image(null, new ThemeResource("img/draft-report-thumb-newest.png"));
-		        	newest=false;
-			    } else {
-			    	thumb = new Image(null, new ThemeResource("img/draft-report-thumb.png"));			    	
-			    }
-			    thumb.setWidth(130.0f, Unit.PIXELS);	//(140.0f, Unit.PIXELS);
-			    thumb.setHeight(162.0f, Unit.PIXELS);	//(175.0f, Unit.PIXELS);
-			    frame.addComponent(thumb);
-			    frame.setComponentAlignment(thumb, Alignment.TOP_CENTER);
-
-			    Label titleLabel = new Label(formatReportTitle(f.getName()), ContentMode.HTML);
-//			    titleLabel.setWidth(140.0f, Unit.PIXELS);
-			    frame.addComponent(titleLabel);
-			    frame.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
-			    
-			    frame.addLayoutClickListener(new LayoutClickListener() {
-			        @Override
-			        public void layoutClick(final LayoutClickEvent event) {
-			            if (event.getButton() == MouseButton.LEFT) {
-			            	// open to view report
-                        ReportWindow.open(f);
-			            }
-			        }
-			    });
-			    catalog.addComponent(frame);
+	        System.err.println("directories with reports:" + directories.length);
+	        File[] singlereport = null;
+	//        File[] reports = null;
+	        List<File> reportlist = new ArrayList<File>();
+	        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
+	            System.err.println("finding report round:" + (i+1));
+	        	String currentpath = directories[i].getAbsolutePath();
+	           	File dir = new File(currentpath);
+	
+	           	singlereport = dir.listFiles(new FilenameFilter() {
+	           		public boolean accept(File dir, String name){
+	           			return name.endsWith(".html");
+	           	  	}
+	           	});
+	           	try {
+	           		System.err.println("singlereport:" + singlereport[0]);
+	           		reportlist.add(singlereport[0]);           		
+	           	} catch (IndexOutOfBoundsException e) {
+	           		System.err.println(e + 
+	           				"\nThere is no html report in directory: " + dir.getAbsolutePath());
+	           	}
+	        }
+	        try {
+	        	System.err.println("reports files:" + reportlist.size());
+	        	boolean newest = true;
+				for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
+					VerticalLayout frame = new VerticalLayout();
+				    frame.addStyleName("report-thumb");	//.addStyleName("frame");
+	//			    if (newest) {
+	//			    	frame.addStyleName("report-newest");
+	//			    	newest = false;
+	//			    }
+				    frame.setMargin(true);
+				    frame.setWidth(225.0f, Unit.PIXELS);
+	//			    frame.setWidthUndefined();
+	
+				    Image thumb;
+				    if (newest) {
+					    thumb = new Image(null, new ThemeResource("img/draft-report-thumb-newest.png"));
+			        	newest=false;
+				    } else {
+				    	thumb = new Image(null, new ThemeResource("img/draft-report-thumb.png"));			    	
+				    }
+				    thumb.setWidth(130.0f, Unit.PIXELS);	//(140.0f, Unit.PIXELS);
+				    thumb.setHeight(162.0f, Unit.PIXELS);	//(175.0f, Unit.PIXELS);
+				    frame.addComponent(thumb);
+				    frame.setComponentAlignment(thumb, Alignment.TOP_CENTER);
+	
+				    Label titleLabel = new Label(formatReportTitle(f.getName()), ContentMode.HTML);
+	//			    titleLabel.setWidth(140.0f, Unit.PIXELS);
+				    frame.addComponent(titleLabel);
+				    frame.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
+				    
+				    frame.addLayoutClickListener(new LayoutClickListener() {
+				        @Override
+				        public void layoutClick(final LayoutClickEvent event) {
+				            if (event.getButton() == MouseButton.LEFT) {
+				            	// open to view report
+	                        ReportWindow.open(f);
+				            }
+				        }
+				    });
+				    catalog.addComponent(frame);
+				}
+			} catch (NullPointerException e) {
+				e.printStackTrace();
 			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
 		}
 	}
 }
