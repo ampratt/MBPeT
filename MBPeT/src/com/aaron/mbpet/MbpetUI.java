@@ -1,5 +1,6 @@
 package com.aaron.mbpet;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
@@ -75,7 +76,11 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	public JPAContainer<Adapter> adapters = JPAContainerFactory.make(Adapter.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<Model> models = JPAContainerFactory.make(Model.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<TRT> trtcontainer = JPAContainerFactory.make(TRT.class,MbpetUI.PERSISTENCE_UNIT);
-    
+	
+	public String pathSeparator = File.pathSeparator;
+	public String usersBasepathUnix = "/home/aton4/apratt/mbpet/users/";
+	public String usersBasepathWindows = "C:/dev/mbpet/users/";	//"C:\\dev\\mbpet\\users\\"
+
     
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
@@ -97,7 +102,6 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
     protected void init(VaadinRequest request) {
 //	    setInstance(this); // So that we immediately have access to the current application
 	    addDetachListener(new DetachListener() { 
-
 			@Override
             public void detach(DetachEvent event) {
 //                releaseResources();
@@ -341,6 +345,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		public void setTrtcontainer(JPAContainer<TRT> trtcontainer) {
 			this.trtcontainer = trtcontainer;
+		}
+		
+		public String getUsersBasepath() {
+			return usersBasepathWindows;
 		}
 		
 		

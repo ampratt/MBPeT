@@ -25,7 +25,7 @@ public class MasterUtils implements Runnable {
 
 	String command;
 	public int masterPort;
-	String usersBasepath = "C:\\dev\\mbpet\\users\\";
+	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";
 	
 	public MasterUtils(){		//(String command) {
 
