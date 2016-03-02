@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ReportWindow;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -25,15 +26,17 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class ReportsTab extends Panel {
 	
 	VerticalLayout vert;
-	String usersBasepath = "C:\\dev\\mbpet\\users\\";	//"C:/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 	TestSession currsession;
 	CssLayout catalog;
+	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";	"C:/dev/mbpet/users/";
+	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();
 	
     public ReportsTab(TestSession currsession) {
     	//setHeight(100.0f, Unit.PERCENTAGE);

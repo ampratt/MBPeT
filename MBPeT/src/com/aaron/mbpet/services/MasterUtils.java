@@ -26,6 +26,7 @@ public class MasterUtils implements Runnable {
 	String command;
 	public int masterPort;
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";
+	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"C:\\dev\\mbpet\\";
 	
 	public MasterUtils(){		//(String command) {
 
@@ -67,7 +68,7 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					String c = "mbpet_cli.exe" +
+					String c = "./mbpet_cli" +		//Windows: "mbpet_cli.exe"
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
 							" -p " + getAvailablePort() +
@@ -76,12 +77,15 @@ public class MasterUtils implements Runnable {
 					setCommand(c);
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
-        	        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", command);
+        	        ProcessBuilder pb = new ProcessBuilder(
+//        	        		"cmd.exe", "/c", command); //Windows commands
+        	        		"/bin/bash", "-c", command); //Unix commands
+        	        
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"dir & echo example of & echo working dir");
 //        	        pb.directory(new File("C:\\dev\\mbpet"));
-        	        pb.directory(new File(usersBasepath + username + "\\master"));		//("C:\\dev\\mbpet"));
+        	        pb.directory(new File(usersBasepath + username + "/master"));		//("C:\\dev\\mbpet"));
 
         	        pb.redirectErrorStream(true);
 					
@@ -133,9 +137,9 @@ public class MasterUtils implements Runnable {
 	
 	
     private String getTestDir(TestSession currSession) {	//(String username, TestSession currSession){
-    	String path =  //"..\\" +		//usersBasepath + username +
-	    			"..\\" + currSession.getParentcase().getTitle() +
-	    			"\\" + currSession.getTitle();
+    	String path =  //"../" +		//usersBasepath + username +
+	    			"../" + currSession.getParentcase().getTitle() +
+	    			"/" + currSession.getTitle();
     	return path;
     }
 	
@@ -205,7 +209,7 @@ public class MasterUtils implements Runnable {
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"dir & echo example of & echo working dir");
         	        
-        	        pb.directory(new File(usersBasepath + username + "\\master"));		//("C:\\dev\\mbpet"));
+        	        pb.directory(new File(usersBasepath + username + "/master"));		//("C:\\dev\\mbpet"));
         	
         			System.out.println("### Running master command: " + command);
 //        			pb.redirectErrorStream(true);
@@ -371,7 +375,7 @@ public class MasterUtils implements Runnable {
 //	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        		"dir & echo example of & echo working dir");
-	        pb.directory(new File("C:\\dev\\mbpet"));
+	        pb.directory(new File(mbpetBasepath));	//("C:/dev/mbpet"));
 	
 			System.out.println("Run echo command");
 //			pb.redirectErrorStream(true);

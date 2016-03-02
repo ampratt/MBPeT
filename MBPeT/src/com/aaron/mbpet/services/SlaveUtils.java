@@ -11,13 +11,17 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.UIDetachedException;
 
 public class SlaveUtils implements Runnable {
 
 	String command;
 	public int masterport;
+//	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";
+	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"C:\\dev\\mbpet\\users\\";
 
 	public SlaveUtils(){		//(String command) {
 //			this.command = command;
@@ -31,19 +35,19 @@ public class SlaveUtils implements Runnable {
             public void run() {
             	Process p;
         		try {
-        			command = 
-        					"./mbpet_slave " + 
+        			command = "./mbpet_slave " + 
 							"127.0.0.1 -p " + 
 							masterport;
         	        ProcessBuilder pb = new ProcessBuilder(
-//        	        		"cmd.exe", "/c", command);
+//        	        		"cmd.exe", "/c", command);	//Windows command
+//        	        		"/bin/bash", "-c", command);		//Unix command
+		        	        "/bin/bash", "-c", "echo", command);
         	        		
 //	        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        	        		"dir & echo example of & echo working dir");
 //        	        			"echo", "./mbpet_slave", "127.0.0.1");
-    	        			"echo", command);
-        	        pb.directory(new File("C:\\dev\\mbpet\\slave"));
+        	        pb.directory(new File(mbpetBasepath + "/slave"));	//("C:\\dev\\mbpet\\slave"));
         	
         			System.out.println("### Running slave command: " + command);
 //	        			pb.redirectErrorStream(true);
@@ -120,7 +124,7 @@ public class SlaveUtils implements Runnable {
 //		        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //		        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 		        		"dir & echo example of & echo working dir");
-	        pb.directory(new File("C:\\dev\\mbpet\\slave"));
+	        pb.directory(new File(mbpetBasepath + "/slave"));	//("C:\\dev\\mbpet\\slave"));
 	
 			System.out.println("Run echo command");
 //				pb.redirectErrorStream(true);

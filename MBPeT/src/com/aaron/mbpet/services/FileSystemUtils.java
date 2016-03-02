@@ -7,12 +7,16 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
+import com.vaadin.ui.UI;
 
 public class FileSystemUtils {
 
-	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
-	String mbpetBasepath = "/dev/mbpet/";		//"/dev/mbpet_projects/";
+	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"/dev/mbpet/users/"	"C:\\dev\\mbpet\\users\\";
+	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
+//	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
+//	String mbpetBasepath = "/dev/mbpet/";		//"/dev/mbpet_projects/";
 
 	public FileSystemUtils(){
 //		createUserDir("javacreatedme");
@@ -20,20 +24,25 @@ public class FileSystemUtils {
 	
 	public void createUserDir(String username) {
 		// Create one directory
-		File file;
-		boolean success = (file = new File(usersBasepath + username)).mkdir();
-		if (success) {
+//		File file;
+//		boolean success = (file = new File(usersBasepath + username)).mkdir();
+		File file = new File(usersBasepath + username);
+		if (file.exists()){	//if (success) {
+			grantPermissions(file);
 			System.out.println("Directory: \"" + username + "\" created");
 			System.out.println("Directory: " + file.getAbsolutePath());
-		}  
+		} else
+			System.err.println("user directory not created!");
 	}
 	
 	public void createSUTDir(String username, String sut) {
 		// Create one directory
 		File file;
 		boolean success = (file = new File(usersBasepath + username + "/" + sut)).mkdir();
-		if (success)
+		if (success) {
+			grantPermissions(file);
 			System.out.println("Directory: " + file.getAbsolutePath());
+		}
 	}
 
 	public void createSessionTestDir(String username, String sut, String testSession_dir) {
@@ -41,24 +50,30 @@ public class FileSystemUtils {
 		File file;
 		boolean success = (
 				file = new File(usersBasepath + username + "/" + sut + "/" + testSession_dir)).mkdir();
-		if (success)
+		if (success) {
+			grantPermissions(file);
 			System.out.println("Directory: " + file.getAbsolutePath());
+		}
 	}
 	
 	public void createModelsDir(String username, String sut, String session, String models_dir) {
 		File file;
 		boolean success = (
 				file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + models_dir)).mkdir();
-		if (success)
+		if (success) {
+			grantPermissions(file);
 			System.out.println("Directory: " + file.getAbsolutePath());
+		}
 	}
 	
 	public void createReportsDir(String username, String sut, String session, String reports_dir) {
 		File file;
 		boolean success = (
 				file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + reports_dir)).mkdir();
-		if (success)
+		if (success) {
+			grantPermissions(file);
 			System.out.println("Directory: " + file.getAbsolutePath());
+		}
 	}
 
 	
@@ -113,10 +128,11 @@ public class FileSystemUtils {
 	 */
 	public void writeSettingsToDisk(String username, String sut, String session, String settings_file) {
 		try {
+			File file;
 			FileUtils.writeStringToFile(
-					new File(usersBasepath + username + "/" + sut + "/" + session + "/settings.py"), 
+					file = new File(usersBasepath + username + "/" + sut + "/" + session + "/settings.py"), 
 					settings_file);
-			
+			grantPermissions(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,10 +140,11 @@ public class FileSystemUtils {
 	
 	public void writeAdapterToDisk(String username, String sut, String session, String adapter_file) {
 		try {
+			File file;
 			FileUtils.writeStringToFile(
-					new File(usersBasepath + username + "/" + sut + "/" + session + "/adapter.py"), 
+					file = new File(usersBasepath + username + "/" + sut + "/" + session + "/adapter.py"), 
 					adapter_file);
-			
+			grantPermissions(file);			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -136,12 +153,13 @@ public class FileSystemUtils {
 	public void writeModelToDisk(String username, String sut, String session, 
 			String models_folder, Model m) {
 		try {
+			File file;
 			FileUtils.writeStringToFile(
-					new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
+					file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
 							models_folder + "/" + m.getTitle() + ".gv"), 
 							m.getDotschema());
+			grantPermissions(file);
 			System.out.println("WRITE THIS DOTSCHEMA TO FILE:\n" + m.getDotschema());
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
@@ -151,16 +169,22 @@ public class FileSystemUtils {
 			String models_folder, List<Model> mlist) {
 		try {
 			for (Model m : mlist) {
+				File file;
 				FileUtils.writeStringToFile(
-						new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
+						file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + 
 								models_folder + "/" + m.getTitle() + ".gv"), 
 						m.getDotschema());
+				grantPermissions(file);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	
+	/**
+	 * DELETE dir or files
+	 */
 	public void deleteModelFromDisk(String username, String sut, String session, 
 			String models_folder, String previousTitle) {
 		// TODO delete single file from disk
@@ -204,19 +228,36 @@ public class FileSystemUtils {
 		}
 	}
 
+	
+	/**
+	 * COPY master dir to local dir
+	 * @param username
+	 */
 	public void copyMasterToUserDir(String username) {
 		try {
 //			File src = new
 			FileUtils.copyDirectory(
 					new File(mbpetBasepath + "/master"), 
 					new File(usersBasepath + "/" + username + "/master"));
-			System.out.println("copied master to user dir");
+			File file = new File(usersBasepath + "/" + username + "/master");
+			if (file.exists()) {
+				grantPermissions(file);
+				System.out.println("copied master to user dir");
+			}
+			else
+				System.err.println("failed to copy master to user dir");
 		} catch (IOException e) {
 			e.printStackTrace();
-		}	
+		}			
 	}
 
 
+	public void grantPermissions(File file) {
+		//chmod -R <permissionsettings> <dirname>
+		file.setReadable(true, true);
+		file.setWritable(true, true);
+		file.setExecutable(true, false);
+	}
 
 
 

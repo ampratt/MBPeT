@@ -80,7 +80,8 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	public String pathSeparator = File.pathSeparator;
 	public String usersBasepathUnix = "/home/aton4/apratt/mbpet/users/";
 	public String usersBasepathWindows = "C:/dev/mbpet/users/";	//"C:\\dev\\mbpet\\users\\"
-
+	public String mbpetBasepathUnix = "/home/aton4/apratt/mbpet/";
+	public String mbpetBasepathWindows = "C:/dev/mbpet/";
     
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
@@ -348,9 +349,11 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		
 		public String getUsersBasepath() {
-			return usersBasepathWindows;
+			return usersBasepathUnix;	//Windows;
 		}
-		
+		public String getMbpetBasepath() {
+			return mbpetBasepathUnix;	//Windows;
+		}		
 		
 //		  // return the current application instance
 //		  public static MbpetUI getInstance() {
