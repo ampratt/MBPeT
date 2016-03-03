@@ -51,22 +51,18 @@ public class ReportsTab extends Panel {
 
 		setContent(vert);
         
-//		initReports();
 		vert.addComponent(buildReportsCatalog());
-	}
-    	
-	private void initReports() {
-		vert.addComponent(new Label("<h3><i>This will display reports for this test case:</i></h3>", ContentMode.HTML));	//layout.
 
-		
-		BrowserFrame browser = new BrowserFrame("Embedded Page", new ExternalResource("http://www.flotcharts.org/"));
-		browser.setSizeFull();
-		//    	browser.setWidth("600px");
-    	browser.setHeight("400px");
-    	vert.addComponent(browser);
-        vert.setExpandRatio(browser, 1);
+		//		initReports();
+	}
+    
+    public void refreshReportsInLayout(){
+    	vert.removeComponent(vert.getComponent(0));
+		vert.addComponent(buildReportsCatalog());    	
+    }
+    
     	
-	} 	
+	
 	
     private Component buildReportsCatalog() {
         catalog = new CssLayout();
@@ -126,12 +122,12 @@ public class ReportsTab extends Panel {
         });
 		if (directories.length>0) {
 
-	        System.err.println("directories with reports:" + directories.length);
+	        System.out.println("directories with reports:" + directories.length);
 	        File[] singlereport = null;
 	//        File[] reports = null;
 	        List<File> reportlist = new ArrayList<File>();
 	        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
-	            System.err.println("finding report round:" + (i+1));
+	            System.out.println("finding report round:" + (i+1));
 	        	String currentpath = directories[i].getAbsolutePath();
 	           	File dir = new File(currentpath);
 	
@@ -141,7 +137,7 @@ public class ReportsTab extends Panel {
 	           	  	}
 	           	});
 	           	try {
-	           		System.err.println("singlereport:" + singlereport[0]);
+	           		System.out.println("singlereport:" + singlereport[0]);
 	           		reportlist.add(singlereport[0]);           		
 	           	} catch (IndexOutOfBoundsException e) {
 	           		System.err.println(e + 
@@ -149,7 +145,7 @@ public class ReportsTab extends Panel {
 	           	}
 	        }
 	        try {
-	        	System.err.println("reports files:" + reportlist.size());
+	        	System.out.println("reports files:" + reportlist.size());
 	        	boolean newest = true;
 				for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
 					VerticalLayout frame = new VerticalLayout();
@@ -195,4 +191,20 @@ public class ReportsTab extends Panel {
 			}
 		}
 	}
+	
+	
+//	private void initReports() {
+//		vert.addComponent(new Label("<h3><i>This will display reports for this test case:</i></h3>", ContentMode.HTML));	//layout.
+//
+//		
+//		BrowserFrame browser = new BrowserFrame("Embedded Page", new ExternalResource("http://www.flotcharts.org/"));
+//		browser.setSizeFull();
+//		//    	browser.setWidth("600px");
+//    	browser.setHeight("400px");
+//    	vert.addComponent(browser);
+//        vert.setExpandRatio(browser, 1);
+//    	
+//	} 
+	
+	
 }

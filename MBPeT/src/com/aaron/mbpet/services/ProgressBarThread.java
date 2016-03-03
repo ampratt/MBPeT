@@ -1,6 +1,8 @@
 package com.aaron.mbpet.services;
 
 import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.UI;
 
 //A thread to do some work
@@ -11,11 +13,16 @@ public class ProgressBarThread extends Thread {
 	boolean completeFlag = false;
 	
 	SessionViewer sessionViewer;
+	ProgressBar progressbar;
+	Label progressstatus;
     // Volatile because read in another thread in access()
     volatile double current = 0.0;
 
-    public ProgressBarThread(SessionViewer sessionViewer, double testduration) {
+    public ProgressBarThread(SessionViewer sessionViewer, ProgressBar progressbar, 
+    		Label progressstatus, double testduration) {		
     	this.sessionViewer = sessionViewer;
+    	this.progressbar = progressbar;
+    	this.progressstatus = progressstatus;
     	this.testduration = testduration + 8;	// = 40;
     	this.increaseAmount = (1.0 / (this.testduration/2));	//(1.0 / (this.testduration/3));
 
@@ -44,12 +51,12 @@ public class ProgressBarThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                	sessionViewer.progressbar.setValue(new Float(current));
+                	progressbar.setValue((float) current);	//new Float()
                     if (current < 1.0)
-                    	sessionViewer.progressstatus.setValue("" +
+                    	progressstatus.setValue("" +
                             ((int)(current*100)) + "%");	//done
                     else {
-                    	sessionViewer.progressstatus.setValue("100%");
+                    	progressstatus.setValue("100%");
                     	sessionViewer.resetStartStopButton();
                 	}
                 }
@@ -62,9 +69,10 @@ public class ProgressBarThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                	sessionViewer.progressbar.setValue(new Float(0.0));
+                	current = 0.0;
+                	progressbar.setValue((float) current);	//(new Float(0.0));
                     if (current < 1.0) {
-                    	sessionViewer.progressstatus.setValue("stopped");	//done
+                    	progressstatus.setValue("stopped");	//done
                     	sessionViewer.resetStartStopButton();
                     }
                 }

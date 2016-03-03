@@ -64,14 +64,18 @@ public class UDPThreadWorker {
             			} catch (IOException ex) {
             			    System.err.println("no available ports");
             			}
-            			
-            			
-            			byte[] receiveBuffer;	// byte[] sendBuffer;	// = new byte[5120];
-            			String sentence;
-            			
-            			int x=1;
+            				
             			boolean firstMessage = true;
             			ds.setSoTimeout(60000);   //50000 set the timeout in millisecounds.  
+            			
+            			String sentence;
+            			byte[] receiveBuffer;	// byte[] sendBuffer;	// = new byte[5120];
+            			DatagramPacket receivePacket;
+            			InetAddress IPAddress;
+            			int port;
+            			String[] results;
+ 		        	   	String[] slaveresults;
+            			int x=1;
             			while(true && stopFlag==false) {
 
             				if( isStopFlag()==true )
@@ -80,7 +84,7 @@ public class UDPThreadWorker {
             				try {
             				   receiveBuffer = new byte[5120];
             				   // create space for received datagram
-            		    	   DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+            		    	   receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
             		    	   // receive datagram
             		    	   System.out.println("Waiting for datagram packet...");
             		    	   ds.receive(receivePacket);
@@ -88,8 +92,8 @@ public class UDPThreadWorker {
             		    	   sentence = new String(receivePacket.getData());
             		    	   
             		    	   // get ip address, port # of sender
-            		    	   InetAddress IPAddress = receivePacket.getAddress();
-            		    	   int port = receivePacket.getPort();
+            		    	   IPAddress = receivePacket.getAddress();
+            		    	   port = receivePacket.getPort();
             		    	   
             		    	   System.out.println("== RECEIVED message from client ==");
             		    	   System.out.println("From: " + IPAddress + ":" + port);
@@ -106,8 +110,8 @@ public class UDPThreadWorker {
 	            		   	        firstMessage=false;
             		           }
             		           if (!sentence.contains("report_address")){
-            		        	   String[] results = jsonDecoder.getKeyValues(sentence.trim());
-            		        	   String[] slaveresults = jsonDecoder.getSlaves(sentence.trim(), numslaves);
+            		        	   results = jsonDecoder.getKeyValues(sentence.trim());
+            		        	   slaveresults = jsonDecoder.getSlaves(sentence.trim(), numslaves);
             		        	   
                 		           // update monitoring tab fields - thread-safely	           
 //                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);

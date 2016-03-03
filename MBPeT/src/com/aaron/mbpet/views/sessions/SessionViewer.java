@@ -1,9 +1,9 @@
 package com.aaron.mbpet.views.sessions;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.components.flot.FlotChart;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillMBPeTProcesses;
 import com.aaron.mbpet.services.MasterUtils;
@@ -11,7 +11,7 @@ import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
-import com.aaron.mbpet.views.tabs.MonitoringTab;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.tabs.TabLayout;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -21,16 +21,16 @@ import com.vaadin.server.Page;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class SessionViewer extends VerticalLayout implements Button.ClickListener {	//implements View 
@@ -56,6 +56,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	private Button stopButton;
 	
 	public TabLayout tabs;
+//	FlotChart usersChart;
+	
+	int masterPort;
+	int udpPort;
+	MasterTerminalWindow masterTerminalWindow;
 	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
@@ -236,6 +241,18 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			tabs.getMonitoringTab().generateSlaveMonitoringInfo(
 					(int) slaveSelect.getValue(), "Connecting");
 			
+//			volatile double current = 0.0;
+//			progressbar.setData(new Float(0.0));
+			
+			//set chart to [0,0]
+			tabs.getMonitoringTab().resetChart();
+//			// navigate to corresponding item
+//			getUI().getNavigator().navigateTo(MainView.NAME + 
+//									"/" + currsession.getParentcase().getTitle() + 
+//									"/" + currsession.getTitle() + "id=" + currsession.getId() 
+//									);
+//			tabs.setSelectedTab(1);
+			
 			// start round spinner till messages arrive
 			displaySpinner(true);
 			
@@ -273,7 +290,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //					" -p " + 
 //					" -b localhost:" + udpPort + 
 //					" -s";
-			int udpPort=0;
+			udpPort=0;
 //			do {
 //				udpPort = udpWorker.getUDPPort();
 //				System.out.println("checking udp port. currently: " + udpWorker.getUDPPort());
@@ -286,46 +303,55 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
 			
 			System.out.println("udp port --being sent to master-- is: " + udpPort);		//.getUDPPort());
-			MasterTerminalWindow masterTerminalWindow = new MasterTerminalWindow();
+			
+			//open master terminal window
+			masterTerminalWindow = new MasterTerminalWindow();
+			UI.getCurrent().addWindow(masterTerminalWindow);	//(new MasterTerminalWindow());
+			
+			//print UDP connecting info in terminal window...update UI thread-safely
+            UI.getCurrent().access(new Runnable() {
+                @Override
+                public void run() {
+                	masterTerminalWindow.insertDataToEditor("udp_client>listening on port " + udpPort + "\n");
+                }
+            });
+			
 			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
-			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
 //			int masterport = masterUtils.getAvailablePort();
 			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
 					slaveSelect.getValue().toString(), 
 					udpPort, 
 					currsession.getParentcase().getOwner().getUsername(), 
 					currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
+//			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
 //			masterUtils.startMaster(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);
-			//open master terminal window
-			UI.getCurrent().addWindow(masterTerminalWindow);	//(new MasterTerminalWindow());
-			
-//	        Thread t = new Thread(masterUtils);
-//	        t.start();
 
+            
 			// start mbpet SLAVE
 //			String slavecommand = "./mbpet_slave " + "127.0.0.1 -p " + masterUtils.getMasterPort();
-			int masterPort=0;
+			masterPort=0;
 			while (!(masterUtils.getMasterPort() > 0)) {
 				System.out.print("waiting master port selection...");
 			}masterPort = masterUtils.getMasterPort();
 			System.out.println("\nmaster port selected..." + masterPort);
 			
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
+			
 			SlaveUtils slaveUtils = new SlaveUtils();
 			slaveUtils.startSlave(masterPort);		//(slavecommand);
-			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
+//			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
 
+			//print SLAVE connecting info in terminal window...update UI thread-safely
+			UI.getCurrent().access(new Runnable() {
+				@Override
+				public void run() {
+					masterTerminalWindow.insertDataToEditor("mbpet>initializing slave(s) on port " + masterPort + "\n");
+				}
+			});
 
 //	        // start progress indicator - DO THIS IN UDP CLIENT UPON RECEPTION OF FIRST MESSAGE
 //	        progressThread = new ProgressBarThread(40);
 //	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
-        	
-//			MbpetUI mbpetui = new MbpetUI();
-//			MbpetUI.PushThread push = mbpetui.new PushThread();
-//			push.start();
-			
-//			new UDPServer();
-//			new MasterUtils();
 
         } else if (event.getButton() == stopButton) {
 			//testing purposes
@@ -344,8 +370,9 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			udpWorker.navToReports(false);
 			
 			// stop mbpet MASTER and SLAVE
-			new KillMBPeTProcesses();
-			
+			KillMBPeTProcesses killer = new KillMBPeTProcesses();
+//			killer.killLinuxProcess(masterPort);
+			killer.killWindowsProcess(masterPort);
 			
 			// stop SLAVE(s)
 			
@@ -369,7 +396,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
         	spinLabel.setVisible(false);
 
    	        // start progress indicator
-   	        progressThread = new ProgressBarThread(this, currsession.getParameters().getTest_duration()); 		//40);
+   	        progressThread = new ProgressBarThread(this, progressbar, progressstatus, currsession.getParameters().getTest_duration()); 		//40);
    	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
     	}
 	}

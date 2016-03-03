@@ -40,8 +40,8 @@ public class SlaveUtils implements Runnable {
 							masterport;
         	        ProcessBuilder pb = new ProcessBuilder(
 //        	        		"cmd.exe", "/c", command);	//Windows command
-//        	        		"/bin/bash", "-c", command);		//Unix command
-		        	        "/bin/bash", "-c", "echo", command);
+        	        		"/bin/bash", "-c", command);		//Unix command
+//		        	        "/bin/bash", "-c", "echo", command);
         	        		
 //	        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //	        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999

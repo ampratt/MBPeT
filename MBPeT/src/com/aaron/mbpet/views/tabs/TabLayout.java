@@ -1,5 +1,6 @@
 package com.aaron.mbpet.views.tabs;
 
+import com.aaron.mbpet.components.flot.FlotChart;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
@@ -27,9 +28,8 @@ public class TabLayout extends TabSheet {
 //	RampTab ramp;// = new RampTab();
 //	SettingsTab settings;// = new SettingsTab();
 	
-    
+//	FlotChart usersChart;
     private ReportsTab currentReportsComponent; 	//Field to store current component
-    
 	TestSession currsession;
 	
     public TabLayout() {
@@ -40,6 +40,7 @@ public class TabLayout extends TabSheet {
 //        setSizeFull();
 
         this.currsession = currsession;
+//        this.usersChart = usersChart;
         
         setHeight(100.0f, Unit.PERCENTAGE);
         addStyleName(ValoTheme.TABSHEET_FRAMED);
@@ -102,9 +103,10 @@ public class TabLayout extends TabSheet {
 	}
     
 	public void refreshReports(){
-    	ReportsTab newReportsComponent = new ReportsTab(currsession);
-        replaceComponent(currentReportsComponent, newReportsComponent);
-        currentReportsComponent = newReportsComponent;
+		currentReportsComponent.refreshReportsInLayout();
+//    	ReportsTab newReportsComponent = new ReportsTab(currsession);
+//        replaceComponent(currentReportsComponent, newReportsComponent);
+//        currentReportsComponent = newReportsComponent;
 	}
 	
 }

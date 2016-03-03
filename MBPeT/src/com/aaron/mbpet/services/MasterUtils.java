@@ -68,7 +68,7 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					String c = "mbpet_cli.exe" + //"./mbpet_cli" +		//Windows: "mbpet_cli.exe"
+					String c = "mbpet_cli.exe" +		//"./mbpet_cli"  Windows: "mbpet_cli.exe"
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
 							" -p " + getAvailablePort() +
@@ -94,8 +94,8 @@ public class MasterUtils implements Runnable {
     				ss = null;
     				
         			final Process p = pb.start();
+					System.out.println("### Running master command: " + command);
 					System.out.println("### Running master command...from dir>" + pb.directory());
-//					System.out.println("### Running master command...from dir> \\" + username + "\\master");
 										
 					//update UI thread-safely
 	                 UI.getCurrent().access(new Runnable() {
