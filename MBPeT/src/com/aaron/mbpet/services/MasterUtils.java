@@ -68,7 +68,7 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					String c = "./mbpet_cli" +		//Windows: "mbpet_cli.exe"
+					String c = "mbpet_cli.exe" + //"./mbpet_cli" +		//Windows: "mbpet_cli.exe"
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
 							" -p " + getAvailablePort() +
@@ -78,9 +78,9 @@ public class MasterUtils implements Runnable {
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
         	        ProcessBuilder pb = new ProcessBuilder(
-//        	        		"cmd.exe", "/c", command); //Windows commands
-        	        		"/bin/bash", "-c", command); //Unix commands
-        	        
+        	        		"cmd.exe", "/c", command); //Windows commands
+//        	        		"/bin/bash", "-c", command); //Unix commands
+//        	        		command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"dir & echo example of & echo working dir");
@@ -117,8 +117,8 @@ public class MasterUtils implements Runnable {
 		            // kick them off
 //		            errorGobbler.start();
 //		            outputGobbler.start();
-		            outputGobbler.startStreamGobbler();
-		            errorGobbler.startStreamGobbler();                        
+		            outputGobbler.startMasterGobbler();
+		            errorGobbler.startMasterGobbler();                        
 		            
 					getPid(p);
 

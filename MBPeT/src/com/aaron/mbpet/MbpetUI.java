@@ -349,10 +349,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		
 		public String getUsersBasepath() {
-			return usersBasepathUnix;	//Windows;
+			return usersBasepathWindows;	//Windows;
 		}
 		public String getMbpetBasepath() {
-			return mbpetBasepathUnix;	//Windows;
+			return mbpetBasepathWindows;	//Windows;
 		}		
 		
 //		  // return the current application instance

@@ -49,56 +49,76 @@ public class SlaveUtils implements Runnable {
 //        	        			"echo", "./mbpet_slave", "127.0.0.1");
         	        pb.directory(new File(mbpetBasepath + "/slave"));	//("C:\\dev\\mbpet\\slave"));
         	
-        			System.out.println("### Running slave command: " + command);
 //	        			pb.redirectErrorStream(true);
         			p = pb.start();
 //        			p.getInputStream().close(); 
 //        			p.getOutputStream().close(); 
 //        			p.getErrorStream().close();
 
+        			//get output from slave
+        			System.out.println("### Running slave command: " + command);
+        			System.out.println("### Running slave command...from dir>" + pb.directory());
+//					System.out.println("### Running master command...from dir> \\" + username + "\\master");
+										
+//					//update UI thread-safely
+//	                 UI.getCurrent().access(new Runnable() {
+//	                     @Override
+//	                     public void run() {
+//	                    	 masterTerminalWindow.insertDataToEditor("mbpet>" + command + "\n");
+//	                     }
+//	                 });
+	                 
+//					final PushMasterUpdater updater = mbpetUI;
+					// any error message?
+		            StreamGobbler2 errorGobbler = new 
+		                StreamGobbler2(p.getErrorStream(), "ERROR");//, mbpetUI, masterTerminalWindow);	//masterTerminalWindow);            
+		            
+		            // any output?
+		            StreamGobbler2 outputGobbler = new 
+		                StreamGobbler2(p.getInputStream(), "OUTPUT");//, mbpetUI, masterTerminalWindow);	//masterTerminalWindow);
+		                
+		            // kick them off
+		            outputGobbler.startSlaveGobbler();
+		            errorGobbler.startSlaveGobbler();                        
+		            
+//					getPid(p);
+
+		            // any error???
 	                int errCode = p.waitFor();
 	                System.out.println("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
 
-	        		StringBuilder output = new StringBuilder();	    	
-        		
-        			output.append("<OUTPUT> \n");
-//        			System.out.println("<OUTPUT> \n");
-        			BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        	        String line = null;
-        			while ((line = bri.readLine()) != null) {
-        				output.append(line + "\n");
-//        				System.out.println(line);
-        				line = bri.readLine();
-        			}
-        			bri.close();
-        			output.append("</OUTPUT> \n");
-        
-        			
-        			output.append("<ERROR> \n");
-        			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        			line = null;
-        			while ((line = bre.readLine()) != null) {
-        				  output.append(line + "\n");	
-        				  //System.out.println(line);
-        			}
-        			bre.close();
-        			output.append("</ERROR> \n");
-        			
-        			System.out.println(output.toString());
-        			System.out.println("the slave should be running now...");
-        
-//        			//get enter command to start process
-//        			BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-//        			String amount = inFromUser.readLine();
-        			
-        			
-        			try {
-        				int exitVal = p.waitFor();            
-        				System.err.println("Slave Process exitValue: " + exitVal);
-        			} catch (InterruptedException e) {
-        				e.printStackTrace();
-        			}
-
+//	        		StringBuilder output = new StringBuilder();	    	
+//        		
+//        			output.append("<OUTPUT> \n");
+////        			System.out.println("<OUTPUT> \n");
+//        			BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//        	        String line = null;
+//        			while ((line = bri.readLine()) != null) {
+//        				output.append(line + "\n");
+////        				System.out.println(line);
+//        				line = bri.readLine();
+//        			}
+//        			bri.close();
+//        			output.append("</OUTPUT> \n");
+//        
+//        			
+//        			output.append("<ERROR> \n");
+//        			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//        			line = null;
+//        			while ((line = bre.readLine()) != null) {
+//        				  output.append(line + "\n");	
+//        				  //System.out.println(line);
+//        			}
+//        			bre.close();
+//        			output.append("</ERROR> \n");
+//        			
+//        			System.out.println(output.toString());
+//        			System.out.println("the slave should be running now...");
+//        
+////        			//get enter command to start process
+////        			BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+////        			String amount = inFromUser.readLine();
+//        			
         		} catch (IOException | InterruptedException e) {
         			e.printStackTrace();
         		}

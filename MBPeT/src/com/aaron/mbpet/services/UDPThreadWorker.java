@@ -19,7 +19,7 @@ public class UDPThreadWorker {
 	
     public boolean stopFlag = false;
     private boolean navToReports = true;
-    DatagramSocket serverSocket;
+    DatagramSocket ds;
     
     SessionViewer sessionViewer;
 	public int udpPort;
@@ -50,9 +50,9 @@ public class UDPThreadWorker {
 //            			serverSocket = new DatagramSocket(9999);
 
             			try {
-            				serverSocket = new DatagramSocket();	//create();
-            				setUDPPort(serverSocket.getLocalPort());
-            			    System.out.println("listening on UDP port: " + serverSocket.getLocalPort());
+            				ds = new DatagramSocket();	//create();
+            				setUDPPort(ds.getLocalPort());
+            			    System.out.println("listening on UDP port: " + ds.getLocalPort());
 //            			    component.getUI().getSession().getLock().lock();
 //            			    try {
 //            			       doStuffWith(component);
@@ -71,11 +71,11 @@ public class UDPThreadWorker {
             			
             			int x=1;
             			boolean firstMessage = true;
-            			serverSocket.setSoTimeout(60000);   //50000 set the timeout in millisecounds.  
+            			ds.setSoTimeout(60000);   //50000 set the timeout in millisecounds.  
             			while(true && stopFlag==false) {
 
             				if( isStopFlag()==true )
-                    			serverSocket.setSoTimeout(50);   // set the timeout in millisecounds.  
+                    			ds.setSoTimeout(50);   // set the timeout in millisecounds.  
 
             				try {
             				   receiveBuffer = new byte[5120];
@@ -83,7 +83,7 @@ public class UDPThreadWorker {
             		    	   DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
             		    	   // receive datagram
             		    	   System.out.println("Waiting for datagram packet...");
-            		    	   serverSocket.receive(receivePacket);
+            		    	   ds.receive(receivePacket);
             		    	   
             		    	   sentence = new String(receivePacket.getData());
             		    	   
@@ -138,7 +138,7 @@ public class UDPThreadWorker {
 	        	                	   sessionViewer.tabs.setSelectedTab(2);
 	        	                   }
 	        	                   sessionViewer.displayProgressBar(false);
-	        	                   serverSocket.close();
+	        	                   ds.close();
             		           }
             		           
 //            		           if (sentence.contains("report_address")){
@@ -159,7 +159,7 @@ public class UDPThreadWorker {
             	                // timeout exception.
             	                System.out.println("UDP Timeout reached!!! " + e);
                                 updater.printFinalMessage("\nUDP Timeout reached!!!", numslaves, sessionViewer);
-            	                serverSocket.close();
+            	                ds.close();
             	                sessionViewer.progressThread.endThread();
             	            } 
 //            				catch(SocketException e){
@@ -175,7 +175,7 @@ public class UDPThreadWorker {
             			}
 //            	    	serverSocket.setSoTimeout(50);
 
-    	                serverSocket.close();
+    	                ds.close();
     	                
             		} catch (SocketException e) {
             			// TODO Auto-generated catch block
@@ -210,13 +210,13 @@ public class UDPThreadWorker {
         }.start();
     }
 	
-	DatagramSocket ds = null;
+	DatagramSocket tempds = null;
 	public DatagramSocket createDatagram() {
 		int openport = 0;
 		for (int port=9999; port<11000; port++) {		//(int port : ports)
 			try {
 				System.out.println("\nTrying port: " + port);
-				ds = new DatagramSocket(port);	//System.out.println("socket open on port " + port);
+				tempds = new DatagramSocket(port);	//System.out.println("socket open on port " + port);
 //				setUDPPort(ds.getLocalPort());
 //				ss.close();		//System.out.println(srv.getLocalPort());
 //				ss = null;			//System.out.println("socket closed on port " + port);
@@ -229,9 +229,9 @@ public class UDPThreadWorker {
 				continue;	//return false;
 			}
 	    }
-		System.out.println("\nReturning port [" + ds.getLocalPort() + "] for master use");
+		System.out.println("\nReturning port [" + tempds.getLocalPort() + "] for master use");
 //		setMasterPort(ds);
-	    return ds;
+	    return tempds;
 	}
 	
 	public DatagramSocket create() throws IOException {		//(int[] ports) throws IOException {
@@ -259,6 +259,9 @@ public class UDPThreadWorker {
 	
     public void endThread() {
     	setStopFlag(true);
+        //close socket to free up port #
+    	ds.close();		//System.out.println(srv.getLocalPort());
+    	ds = null;
     	//    	stopFlag = true;
     }
 
@@ -267,9 +270,9 @@ public class UDPThreadWorker {
 ////stopFlag = true;
 //	this.navToReports = navToReports;
 //}
-public void navToReports(boolean navToReports) {
-	this.navToReports = navToReports;
-}
+	public void navToReports(boolean navToReports) {
+		this.navToReports = navToReports;
+	}
 
 
 	public boolean isStopFlag() {
