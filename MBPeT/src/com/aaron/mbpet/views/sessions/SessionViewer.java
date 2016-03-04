@@ -371,8 +371,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
-//			killer.killLinuxProcess(masterPort);
-			killer.killWindowsProcess(masterPort);
+			killer.killLinuxProcess(masterPort);
+//			killer.killWindowsProcess(masterPort);
 			
 			// stop SLAVE(s)
 			

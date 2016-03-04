@@ -6,6 +6,7 @@ import java.io.FilenameFilter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -126,6 +127,7 @@ public class ReportsTab extends Panel {
 	        File[] singlereport = null;
 	//        File[] reports = null;
 	        List<File> reportlist = new ArrayList<File>();
+	        Arrays.sort(directories);
 	        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
 	            System.out.println("finding report round:" + (i+1));
 	        	String currentpath = directories[i].getAbsolutePath();

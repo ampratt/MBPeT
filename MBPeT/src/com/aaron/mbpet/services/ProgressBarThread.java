@@ -69,8 +69,8 @@ public class ProgressBarThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                	current = 0.0;
-                	progressbar.setValue((float) current);	//(new Float(0.0));
+//                	current = 0.0;
+//                	progressbar.setValue((float) current);	//(new Float(0.0));
                     if (current < 1.0) {
                     	progressstatus.setValue("stopped");	//done
                     	sessionViewer.resetStartStopButton();

@@ -22,11 +22,11 @@ public class KillMBPeTProcesses {
 		 try {
 			if (isProcessRunning(TASKLIST, masterProcessName)) {
 				System.out.print(masterProcessName + " is being killed\n");
-				killProcess(KILL, masterProcessName);
+				killProcessWindows(KILL, masterProcessName);
 			 }
 			if (isProcessRunning(TASKLIST, slaveProcessName)) {
 				System.out.print(slaveProcessName + " is being killed\n");
-				killProcess(KILL, slaveProcessName);
+				killProcessWindows(KILL, slaveProcessName);
 			 }
 //			if (isProcessRunning(udpProcessName)) {
 //				System.out.print(udpProcessName + " is being killed\n");
@@ -48,11 +48,11 @@ public class KillMBPeTProcesses {
 		 try {
 			if (isProcessRunningLinux(TASKLISTtcp, String.valueOf(port))){	//masterProcessName)) {
 				System.out.print(masterProcessName + "/tcp is being killed\n");
-				killProcess(KILLtcp, masterProcessName);
+				killProcessLinux(KILLtcp, masterProcessName);
 			 }
 			if (isProcessRunningLinux(TASKLISTudp, String.valueOf(port))){	//masterProcessName)) {
 				System.out.print(masterProcessName + "/udp is being killed\n");
-				killProcess(KILLudp, masterProcessName);
+				killProcessLinux(KILLudp, masterProcessName);
 			 }
 
 		} catch (Exception e1) {
@@ -95,17 +95,25 @@ public class KillMBPeTProcesses {
 	
 	public static void killProcessByPID(String KILL) throws Exception {
 		//kill it
-		Runtime.getRuntime().exec(KILL);
+		Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", KILL });
+//		Runtime.getRuntime().exec(KILL);
 	}
 	
-	public static void killProcess(String KILL, String serviceName) throws Exception {
+	public static void killProcessLinux(String KILL, String serviceName) throws Exception {
+		//get pid of running service
+//		Runtime.getRuntime().exec(pidof"+ serviceName);
+		
+		//kill it
+		Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", KILL + serviceName });
+//		Runtime.getRuntime().exec(KILL + serviceName);
+	 }
+	public static void killProcessWindows(String KILL, String serviceName) throws Exception {
 		//get pid of running service
 //		Runtime.getRuntime().exec(pidof"+ serviceName);
 		
 		//kill it
 		Runtime.getRuntime().exec(KILL + serviceName);
-	 }
-	
+	 }	
 	
 	
 //	public static void main(String[] args) {

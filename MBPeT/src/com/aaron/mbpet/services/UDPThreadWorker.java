@@ -18,7 +18,7 @@ import com.vaadin.ui.UIDetachedException;
 public class UDPThreadWorker {
 	
     public boolean stopFlag = false;
-    private boolean navToReports = true;
+    public boolean navToReports = true;
     DatagramSocket ds;
     
     SessionViewer sessionViewer;
@@ -106,7 +106,7 @@ public class UDPThreadWorker {
 //            		           PushdemointerfacedUI.addNewMessageComponent("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
 //            		           UI.getCurrent().push();
             		           if (firstMessage) {
-            		        	   sessionViewer.displayProgressBar(true);
+            		        	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
 	            		   	        firstMessage=false;
             		           }
             		           if (!sentence.contains("report_address")){
@@ -193,12 +193,14 @@ public class UDPThreadWorker {
 //                    updater.printFinalMessage("\nTest Session is finished!");
 //        	        // navigate to reports
 
-            		if (stopFlag)
+            		if (stopFlag) {
             			sessionViewer.progressThread.endThread();
-                    if (navToReports) {
-                    	sessionViewer.tabs.refreshReports();
-                    	sessionViewer.tabs.setSelectedTab(2);
-                    }
+            			System.out.println("progressThread terminated!");
+            		}
+//                    if (navToReports) {
+//                    	sessionViewer.tabs.refreshReports();
+//                    	sessionViewer.tabs.setSelectedTab(2);
+//                    }
 
                 }
 //                catch (final InterruptedException e) {
