@@ -61,6 +61,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	int masterPort;
 	int udpPort;
 	MasterTerminalWindow masterTerminalWindow;
+	private SlaveUtils slaveUtils;
+	private MasterUtils masterUtils;
 	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
@@ -316,7 +318,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
                 }
             });
 			
-			MasterUtils masterUtils = new MasterUtils();		//mastercommand);
+			masterUtils = new MasterUtils();		//mastercommand);
 //			int masterport = masterUtils.getAvailablePort();
 			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
 					slaveSelect.getValue().toString(), 
@@ -337,7 +339,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
 			
-			SlaveUtils slaveUtils = new SlaveUtils();
+			slaveUtils = new SlaveUtils();
 			slaveUtils.startSlave(masterPort);		//(slavecommand);
 //			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
 
@@ -371,7 +373,9 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
-			killer.killLinuxProcess(masterPort);
+//			killer.fuserKillLinuxProcess(masterPort);
+			killer.pkillLinuxProcess(masterUtils.getCommand());
+			killer.pkillLinuxProcess(slaveUtils.getCommand());
 //			killer.killWindowsProcess(masterPort);
 			
 			// stop SLAVE(s)

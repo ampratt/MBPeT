@@ -105,9 +105,16 @@ public class UDPThreadWorker {
 //            		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
 //            		           PushdemointerfacedUI.addNewMessageComponent("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
 //            		           UI.getCurrent().push();
+            		           
             		           if (firstMessage) {
-            		        	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
-	            		   	        firstMessage=false;
+            		               // Update the UI thread-safely
+            		               UI.getCurrent().access(new Runnable() {
+            		                   @Override
+            		                   public void run() {
+            		                	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
+            		                   }
+            		               });
+            		               firstMessage=false;
             		           }
             		           if (!sentence.contains("report_address")){
             		        	   results = jsonDecoder.getKeyValues(sentence.trim());
@@ -131,7 +138,13 @@ public class UDPThreadWorker {
 
 //            	                    serverSocket.close();
             		           } else {
-            		        	   sessionViewer.progressThread.setComplete();
+              		               // Update the UI thread-safely
+            		               UI.getCurrent().access(new Runnable() {
+            		                   @Override
+            		                   public void run() {
+            		                	   sessionViewer.progressThread.setComplete();
+            		                   }
+            		               });
 	        		               // 2. Inform that we have stopped running
                 		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
             		        	   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
@@ -141,7 +154,13 @@ public class UDPThreadWorker {
 	        	                	   sessionViewer.tabs.refreshReports();
 	        	                	   sessionViewer.tabs.setSelectedTab(2);
 	        	                   }
-	        	                   sessionViewer.displayProgressBar(false);
+	          		               // Update the UI thread-safely
+            		               UI.getCurrent().access(new Runnable() {
+            		                   @Override
+            		                   public void run() {
+            		                	   sessionViewer.displayProgressBar(false);
+            		                   }
+            		               });
 	        	                   ds.close();
             		           }
             		           
