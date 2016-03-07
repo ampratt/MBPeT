@@ -235,13 +235,19 @@ public class FileSystemUtils {
 	 */
 	public void copyMasterToUserDir(String username) {
 		try {
+			// cp -rp mbpetBasepath+"/master" usersBasepath+"/"+username+"/master"
+			String cp = "cp -rp "+mbpetBasepath+"/master " + usersBasepath+"/"+username+"/master";
 //			File src = new
-			FileUtils.copyDirectory(
-					new File(mbpetBasepath + "/master"), 
-					new File(usersBasepath + "/" + username + "/master"));
+//			FileUtils.copyDirectory(
+//					new File(mbpetBasepath + "/master"), 
+//					file);	//new File(usersBasepath + "/" + username + "/master"));
+			Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", cp});
 			File file = new File(usersBasepath + "/" + username + "/master");
+
 			if (file.exists()) {
-				grantPermissions(file);
+				// grant permissions to dir and all sub dirs
+//				grantPermissions(file);
+//				grantPermissionsRecursive(file);
 				System.out.println("copied master to user dir");
 			}
 			else
@@ -254,10 +260,26 @@ public class FileSystemUtils {
 
 	public void grantPermissions(File file) {
 		//chmod -R <permissionsettings> <dirname>
-		file.setReadable(true, true);
-		file.setWritable(true, true);
-		file.setExecutable(true, false);
+		try {
+			System.out.println("ATTEMPTING TO CHANGE FILE PERMISSIONS of file: " + file.getAbsolutePath());
+			Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", "chmod 777 " + file.getAbsolutePath() });
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+//		file.setReadable(true, true);
+//		file.setWritable(true, true);
+//		file.setExecutable(true, false);
 	}
+	public void grantPermissionsRecursive(File file) {
+		try {
+			System.out.println("ATTEMPTING TO CHANGE FILE PERMISSIONS of subdirs of dir: " + file.getAbsolutePath());
+			Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", "chmod -Rf 777 " + file.getAbsolutePath() + "/*" });
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 
 
