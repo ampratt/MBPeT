@@ -252,7 +252,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			progressbar.setData(new Float(0.0));
 			
 			//set chart to [0,0]
-			tabs.getMonitoringTab().resetChart();
+//			tabs.getMonitoringTab().resetChart();
+			tabs.getMonitoringTab().refreshChart();
 //			// navigate to corresponding item
 //			getUI().getNavigator().navigateTo(MainView.NAME + 
 //									"/" + currsession.getParentcase().getTitle() + 

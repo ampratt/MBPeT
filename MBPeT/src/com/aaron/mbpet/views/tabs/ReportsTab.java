@@ -26,6 +26,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -176,7 +177,7 @@ public class ReportsTab extends Panel {
 	//			    titleLabel.setWidth(140.0f, Unit.PIXELS);
 				    frame.addComponent(titleLabel);
 				    frame.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
-				    
+	                
 				    frame.addLayoutClickListener(new LayoutClickListener() {
 				        @Override
 				        public void layoutClick(final LayoutClickEvent event) {

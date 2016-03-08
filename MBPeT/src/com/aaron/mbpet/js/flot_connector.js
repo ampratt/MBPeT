@@ -94,8 +94,14 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 //		return data;
 //	}
 		
-	this.reset = function(){
+	this.reset = function(newdata){
+		alert("resetting chart js connector with data:" + newdata);
+//		state = this.getState();
+//		options = state.options;
+//		data = state.data;
+//		$.plot(element, data, options);
 //		data.push([x, y]);
+		data = newdata;
 		p.setData([data]);
 //		p.setData([getNewData()]);
 		p.setupGrid();			// Since the axes do change, we need to call plot.setupGrid()

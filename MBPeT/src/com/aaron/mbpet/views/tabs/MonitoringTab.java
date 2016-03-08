@@ -175,10 +175,11 @@ public class MonitoringTab extends Panel {
 		// flot chart
 //		firstbuttonAction();
 		buildFlotChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
-		flotLayout.addComponent(usersChart);
-		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
-		flotLayout.setExpandRatio(usersChart, 1);
-		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+//		flotLayout.addComponent(usersChart);
+//		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
+//		flotLayout.setExpandRatio(usersChart, 1);
+//		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+		
 //		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
 //		rampValue = FlotUtils.formatFlotToRamp(chart.getData().toJson());
 
@@ -208,8 +209,8 @@ public class MonitoringTab extends Panel {
 //		String data2 = data + ", \"label\": \"ramp function\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"true\"";
 		
 		String data = chartdata + dataOptions;//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
-//				"\"clickable\":\"true\", \"editable\":\"true\""
-
+//		"\"clickable\":\"true\", \"editable\":\"true\""
+		
 		usersChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));
 //		chart.setData("[{ \"data\": " + data1 + "}, { \"data\": " + data2 + " }]");	//("[{ data:[[0,0], [10,30], [20,50]], lines:{show:true}, points:{show:true}, hoverable:true, clickable:true }]");	//(formatDataForGraph(data));
 		// options
@@ -231,7 +232,13 @@ public class MonitoringTab extends Panel {
 					"}" +
 				"}";
 		usersChart.setOptions(options);
+		
+		flotLayout.addComponent(usersChart);
+		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
+		flotLayout.setExpandRatio(usersChart, 1);
+		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
 	}
+	
 	
 	public void fetchNewData(int rounds) {
 		int y;
@@ -623,7 +630,21 @@ public class MonitoringTab extends Panel {
 //		editor.setValue(sb.toString());
 	}
 
-
+	public void refreshChart(){		//FlotChart newChart
+		flotLayout.removeComponent(usersChart);
+		y = 0;
+		x = 0 ;
+		prevY = 0;
+		buildFlotChart("[[0,0]]");
+		
+//		usersChart = new FlotChart();
+//		initChartData("[[0,0]]");
+//		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]"); // update server side	
+//		usersChart.reset("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");	// update the js code to effect the chart 
+////				usersChart.addNewData(x, y);	// update the server side data
+////				usersChart.update(x, y);		// update the js code to effect the chart 
+//		System.out.println(usersChart.getData().toJson());
+	}
 	public void resetChart() {
 		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]"); // update server side	
 //
@@ -631,7 +652,7 @@ public class MonitoringTab extends Panel {
 		x = 0 ;
 		prevY = 0;
 		
-		usersChart.reset();				// update the js code to effect the chart 
+		usersChart.reset("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");	// update the js code to effect the chart 
 //		usersChart.addNewData(x, y);	// update the server side data
 //		usersChart.update(x, y);		// update the js code to effect the chart 
 		System.out.println(usersChart.getData().toJson());

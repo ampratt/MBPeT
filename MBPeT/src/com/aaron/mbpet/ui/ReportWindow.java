@@ -51,8 +51,9 @@ public class ReportWindow extends Window {
 
     	
 //     // Find the application directory
-        String basepath = VaadinService.getCurrent()
-                          .getBaseDirectory().getAbsolutePath();
+//        String basepath = VaadinService.getCurrent()
+//                          .getBaseDirectory().getAbsolutePath();
+        
 //        System.out.println("basepath" + basepath);
 //        // Image as a file resource
 //        FileResource resource = new FileResource(new File(basepath +
