@@ -63,6 +63,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	MasterTerminalWindow masterTerminalWindow;
 	private SlaveUtils slaveUtils;
 	private MasterUtils masterUtils;
+	boolean testStopped = false;
 	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
@@ -224,7 +225,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //
 //        } 
         if (event.getButton() == startButton) {
-        	tabs.setSelectedTab(1);
+        	if (testStopped==true){
+        		tabs.setSelectedTab(0);
+        		tabs.setSelectedTab(1);
+        		displayProgressBar(false);
+        	} else {tabs.setSelectedTab(1);}
 
 			Notification not = new Notification("test session is starting now", Type.TRAY_NOTIFICATION);
 			not.setStyleName("dark small");
@@ -258,27 +263,6 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start round spinner till messages arrive
 			displaySpinner(true);
 			
-//			// delete old model files
-//			FileSystemUtils fileUtils = new FileSystemUtils();
-//			fileUtils.cleanModelsDirectory(					
-//					currsession.getParentcase().getOwner().getUsername(),
-//					currsession.getParentcase().getTitle(),
-//					currsession.getTitle(),
-//					currsession.getParameters().getModels_folder());
-//			
-//			// write models to disk
-//			fileUtils.writeModelsToDisk(	//username, sut, session, models_folder, mlist);
-//					currsession.getParentcase().getOwner().getUsername(),
-//					currsession.getParentcase().getTitle(),
-//					currsession.getTitle(),
-//					currsession.getParameters().getModels_folder(),
-//					currsession.getModels());
-			
-//			// copy master files to User directory for unique execution
-//			FileSystemUtils fileUtils = new FileSystemUtils();
-//			fileUtils.copyMasterToUserDir(currsession.getParentcase().getOwner().getUsername());
-////			"C:\\dev\\mbpet\\users\\"
-			
 			
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker(this);
@@ -286,25 +270,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			int udpPort = udpWorker.getUDPPort();
 
 			// start mbpet MASTER
-//			String mastercommand = "mbpet_cli.exe " +
-//					"test_project " +
-//					slaveSelect.getValue().toString() + 
-//					" -p " + 
-//					" -b localhost:" + udpPort + 
-//					" -s";
 			udpPort=0;
-//			do {
-//				udpPort = udpWorker.getUDPPort();
-//				System.out.println("checking udp port. currently: " + udpWorker.getUDPPort());
-//			} while (udpWorker.getUDPPort() == 0);
 			while (!(udpWorker.getUDPPort() > 0)) {
 				System.out.print("waiting udp port selection...");
-			} 
-			udpPort = udpWorker.getUDPPort();
+			}udpPort = udpWorker.getUDPPort();
 			System.out.println("\nudp port selected..." + udpPort);
-
-			
-			System.out.println("udp port --being sent to master-- is: " + udpPort);		//.getUDPPort());
 			
 			//open master terminal window
 			masterTerminalWindow = new MasterTerminalWindow();
@@ -318,6 +288,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
                 }
             });
 			
+            System.out.println("udp port --being sent to master-- is: " + udpPort);		//.getUDPPort());
 			masterUtils = new MasterUtils();		//mastercommand);
 //			int masterport = masterUtils.getAvailablePort();
 			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
@@ -325,23 +296,19 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 					udpPort, 
 					currsession.getParentcase().getOwner().getUsername(), 
 					currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
-//			Notification.show("Starting Master", masterUtils.getCommand(), Type.TRAY_NOTIFICATION); //mastercommand,
 //			masterUtils.startMaster(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);
 
             
 			// start mbpet SLAVE
-//			String slavecommand = "./mbpet_slave " + "127.0.0.1 -p " + masterUtils.getMasterPort();
 			masterPort=0;
 			while (!(masterUtils.getMasterPort() > 0)) {
 				System.out.print("waiting master port selection...");
 			}masterPort = masterUtils.getMasterPort();
 			System.out.println("\nmaster port selected..." + masterPort);
-			
+						
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
-			
 			slaveUtils = new SlaveUtils();
 			slaveUtils.startSlave(masterPort);		//(slavecommand);
-//			Notification.show("Starting Slave", slaveUtils.getCommand(), Type.TRAY_NOTIFICATION);	//slavecommand,
 
 			//print SLAVE connecting info in terminal window...update UI thread-safely
 			UI.getCurrent().access(new Runnable() {
@@ -351,36 +318,28 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 				}
 			});
 
-//	        // start progress indicator - DO THIS IN UDP CLIENT UPON RECEPTION OF FIRST MESSAGE
-//	        progressThread = new ProgressBarThread(40);
-//	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
-
         } else if (event.getButton() == stopButton) {
 			//testing purposes
-			Notification not = new Notification("test session was interrupted", Type.TRAY_NOTIFICATION);
+			Notification not = new Notification("test session was stopped", Type.TRAY_NOTIFICATION);
 			not.setStyleName("dark small");
 			not.setDelayMsec(1000);
 			not.show(Page.getCurrent());
 			
 			displaySpinner(false);
-			
-//			// stop progressbar
-//			progressThread.endThread();
 
-			// stop UDP
+			// stop UDP and progressbar
 			udpWorker.endThread();
 			udpWorker.navToReports(false);
 			
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
+//			killer.pkillLinuxProcess(masterUtils.getCommand());
+//			killer.pkillLinuxProcess(slaveUtils.getCommand());
+			killer.killWindowsProcess(masterPort);
 //			killer.fuserKillLinuxProcess(masterPort);
-			killer.pkillLinuxProcess(masterUtils.getCommand());
-			killer.pkillLinuxProcess(slaveUtils.getCommand());
-//			killer.killWindowsProcess(masterPort);
-			
-			// stop SLAVE(s)
 			
 			resetStartStopButton();
+			testStopped = true;
         }
     }
    
@@ -392,7 +351,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	
 	public void displayProgressBar(boolean b) {
 		// reveal progressbar
-    	progressbar.setVisible(b);	//setVisible(true);
+    	progressbar.setVisible(b);	
     	progressstatus.setVisible(b);	
     	
     	if (b) {

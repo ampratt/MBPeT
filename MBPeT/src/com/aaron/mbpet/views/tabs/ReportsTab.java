@@ -77,7 +77,7 @@ public class ReportsTab extends Panel {
     }
     
 
-	private String formatReportTitle(String reportname) {
+	public String formatReportTitle(String reportname) {
 //		String formatted;
 
 		int pos = reportname.replaceFirst("^(\\D+).*$", "$1").length();

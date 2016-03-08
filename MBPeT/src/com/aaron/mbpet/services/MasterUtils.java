@@ -78,8 +78,8 @@ public class MasterUtils implements Runnable {
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
         	        ProcessBuilder pb = new ProcessBuilder(
-//        	        		"cmd.exe", "/c", "mbpet_cli.exe" + command); //Windows commands
-        	        		"/bin/bash", "-c", "./mbpet_cli" + command); //Unix commands
+        	        		"cmd.exe", "/c", "mbpet_cli.exe" + command); //Windows commands
+//        	        		"/bin/bash", "-c", "./mbpet_cli" + command); //Unix commands
 //        	        		command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999

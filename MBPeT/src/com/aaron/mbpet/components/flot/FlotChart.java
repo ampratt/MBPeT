@@ -172,7 +172,11 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //	}
 	public void update(int x, int y) {
 		callFunction("update", x, y);
-		System.out.println("called -> 'udpate() ...updating the javascript code affecting the chart");
+		System.out.println("called -> 'udpate(x,y) ...updating the javascript code affecting the chart");
+	}
+	public void reset() {
+		callFunction("reset");
+		System.out.println("called -> 'reset() ...updating the javascript code affecting the chart");
 	}
 	
 	public void getCurrentData() {

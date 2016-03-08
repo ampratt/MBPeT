@@ -587,9 +587,9 @@ public class MonitoringTab extends Panel {
     
     int y, x, prevY = 0;
 	public void updateChart(int users) {
-		if (x<1)	//draw point (0,0) on graph
+		if (x<1){	//draw point (0,0) on graph
 			usersChart.update(0,0);			// update the js code to effect the chart 
-
+		}
 		x += 1; 	
 		y = users;
 		System.out.println("sent int:" + users);
@@ -625,14 +625,15 @@ public class MonitoringTab extends Panel {
 
 
 	public void resetChart() {
-		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");		
+		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]"); // update server side	
 //
 		y = 0;
 		x = 0 ;
 		prevY = 0;
 		
-		usersChart.addNewData(x, y);	// update the server side data
-		usersChart.update(x, y);		// update the js code to effect the chart 
+		usersChart.reset();				// update the js code to effect the chart 
+//		usersChart.addNewData(x, y);	// update the server side data
+//		usersChart.update(x, y);		// update the js code to effect the chart 
 		System.out.println(usersChart.getData().toJson());
 		
 //		System.err.println("usersChart.getData()>" + usersChart.getData().toJson());

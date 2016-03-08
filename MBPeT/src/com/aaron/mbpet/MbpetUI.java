@@ -26,6 +26,7 @@ import com.aaron.mbpet.views.RegistrationView;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.MonitoringTab;
 import com.aaron.mbpet.views.tabs.TabLayout;
+import com.fasterxml.jackson.databind.AnnotationIntrospector.ReferenceProperty.Type;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.annotations.JavaScript;
@@ -40,8 +41,10 @@ import com.vaadin.server.ClientConnector;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.communication.PushMode;
+import com.vaadin.shared.ui.ui.NotificationRole;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 @JavaScript({//"http://cdn.alloyui.com/3.0.1/aui/aui-min.js",
@@ -262,8 +265,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        public void run() {
 		        	//update the UI
 		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
-		        	montab.addNewMessageComponent(message);
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
+//		        	montab.addNewMessageComponent(message);
+		        	//show notification
+		        	Notification.show("Test Successfully Completed!", "Master Test Report generated", Notification.Type.TRAY_NOTIFICATION);
 		        }
 		    });
 		}
@@ -349,10 +354,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		
 		public String getUsersBasepath() {
-			return usersBasepathUnix;	//Windows;
+			return usersBasepathWindows;	//Windows;
 		}
 		public String getMbpetBasepath() {
-			return mbpetBasepathUnix;	//Windows;
+			return mbpetBasepathWindows;	//Windows;
 		}		
 		
 //		  // return the current application instance
