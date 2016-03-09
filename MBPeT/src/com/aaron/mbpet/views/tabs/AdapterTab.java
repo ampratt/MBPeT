@@ -39,8 +39,6 @@ import com.vaadin.ui.Button.ClickEvent;
 public class AdapterTab extends Panel implements Button.ClickListener {
 
 	AceEditor editor;
-	private TextField textualInput = new TextField();
-	private Button generateButton = new Button("Submit Data to Graph");
 	private TestSession currsession;
 	private ComboBox themeBox;
 	private Button saveButton;

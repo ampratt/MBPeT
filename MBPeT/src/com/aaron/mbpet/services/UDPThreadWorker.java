@@ -149,6 +149,9 @@ public class UDPThreadWorker {
                 		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
             		        	   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
 	        	        	       
+            		        	   // create pdf report
+            		        	   new PDFGenerator().createPdfReport(sentence.trim());
+            		        	   
 	        	                   // navigate to reports
 	        	                   if (navToReports) {
 	        	                	   sessionViewer.tabs.refreshReports();
