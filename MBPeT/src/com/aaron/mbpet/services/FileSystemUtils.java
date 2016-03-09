@@ -15,6 +15,7 @@ public class FileSystemUtils {
 
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"/dev/mbpet/users/"	"C:\\dev\\mbpet\\users\\";
 	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
+	String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
 //	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 //	String mbpetBasepath = "/dev/mbpet/";		//"/dev/mbpet_projects/";
 
@@ -24,9 +25,9 @@ public class FileSystemUtils {
 	
 	public void createUserDir(String username) {
 		// Create one directory
-//		File file;
-//		boolean success = (file = new File(usersBasepath + username)).mkdir();
-		File file = new File(usersBasepath + username);
+		File file;
+		boolean success = (file = new File(usersBasepath + username)).mkdir();
+//		File file = new File(usersBasepath + username);
 		if (file.exists()){	//if (success) {
 			grantPermissions(file);
 			System.out.println("Directory: \"" + username + "\" created");
@@ -34,6 +35,19 @@ public class FileSystemUtils {
 		} else
 			System.err.println("user directory not created!");
 	}
+	
+//	public void createUserReportDir(String username) {
+//		File file;
+//		boolean success = (file = new File(webContent + "/VAADIN/users_reports/" + username)).mkdir();
+////		File file = new File(webContent + "/VAADIN/users_reports/" + username );
+//		if (file.exists()){	//if (success) {
+//			grantPermissions(file);
+//			System.out.println("Directory: \"" + username + "\" created");
+//			System.out.println("Directory: " + file.getAbsolutePath());
+//		} else
+//			System.err.println("user reports directory not created!");		// TODO Auto-generated method stub
+//		
+//	}
 	
 	public void createSUTDir(String username, String sut) {
 		// Create one directory
@@ -279,6 +293,8 @@ public class FileSystemUtils {
 			e.printStackTrace();
 		}
 	}
+
+
 
 
 

@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Test Report</title>
+</head>
+<body>
+<h2>#################### Master Stats #######################</h2>This test was executed at: 2016-08-03 15:54:17<br />Duration of the test: 15 sec <br />Target number of concurrent users: 23<br />Total number of generated users: 45<br />Measured Request rate (MRR): 3.0 req/s <br />Number of NORMAL_USER: 45 (100.0)% <br />Average number of action per user: 1 actions <br />This test run ended at: 2016-08-03 15:54:43<br /><br /><h2>######## AVERAGE/MAX RESPONSE TIME per METHOD CALL ##########</h2><table border = "1"><tr><td></td><td colspan=3><b>NORMAL_USER (100.0 %)</b></td></tr><tr><td><b>Method Call</b></td><td style="text-align: center;">Average (sec)</td><td style="text-align: center;">Max (sec)</td><td style="text-align: center;">Executions # </td></tr><tr><td>SEARCH_ON_BING(FERRARI)</td>
+<td>0.26</td><td>0.39</td><td>5</td></tr></tr><td>SEARCH_ON_YAHOO(BOEING)</td>
+<td>0.82</td><td>0.91</td><td>9</td></tr></tr><td>SEARCH_ON_GOOGLE(CAR)</td>
+<td>0.38</td><td>0.42</td><td>31</td></tr></table><br /><h2>##### AVERAGE/MAX RESPONSE TIME THRESHOLD BREACH per METHOD CALL #####</h2><table border = "1"><tr><td><b>Action</b></td><td colspan=2><b>Target Response Time</b></td><td colspan=2><b>NORMAL_USER</b></td><td><b>Verdict</b></td></tr><tr><td></td><td style="text-align: center;">Average <br> (secs)</td><td style="text-align: center;">Max <br> (secs)</td><td style="text-align: center;">Average <br> users (secs)</td><td style="text-align: center;">Max <br> users (secs)</td><td>Pass/Fail</td></tr><tr><td>SEARCH_ON_BING(FERRARI)</td>
+<td>1.0</td><td>0.5</td><td> Passed </td><td> Passed </td><td> Passed </td></tr></tr><td>SEARCH_ON_YAHOO(BOEING)</td>
+<td>1.0</td><td>0.5</td><td>23 (14.387755102)</td><td>7 (8.0)</td><td> Failed </td></tr></tr><td>SEARCH_ON_GOOGLE(CAR)</td>
+<td>1.0</td><td>0.5</td><td> Passed </td><td> Passed </td><td> Passed </td></tr></table><h2>#################### System Stats #######################</h2>Total Disk read bytes: 0.00 Bytes<br />Average Disk read bytes: 0.00 Bytes/s<br />Total Disk write bytes: 164.00 KB<br />Average Disk write bytes: 6.31 KB/s<br />Total Network sent bytes: 38.57 KB<br />Average Network sent bytes: 1.48 KB/s<br />Total Network received bytes: 105.65 KB<br />Average Network received bytes: 4.06 KB/s<br />Physical Memory Usage: 0.38 % <br />Slave 1 CPU 0 Usage: 9.41 % <br />Slave 1 CPU 1 Usage: 16.33 % <br /><h2>#################### Misc #######################</h2>Average request size: 877.62 Bytes<br />Average user life time: 6.14 sec <br />Average user think time: 3<br />Error Rate: 0.0% <br /><br /><br /><h2>Error rate per action</h2>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = error_rate.png style="padding-bottom:0.5em;" /><br>Error Rate
+</div><h2>Response times per user type</h2>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = normal_user_throughput.pngg style="padding-bottom:0.5em;" /><br>Response times per action for NORMAL_USER with respect to throughput
+</div>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = normal_user.png style="padding-bottom:0.5em;" /><br>Response times per action for NORMAL_USER
+</div>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = normal_user-boxplot.png style="padding-bottom:0.5em;" /><br>Box plot for NORMAL_USER
+</div><h2>Number of actions</h2>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = number_of_action.png style="padding-bottom:0.5em;" /><br>Number of Actions
+</div><h2>Local Resource Usage</h2>
+
+<div style="width:image width px; font-size:100%; text-align:center;"><img src = resources1.png style="padding-bottom:0.5em;" /><br>CPU and Memory Usage</div>
+
+<div style="width:image width px; font-size:100%; text-align:center;">
+	<img src = resources2.png style="padding-bottom:0.5em;" /><br>Network and Disk Usage
+</div></body></html>

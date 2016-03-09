@@ -1,0 +1,10 @@
+normal_user::
+:21
+search_on_google:3
+search_on_google,search_on_google,search_on_yahoo,search_on_google,search_on_google:1
+search_on_google,search_on_bing,search_on_yahoo,search_on_yahoo:1
+search_on_google,search_on_yahoo,search_on_yahoo:1
+search_on_google,search_on_bing,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_bing:1
+search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google,search_on_google:1
+search_on_google,search_on_yahoo,search_on_yahoo,search_on_google,search_on_bing:1
+search_on_google,search_on_google,search_on_bing,search_on_google,search_on_google,search_on_yahoo,search_on_yahoo:1

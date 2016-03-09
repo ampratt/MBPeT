@@ -158,7 +158,7 @@ public class UserEditor extends Window implements Button.ClickListener,
             		}
 //            		System.out.println("The user is updated to: " + 
 //            				((MbpetUI) UI.getCurrent()).getSessionUser().getUsername() +
-//            				"/n" + currsessionuser.getFirstname() + " " + currsessionuser.getLastname());
+//            				"/n" + currsessionuser.getFirstname() + " " + currsessionuser.getLastname());            		
             		
             		UI.getCurrent().getNavigator().navigateTo(MainView.NAME);
             		
@@ -169,7 +169,7 @@ public class UserEditor extends Window implements Button.ClickListener,
         			//create user directory in file system
         			FileSystemUtils fileUtils = new FileSystemUtils();
         			fileUtils.createUserDir(personItem.getItemProperty("username").getValue().toString());
-        			
+
 //        			//copy mbpet master to user dir
 //        			fileUtils.copyMasterToUserDir(personItem.getItemProperty("username").getValue().toString());
         		}

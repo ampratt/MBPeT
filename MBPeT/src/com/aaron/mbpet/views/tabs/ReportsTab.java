@@ -15,7 +15,11 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ReportWindow;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -153,10 +157,6 @@ public class ReportsTab extends Panel {
 				for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
 					VerticalLayout frame = new VerticalLayout();
 				    frame.addStyleName("report-thumb");	//.addStyleName("frame");
-	//			    if (newest) {
-	//			    	frame.addStyleName("report-newest");
-	//			    	newest = false;
-	//			    }
 				    frame.setMargin(true);
 				    frame.setWidth(225.0f, Unit.PIXELS);
 	//			    frame.setWidthUndefined();
@@ -178,12 +178,63 @@ public class ReportsTab extends Panel {
 				    frame.addComponent(titleLabel);
 				    frame.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
 	                
+				    
+	            	// Link w/ text and tooltip
+				    FileResource fileresource = new FileResource(f);
+//			        Embedded embedded = new Embedded(null, fileresource);
+//			        embedded.setType(Embedded.TYPE_BROWSER);
+//			        embedded.setWidth("100px");
+//			        embedded.setHeight("100px");
+			        Link link = new Link(formatReportTitle(f.getName()), 
+			        		new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
+//			        		new ExternalResource(
+//	                        "file:///" + f.getAbsolutePath()));
+	                link.setDescription(f.getName());
+//	                frame.addComponent(link);
+//				    frame.setComponentAlignment(link, Alignment.MIDDLE_LEFT);
+				    
+	                
+
+
+	                File pdffile = new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports/y1_test_report_2016-03-08_15-55-44/TestReport.pdf");
+
+	               
+	                
+	                
+	                
+	                
+	                
 				    frame.addLayoutClickListener(new LayoutClickListener() {
 				        @Override
 				        public void layoutClick(final LayoutClickEvent event) {
 				            if (event.getButton() == MouseButton.LEFT) {
 				            	// open to view report
 	                        ReportWindow.open(f);
+				            	
+				            	
+//				            	// Create the PDF source and pass the data model to it
+//				                Source source =
+//				                     new javax.xml.transform.stream.StreamSource(pdffile);
+//
+//				                // Create the stream resource and give it a file name
+//				                String filename = "pdf_test_report.pdf";
+//				                StreamResource resource =
+//				                        new StreamResource(source, filename);
+//
+//				                // These settings are not usually necessary. MIME type
+//				                // is detected automatically from the file name, but
+//				                // setting it explicitly may be necessary if the file
+//				                // suffix is not ".pdf".
+//				                resource.setMIMEType("application/pdf");
+//				                resource.getStream().setParameter(
+//				                        "Content-Disposition",
+//				                        "attachment; filename="+filename);
+//
+//				                // Extend the print button with an opener
+//				                // for the PDF resource
+//				                BrowserWindowOpener opener =
+//				                        new BrowserWindowOpener(resource);
+//				                opener.extend(frame);
 				            }
 				        }
 				    });

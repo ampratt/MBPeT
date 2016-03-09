@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -85,6 +86,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	public String usersBasepathWindows = "C:/dev/mbpet/users/";	//"C:\\dev\\mbpet\\users\\"
 	public String mbpetBasepathUnix = "/home/aton4/apratt/mbpet/";
 	public String mbpetBasepathWindows = "C:/dev/mbpet/";
+    public String webContent = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
@@ -359,6 +361,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		public String getMbpetBasepath() {
 			return mbpetBasepathWindows;	//Windows;
 		}		
+		
+		public String getWebContent() {
+			return webContent;	//Windows;
+		}
 		
 //		  // return the current application instance
 //		  public static MbpetUI getInstance() {

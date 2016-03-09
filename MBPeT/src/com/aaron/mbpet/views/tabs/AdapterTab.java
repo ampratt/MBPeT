@@ -48,7 +48,8 @@ public class AdapterTab extends Panel implements Button.ClickListener {
 	List<String> themeList;
 	String[] themes = {"ambiance", "chrome", "clouds", "cobalt", "dreamweaver", "eclipse", "github", "terminal", "twilight", "xcode"};
     String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-    String defaultsettingsfile = basepath + "/WEB-INF/tmp/adapter_default.py";
+    String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();
+    String defaultsettingsfile = webContent + "/WEB-INF/tmp/adapter_default.py";
     
 	JPAContainer<Adapter> adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
 	Adapter currentAdapter;
