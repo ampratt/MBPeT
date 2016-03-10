@@ -102,15 +102,15 @@ public class ReportWindow extends Window {
         	browserframe.setWidth("100%");
         	browserframe.setHeight("100%");
 //        browser.setSizeFull();
-    	content.addComponent(browserframe);
-    	content.setExpandRatio(browserframe, 1);
+//    	content.addComponent(browserframe);
+//    	content.setExpandRatio(browserframe, 1);
 
-////        File f = new File(basepath + "/WEB-INF/test_reports/" + 
-////        "test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
-//    	Label html = new Label("", ContentMode.HTML);
-//    	html.setPropertyDataSource(new TextFileProperty(file));		//((Property) new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
-//    	content.addComponent(html);
-//    	content.setExpandRatio(html, 1);
+//        File f = new File(basepath + "/WEB-INF/test_reports/" + 
+//        "test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
+    	Label html = new Label("", ContentMode.HTML);
+    	html.setPropertyDataSource(new TextFileProperty(file));		//((Property) new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
+    	content.addComponent(html);
+    	content.setExpandRatio(html, 1);
   
 
 //		BrowserFrame browser = new BrowserFrame("Embedded Page", 

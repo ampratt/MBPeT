@@ -267,6 +267,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker(this);
+//			udpWorker.setTimeout(currsession.getParameters().getTest_duration()*1000);
 			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
 //			int udpPort = udpWorker.getUDPPort();
 
@@ -309,13 +310,15 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 						
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
 			slaveUtils = new SlaveUtils();
-			slaveUtils.startSlave(masterPort);		//(slavecommand);
-
+			for (int i=0; i<(Integer)slaveSelect.getValue(); i++){
+				slaveUtils.startSlave(masterPort);		//(slavecommand);
+				System.out.println((i+1) + " SLAVE STARTING");
+			}
 			//print SLAVE connecting info in terminal window...update UI thread-safely
 			UI.getCurrent().access(new Runnable() {
 				@Override
 				public void run() {
-					masterTerminalWindow.insertDataToEditor("mbpet>initializing slave(s) on port " + masterPort + "\n");
+					masterTerminalWindow.insertDataToEditor("\nmbpet>initializing slave(s) on port " + masterPort + "\n");
 				}
 			});
 

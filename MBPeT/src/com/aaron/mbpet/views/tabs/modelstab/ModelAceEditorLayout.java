@@ -53,7 +53,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
     String fileFormat = "dot";
     List<String> modeList;
     String[] modes = {"dot", "gv", "python"};
-    String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
+//    String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
     
     JPAContainer<Model> models = ((MbpetUI) UI.getCurrent()).getModels();
     Model currmodel;

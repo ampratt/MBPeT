@@ -23,6 +23,7 @@ public class UDPThreadWorker {
     
     SessionViewer sessionViewer;
 	public int udpPort;
+	public int sessionLength = 120000;
     
 	public UDPThreadWorker(SessionViewer sessionViewer) {
 		this.sessionViewer = sessionViewer;
@@ -66,7 +67,8 @@ public class UDPThreadWorker {
             			}
             				
             			boolean firstMessage = true;
-            			ds.setSoTimeout(60000);   //50000 set the timeout in millisecounds.  
+            			ds.setSoTimeout(getTimout());   //50000 set the timeout in millisecounds.  
+            		    System.out.println("UDP Timeout set: " + getTimout());
             			
             			String sentence;
             			byte[] receiveBuffer;	// byte[] sendBuffer;	// = new byte[5120];
@@ -123,6 +125,7 @@ public class UDPThreadWorker {
                 		           // update monitoring tab fields - thread-safely	           
 //                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);
             		        	   updater.updateMonitoringFields(results, numslaves, slaveresults, sessionViewer);
+            		        	   System.out.println("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
             		        	   
 //            		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
 //            		        			   "average - " + results[0] + 
@@ -276,15 +279,6 @@ public class UDPThreadWorker {
 	    throw new IOException("no free port found");
 	}
 	
-    public void setUDPPort(int port) {
-		this.udpPort = port;
-		System.out.println("UDP port set to: " + udpPort);
-
-	}
-    public int getUDPPort() {
-    	return this.udpPort;
-	}
-	
     public void endThread() {
     	setStopFlag(true);
         //close socket to free up port #
@@ -311,7 +305,21 @@ public class UDPThreadWorker {
 	public void setStopFlag(boolean stopFlag) {
 		this.stopFlag = stopFlag;
 	}
+	
+    public void setUDPPort(int port) {
+		this.udpPort = port;
+		System.out.println("UDP port set to: " + udpPort);
+	}
+    public int getUDPPort() {
+    	return this.udpPort;
+	}
     
+    public void setTimeout(int sessionLength){
+    	this.sessionLength = sessionLength;
+    }
+    public int getTimout(){
+    	return this.sessionLength;
+    }
     
     
 //    public void fetchAndUpdateDataWith(final MbpetUI mbpetUI) {	//final LabelUpdater updater

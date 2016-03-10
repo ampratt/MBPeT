@@ -15,7 +15,7 @@ public class FileSystemUtils {
 
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"/dev/mbpet/users/"	"C:\\dev\\mbpet\\users\\";
 	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
-	String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
+//	String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();	//"/dev/mbpet/" "C:\\dev\\mbpet\\users\\";
 //	String usersBasepath = "/dev/mbpet/users/";		//"/dev/mbpet_projects/";
 //	String mbpetBasepath = "/dev/mbpet/";		//"/dev/mbpet_projects/";
 
