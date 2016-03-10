@@ -8,6 +8,7 @@ import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillMBPeTProcesses;
 import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.services.ProgressBarThread;
+import com.aaron.mbpet.services.ProgressBarWorker;
 import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
@@ -47,7 +48,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     private ComboBox slaveSelect;
 //  private Button newSessionButton;
 //	private Button saveButton;
-    public ProgressBarThread progressThread;
+    public ProgressBarWorker progressThread;
     public ProgressBar spinner;
     public ProgressBar progressbar;
     public Label progressstatus;
@@ -334,7 +335,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// stop UDP and progressbar
 			udpWorker.endThread();
 			udpWorker.navToReports(false);
-			
+			if (progressThread != null){
+				progressThread.endThread();
+    			System.out.println("progressThread terminating...");
+			}
+    		
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
 //			killer.pkillLinuxProcess(masterUtils.getCommand());
@@ -363,11 +368,15 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
         	spinLabel.setVisible(false);
 
    	        // start progress indicator
-   	        progressThread = new ProgressBarThread(this, progressbar, progressstatus, currsession.getParameters().getTest_duration()); 		//40);
-   	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
+   	        progressThread = new ProgressBarWorker(this, progressbar, progressstatus, currsession.getParameters().getTest_duration());	//ProgressBarThread(this, progressbar, progressstatus, currsession.getParameters().getTest_duration()); 		//40);
+
+//   	        progressThread = new ProgressBarThread(this, progressbar, progressstatus, currsession.getParameters().getTest_duration()); 		//40);
+//   	        progressThread.start();	//fetchAndUpdateDataWith((MbpetUI) UI.getCurrent());
     	}
 	}
-
+	public void updateProgressBar() {
+		progressThread.increaseProgressBar();		
+	}
 
 	public void setPageTitle(String t){
 		pageTitle.setValue(t);
@@ -411,6 +420,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.setEnabled(false);
 		stopButton.removeStyleName("danger");
 	}
+
+
 
 
 //	public TabLayout getTabLayout() {

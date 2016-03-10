@@ -23,7 +23,7 @@ public class UDPThreadWorker {
     
     SessionViewer sessionViewer;
 	public int udpPort;
-	public int sessionLength = 120000;
+	public int sessionLength = 180000;
     
 	public UDPThreadWorker(SessionViewer sessionViewer) {
 		this.sessionViewer = sessionViewer;
@@ -109,13 +109,13 @@ public class UDPThreadWorker {
 //            		           UI.getCurrent().push();
             		           
             		           if (firstMessage) {
-            		               // Update the UI thread-safely
-            		               UI.getCurrent().access(new Runnable() {
-            		                   @Override
-            		                   public void run() {
-            		                	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
-            		                   }
-            		               });
+//            		               // Update the UI thread-safely
+//            		               UI.getCurrent().access(new Runnable() {
+//            		                   @Override
+//            		                   public void run() {
+//            		                	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
+//            		                   }
+//            		               });
             		               firstMessage=false;
             		           }
             		           if (!sentence.contains("report_address")){
@@ -153,7 +153,7 @@ public class UDPThreadWorker {
             		        	   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
 	        	        	       
             		        	   // create pdf report
-            		        	   new PDFGenerator().createPdfReport(sentence.trim());
+//            		        	   new PDFGenerator().createPdfReport(sentence.trim());
             		        	   
 	        	                   // navigate to reports
 	        	                   if (navToReports) {
@@ -218,10 +218,13 @@ public class UDPThreadWorker {
 //                    updater.printFinalMessage("\nTest Session is finished!");
 //        	        // navigate to reports
 
+            		// THIS STOPS THE PROGRESSBAR!!!
             		if (stopFlag) {
             			sessionViewer.progressThread.endThread();
             			System.out.println("progressThread terminated!");
             		}
+            		
+            		
 //                    if (navToReports) {
 //                    	sessionViewer.tabs.refreshReports();
 //                    	sessionViewer.tabs.setSelectedTab(2);

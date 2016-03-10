@@ -58,7 +58,8 @@ public class MasterUtils implements Runnable {
 		
 	}
 	
-	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, final SessionViewer sessionViewer,
+	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, 
+										final SessionViewer sessionViewer,
 										final String numSlaves, final int udpPort, 
 										final String username, final TestSession currsession) {		//(final String command) {
 		new Thread(new Runnable(){
@@ -108,17 +109,17 @@ public class MasterUtils implements Runnable {
 //					final PushMasterUpdater updater = mbpetUI;
 					// any error message?
 		            StreamGobbler2 errorGobbler = new 
-		                StreamGobbler2(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);            
+		                StreamGobbler2(p.getErrorStream(), "ERROR", mbpetUI, masterTerminalWindow, sessionViewer);	//masterTerminalWindow);            
 		            
 		            // any output?
 		            StreamGobbler2 outputGobbler = new 
-		                StreamGobbler2(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow);	//masterTerminalWindow);
+		                StreamGobbler2(p.getInputStream(), "OUTPUT", mbpetUI, masterTerminalWindow, sessionViewer);	//masterTerminalWindow);
 		                
 		            // kick them off
 //		            errorGobbler.start();
 //		            outputGobbler.start();
-		            outputGobbler.startMasterGobbler();
-		            errorGobbler.startMasterGobbler();                        
+		            outputGobbler.startMasterOutputGobbler();
+		            errorGobbler.startMasterErrorGobbler();                        
 		            
 //					getPid(p);
 
