@@ -67,7 +67,7 @@ public class UDPThreadWorker {
             			}
             				
             			boolean firstMessage = true;
-            			ds.setSoTimeout(getTimout());   //50000 set the timeout in millisecounds.  
+//            			ds.setSoTimeout(getTimout());   //50000 set the timeout in millisecounds.  
             		    System.out.println("UDP Timeout set: " + getTimout());
             			
             			String sentence;

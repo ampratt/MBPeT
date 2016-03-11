@@ -48,9 +48,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
-@JavaScript({//"http://cdn.alloyui.com/3.0.1/aui/aui-min.js",
-//	"js/alloy-ui-master/.*",
-	"js/alloy-ui-master/cdn.alloyui.com_3.0.1_aui_aui-min.js",
+@JavaScript({"http://cdn.alloyui.com/3.0.1/aui/aui-min.js",
+//	"js/alloy-ui-master/cdn.alloyui.com_3.0.1_aui_aui-min.js",
+
+	//	"js/alloy-ui-master/.*",
 //	"js/cdn.alloyui.com_2.5.0_aui_aui-min.js"
 //	"js/aui-diagram-builder/js/aui-diagram-builder.js",
 //	"js/aui-diagram-builder/js/aui-diagram-builder-connector.js",
@@ -86,8 +87,10 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	public String usersBasepathWindows = "C:/dev/mbpet/users/";	//"C:\\dev\\mbpet\\users\\"
 	public String mbpetBasepathUnix = "/home/aton4/apratt/mbpet/";
 	public String mbpetBasepathWindows = "C:/dev/mbpet/";
-    public String webContent = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    public String webContentWindows = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    public String webContentUnix = "/home/aton4/apratt/dev/tomcat7/webapps/MBPeT";
     
+
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
@@ -356,14 +359,14 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		
 		public String getUsersBasepath() {
-			return usersBasepathWindows;	//Windows;
+			return usersBasepathUnix;	//Windows;
 		}
 		public String getMbpetBasepath() {
-			return mbpetBasepathWindows;	//Windows;
+			return mbpetBasepathUnix;	//Windows;
 		}		
 		
 		public String getWebContent() {
-			return webContent;	//Windows;
+			return webContentUnix;	//Windows;
 		}
 		
 //		  // return the current application instance

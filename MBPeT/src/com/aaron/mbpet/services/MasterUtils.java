@@ -69,7 +69,7 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					command = "mbpet_cli.exe" +	//"./mbpet_cli"
+					command = "./mbpet_cli" + //"mbpet_cli.exe" +	//
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
 							" -p " + getAvailablePort() +
@@ -79,8 +79,8 @@ public class MasterUtils implements Runnable {
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
         	        ProcessBuilder pb = new ProcessBuilder(
-        	        		"cmd.exe", "/c", command); //Windows commands
-//        	        		"/bin/bash", "-c", command); //Unix commands
+//        	        		"cmd.exe", "/c", command); //Windows commands
+        	        		"/bin/bash", "-c", command); //Unix commands
 //        	        		command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
@@ -92,7 +92,7 @@ public class MasterUtils implements Runnable {
 					
         	        //close socket to free up port #
     				ss.close();		//System.out.println(srv.getLocalPort());
-    				ss = null;
+//    				ss = null;
     				
         			final Process p = pb.start();
 					System.out.println("### Running master command: " + command);
@@ -150,7 +150,7 @@ public class MasterUtils implements Runnable {
 	    for (int port=6000; port<7000; port++) {		//(int port : ports)
 			try {
 				System.out.println("\nTrying port: " + port);
-				ss = new ServerSocket(port);	//System.out.println("socket open on port " + port);
+				ss = new ServerSocket(port);	//port	//System.out.println("socket open on port " + port);
 //				ss.close();		//System.out.println(srv.getLocalPort());
 //				ss = null;			//System.out.println("socket closed on port " + port);
 //				openport = port;

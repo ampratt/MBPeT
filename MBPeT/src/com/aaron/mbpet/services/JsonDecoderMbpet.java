@@ -94,10 +94,10 @@ public class JsonDecoderMbpet {
 	int error_count = 0;
 	int throughput = 0;
 	int success = 0;
-	double net_send_total;
-	double net_recv_total;
+	double net_send_total = 0;
+	double net_recv_total = 0;
 	String slave_name;
-	int target_user;
+	int target_user = 0;
 
 	public String[] getKeyValues(String update) {
 		

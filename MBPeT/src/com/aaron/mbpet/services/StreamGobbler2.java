@@ -67,7 +67,7 @@ public class StreamGobbler2 {	//extends Thread {
 			    		                   @Override
 			    		                   public void run() {
 			    		                	   sessionViewer.displayProgressBar(true);	//TODO this causes java.lang.IllegalStateException: A connector should not be marked as dirty while a response is being written.
-			    		                	   sessionViewer.updateProgressBar();
+//			    		                	   sessionViewer.updateProgressBar();
 		    		      		           }
 			    		               });
 			    		               firstMessage=false;
@@ -83,10 +83,17 @@ public class StreamGobbler2 {	//extends Thread {
 		                     @Override
 		                     public void run() {
 		                    	 String prefix = "mbpet>";
-		                    	 if (type.equals("ERROR")) prefix = "mbpet-ERROR>";
+//		                    	 if (type.equals("ERROR")) prefix = "mbpet-ERROR>";
 		                    	 masterTerminalWindow.insertDataToEditor(prefix + output);
 		                     }
 		                 });
+		                 
+//		                 if (sc.hasNextInt()){
+//		                	 if (sc.nextInt() < 1) {
+//		                		 
+//		                	 }
+//		                 }
+//		                 String nosummary = "Message doesn't have summary field.";
 		                 
 //		             	updater.printNextMasterOutput("mbpet>" + line, masterTerminalWindow);	//masterTerminalWindow);	
 		//                 System.out.println(type + ">" + line);
