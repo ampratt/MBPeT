@@ -2,6 +2,7 @@ package com.aaron.mbpet.views.tabs;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,8 +11,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.ui.ReportWindow;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -43,6 +47,7 @@ public class ReportsTab extends Panel {
 	CssLayout catalog;
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";	"C:/dev/mbpet/users/";
 	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();
+	String reportsFolder;
 	
     public ReportsTab(TestSession currsession) {
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -56,6 +61,12 @@ public class ReportsTab extends Panel {
 //        setSizeFull();
 
 		setContent(vert);
+		
+		reportsFolder = usersBasepath + 
+						"/" + currsession.getParentcase().getOwner().getUsername() +
+						"/" + currsession.getParentcase().getTitle() + 
+						"/" + currsession.getTitle() +
+						"/" + currsession.getParameters().getTest_report_folder();	// "/"
         
 		vert.addComponent(buildReportsCatalog());
 
@@ -76,7 +87,7 @@ public class ReportsTab extends Panel {
         catalog.addStyleName("catalog");
         catalog.setWidth("100%");
         
-        getReports();
+        getHtmlReports();
         
         return catalog;
     }
@@ -114,16 +125,12 @@ public class ReportsTab extends Panel {
 		return formatted;
 	}
 
-	public void getReports(){
-		File[] directories = new File(usersBasepath + 
-				"/" + currsession.getParentcase().getOwner().getUsername() +
-        		"/" + currsession.getParentcase().getTitle() + 
-        		"/" + currsession.getTitle() +
-        		"/" + currsession.getParameters().getTest_report_folder() + "/"
-        			).listFiles(new FileFilter() {
+	public void getHtmlReports(){
+		File[] directories = 
+				new File(reportsFolder).listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isDirectory();
+                return file.isDirectory() && (!file.getName().equals("pdf"));
             }
         });
 		if (directories.length>0) {
@@ -133,8 +140,10 @@ public class ReportsTab extends Panel {
 	//        File[] reports = null;
 	        List<File> reportlist = new ArrayList<File>();
 	        Arrays.sort(directories);
+	        
+	        // retrieve individual html reports and add them to List
 	        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
-	            System.out.println("finding report round:" + (i+1));
+	            System.out.println("finding html report - round:" + (i+1));
 	        	String currentpath = directories[i].getAbsolutePath();
 	           	File dir = new File(currentpath);
 	
@@ -151,10 +160,12 @@ public class ReportsTab extends Panel {
 	           				"\nThere is no html report in directory: " + dir.getAbsolutePath());
 	           	}
 	        }
+	        
+	        //display thumbnail for all files in List
 	        try {
 	        	System.out.println("reports files:" + reportlist.size());
 	        	boolean newest = true;
-				for (final File f : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
+				for (final File html : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
 					VerticalLayout frame = new VerticalLayout();
 				    frame.addStyleName("report-thumb");	//.addStyleName("frame");
 				    frame.setMargin(true);
@@ -173,68 +184,46 @@ public class ReportsTab extends Panel {
 				    frame.addComponent(thumb);
 				    frame.setComponentAlignment(thumb, Alignment.TOP_CENTER);
 	
-				    Label titleLabel = new Label(formatReportTitle(f.getName()), ContentMode.HTML);
+				    Label titleLabel = new Label(formatReportTitle(html.getName()), ContentMode.HTML);
 	//			    titleLabel.setWidth(140.0f, Unit.PIXELS);
 				    frame.addComponent(titleLabel);
 				    frame.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
 	                
 				    
-	            	// Link w/ text and tooltip
-				    FileResource fileresource = new FileResource(f);
-//			        Embedded embedded = new Embedded(null, fileresource);
-//			        embedded.setType(Embedded.TYPE_BROWSER);
-//			        embedded.setWidth("100px");
-//			        embedded.setHeight("100px");
-			        Link link = new Link(formatReportTitle(f.getName()), 
-			        		new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
-//			        		new ExternalResource(
-//	                        "file:///" + f.getAbsolutePath()));
-	                link.setDescription(f.getName());
-//	                frame.addComponent(link);
-//				    frame.setComponentAlignment(link, Alignment.MIDDLE_LEFT);
+//	            	// Link w/ text and tooltip
+//				    FileResource fileresource = new FileResource(f);
+////			        Embedded embedded = new Embedded(null, fileresource);
+////			        embedded.setType(Embedded.TYPE_BROWSER);
+////			        embedded.setWidth("100px");
+////			        embedded.setHeight("100px");
+//			        Link link = new Link(formatReportTitle(f.getName()), 
+//			        		new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
+////			        		new ExternalResource(
+////	                        "file:///" + f.getAbsolutePath()));
+//	                link.setDescription(f.getName());
+////	                frame.addComponent(link);
+////				    frame.setComponentAlignment(link, Alignment.MIDDLE_LEFT);
 				    
-	                
-
-
-	                File pdffile = new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports/y1_test_report_2016-03-08_15-55-44/TestReport.pdf");
-
-	               
-	                
-	                
-	                
-	                
+				    
+				    // FOR TESTING
+//	                File pdffile = new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports/y1_test_report_2016-03-08_15-55-44/TestReport.pdf");
 	                
 				    frame.addLayoutClickListener(new LayoutClickListener() {
 				        @Override
 				        public void layoutClick(final LayoutClickEvent event) {
 				            if (event.getButton() == MouseButton.LEFT) {
 				            	// open to view report
-	                        ReportWindow.open(f);
+//				            	ReportWindow.open(f);	//return html report
 				            	
-				            	
-//				            	// Create the PDF source and pass the data model to it
-//				                Source source =
-//				                     new javax.xml.transform.stream.StreamSource(pdffile);
-//
-//				                // Create the stream resource and give it a file name
-//				                String filename = "pdf_test_report.pdf";
-//				                StreamResource resource =
-//				                        new StreamResource(source, filename);
-//
-//				                // These settings are not usually necessary. MIME type
-//				                // is detected automatically from the file name, but
-//				                // setting it explicitly may be necessary if the file
-//				                // suffix is not ".pdf".
-//				                resource.setMIMEType("application/pdf");
-//				                resource.getStream().setParameter(
-//				                        "Content-Disposition",
-//				                        "attachment; filename="+filename);
-//
-//				                // Extend the print button with an opener
-//				                // for the PDF resource
-//				                BrowserWindowOpener opener =
-//				                        new BrowserWindowOpener(resource);
-//				                opener.extend(frame);
+				            	// open window with pdf report
+								ReportWindow.open(reportsFolder, html);
+//				            	try {
+//									ReportWindow.open(getPdfReport(f));
+//								} catch (FileNotFoundException e) {
+////									e.printStackTrace();
+//									//if no file exists, then create the pdf
+////									File pdf = FileSystemUtils.generatePdfReport(reportsFolder, f);
+//								}
 				            }
 				        }
 				    });
@@ -245,6 +234,48 @@ public class ReportsTab extends Panel {
 			}
 		}
 	}
+	
+//	public File getPdfReport(File html) {	//throws FileNotFoundException {
+//		File pdf = new File(reportsFolder + "/pdf/" + 
+//								FilenameUtils.removeExtension(html.getName()) + ".pdf" );
+//		if (pdf.exists()) {
+//			System.out.println("pdf report already existed");
+//			return pdf;			
+//		} else {
+//			System.out.println("no pdf. trying to create one...");
+//			//if no file exists, then create the pdf
+//			FileSystemUtils fileUtils = new FileSystemUtils();
+//			pdf = fileUtils.generatePdfReport(reportsFolder, html);
+//		}
+//		return pdf;
+//	}
+	
+
+	
+//	// Create the PDF source and pass the data model to it
+//    Source source =
+//         new javax.xml.transform.stream.StreamSource(pdffile);
+//
+//    // Create the stream resource and give it a file name
+//    String filename = "pdf_test_report.pdf";
+//    StreamResource resource =
+//            new StreamResource(source, filename);
+//
+//    // These settings are not usually necessary. MIME type
+//    // is detected automatically from the file name, but
+//    // setting it explicitly may be necessary if the file
+//    // suffix is not ".pdf".
+//    resource.setMIMEType("application/pdf");
+//    resource.getStream().setParameter(
+//            "Content-Disposition",
+//            "attachment; filename="+filename);
+//
+//    // Extend the print button with an opener
+//    // for the PDF resource
+//    BrowserWindowOpener opener =
+//            new BrowserWindowOpener(resource);
+//    opener.extend(frame);
+	
 	
 	
 //	private void initReports() {

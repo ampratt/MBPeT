@@ -39,8 +39,10 @@ import com.vaadin.data.Item;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ClientConnector;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.ui.NotificationRole;
 import com.vaadin.ui.ConnectorTracker;
@@ -273,7 +275,11 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
 //		        	montab.addNewMessageComponent(message);
 		        	//show notification
-		        	Notification.show("Test Successfully Completed!", "Master Test Report generated", Notification.Type.TRAY_NOTIFICATION);
+		        	Notification notification = new Notification("Test Successfully Completed!", "Master Test Report generated", Notification.Type.HUMANIZED_MESSAGE);
+		            notification.setStyleName("success");
+		            notification.setPosition(Position.TOP_RIGHT);
+		            notification.setDelayMsec(5000);
+		            notification.show(Page.getCurrent());
 		        }
 		    });
 		}

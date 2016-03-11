@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.eclipse.persistence.internal.sessions.remote.SequencingFunctionCall.GetNextValue;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
@@ -86,10 +88,82 @@ public class FileSystemUtils {
 				file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + reports_dir)).mkdir();
 		if (success) {
 			grantPermissions(file);
-			System.out.println("Directory: " + file.getAbsolutePath());
+			System.out.println("Reports Directory: " + file.getAbsolutePath());
+			
+			//create pdf dir
+			createPDFReportsDir(file.getAbsolutePath());
 		}
 	}
+	public void createPDFReportsDir(String reports_dir_path) {
+		if (!(new File(reports_dir_path + "/pdf").exists()) ) {
+			System.out.println("NO PDF DIR EXISTS...creating one");
+			File file;
+			boolean success = (
+					file = new File(reports_dir_path + "/pdf")).mkdir();
+			if (success) {
+				grantPermissions(file);
+				System.out.println("PDF Reports Directory: " + file.getAbsolutePath());
+			}			
+		}else System.out.println("PDF DIR ALREADY EXISTS");
 
+	}
+	
+	public File generatePdfReport(String reportsFolder, File html) {
+		File pdf = null;
+
+		try {
+			System.out.println("ATTEMPTING TO CREATE pdf report of: " + html.getName());
+			
+			String command = "wkhtmltopdf " + 
+					html.getAbsolutePath() + " " + 
+					reportsFolder + "/pdf/" + FilenameUtils.removeExtension(html.getName()) + ".pdf";
+			//create pdf
+//			Runtime.getRuntime().exec(new String[] { //"cmd.exe", "/c", "echo windows doesn't make pdfs"});
+//							"/bin/bash", "-c", command });
+			System.out.println("ATTEMPTING TO CREATE pdf report of: " + html.getName());
+
+	        ProcessBuilder pb = new ProcessBuilder(
+	        		"/bin/bash", "-c", command); //Unix commands
+//	        pb.directory(new File(usersBasepath + username + "/master"));		//("C:\\dev\\mbpet"));
+	        pb.redirectErrorStream(true);
+			final Process p = pb.start();				
+             
+			// any error our output
+            StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+            StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+            
+            // kick them off
+            outputGobbler.startPdfGobbler();
+            errorGobbler.startPdfGobbler();                        
+
+            // any error???
+            int exitVal = 0;
+			try {
+				exitVal = p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}System.out.println("ExitValue: " + exitVal);  
+			
+			
+			
+			
+			
+			//get pdf
+			pdf = new File(reportsFolder + "/pdf/" + 
+					FilenameUtils.removeExtension(html.getName()) + ".pdf" );
+			if (pdf.exists()) {
+				grantPermissions(pdf);
+				System.out.println("pdf report created successfully");
+			} else {
+				System.out.println("No pdf. return html instead");
+				pdf = html;
+			}
+		} catch (IOException e) {			
+			System.out.println(e + "\nno pdf. trying to create one...");
+		}
+		
+		return pdf;
+	}
 	
 	/**
 	 * RENAMING
@@ -299,6 +373,43 @@ public class FileSystemUtils {
 
 
 
+
+//	public File generatePdfReport(String reportsFolder, File html) {
+//		File pdf = null;
+//
+//		try {
+//			System.out.println("ATTEMPTING TO CREATE pdf report of: " + html.getName());
+//			
+//			String command = "wkhtmltopdf " + 
+//					html.getAbsolutePath() + " " + 
+//					reportsFolder + "/pdf/" + FilenameUtils.removeExtension(html.getName()) + ".pdf";
+//			//create pdf
+//			Runtime.getRuntime().exec(new String[] { //"cmd.exe", "/c", "echo windows doesn't make pdfs"});
+//							"/bin/bash", "-c", command });
+//			System.out.println("ATTEMPTING TO CREATE pdf report of: " + html.getName());
+//			
+//			try {
+//				Thread.sleep(3000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			//get pdf
+//			pdf = new File(reportsFolder + "/pdf/" + 
+//					FilenameUtils.removeExtension(html.getName()) + ".pdf" );
+//			if (pdf.exists()) {
+//				grantPermissions(pdf);
+//				System.out.println("pdf report created successfully");
+//			} else {
+//				System.out.println("No pdf. return html instead");
+//				pdf = html;
+//			}
+//		} catch (IOException e) {			
+//			System.out.println(e + "\nno pdf. trying to create one...");
+//		}
+//		
+//		return pdf;
+//	}
 	
 	
 //	File dir = new File(basepath + username + "/");

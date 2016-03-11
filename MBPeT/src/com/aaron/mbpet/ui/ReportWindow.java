@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.TextFileProperty;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -35,10 +38,11 @@ import com.vaadin.ui.themes.ValoTheme;
 public class ReportWindow extends Window {
 
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();
+	String reportsFolder;
 	
-	public ReportWindow(File file) {
+	public ReportWindow(String reportsFolder, File file) {
 //        super("Create new Instance of this Test Case"); // Set window caption
-        setCaption(file.getName());
+        setCaption(FilenameUtils.removeExtension(file.getName()));
         center();
 //        addStyleName("reportwindow");
         setResizable(true);
@@ -48,12 +52,13 @@ public class ReportWindow extends Window {
         setWidth(90.0f, Unit.PERCENTAGE);
 //        setContent(buildWindowContent(tree, "New Instance"));
         
+        this.reportsFolder = reportsFolder;
     	
         VerticalLayout content = new VerticalLayout();
         content.setMargin(true);
         content.setSizeFull();
         
-        System.err.println("file path:" + file.getAbsolutePath());
+        System.out.println("file path:" + file.getAbsolutePath());
         
 //    	Panel panel = new Panel();
 //    	panel.setSizeFull();
@@ -79,7 +84,8 @@ public class ReportWindow extends Window {
 //        Link link = new Link("Link to the image file", resource);
 //        content.addComponent(link);
         
-        File pdffile = new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports/y1_test_report_2016-03-08_15-55-44/TestReport.pdf");
+        //TESTING PURPOSES static pdf file
+//        File pdffile = new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports/y1_test_report_2016-03-08_15-55-44/TestReport.pdf");
 
 //        // A resource reference to some object
 //        FileResource fileres = new FileResource(pdffile);
@@ -91,9 +97,12 @@ public class ReportWindow extends Window {
 //        WebBrowser browser = (WebBrowser)  Page.getCurrent().getWebBrowser();// getWindow().getTerminal();
 //        content.addComponent(new Label(browser.getBrowserApplication()));
         
-        BrowserFrame browserframe = new BrowserFrame("", 
+        file = getPdfReport(file);
+        if (file.getName().endsWith(".pdf")){		//(file.getName().endsWith("pdf")){
+            setCaption(file.getName());
+        	BrowserFrame browserframe = new BrowserFrame("", 
 //        		fileres);
-        		new FileResource(pdffile));
+        			new FileResource(file));
 //        		new ExternalResource(pdffile.getAbsolutePath()));	//new ExternalResource("http://demo.vaadin.com/sampler/"));
 //        		new ThemeResource("test_reports_tmp/TestReport.pdf"));	//new ExternalResource("http://demo.vaadin.com/sampler/"));
 //        				"C:\\dev\\mbpet\\users\\apratt\\yaas\\y1\\test_reports\\y1_test_report_2016-03-08_15-55-44\\TestReport.pdf"));
@@ -101,16 +110,20 @@ public class ReportWindow extends Window {
 //        		new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));	//new ExternalResource("http://demo.vaadin.com/sampler/"));
         	browserframe.setWidth("100%");
         	browserframe.setHeight("100%");
-//        browser.setSizeFull();
-//    	content.addComponent(browserframe);
-//    	content.setExpandRatio(browserframe, 1);
+//        	browser.setSizeFull();
+	    	content.addComponent(browserframe);
+	    	content.setExpandRatio(browserframe, 1);
+        } else if (file.getName().endsWith(".html")){		//(file.getName().endsWith(".html")) {
+            setCaption(file.getName());
+//	        File f = new File(basepath + "/WEB-INF/test_reports/" + 
+//  				    "test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
+        	Label html = new Label("", ContentMode.HTML);
+        	html.setPropertyDataSource(new TextFileProperty(file));		//((Property) new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
+        	content.addComponent(html);
+        	content.setExpandRatio(html, 1);
+        	
+        }
 
-//        File f = new File(basepath + "/WEB-INF/test_reports/" + 
-//        "test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
-    	Label html = new Label("", ContentMode.HTML);
-    	html.setPropertyDataSource(new TextFileProperty(file));		//((Property) new ThemeResource("test_reports_tmp/master_test_report_2016-03-08_15-54-17.html"));
-    	content.addComponent(html);
-    	content.setExpandRatio(html, 1);
   
 
 //		BrowserFrame browser = new BrowserFrame("Embedded Page", 
@@ -153,14 +166,31 @@ public class ReportWindow extends Window {
 //        Link link = new Link("Link to the image file", resource);
         return html;
 	}
+    
+	public File getPdfReport(File html) {	//throws FileNotFoundException {
+		File pdf = new File(reportsFolder + "/pdf/" + 
+								FilenameUtils.removeExtension(html.getName()) + ".pdf" );
+		if (pdf.exists()) {
+			System.out.println("pdf report already existed");
+			return pdf;			
+		} else {
+			System.out.println("no pdf. trying to create one...");
+			//if no file exists, then create the pdf
+			FileSystemUtils fileUtils = new FileSystemUtils();
+			pdf = fileUtils.generatePdfReport(reportsFolder, html);
+		}
+		return pdf;
+	}
 
-	public static void open(final File file) {
+	public static void open(String reportsFolder, final File file) {
 //		File f = new File("file:///" + file);
 //		File f = new File("mbpet/users/apratt/yaas/test_project/test_reports/test_project_test_report_2016-01-25_14-37-40/master_test_report_2016-01-25_14-37-40.html");
 		System.out.println("file is: " + file);
-        Window w = new ReportWindow(file);
+        Window w = new ReportWindow(reportsFolder, file);
         UI.getCurrent().addWindow(w);
         w.focus();
+        // within the window using helper
+        w.setCloseShortcut(KeyCode.ESCAPE, null);
     }
     
 	
