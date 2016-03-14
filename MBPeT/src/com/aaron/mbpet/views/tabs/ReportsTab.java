@@ -133,7 +133,7 @@ public class ReportsTab extends Panel {
                 return file.isDirectory() && (!file.getName().equals("pdf"));
             }
         });
-		if (directories.length>0) {
+		if (!(directories==null) && directories.length>0) {
 
 	        System.out.println("directories with reports:" + directories.length);
 	        File[] singlereport = null;

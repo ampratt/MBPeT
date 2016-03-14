@@ -10,6 +10,7 @@ import org.vaadin.diagrambuilder.NodeType;
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.services.DBuilderUtils;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.tabs.parameterstab.ParametersFormAceView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -34,6 +35,7 @@ public class ModelDBuilderTab extends Panel implements Button.ClickListener {
 
 	// Diagram elements
 	final VerticalLayout diagramContainer = new VerticalLayout();
+//    String outFileField = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/dot-output.dot";
     String outFileField = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/dot-output.dot";
     String inFileField = outFileField;
 	
@@ -317,6 +319,16 @@ public class ModelDBuilderTab extends Panel implements Button.ClickListener {
             	
 				// actual SAVING to db
 				currmodel = diagramUtils.commitToDB(currmodel, titleField.getValue(), dotSchema);
+				
+				// write model to disk
+        		// 4.2 then write new file to disk
+				FileSystemUtils fileUtils = new FileSystemUtils();
+				fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+						currmodel.getParentsut().getOwner().getUsername(),
+						currmodel.getParentsut().getTitle(),
+						currmodel.getParentsession().getTitle(),
+						currmodel.getParentsession().getParameters().getModels_folder(),
+						currmodel);
 				
 				// redraw diagram if nodes need to be renamed
 //            	nodes = diagramUtils.renameNodes(nodes);

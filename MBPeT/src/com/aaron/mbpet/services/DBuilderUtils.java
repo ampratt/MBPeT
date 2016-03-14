@@ -116,12 +116,15 @@ public class DBuilderUtils implements Serializable {
         nXy.clear();					// Testing only. not used
 
         // get nodes
+        int name = 1;
+        if (nodes.get(0).getName().equals(String.valueOf(0)))
+        	name = 0;
 		for (int n=0; n < nodes.size(); n++) {
 			
-			if ( !nodes.get(n).getName().equals(String.valueOf(n+1)) ) {
+			if ( !nodes.get(n).getName().equals(String.valueOf(name)) ) {
 				if (!oldNNames.contains(nodes.get(n).getName())) {
 					oldNNames.add(nodes.get(n).getName());
-					newNNames.add(String.valueOf(n+1));
+					newNNames.add(String.valueOf(name));
 //				String[] oldNewTrans = new String[] {nodes.get(n).getName(), String.valueOf(n+1)};
 //				transitionsRenamed.add(oldNewTrans);
 				}
@@ -129,10 +132,11 @@ public class DBuilderUtils implements Serializable {
 //									+ " - valofeof(n): " + String.valueOf(n+1));
 			}
 			// get state and transition data for each node
-			nRename.add(n+1);
-			nodes.get(n).setName(String.valueOf(n+1));
+			nRename.add(name);
+			nodes.get(n).setName(String.valueOf(name));
 			System.out.println("nodes.get(n) " + nodes.get(n).getName());
 //			System.out.println("node: " + nodes.get(n) + " is named: " + nRename.get(n));
+			name +=1;
 		}
 		Collections.sort(nRename);  
 		
@@ -145,30 +149,30 @@ public class DBuilderUtils implements Serializable {
         	nXy.add(nodes.get(n).getXy());
 		}
 			
-			// rewrite transition default names to numbers
-			for (Transition t: nTransitions) {	//int n=0; n<nTransitions.size(); n++
-				if (!t.getSource().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
-					System.out.println("t.get(n).getSource() was: " + t.getSource() + "->" + t.getTarget());
-	
-					//replace auto-gen value with correct int
-					if ( oldNNames.contains(t.getSource()) ) {
-						int index = oldNNames.indexOf(t.getSource());
-						t.setSource(newNNames.get(index));
-						System.out.println("\nSOURCE\noldNNames at index: " + index + " is " + oldNNames.get(index) +
-											"\nnewNName at index: " + index + " is " + newNNames.get(index) );
-					}
+		// rewrite transition default names to numbers
+		for (Transition t: nTransitions) {	//int n=0; n<nTransitions.size(); n++
+			if (!t.getSource().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
+				System.out.println("t.get(n).getSource() was: " + t.getSource() + "->" + t.getTarget());
+
+				//replace auto-gen value with correct int
+				if ( oldNNames.contains(t.getSource()) ) {
+					int index = oldNNames.indexOf(t.getSource());
+					t.setSource(newNNames.get(index));
+					System.out.println("\nSOURCE\noldNNames at index: " + index + " is " + oldNNames.get(index) +
+										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
 				}
-				if (!t.getTarget().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
-					System.out.println("t.get(n).getTarget() was: " + t.getSource() + "->" + t.getTarget());
-					//replace auto-gen value with correct int
-					if ( oldNNames.contains(t.getTarget()) ) {
-						int index = oldNNames.indexOf(t.getTarget());
-						t.setTarget(newNNames.get(index));
-						System.out.println("\nTARGET\noldNNames at index: " + index + " is " + oldNNames.get(index) +
-											"\nnewNName at index: " + index + " is " + newNNames.get(index) );
-					}
-				}	
 			}
+			if (!t.getTarget().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
+				System.out.println("t.get(n).getTarget() was: " + t.getSource() + "->" + t.getTarget());
+				//replace auto-gen value with correct int
+				if ( oldNNames.contains(t.getTarget()) ) {
+					int index = oldNNames.indexOf(t.getTarget());
+					t.setTarget(newNNames.get(index));
+					System.out.println("\nTARGET\noldNNames at index: " + index + " is " + oldNNames.get(index) +
+										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
+				}
+			}	
+		}
 //		generateDiagramAfterRename(diagramBuilder, nodes);
 		return nodes;
     }
@@ -330,15 +334,15 @@ public class DBuilderUtils implements Serializable {
         
         // file option
         File file = new File(fileName);
-        PrintWriter writer = new PrintWriter(file);
-        writer.println("digraph " + title + " {");
+//        PrintWriter writer = new PrintWriter(file);
+//        writer.println("digraph " + title + " {");
         builder.append("digraph " + title + " {").append(newline);
         
             // write state data
-            writer.println("\t// States");
+//            writer.println("\t// States");
             builder.append("\t// States").append(newline);
             for (int n=0; n < nName.size(); n++) {
-                writer.print("\t" + nName.get(n));
+//                writer.print("\t" + nName.get(n));
                 builder.append("\t" + nName.get(n));
 
                 // save X,Y coordinate values
@@ -349,8 +353,8 @@ public class DBuilderUtils implements Serializable {
                 xy = xy.replaceAll("[,]", ",");
 //                xy = xy.replaceAll("[\\[\\]]", "");
 //                xy = xy.replaceAll("[\\s]", "");
-                writer.print("\t" + xy);// "}\n");	//mapper.writeValueAsString(nXy.get(n))
-                writer.print("\n");
+//                writer.print("\t" + xy);// "}\n");	//mapper.writeValueAsString(nXy.get(n))
+//                writer.print("\n");
                 builder.append("\t" + xy).append(newline);
 //                builder.append("\n").append(newline);
 
@@ -358,7 +362,7 @@ public class DBuilderUtils implements Serializable {
             }            
             
             // write transition data (nodes and label info)
-            writer.println("\n\t// Transitions");
+//            writer.println("\n\t// Transitions");
             builder.append("\n\t// Transitions").append(newline);
 
             for (int n=0; n < nTransitions.size(); n++) {
@@ -373,18 +377,18 @@ public class DBuilderUtils implements Serializable {
 					}
 					t.getConnector().setName(label);
 				
-                writer.println("\t" + t.getSource() + " -> " + t.getTarget() + 
-                			   " [label = " + t.getConnector().getName().toString() + "];");	//mapper.writeValueAsString()
+//                writer.println("\t" + t.getSource() + " -> " + t.getTarget() + 
+//                			   " [label = " + t.getConnector().getName().toString() + "];");	//mapper.writeValueAsString()
                 builder.append("\t" + t.getSource() + " -> " + t.getTarget() + 
          			   " [label = " + t.getConnector().getName().toString() + "];").append(newline);
 
             }     
-        writer.println("}");     
-        writer.close();
+//        writer.println("}");     
+//        writer.close();
         builder.append("}").append(newline);
 
         //show confirmation to user
-        Notification.show("dot file was saved at: " + fileName, Notification.Type.TRAY_NOTIFICATION);
+//        Notification.show("dot file was saved at: " + fileName, Notification.Type.TRAY_NOTIFICATION);
         
         return builder.toString();
 	}
