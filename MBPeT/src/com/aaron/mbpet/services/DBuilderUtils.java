@@ -417,19 +417,20 @@ public class DBuilderUtils implements Serializable {
 
 			File f = new File(inputSource);; 		
 			if (!f.isFile()) {		
-				System.out.println("INPUT WAS not a file and is:\n" + inputSource);	
-				f = new File("C:/dev/output/from ace string.dot");			
-		        PrintWriter writer = new PrintWriter(f);		
-		        String toParse = "";		
-		        Scanner scan = new Scanner(inputSource);	//new FileReader(fileName)		
-				while (scan.hasNextLine()) {		
-					String str = scan.nextLine();		
-					toParse = toParse.concat(str);		
-					toParse = toParse.concat(System.getProperty("line.separator"));		
-					writer.println(str);		
-				}		
-				writer.close();		
-				System.out.println("READING ALL THE FILE INTO A STRING:\n" + toParse + "\nEND OF FILE\n");		
+				System.out.println("INPUT was NOT a file and is:\n" + inputSource);	
+//				f = new File("C:/dev/output/from ace string.dot");			
+//		        PrintWriter writer = new PrintWriter(f);		
+//		        String toParse = "";		
+//		        Scanner scan = new Scanner(inputSource);	//new FileReader(fileName)		
+//				while (scan.hasNextLine()) {		
+//					String str = scan.nextLine();		
+//					toParse = toParse.concat(str);		
+//					toParse = toParse.concat(System.getProperty("line.separator"));		
+//					writer.println(str);		
+//				}		
+//				writer.close();		
+//				System.out.println("READING ALL THE FILE INTO A STRING:\n" + toParse + "\nEND OF FILE\n");		
+				System.out.println("READING ALL THE FILE INTO A STRING:\n" + inputSource + "\nEND OF FILE\n");		
 				sc = new Scanner(inputSource);	//(f);	//new FileReader(f) inputSource		
 						
 			} else if (f.isFile()) {		
