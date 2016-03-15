@@ -93,6 +93,14 @@ public class ParametersEditor {
 		this.currentParams = new Parameters(); 
 		this.currentParams.setOwnersession(this.parentsession);
 		this.currentParams.setSettings_file(getDefaultSettings());
+			this.currentParams.setDstat_mode("None");
+			this.currentParams.setModels_folder("models/");
+			this.currentParams.setTest_report_folder("test_reports/");
+			this.currentParams.setTest_duration(30);
+			this.currentParams.setMonitoring_interval(3);
+			this.currentParams.setMean_user_think_time(3);
+			this.currentParams.setStandard_deviation(1.0);
+		
 //		this.currentParams.setSettings_file("Fill in parameters for Test Session '" + parentsession.getTitle() + "'");
 		this.beanItem = new BeanItem<Parameters>(currentParams);
 

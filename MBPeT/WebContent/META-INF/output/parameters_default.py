@@ -65,4 +65,4 @@ E.g. mean_user_think_time = 3
      The user think time now follows a normal distribution with mean value of 3 and standard deviation of 1
 '''
 mean_user_think_time = 3
-standard_deviation = 0.0
+standard_deviation = 1.0

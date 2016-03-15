@@ -247,12 +247,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 
 		binder = new FieldGroup();
 //		BeanItem<Person> item = new BeanItem<Person>(person);		// takes item as argument
-//		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked
-		
-		binder.setItemDataSource(newSessionItem); 	// link to data model to binder
-		
+//		item.addNestedProperty("address.street");	// Address info is not person but address to which person is linked	
+		binder.setItemDataSource(newSessionItem); 	// link to data model to binder		
 //		binder.bindMemberFields(form);	// link to layout
-	
 		
 		// GENERATE FIELDS
 	//	for (Object propertyId : item.getItemPropertyIds()) {
@@ -296,12 +293,9 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		return layout;
 	}
 	
-	
-	
+
 	   public void buttonClick(ClickEvent event) {
 	        if (event.getButton() == createButton) {
-//	            editorForm.commit();
-//	            fireEvent(new EditorSavedEvent(this, personItem));
 	        	
 	        	TestSession queriedSession = null;
 	        	String wrongTitle = "";
