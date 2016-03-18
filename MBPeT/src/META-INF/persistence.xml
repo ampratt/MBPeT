@@ -19,8 +19,8 @@
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mbpetwampdb" />
-			<property name="javax.persistence.jdbc.user" value="root" /> <!--  mbpetwebapp -->
-			<property name="javax.persistence.jdbc.password" value="" /> <!-- MBPeT2016WebApp -->
+			<property name="javax.persistence.jdbc.user" value="mbpetwebapp" /> <!--  mbpetwebapp -->
+			<property name="javax.persistence.jdbc.password" value="MBPeT2016WebApp" /> <!-- MBPeT2016WebApp -->
 			<property name="eclipselink.logging.level" value="FINE" />
 
 	        <!-- EclipseLink should create the database schema automatically -->

@@ -137,12 +137,12 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		openDBuilderButton.setDescription("Switch to drag and drop builder");
 		openDBuilderButton.setEnabled(false);
 		
-		h.addComponents(titleField, modeBox, saveButton, openDBuilderButton);
+		h.addComponents(titleField, saveButton, openDBuilderButton);	//modeBox
 		h.setComponentAlignment(titleField, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
+//		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
+		h.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(openDBuilderButton, Alignment.BOTTOM_RIGHT);
-		h.setExpandRatio(saveButton, 1);
+		h.setExpandRatio(openDBuilderButton, 1);
 //		h.setExpandRatio(launchDBuilderButton, 0);
 		
 		return h;
@@ -159,8 +159,8 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 		editor.setWidth("100%");
 		editor.setHeight("425px");
 		editor.setReadOnly(false); 
-		setEditorMode(fileFormat);
-//		editor.setMode(AceMode.python);
+//		setEditorMode(fileFormat);
+		editor.setMode(AceMode.dot);
 //		editor.setUseWorker(true);
 //		editor.setTheme(AceTheme.twilight);	
 //		editor.setWordWrap(false);

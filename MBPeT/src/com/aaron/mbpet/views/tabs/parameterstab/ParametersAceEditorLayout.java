@@ -1,10 +1,8 @@
 package com.aaron.mbpet.views.tabs.parameterstab;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
@@ -12,35 +10,20 @@ import java.util.Scanner;
 
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
-import org.vaadin.aceeditor.AceEditor.SelectionChangeEvent;
-import org.vaadin.aceeditor.AceEditor.SelectionChangeListener;
-import org.vaadin.aceeditor.AceTheme;
-
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.AceUtils;
 import com.aaron.mbpet.services.FileSystemUtils;
-import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.services.ParametersUtils;
-import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.models.ModelDBuilderWindow;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
-import com.aaron.mbpet.views.parameters.ParametersForm;
-import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
-import com.vaadin.shared.Position;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -48,12 +31,9 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Notification.Type;
 
 public class ParametersAceEditorLayout extends VerticalLayout implements Button.ClickListener{
 
@@ -161,9 +141,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
         saveButton.setEnabled(false);
 	    
 		
-		h.addComponents(themeBox, modeBox, saveButton);	//themeBox
+		h.addComponents(themeBox, saveButton);	// modeBox
 		h.setComponentAlignment(themeBox, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
 		h.setExpandRatio(saveButton, 1);
 
@@ -196,8 +175,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 		editor.setWidth("100%");
 		editor.setHeight("425px");
 		editor.setReadOnly(false); 
-		setEditorMode(fileFormat);
-//		editor.setMode(AceMode.python);
+//		setEditorMode(fileFormat);
+		editor.setMode(AceMode.python);
 //		editor.setUseWorker(true);
 //		editor.setTheme(AceTheme.twilight);	
 //		editor.setWordWrap(false);

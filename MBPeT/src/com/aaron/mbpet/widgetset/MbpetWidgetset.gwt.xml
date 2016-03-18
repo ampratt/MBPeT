@@ -23,7 +23,10 @@
     -->
     <!-- <set-configuration-property name="devModeRedirectEnabled" value="true" /> -->
 
-
+	<!-- optimized widgetset -->
+	<generate-with class="com.aaron.mbpet.OptimizedConnectorBundleLoaderFactory">
+	      <when-type-assignable class="com.vaadin.client.metadata.ConnectorBundleLoader" />
+	</generate-with>
     
 
 

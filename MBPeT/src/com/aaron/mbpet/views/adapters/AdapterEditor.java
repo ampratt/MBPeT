@@ -40,7 +40,7 @@ public class AdapterEditor {
 	private boolean formEdit = false;
 	private boolean createmode = false;
   	FileSystemUtils fileUtils = new FileSystemUtils();
-  	
+  	private String fileType = ".py";
 	/*
 	 * Create new Adapter
 	 */
@@ -60,9 +60,10 @@ public class AdapterEditor {
 	/*
 	 * Edit Mode
 	 */
-	public AdapterEditor(Adapter currentAdapter, TestSession ownersession, String adapter) {		//JPAContainer<TestCase> container      
+	public AdapterEditor(Adapter currentAdapter, TestSession ownersession, String adapter, String fileType) {		//JPAContainer<TestCase> container      
 		editmode = true;
 		this.ownersession = ownersession;
+		this.fileType = fileType;
 		
         this.currentAdapter = currentAdapter; //Adapter.getItem(currentParams.getId()).getEntity();
         this.currentAdapter.setAdapter_file(adapter);
@@ -71,16 +72,18 @@ public class AdapterEditor {
 
         saveAdapter();
 	}
-	public AdapterEditor(Adapter currentAdapter, BeanItem<Adapter> beanItem, TestSession ownersession, FieldGroup binder) {		//JPAContainer<TestCase> container      
-		formEdit = true;
-		this.ownersession = ownersession;
-		
-	    this.currentAdapter = currentAdapter; //Adapter.getItem(currentParams.getId()).getEntity();
-	    this.beanItem = beanItem;	//new BeanItem<Adapter>(this.currentParams);
-	    this.binder = binder;
-
-	    saveAdapter();
-	}
+//	public AdapterEditor(Adapter currentAdapter, BeanItem<Adapter> beanItem, TestSession ownersession, FieldGroup binder) {		//JPAContainer<TestCase> container      
+//		formEdit = true;
+//		this.ownersession = ownersession;
+//		
+//	    this.currentAdapter = currentAdapter; //Adapter.getItem(currentParams.getId()).getEntity();
+//	    this.beanItem = beanItem;	//new BeanItem<Adapter>(this.currentParams);
+//	    this.binder = binder;
+//
+//	    saveAdapter();
+//	}
+	
+	
 	//	public AdapterEditor(Adapter currentParams, BeanItem<Adapter> beanItem, TestSession parentsession, FieldGroup binder) {		//JPAContainer<TestCase> container      
 //		formEdit = true;
 //		this.parentsession = parentsession;
@@ -156,7 +159,8 @@ public class AdapterEditor {
 	              	  		ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 
 							ownersession.getTitle(), 
-							currentAdapter.getAdapter_file());	
+							currentAdapter.getAdapter_file(),
+							fileType);	
               	  	
 					
 				} else if (editmode == true && formEdit==false){
@@ -175,7 +179,8 @@ public class AdapterEditor {
 							ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 
 							ownersession.getTitle(), 
-							currentAdapter.getAdapter_file());
+							currentAdapter.getAdapter_file(),
+							fileType);
 					
 				} else if (formEdit==true) {
 			        try {
