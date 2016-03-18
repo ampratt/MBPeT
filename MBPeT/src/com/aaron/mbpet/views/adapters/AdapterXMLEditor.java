@@ -9,8 +9,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.domain.Adapter;
-import com.aaron.mbpet.domain.Adapter;
+import com.aaron.mbpet.domain.AdapterXML;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -24,15 +23,15 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Notification.Type;
 
-public class AdapterEditor {
+public class AdapterXMLEditor {
 	
-	private JPAContainer<Adapter> adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
+	private JPAContainer<AdapterXML> adaptersxmlcontainer = ((MbpetUI) UI.getCurrent()).getAdaptersXMLcontainer();
 	private JPAContainer<TestSession> sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
-	BeanItem<Adapter> beanItem;
-	Adapter currentAdapter;// = new Adapter();
+	BeanItem<AdapterXML> beanItem;
+	AdapterXML currentAdapterXML;// = new Adapter();
 	
 	TestSession ownersession;
-//	Adapter clone;
+//	AdapterXML clone;
 	
 	private FieldGroup binder;
 	private boolean editmode = false;
@@ -40,92 +39,71 @@ public class AdapterEditor {
 	private boolean formEdit = false;
 	private boolean createmode = false;
   	FileSystemUtils fileUtils = new FileSystemUtils();
-  	private String fileType = ".py";
+  	private String fileType = ".xml";
+  	
+  	
 	/*
-	 * Create new Adapter
+	 * Create new AdapterXML
 	 */
-	public AdapterEditor(TestSession ownersession) {		//JPAContainer<TestCase> container
+	public AdapterXMLEditor(TestSession ownersession) {		//JPAContainer<TestCase> container
 		createmode = true;
 		this.ownersession = ownersession;
 
-		this.currentAdapter = new Adapter(); 
-		this.currentAdapter.setOwnersession(this.ownersession);
-		this.currentAdapter.setAdapter_file(getDefaultSettings());
-//		this.currentParams.setSettings_file("Fill in Adapter for Test Session '" + parentsession.getTitle() + "'");
-		this.beanItem = new BeanItem<Adapter>(currentAdapter);
+		this.currentAdapterXML = new AdapterXML(); 
+		this.currentAdapterXML.setOwnersession(this.ownersession);
+		this.currentAdapterXML.setAdapterXML_file(getDefaultSettings());
+//		this.currentParams.setSettings_file("Fill in AdapterXML for Test Session '" + parentsession.getTitle() + "'");
+		this.beanItem = new BeanItem<AdapterXML>(currentAdapterXML);
 
-        saveAdapter();
+        saveAdapterXML();
 	}
 
 	/*
 	 * Edit Mode
 	 */
-	public AdapterEditor(Adapter currentAdapter, TestSession ownersession, 
-			String adapter, String fileType) {		//JPAContainer<TestCase> container      
+	public AdapterXMLEditor(AdapterXML currentAdapterXML, TestSession ownersession, 
+			String adapterXML, String fileType) {		//JPAContainer<TestCase> container      
 		editmode = true;
 		this.ownersession = ownersession;
 		this.fileType = fileType;
 		
-        this.currentAdapter = currentAdapter; //Adapter.getItem(currentParams.getId()).getEntity();
-        this.currentAdapter.setAdapter_file(adapter);
-        this.beanItem = new BeanItem<Adapter>(this.currentAdapter);
+        this.currentAdapterXML = currentAdapterXML; //Adapter.getItem(currentParams.getId()).getEntity();
+        this.currentAdapterXML.setAdapterXML_file(adapterXML);
+        this.beanItem = new BeanItem<AdapterXML>(this.currentAdapterXML);
 //        binder = new FieldGroup();
 
-        saveAdapter();
+        saveAdapterXML();
 	}
-//	public AdapterEditor(Adapter currentAdapter, BeanItem<Adapter> beanItem, TestSession ownersession, FieldGroup binder) {		//JPAContainer<TestCase> container      
-//		formEdit = true;
-//		this.ownersession = ownersession;
-//		
-//	    this.currentAdapter = currentAdapter; //Adapter.getItem(currentParams.getId()).getEntity();
-//	    this.beanItem = beanItem;	//new BeanItem<Adapter>(this.currentParams);
-//	    this.binder = binder;
-//
-//	    saveAdapter();
-//	}
-	
-	
-	//	public AdapterEditor(Adapter currentParams, BeanItem<Adapter> beanItem, TestSession parentsession, FieldGroup binder) {		//JPAContainer<TestCase> container      
-//		formEdit = true;
-//		this.parentsession = parentsession;
-//		
-//        this.currentParams = currentParams; //Adapter.getItem(currentParams.getId()).getEntity();
-//        this.beanItem = beanItem;	//new BeanItem<Adapter>(this.currentParams);
-//
-//        this.binder = binder;
-//        
-//        saveAdapter();
-//	}
 
 	
 	/*
-	 * Clone existing Adapter to new one
+	 * Clone existing AdapterXML to new one
 	 */
-	public AdapterEditor(TestSession ownersession, String adapter_file) {		//JPAContainer<TestCase> container
+	public AdapterXMLEditor(TestSession ownersession, String adapterXML_file) {		//JPAContainer<TestCase> container
 		this.clonemode = true;
 		this.ownersession = ownersession;
 		
-		this.currentAdapter = new Adapter();
-		this.currentAdapter.setOwnersession(ownersession);
-		this.currentAdapter.setAdapter_file(adapter_file);
-        this.beanItem = new BeanItem<Adapter>(this.currentAdapter);
+		this.currentAdapterXML = new AdapterXML();
+		this.currentAdapterXML.setOwnersession(ownersession);
+		this.currentAdapterXML.setAdapterXML_file(adapterXML_file);
+        this.beanItem = new BeanItem<AdapterXML>(this.currentAdapterXML);
 
-        saveAdapter();
+        saveAdapterXML();
 	}
 
-	public void saveAdapter() {
+	public void saveAdapterXML() {
 
-    	Adapter queriedAdapter = null;
+    	AdapterXML queriedAdapterXML = null;
 //			try {
 				Object id = null;
 				
 				// add NEW bean object to db through jpa container
 				if ((createmode==true) || (editmode==false && formEdit==false)) {
 					try {
-//						String adap = currentAdapter.getAdapter_file();
+//						String adap = currentAdapterXML.getAdapterXML_file();
 //						if(adap == null || adap.equals("")){
-//							System.out.println("adapter was null");
-//							currentAdapter.setAdapter_file("not empty anymore");
+//							System.out.println("AdapterXML was null");
+//							currentAdapterXML.setAdapterXML_file("not empty anymore");
 //							beanItem.getItemProperty("adapter_file").setValue("not empty anymore");
 //						}
 						binder.commit();
@@ -134,53 +112,53 @@ public class AdapterEditor {
 					}
 					
 					// 1. add to container
-					adapterscontainer.addEntity(beanItem.getBean());	//jpa container	
+					adaptersxmlcontainer.addEntity(beanItem.getBean());	//jpa container	
 
 					
 	                // 2. retrieving db generated id
 	                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 	    											.createEntityManager();	
 		            Query query = em.createQuery(
-		        		    "SELECT OBJECT(a) FROM Adapter a WHERE a.ownersession = :ownersession"
+		        		    "SELECT OBJECT(a) FROM AdapterXML a WHERE a.ownersession = :ownersession"
 		        		);
-		            queriedAdapter = (Adapter) query.setParameter("ownersession", currentAdapter.getOwnersession()).getSingleResult();
-		            Adapter a = adapterscontainer.getItem(queriedAdapter.getId()).getEntity();
+		            queriedAdapterXML = (AdapterXML) query.setParameter("ownersession", currentAdapterXML.getOwnersession()).getSingleResult();
+		            AdapterXML a = adaptersxmlcontainer.getItem(queriedAdapterXML.getId()).getEntity();
 		            System.out.println("the generated id is: " + a.getId());
-		            id = queriedAdapter.getId();
+		            id = queriedAdapterXML.getId();
               	  	
 		            // Option 2. serialize blob to db
 //		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
-		            // 3. update parent Session to link Adapter
-              	  	ownersession.setAdapter(a);	//Adapter.getItem(queriedParams.getId()).getEntity()
+		            // 3. update parent Session to link AdapterXML
+              	  	ownersession.setAdapterXML(a);	//AdapterXML.getItem(queriedParams.getId()).getEntity()
               	  	sessions.addEntity(ownersession);
               	  	
-              	  	// save adapter.py file to directory              	  	
+              	  	// save adapter.xml file to directory              	  	
               	  	fileUtils.writeAdapterToDisk(
 	              	  		ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 
 							ownersession.getTitle(), 
-							currentAdapter.getAdapter_file(),
-							"adapter.py");	
+							currentAdapterXML.getAdapterXML_file(),
+							"adapter.xml");	
               	  	
 					
 				} else if (editmode == true && formEdit==false){
 
 					// 1 UPDATE container
-					adapterscontainer.addEntity(beanItem.getBean());
-					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
+					adaptersxmlcontainer.addEntity(beanItem.getBean());
+					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
 
 					// 2 UPDATE parentcase reference
-					ownersession.setAdapter(adapterscontainer.getItem(currentAdapter.getId()).getEntity());
-					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
+					ownersession.setAdapterXML(adaptersxmlcontainer.getItem(currentAdapterXML.getId()).getEntity());
+					System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
 
-					// write adapter file to disk
+					// write AdapterXML file to disk
 					fileUtils.writeAdapterToDisk(	//username, sut, session, settings_file)
 							ownersession.getParentcase().getOwner().getUsername(),
 							ownersession.getParentcase().getTitle(), 
 							ownersession.getTitle(), 
-							currentAdapter.getAdapter_file(),
+							currentAdapterXML.getAdapterXML_file(),
 							fileType);
 					
 				} else if (formEdit==true) {
@@ -191,50 +169,50 @@ public class AdapterEditor {
 					}
 			        
 					// 1 UPDATE container
-					adapterscontainer.addEntity(beanItem.getBean());
-					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
+			        adaptersxmlcontainer.addEntity(beanItem.getBean());
+					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
 
 					// 2 UPDATE parentcase reference
-					ownersession.setAdapter(adapterscontainer.getItem(currentAdapter.getId()).getEntity());
-					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
+					ownersession.setAdapterXML(adaptersxmlcontainer.getItem(currentAdapterXML.getId()).getEntity());
+					System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
 
 				}
 				else if (clonemode==true) {
 
 					// 1. add to container
-					adapterscontainer.addEntity(beanItem.getBean());
+					adaptersxmlcontainer.addEntity(beanItem.getBean());
 					
 	                // 2. retrieving db generated id
 	                EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 	    											.createEntityManager();	
 		            Query query = em.createQuery(
-		        		    "SELECT OBJECT(a) FROM Adapter a WHERE a.ownersession = :ownersession"
+		        		    "SELECT OBJECT(a) FROM AdapterXML a WHERE a.ownersession = :ownersession"
 		        		);
-		            queriedAdapter = (Adapter) query.setParameter("ownersession", currentAdapter.getOwnersession()).getSingleResult();
-		            Adapter a = adapterscontainer.getItem(queriedAdapter.getId()).getEntity();
+		            queriedAdapterXML = (AdapterXML) query.setParameter("ownersession", currentAdapterXML.getOwnersession()).getSingleResult();
+		            AdapterXML a = adaptersxmlcontainer.getItem(queriedAdapterXML.getId()).getEntity();
 		            System.out.println("the generated id is: " + a.getId() + " with parent session: " + a.getOwnersession().getId());
-		            id = queriedAdapter.getId();
+		            id = queriedAdapterXML.getId();
               	  	
 		            // Option 2. serialize blob to db
 //		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
-              	  	// 3. update parent Session to link Adapter !AND RECOMMIT SESSION TO CONTAINER!
-              	  	ownersession.setAdapter(a);	//Adapter.getItem(queriedParams.getId()).getEntity()
+              	  	// 3. update parent Session to link AdapterXML !AND RECOMMIT SESSION TO CONTAINER!
+              	  	ownersession.setAdapterXML(a);	//Adapter.getItem(queriedParams.getId()).getEntity()
               	  	sessions.addEntity(ownersession);
 				}
 
-				System.out.println("\n\nALL TEST SESSIONS AND THEIR Adapters");
+				System.out.println("\n\nALL TEST SESSIONS AND THEIR AdapterXMLs");
 				for (Object o : sessions.getItemIds()) {
 					TestSession s = sessions.getItem(o).getEntity();
-					if (s.getAdapter() != null) {
-						System.out.println(s.getId() + " " + s.getAdapter().getId());						
+					if (s.getAdapterXML() != null) {
+						System.out.println(s.getId() + " " + s.getAdapterXML().getId());						
 					}
 				}
-				System.out.println("\n\nALL Adapters IN CONTAINER");
-				for (Object o : adapterscontainer.getItemIds()) {
-					Adapter a = adapterscontainer.getItem(o).getEntity();
-					System.out.println("adapter: " + a.getId() + " -> owner: " + a.getOwnersession());						
+				System.out.println("\n\nALL AdapterXMLs IN CONTAINER");
+				for (Object o : adaptersxmlcontainer.getItemIds()) {
+					AdapterXML a = adaptersxmlcontainer.getItem(o).getEntity();
+					System.out.println("AdapterXML: " + a.getId() + " -> owner: " + a.getOwnersession());						
 
 				}
             	
@@ -247,9 +225,9 @@ public class AdapterEditor {
 //		            	} else 
  
         		if (editmode==true) {
-	        		confirmNotification(String.valueOf(currentAdapter.getId()), "Adapter edited");	//String.valueOf(currentParams.getId())
+	        		confirmNotification(String.valueOf(currentAdapterXML.getId()), "Adapter.xml edited");	//String.valueOf(currentParams.getId())
             	} else {
-	        		confirmNotification(String.valueOf(currentAdapter.getId()), "Adapter created");	//String.valueOf(currentParams.getId())
+	        		confirmNotification(String.valueOf(currentAdapterXML.getId()), "Adapter.xml created");	//String.valueOf(currentParams.getId())
             	} 
             
 //			} catch (CommitException e) {
@@ -275,7 +253,8 @@ public class AdapterEditor {
 	        BASEDIR = "WebContent";
 	    }
 	    System.out.println("BASEDIR ->" + BASEDIR);
-	    BASEDIR+="/META-INF/output/adapter_default.py";	
+	    BASEDIR+="/WEB-INF/tmp/adapter_default.xml";	
+//	    BASEDIR+="/META-INF/output/adapter_default.py";	
 	    String lineSeparator = System.getProperty("line.separator");
 
 		Scanner scan = null;

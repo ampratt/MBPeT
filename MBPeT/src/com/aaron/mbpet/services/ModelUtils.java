@@ -1,8 +1,11 @@
 package com.aaron.mbpet.services;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
@@ -15,7 +18,7 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.MainView;
-import com.aaron.mbpet.views.models.ModelEditor;
+import com.aaron.mbpet.views.models.ModelEditorWindow;
 import com.aaron.mbpet.views.models.ModelForm;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
@@ -66,8 +69,80 @@ public class ModelUtils {
 	boolean clonemode = false;
 
 	FileSystemUtils fileUtils = new FileSystemUtils();
- 
+	String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();
+    String defaultModelsDir = webContent + "/WEB-INF/tmp/";
 		
+
+	public void createDefaultModel(String title, TestSession currsession) {
+		models = ((MbpetUI) UI.getCurrent()).getModels();
+		currmodel = new Model(); 
+		modelBeanItem = new BeanItem<Model>(currmodel);
+		
+//        sessions = MBPeTMenu.sessions;
+		parentsession = currsession;
+		parentcase = testcases.getItem(parentsession.getParentcase().getId()).getEntity(); 	//parentsession.getParentcase();
+
+		currmodel.setTitle(title);
+		currmodel.setDotschema(getDefaultModel(title));
+		currmodel.setParentsession(parentsession);
+		currmodel.setParentsut(parentcase);
+		
+		Model queriedModel = null;
+		try {
+			// CREATE new Model
+	    	System.out.println("Saving default model to disk: " + title); // testing purposes
+
+	    	System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
+	    	for (Model m : currmodel.getParentsession().getModels()) {
+	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+	    	}
+	    	
+    		// 1. ADD to container
+			models.addEntity(modelBeanItem.getBean()); //jpa container	
+			
+			// 2A. get model back from db with generated ID field
+			EntityManager em = Persistence.createEntityManagerFactory("mbpet").createEntityManager();
+			Query query = em.createQuery(
+					"SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
+//            	queriedModel = (Model) query.setParameter("title", currmodel.getTitle()).getSingleResult();
+			query.setParameter("title", title);
+			query.setParameter("parentsession", parentsession);
+			queriedModel = (Model) query.getSingleResult();
+			System.out.println("the generated id is: "+ queriedModel.getId());
+			
+			// 2B. update parent Case to add Session to testCase List<Session> sessions
+			parentsession.addModel(queriedModel);
+			parentcase.addModel(queriedModel);
+			
+        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+        	for (Model m : parentsession.getModels()) {
+            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+        	}
+        	
+			// 3. write model file to disk
+			fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+					parentcase.getOwner().getUsername(),
+					parentcase.getTitle(), 
+					parentsession.getTitle(),
+					parentsession.getParameters().getModels_folder(),
+					queriedModel);
+			
+//			confirmNotification("Model '" + queriedModel.getTitle()+ "'", "saved");
+
+	
+		} catch (NonUniqueResultException e) {
+			e.printStackTrace();
+//			Notification.show("'Title' must be a unique name.\n'" +
+//								currmodel.getTitle() +	//queriedModel.getTitle() + 
+//								"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+//			if (currmodel.getTitle() == null)
+//					Notification.show("'Title' field cannot be empty.", Type.ERROR_MESSAGE);
+		}
+	}
+	
+
 	public Model createNewModel(Model model, TestSession currsession, FieldGroup fieldbinder) {	//Model model, 
 		models = ((MbpetUI) UI.getCurrent()).getModels();
 		currmodel = model; //new Model(); 
@@ -340,6 +415,27 @@ public class ModelUtils {
 
 	    }
 
+		@SuppressWarnings("resource")
+		private String getDefaultModel(String title) {
+			String modelFile = defaultModelsDir + title + ".gv";
+			System.out.println("Model default FILE : " + modelFile);
+
+			StringBuilder builder = new StringBuilder();
+			Scanner scan = null;
+			try {
+				scan = new Scanner(new FileReader(modelFile));
+				while (scan.hasNextLine()) {		
+					builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
+				}	
+				System.out.println(builder.toString());
+//				editor.setValue(builder.toString());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return builder.toString();
+		}
 		
 		
 		private void confirmNotification(String deletedItem, String message) {
@@ -424,6 +520,9 @@ public class ModelUtils {
 //			editor.setValue(corrected);
 		
 		}
+
+
+
 		
 		
 //		public static String compareTitles(String titleFieldvalue, String editorvalue) {

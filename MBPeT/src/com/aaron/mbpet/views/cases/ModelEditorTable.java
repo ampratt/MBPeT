@@ -8,7 +8,7 @@ import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.ui.ConfirmDeleteModelWindow;
-import com.aaron.mbpet.views.models.ModelEditor;
+import com.aaron.mbpet.views.models.ModelEditorWindow;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -273,7 +273,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	//        	List<TestSession> slist = parentcase.getSessions().get(parentcase.getSessions().size()-1);
 	        	TestSession newestsession = parentcase.getSessions().get(parentcase.getSessions().size()-1);	//slist.get(slist.size()-1);
 		        // open window to create item
-		        UI.getCurrent().addWindow(new ModelEditor(sessions.getItem(newestsession.getId()).getEntity(),
+		        UI.getCurrent().addWindow(new ModelEditorWindow(sessions.getItem(newestsession.getId()).getEntity(),
 		        											parentcase, 
 		        											true));	//testcases.getItem(parent).getEntity()
     	    }
@@ -281,7 +281,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
         } else if (event.getButton() == editButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
 			TestSession parentsession = sessions.getItem(model.getParentsession().getId()).getEntity();
-	        UI.getCurrent().addWindow(new ModelEditor(
+	        UI.getCurrent().addWindow(new ModelEditorWindow(
 	        			model.getId(),
 	        			parentsession,	//model.getParentsession(),
 	        			parentcase,
@@ -289,7 +289,7 @@ public class ModelEditorTable extends Panel implements Button.ClickListener {
 	        );
         } else if (event.getButton() == cloneButton) {
 			Model model = models.getItem(modelsTable.getValue()).getEntity();	//.getBean();
-	        UI.getCurrent().addWindow(new ModelEditor(
+	        UI.getCurrent().addWindow(new ModelEditorWindow(
 	        			model.getId(),
 	        			model.getParentsession(),
 	        			parentcase,

@@ -1,0 +1,8 @@
+digraph user_types {
+	// States
+	0	[ coords = 20, 20 ]
+	1	[ coords = 110, 145 ]
+
+	// Transitions
+	0 -> 1 [label = "1 / 0 / normal_user"];
+}

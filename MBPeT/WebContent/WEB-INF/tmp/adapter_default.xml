@@ -1,0 +1,96 @@
+<adapter>
+    <global>
+        <variable name="my_global" value="something"/>
+        <variable name="main_page" value="index"/>
+    </global>
+
+    <actions>
+        <action name="mainpage" desc="fetching main page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/@{main_page}.html</url>
+            </request>
+            <response>
+				<header> <!-- Extract header information from response to Global dictionary -->
+                    <Date>@{my_global}</Date>
+                </header>
+            </response>
+        </action>
+        <action name="loginpage" desc="fetching login page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/login.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+
+        <action name="login" desc="logging in">
+            <request method="POST" type="login" allow_redirection="False">
+                <url>http://hellwithThePerformance.fi/j_spring_security_check</url>
+                <parameters>
+                    <parameter row="1"><![CDATA[username=kop&password=esto]]></parameter>
+                </parameters>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="wrong_login" desc="logging in with wrong parameters">
+            <request method="POST" type="login" allow_redirection="False">
+                <url>http://hellwithThePerformance.fi/login.html</url>
+                <parameters>
+                    <parameter row="1"><![CDATA[username=nos&password=emo]]></parameter>                
+                </parameters>           
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="home" desc="fetching home page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/home.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="downloads" desc="fetching downloads page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/downloads.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="license" desc="fetching license page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/myLicenses.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="videos" desc="fetching videos page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/videos.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="demo2" desc="fetching demo2 page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/demo2Page.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="closeDemo" desc="fetching closeDemo page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/closeDemo.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+        <action name="logout" desc="fetching logout page">
+            <request method="GET" type="normal">
+                <url>http://hellwithThePerformance.fi/logout.html</url>
+            </request>
+            <response>
+            </response>
+        </action>
+    </actions>       
+</adapter>

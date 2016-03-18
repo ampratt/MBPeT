@@ -1,0 +1,15 @@
+digraph normal_user {
+	// States
+	1
+	2
+	3
+	4
+	5
+
+	// Transitions
+	1 -> 2 [label = "1 / / search_on_google(car)"];
+	2 -> 3 [label = "0.6 / / search_on_bing(ferrari)"];
+	2 -> 4 [label = "0.4 / / search_on_yahoo(boeing)"];
+	3 -> 5 [label = "1.0 / / exit()"];
+	4 -> 5 [label = "1.0 / / exit()"];
+}

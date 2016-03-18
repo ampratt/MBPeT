@@ -94,6 +94,7 @@ public class ParametersEditor {
 		this.currentParams.setOwnersession(this.parentsession);
 		this.currentParams.setSettings_file(getDefaultSettings());
 			this.currentParams.setDstat_mode("None");
+			this.currentParams.setUser_types("user_types.gv");
 			this.currentParams.setModels_folder("models/");
 			this.currentParams.setTest_report_folder("test_reports/");
 			this.currentParams.setTest_duration(30);

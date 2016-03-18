@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aaron.mbpet.domain.Adapter;
+import com.aaron.mbpet.domain.AdapterXML;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
@@ -81,6 +82,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	public JPAContainer<TestSession> sessions = JPAContainerFactory.make(TestSession.class,MbpetUI.PERSISTENCE_UNIT); 
 	public JPAContainer<Parameters> parameterscontainer = JPAContainerFactory.make(Parameters.class,MbpetUI.PERSISTENCE_UNIT); 
 	public JPAContainer<Adapter> adapters = JPAContainerFactory.make(Adapter.class,MbpetUI.PERSISTENCE_UNIT);
+	public JPAContainer<AdapterXML> adaptersxml = JPAContainerFactory.make(AdapterXML.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<Model> models = JPAContainerFactory.make(Model.class,MbpetUI.PERSISTENCE_UNIT);
 	public JPAContainer<TRT> trtcontainer = JPAContainerFactory.make(TRT.class,MbpetUI.PERSISTENCE_UNIT);
 	
@@ -94,7 +96,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
     
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
+	@VaadinServletConfiguration(productionMode = true, ui = MbpetUI.class, widgetset = "com.aaron.mbpet.widgetset.MbpetWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
 
@@ -355,6 +357,13 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		public void setAdapterscontainer(JPAContainer<Adapter> adapterscontainer) {
 			this.adapters = adapterscontainer;
+		}
+		
+		public JPAContainer<AdapterXML> getAdaptersXMLcontainer() {
+			return adaptersxml;
+		}
+		public void setAdaptersXMLcontainer(JPAContainer<AdapterXML> adaptersxmlcontainer) {
+			this.adaptersxml = adaptersxmlcontainer;
 		}
 		
 		public JPAContainer<TRT> getTrtcontainer() {
