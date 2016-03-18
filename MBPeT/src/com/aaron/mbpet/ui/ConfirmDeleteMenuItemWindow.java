@@ -1,12 +1,9 @@
 package com.aaron.mbpet.ui;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Adapter;
+import com.aaron.mbpet.domain.AdapterXML;
 import com.aaron.mbpet.domain.Model;
 import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TRT;
@@ -14,25 +11,19 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.FileSystemUtils;
-import com.aaron.mbpet.views.MBPeTMenu;
 import com.aaron.mbpet.views.MainView;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.data.Item;
 import com.vaadin.data.util.filter.Compare.Equal;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -49,7 +40,8 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 	JPAContainer<TestSession> sessions;
 	JPAContainer<Model> models;
 	JPAContainer<Parameters> parameters;
-	JPAContainer<Adapter> adapters;
+	JPAContainer<Adapter> adapterscontainer;
+	JPAContainer<AdapterXML> adaptersxmlcontainer;
 	JPAContainer<TRT> trtcontainer;
 	private User sessionuser = ((MbpetUI) UI.getCurrent()).getSessionUser();
 	TestCase parentcase;
@@ -71,7 +63,8 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
         this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
         this.models = ((MbpetUI) UI.getCurrent()).getModels();
         this.parameters = ((MbpetUI) UI.getCurrent()).getParameterscontainer();
-        this.adapters = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
+        this.adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
+        this.adaptersxmlcontainer = ((MbpetUI) UI.getCurrent()).getAdaptersXMLcontainer();
         this.trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
         
         this.targetId = targetId; 
@@ -359,14 +352,17 @@ public class ConfirmDeleteMenuItemWindow extends Window implements Button.ClickL
 				e.printStackTrace();
 			}
             
-            // 4 delete adapter
+            // 4 delete adapters
         	Adapter a = ses.getAdapter();
+        	AdapterXML aXML = ses.getAdapterXML();
             try {
-    			System.out.println("### DELETING Actual ADAPTER ###");
+    			System.out.println("### DELETING Actual ADAPTERS ###");
             	ses.setAdapter(null);
+            	ses.setAdapterXML(null);
             	
             	// remove from db
-            	adapters.removeItem(a.getId());
+            	adapterscontainer.removeItem(a.getId());
+            	adaptersxmlcontainer.removeItem(aXML.getId());
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}

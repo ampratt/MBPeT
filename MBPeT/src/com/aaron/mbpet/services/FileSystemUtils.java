@@ -226,14 +226,16 @@ public class FileSystemUtils {
 		}
 	}
 	
-	public void writeAdapterToDisk(String username, String sut, String session, String adapter_file, String fileType) {
-		String ftype=".py";
-		if (fileType.equals("python")) ftype = ".py";
-		if (fileType.equals("xml")) ftype = ".xml";
+	public void writeAdapterToDisk(String username, String sut, String session, 
+			String adapter_file, String fileName) {
+		//fileType = A) adapter.py, B) adapter.xml, C) petadapter.py 
+//					String ftype=".py";
+//					if (fileName.equals("python")) ftype = ".py";
+//					if (fileName.equals("xml")) ftype = ".xml";
 		try {
 			File file;
 			FileUtils.writeStringToFile(
-					file = new File(usersBasepath + username + "/" + sut + "/" + session + "/adapter" + ftype), 
+					file = new File(usersBasepath + username + "/" + sut + "/" + session + "/" + fileName),		//"/adapter" + ftype), 
 					adapter_file);
 			grantPermissions(file);			
 		} catch (IOException e) {

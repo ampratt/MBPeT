@@ -15,6 +15,7 @@
 		<class>com.aaron.mbpet.domain.Parameters</class>
 		<class>com.aaron.mbpet.domain.TRT</class>
 		<class>com.aaron.mbpet.domain.Adapter</class>
+		<class>com.aaron.mbpet.domain.AdapterXML</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
@@ -25,7 +26,6 @@
 
 	        <!-- EclipseLink should create the database schema automatically -->
  			<property name="eclipselink.ddl-generation.output-mode" value="database" />
- 			<property name="eclipselink.ddl-generation" value="none"/>
 
 <!-- 	        <property name="eclipselink.ddl-generation" value="create-tables"/>
  -->

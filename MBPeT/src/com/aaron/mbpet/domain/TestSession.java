@@ -45,7 +45,10 @@ public class TestSession {
 
 	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
 	private Adapter adapter;
-    
+
+	@OneToOne(mappedBy = "ownersession")	//(cascade = CascadeType.ALL)
+	private AdapterXML adapterxml;
+	
     public TestSession() {
     }
     	
@@ -102,6 +105,13 @@ public class TestSession {
 	}
 	public void setAdapter(Adapter adapter) {
 		this.adapter = adapter;
+	}
+
+	public AdapterXML getAdapterXML() {
+		return adapterxml;
+	}
+	public void setAdapterXML(AdapterXML adapterxml) {
+		this.adapterxml = adapterxml;
 	}
 	
     public List<Model> getModels() {

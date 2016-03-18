@@ -1,7 +1,6 @@
 package com.aaron.mbpet.views.sessions;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,51 +10,32 @@ import javax.persistence.Query;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Adapter;
+import com.aaron.mbpet.domain.AdapterXML;
 import com.aaron.mbpet.domain.Model;
-import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.FileSystemUtils;
-import com.aaron.mbpet.views.LoginView;
-import com.aaron.mbpet.views.MBPeTMenu;
+import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.adapters.AdapterEditor;
-import com.aaron.mbpet.views.cases.ModelEditorTable;
-import com.aaron.mbpet.views.cases.SessionEditorTable;
-import com.aaron.mbpet.views.cases.TestCaseEditor;
-import com.aaron.mbpet.views.cases.TestCaseForm;
+import com.aaron.mbpet.views.adapters.AdapterXMLEditor;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
-import com.aaron.mbpet.views.users.UserForm;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.data.validator.NullValidator;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.Position;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Table;
@@ -78,6 +58,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //	private JPAContainer<TestCase> testcases;
 	private JPAContainer<Model> models;
 	private JPAContainer<Adapter> adapterscontainer;
+	private JPAContainer<AdapterXML> adaptersxmlcontainer;
 	private JPAContainer<TestSession> sessions;
 	JPAContainer<TestCase> testcases = ((MbpetUI) UI.getCurrent()).getTestcases();
 	BeanItem<TestSession> newSessionItem;
@@ -163,6 +144,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
 		adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
+		adaptersxmlcontainer = ((MbpetUI) UI.getCurrent()).getAdaptersXMLcontainer();
 		sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
@@ -183,6 +165,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		
 		models = ((MbpetUI) UI.getCurrent()).getModels();
 		adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
+		adaptersxmlcontainer = ((MbpetUI) UI.getCurrent()).getAdaptersXMLcontainer();
 		sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.subject = sessions.getItem(testsessionid).getEntity();
 		
@@ -355,12 +338,21 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 											testsession.getParentcase().getTitle(), 
 											testsession.getTitle());
 									
-									// create empty parameters object
+									
+									// create default parameters object
 									new ParametersEditor(sessions.getItem(id).getEntity());
 									
 									// create empty adapter object
 									new AdapterEditor(sessions.getItem(id).getEntity());
 									
+									// create empty adapterXML object
+									new AdapterXMLEditor(sessions.getItem(id).getEntity());
+									
+									// create default models
+									ModelUtils modelUtils = new ModelUtils();
+										modelUtils.createDefaultModel("user_types", sessions.getItem(id).getEntity()); //currmodel.getParentsession(),
+										modelUtils.createDefaultModel("normal_user", sessions.getItem(id).getEntity()); //currmodel.getParentsession(),
+
 									// add to tree in right order
 									if (tree.hasChildren(parentcase.getId())) {
 										sortAddToTree(id);
@@ -427,6 +419,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 //			              	  	// update parameters and adapter ?
 			              	  	System.out.println("Sessions' params's session title: " + testsession.getParameters().getOwnersession().getTitle());
 		              	  		System.out.println("Sessions' adapter session title: " + testsession.getAdapter().getOwnersession().getTitle());
+		              	  		System.out.println("Sessions' adapterXML session title: " + testsession.getAdapterXML().getOwnersession().getTitle());
 
 			              	  	id = testsession.getId();
 	
@@ -492,7 +485,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		cloneParams + "\n\n");
 					            new ParametersEditor(queriedSession, cloneParams);
 	
-					            // 6 clone adapter
+					            // 6 clone adapter.py
 					            String cloneAdapter = "Fill in adapter for Test Session '" + queriedSession.getTitle() + "'";
 					            if (!(subject.getAdapter().getAdapter_file() == null) 
 					            		|| !(subject.getAdapter().getAdapter_file().equals("")) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
@@ -502,7 +495,18 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		cloneAdapter + "\n\n");
 					            new AdapterEditor(queriedSession, cloneAdapter);
 			        			
-					            // 7 write models to disk
+					            // 7 clone adapter.xml
+					            String cloneAdapterXML = "Fill in adapterXML for Test Session '" + queriedSession.getTitle() + "'";
+					            if (!(subject.getAdapterXML().getAdapterXML_file() == null) 
+					            		|| !(subject.getAdapterXML().getAdapterXML_file().equals("")) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
+					            	cloneAdapterXML = subject.getAdapterXML().getAdapterXML_file();
+					            }
+					            System.out.println("\n\n the cloned adapterXML is:\n" + 
+					            		cloneAdapterXML + "\n\n");
+					            new AdapterXMLEditor(queriedSession, cloneAdapterXML);
+					            
+					            
+					            // 8 write models to disk
 					            FileSystemUtils fileUtils = new FileSystemUtils();
 					            fileUtils.writeModelsToDisk(
 					            		parentcase.getOwner().getUsername(), 
@@ -511,7 +515,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		queriedSession.getParameters().getModels_folder(), 
 					            		subject.getModels());
 					            
-					            // 7 add to tree in right order
+					            // 9 add to tree in right order
 					            if ( tree.hasChildren(parentcase.getId()) ) {
 					            	sortAddToTree(id);				            	
 					            } else {
@@ -524,7 +528,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            }
 			        			
 			              	  			              	  	
-			              	  	// 8 update parent Case to add Session to testCase List<Session> sessions
+			              	  	// 10 update parent Case to add Session to testCase List<Session> sessions
 			              	  	parentcase.addSession(queriedSession);
 			//              	  	List<TestSession> listofsessions = parentCase.getSessions();
 			//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()

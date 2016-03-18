@@ -1,4 +1,4 @@
-package com.aaron.mbpet.views.tabs;
+package com.aaron.mbpet.views.tabs.adapterstabs;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,7 +14,6 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.AceUtils;
-import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.views.adapters.AdapterEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -23,7 +22,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
@@ -32,43 +30,34 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class AdapterTab extends Panel implements Button.ClickListener {
+public class AdapterPythonTab extends Panel implements Button.ClickListener {
 
 	AceEditor editor;
 	private TestSession currsession;
-	private ComboBox modeBox;
 	private ComboBox themeBox;
 	private Button saveButton;
 
-    List<String> modeList;
-    String[] modes = {"python", "xml"};
 	List<String> themeList;
 	String[] themes = {"ambiance", "chrome", "clouds", "cobalt", "dreamweaver", "eclipse", "github", "terminal", "twilight", "xcode"};
-    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+//    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
     String webContent = ((MbpetUI) UI.getCurrent()).getWebContent();
-    String defaultsettingsfile = webContent + "/WEB-INF/tmp/adapter_default.py";
+    String defaultAdapterPYFile = webContent + "/WEB-INF/tmp/adapter_default.py";
     
 	JPAContainer<Adapter> adapterscontainer = ((MbpetUI) UI.getCurrent()).getAdapterscontainer();
 	Adapter currentAdapter;
 	BeanItem<Adapter> beanItem;
 
-
-	public AdapterTab(TestSession currsession) {		//TestSession currsession
-//		setSizeFull();
-//		setMargin(true);
-//		setSpacing(true);
-	
+	public AdapterPythonTab(TestSession currsession) {
+		
 		editor = new AceEditor();
 		this.currsession = currsession;
 		this.currentAdapter = adapterscontainer.getItem(currsession.getAdapter().getId()).getEntity();
 //		this.beanItem = new BeanItem<Adapter>(bean)
 
-				
 		setHeight("100%");
 		setWidth("100%");
 		addStyleName("borderless");
@@ -81,20 +70,8 @@ public class AdapterTab extends Panel implements Button.ClickListener {
 
 		setContent(content);
 		
-
-//	    addComponent(new Label("<h3><i>Upload file or write code below to send adapter settings to master</i></h3>", ContentMode.HTML));	//layout.
-//		browseForFile();
-//	    
-//		editor = new AceEditor();
-//		addComponent(new AceEditorLayoutDirectory(editor));
-
-	    //initDiagram();
 	}
 	
-//	private void buildAceEditor(){
-//		editor = new AceEditor();
-//		AceEditorLayoutDirectory acelayout = new AceEditorLayoutDirectory(editor);
-//	}
 	
 	private Component buildButtons() {
         // Horizontal Layout
@@ -103,7 +80,7 @@ public class AdapterTab extends Panel implements Button.ClickListener {
         h.setSpacing(true);    
 
         themeList = Arrays.asList(themes);
-        themeBox = new ComboBox("theme", themeList);
+        themeBox = new ComboBox("", themeList);
 //        modeBox.setContainerDataSource(modeList);
 //        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
         themeBox.setWidth(9, Unit.EM);
@@ -120,24 +97,6 @@ public class AdapterTab extends Panel implements Button.ClickListener {
             }
         });
         
-        modeList = Arrays.asList(modes);
-        modeBox = new ComboBox("code style:", modeList);
-//        modeBox.setContainerDataSource(modes);
-//        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
-        modeBox.setWidth(7, Unit.EM);
-        modeBox.addStyleName("tiny");
-        modeBox.setInputPrompt("No style selected");
-        modeBox.setFilteringMode(FilteringMode.CONTAINS);
-        modeBox.setImmediate(true);
-        modeBox.setNullSelectionAllowed(false);
-        modeBox.setValue(modeList.get(0));        
-        modeBox.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-//                Notification.show("mode changed to: " + event.getProperty().getValue().toString());
-                setEditorMode(event.getProperty().getValue().toString());
-            }
-        });
         
         saveButton = new Button("Save", this);
         saveButton.setIcon(FontAwesome.SAVE);
@@ -149,9 +108,8 @@ public class AdapterTab extends Panel implements Button.ClickListener {
         saveButton.setEnabled(false);
 	    
 		
-		h.addComponents(themeBox, modeBox, saveButton);	//themeBox
+		h.addComponents(themeBox, saveButton);	//themeBox
 		h.setComponentAlignment(themeBox, Alignment.BOTTOM_LEFT);
-		h.setComponentAlignment(modeBox, Alignment.BOTTOM_LEFT);
 		h.setComponentAlignment(saveButton, Alignment.BOTTOM_LEFT);	//BOTTOM_RIGHT);
 		h.setExpandRatio(saveButton, 1);
 
@@ -211,9 +169,9 @@ public class AdapterTab extends Panel implements Button.ClickListener {
 //			String adapterString = editor.getValue();
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			
-        	System.out.println("editor mode:" +modeBox.getValue());
+//        	System.out.println("editor mode:" +modeBox.getValue());
 			// commit settings file from Ace
-			new AdapterEditor(currentAdapter, currsession, editor.getValue(), modeBox.getValue().toString());
+			new AdapterEditor(currentAdapter, currsession, editor.getValue(), "adapter.py");
 			currentAdapter = adapterscontainer.getItem(currentAdapter.getId()).getEntity();
 			
 //			// update Form view
@@ -236,25 +194,14 @@ public class AdapterTab extends Panel implements Button.ClickListener {
 
     }
     
-	public void setEditorMode(String mode) {
-		if (mode.equals("py") || mode.equals("python")) {
-			editor.setMode(AceMode.python);	
-			modeBox.setValue(modeList.get(0));
-//			System.out.println("Mode changed to python");
-		} else if (mode.equals("xml")) {
-			editor.setMode(AceMode.xml);	
-			modeBox.setValue(modeList.get(1));
-//			System.out.println("Mode changed to xml");
-		} 
-	}
     
     private void loadExampleSettings() {
-		System.out.println("SETTINGS FILE : " + defaultsettingsfile);
+		System.out.println("SETTINGS FILE : " + defaultAdapterPYFile);
 
 		StringBuilder builder = new StringBuilder();
 		Scanner scan = null;
 		try {
-			scan = new Scanner(new FileReader(defaultsettingsfile));
+			scan = new Scanner(new FileReader(defaultAdapterPYFile));
 			while (scan.hasNextLine()) {		
 				builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
 			}	

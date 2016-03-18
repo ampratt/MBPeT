@@ -3,6 +3,7 @@ package com.aaron.mbpet.views.tabs;
 import com.aaron.mbpet.components.flot.FlotChart;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.aaron.mbpet.views.tabs.adapterstabs.AdaptersTab;
 import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
 import com.aaron.mbpet.views.tabs.parameterstab.ParametersTab;
 import com.vaadin.annotations.JavaScript;
@@ -24,7 +25,7 @@ public class TabLayout extends TabSheet {
 	ReportsTab reportsTab;	// = new ReportsTab();	//final
 	ModelsTab modelTab;// = new ModelsTab();
 	ParametersTab parametersTab;
-	AdapterTab adapterTab;
+	AdaptersTab adapterTab;
 //	RampTab ramp;// = new RampTab();
 //	SettingsTab settings;// = new SettingsTab();
 	
@@ -81,13 +82,13 @@ public class TabLayout extends TabSheet {
 
 		modelTab = new ModelsTab(currsession);
 		parametersTab = new ParametersTab(currsession);
-		adapterTab = new AdapterTab(currsession);
+		adapterTab = new AdaptersTab(currsession);
 //		ramp = new RampTab();
 //		settings = new SettingsTab(currsession);
 		
 		confTabs.addTab(modelTab, "Models");
 		confTabs.addTab(parametersTab, "Test Parameters");
-		confTabs.addTab(adapterTab, "Test Adapter");
+		confTabs.addTab(adapterTab, "Test Adapters");
 //		confTabs.addTab(ramp, "Ramp Function");
 //		confTabs.addTab(settings, "Settings");
 		return confTabs;

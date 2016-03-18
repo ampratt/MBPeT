@@ -70,7 +70,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 // Define a sub-window by inheritance
-public class ModelEditor extends Window implements Button.ClickListener {
+public class ModelEditorWindow extends Window implements Button.ClickListener {
 
 	private Table table;
 	private Button saveButton;
@@ -108,7 +108,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	/*
 	 * Create new Model
 	 */
-	public ModelEditor(TestSession parentsession, TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
+	public ModelEditorWindow(TestSession parentsession, TestCase parentcase, boolean navToCasePage) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
 		this.models = ((MbpetUI) UI.getCurrent()).getModels();
 		this.currmodel = new Model(); 
@@ -119,7 +119,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		
 		init(parentsession, parentcase);
 	}
-	public ModelEditor(TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
+	public ModelEditorWindow(TestSession parentsession, TestCase parentcase) {		//JPAContainer<TestCase> container
 //      super("Create a new Test Case"); // Set window caption
 		this.models = ((MbpetUI) UI.getCurrent()).getModels();
 		this.currmodel = new Model(); 
@@ -127,6 +127,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 		
 		init(parentsession, parentcase);
 	}
+	
 	
 //	/*
 //	 * Edit Mode
@@ -148,7 +149,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	/*
 	 * Edit from TestCase Home Page
 	 */
-	public ModelEditor(Object modelid, TestSession parentsession, TestCase parentcase, Table table) {		//JPAContainer<TestCase> container
+	public ModelEditorWindow(Object modelid, TestSession parentsession, TestCase parentcase, Table table) {		//JPAContainer<TestCase> container
 		this.editmode = true;
 		this.navToCasePage = true;
 		this.table = table;
@@ -166,7 +167,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 	/*
 	 * Clone existing Model to new one
 	 */
-	public ModelEditor(Object modelId, TestSession parentsession, TestCase parentcase,
+	public ModelEditorWindow(Object modelId, TestSession parentsession, TestCase parentcase,
 			Table table, boolean clonemode) {		//JPAContainer<TestCase> container
 		this.clonemode = clonemode;
 		this.table = table;
@@ -658,15 +659,15 @@ public class ModelEditor extends Window implements Button.ClickListener {
 							binder.discard();
 							Notification.show("The title '" + wrongTitle + "' already exists for this Session. Please rename this model.", Type.ERROR_MESSAGE);	//testsession.getTitle()
 							if (navToCasePage == true) {
-								UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase, true));																
+								UI.getCurrent().addWindow(new ModelEditorWindow(parentsession, parentcase, true));																
 							} else {
-								UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));								
+								UI.getCurrent().addWindow(new ModelEditorWindow(parentsession, parentcase));								
 							}
 						} else if (editmode==true){
 							binder.discard();
 							Notification.show("The title '" + wrongTitle + "' already exists for this Session. Please rename this model.", Type.ERROR_MESSAGE);
 							if (navToCasePage == true) {
-								UI.getCurrent().addWindow(new ModelEditor(id, parentsession, parentcase, table));	//sessions.getItem(testsession.getId()).getEntity().getId()																	
+								UI.getCurrent().addWindow(new ModelEditorWindow(id, parentsession, parentcase, table));	//sessions.getItem(testsession.getId()).getEntity().getId()																	
 							} 
 //							else {
 //								UI.getCurrent().addWindow(new ModelEditor(id, parentsession, parentcase));																										
@@ -675,7 +676,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 						} else if (clonemode==true){
 							binder.discard();
 							Notification.show("The title '" + wrongTitle + "' already exists for this Session. Please rename this model.", Type.ERROR_MESSAGE);
-							UI.getCurrent().addWindow(new ModelEditor(
+							UI.getCurrent().addWindow(new ModelEditorWindow(
 									subject.getId(), parentsession, parentcase, table, true)
 							);	
 						}
@@ -687,7 +688,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 					Notification not = new Notification("'Title' cannot be empty.", Type.ERROR_MESSAGE);
 					not.setStyleName("failure small");
 					not.show(Page.getCurrent());
-					UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
+					UI.getCurrent().addWindow(new ModelEditorWindow(parentsession, parentcase));
 				} catch (NonUniqueResultException e) {
 					binder.discard();
 					Notification not = new Notification("'Title' must be a unique name.\n",
@@ -696,7 +697,7 @@ public class ModelEditor extends Window implements Button.ClickListener {
 										"'.", Type.WARNING_MESSAGE);
 					not.setStyleName("failure small");
 					not.show(Page.getCurrent());
-					UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
+					UI.getCurrent().addWindow(new ModelEditorWindow(parentsession, parentcase));
 				}
 				catch (NullPointerException e) {
 					binder.discard();
