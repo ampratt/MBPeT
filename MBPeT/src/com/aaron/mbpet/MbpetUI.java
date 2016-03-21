@@ -241,7 +241,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.updateFields(values);
 		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
-		        	montab.updateChart(Integer.parseInt(values[7]));
+		        	montab.updateCharts(Integer.parseInt(values[7]));
 		        }
 		    });
 		}
@@ -277,8 +277,8 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
 //		        	montab.addNewMessageComponent(message);
 		        	//show notification
-		        	Notification notification = new Notification("Test Successfully Completed!", "Master Test Report generated", Notification.Type.HUMANIZED_MESSAGE);
-		            notification.setStyleName("success");
+		        	Notification notification = new Notification("Test Successfully Completed!", "Master Test Report was generated and is available on Reports Tab.");//, Notification.Type.	//HUMANIZED_MESSAGE);
+		            notification.setStyleName("system success");
 		            notification.setPosition(Position.TOP_RIGHT);
 		            notification.setDelayMsec(5000);
 		            notification.show(Page.getCurrent());

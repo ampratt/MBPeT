@@ -31,7 +31,7 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 	var newPositionY = null; // datapoint1, datapoint2;
 	
 	element.bind("datadrop", function(event,pos,item) {
-		newPositionX = pos.x1.toFixed(2);
+		newPositionX = pos.x1.toFixed(2);	//Math.round()
 		newPositionY = pos.y1.toFixed(2);	
 //		datapoint1 = item.datapoint[0].toFixed(2);
 //		datapoint2 = item.datapoint[1].toFixed(2);
@@ -162,7 +162,8 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 	 */
 	element.bind('plotclick', function(event, pos, item) {
 		if (item) {
-			rpcProxy.onPlotClick(item.seriesIndex, item.dataIndex);
+//			rpcProxy.onPlotClick(item.seriesIndex, item.dataIndex);
+			rpcProxy.onPlotClick(item.seriesIndex, item.dataIndex, item.datapoint);
 //			self.onPlotClick(item.seriesIndex, item.dataIndex);
 //			highlight(item.series, item.datapoint);
 //			alert("you clicked at: " + pos.x + ", " + pos.y + "- " + pos.x1 + ", " + pos.y1);

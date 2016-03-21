@@ -254,7 +254,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			
 			//set chart to [0,0]
 //			tabs.getMonitoringTab().resetChart();
-			tabs.getMonitoringTab().refreshChart();
+			tabs.getMonitoringTab().refreshCharts();
 //			// navigate to corresponding item
 //			getUI().getNavigator().navigateTo(MainView.NAME + 
 //									"/" + currsession.getParentcase().getTitle() + 

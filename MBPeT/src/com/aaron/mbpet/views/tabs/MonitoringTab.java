@@ -49,9 +49,15 @@ public class MonitoringTab extends Panel {
 	public Label minmaxresponse;
 	public Label slave;
 	public Label slavelabel;
-	HorizontalLayout flotLayout;
-	public FlotChart usersChart;
-	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	HorizontalLayout flotRampLayout;
+	HorizontalLayout flotAggregatedLayout;
+	HorizontalLayout flotIndividualLayout;
+	public FlotChart monRampChart;
+	public FlotChart monAggChart;
+	public FlotChart monIndChart;
+	String rampDataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 	VerticalLayout terminallayout;
 	AceEditor editor;
@@ -69,38 +75,15 @@ public class MonitoringTab extends Panel {
     	//setHeight(100.0f, Unit.PERCENTAGE);
         setSizeFull();
 		setContent(vert);
-        
-//		this.usersChart = usersChart;
 		
         vert.setMargin(true);
-        vert.setSpacing(true);
-		
-//        this.reportsTab = reportsTab; 
-        
-//        // Create the indicator, disabled until progress is started
-//        progressbar = new ProgressBar(new Float(0.0));
-//        progressbar.setEnabled(false);
-//        progressbar.setVisible(false);
-//        progressbar.setWidth("250px");
-//        vert.addComponent(progressbar);
-//        
-//        progressstatus = new Label("not running");
-//        progressstatus.setVisible(false);
-//        vert.addComponent(progressstatus);
-
-        
+        vert.setSpacing(true);  
         vert.addComponent(buildPanels());
-//        vert.addComponent(vert);
-//        vert.setExpandRatio(vert, 1);
-        
-//        vert.addComponent(usersChart());
-        buildUsersChart();
-       
-//        buildMbpetTerminalOutput();
-//        buildMbpetTerminal();
-        
-//        vert.addComponent(new Label("<h2>Here below will be whatever graphs are desired...</h2>", ContentMode.HTML));
 
+//        vert.addComponent(usersChart());
+        buildMonCharts();
+//        buildAggregatedChart();
+//        buildIndividualChart();
     }
     
     
@@ -135,55 +118,25 @@ public class MonitoringTab extends Panel {
         return row;
     }
     
-    public void buildUsersChart() {
-//    	VerticalLayout v = new VerticalLayout();
-    	//TESTING
-		// update Button
-		Button updateButton = new Button("get Data Updates");
-		updateButton.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {		
-				
-				Notification.show("you asked for updates...", Type.HUMANIZED_MESSAGE);
-
-				fetchNewData(20);
-//				for (int i=0; i<25; i++) { 
-//					updatesChart.update();
-//				}
-				usersChart.getCurrentData();
-				
-				// update label
-//				currentData.setValue("Data from chart State:\n" + updatesChart.getData().toJson());	//current.setValue("Graph data is: " + flot.getData());
-			}
-		});
-//		vert.addComponent(updateButton);
-		
-		
-		flotLayout = new HorizontalLayout();
-		flotLayout.setSpacing(false);
-		flotLayout.setWidth("100%");
-//		hl.setSizeUndefined();
-		vert.addComponent(flotLayout);
-//		vert.setComponentAlignment(hl, Alignment.TOP_CENTER);
+    public void buildMonCharts() {
+	/**
+	 * RAMP CHART
+	 */
+		flotRampLayout = new HorizontalLayout();
+		flotRampLayout.setSpacing(false);
+		flotRampLayout.setWidth("100%");
+		vert.addComponent(flotRampLayout);
 		
 		// chart axis label
 		Label yLabel = new Label("Users");
 		yLabel.addStyleName("tiny");
-		yLabel.setWidth(4.0f, Unit.EM);
-		flotLayout.addComponent(yLabel);
-		flotLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+		yLabel.setWidth(4.5f, Unit.EM);
+		flotRampLayout.addComponent(yLabel);
+		flotRampLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
 		
 		// flot chart
-//		firstbuttonAction();
-		buildFlotChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
-//		flotLayout.addComponent(usersChart);
-//		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
-//		flotLayout.setExpandRatio(usersChart, 1);
-//		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
-		
-//		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
-//		rampValue = FlotUtils.formatFlotToRamp(chart.getData().toJson());
-
-		
+		buildRampChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+	
 		// chart axis label
 		Label xLabel = new Label("Time (Seconds)");
 		xLabel.addStyleName("tiny");
@@ -191,13 +144,71 @@ public class MonitoringTab extends Panel {
 		vert.addComponent(xLabel);
 		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
 		
+//		firstbuttonAction();
+//		flotLayout.addComponent(usersChart);
+//		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
+//		flotLayout.setExpandRatio(usersChart, 1);
+//		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+		
+//		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
+//		rampValue = FlotUtils.formatFlotToRamp(chart.getData().toJson());
 //		return v;
+
+	/**
+	 * AGGEGATED RESPONSE CHART
+	 */
+		flotAggregatedLayout = new HorizontalLayout();
+		flotAggregatedLayout.setSpacing(false);
+		flotAggregatedLayout.setWidth("100%");
+		vert.addComponent(flotAggregatedLayout);
+		
+		// chart axis label
+		yLabel = new Label("Aggregated<br>Response Times", ContentMode.HTML);
+		yLabel.addStyleName("tiny");
+		yLabel.setWidth(4.5f, Unit.EM);
+		flotAggregatedLayout.addComponent(yLabel);
+		flotAggregatedLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+		
+		// flot chart
+		buildAggChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+	
+		// chart axis label
+		xLabel = new Label("Time (Seconds)");
+		xLabel.addStyleName("tiny");
+		xLabel.setSizeUndefined();
+		vert.addComponent(xLabel);
+		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+
+	/**
+	 * INDIVIDUAL RESPONSE CHART
+	 */
+		flotIndividualLayout = new HorizontalLayout();
+		flotIndividualLayout.setSpacing(false);
+		flotIndividualLayout.setWidth("100%");
+		vert.addComponent(flotIndividualLayout);
+		
+		// chart axis label
+		yLabel = new Label("Individual<br>Response Times", ContentMode.HTML);
+		yLabel.addStyleName("tiny");
+		yLabel.setWidth(4.5f, Unit.EM);
+		flotIndividualLayout.addComponent(yLabel);
+		flotIndividualLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+		
+		// flot chart
+		buildIndChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+	
+		// chart axis label
+		xLabel = new Label("Time (Seconds)");
+		xLabel.addStyleName("tiny");
+		xLabel.setSizeUndefined();
+		vert.addComponent(xLabel);
+		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
     }
     
-	public void buildFlotChart(String chartdata) {
-		usersChart = new FlotChart();
-		usersChart.setWidth("90%");
-		usersChart.setHeight("250px");
+	public void buildRampChart(String chartdata) {
+		monRampChart = new FlotChart();
+		monRampChart.setWidth("90%");
+		monRampChart.setHeight("250px");
 		
 //		JsonFactory factory = new JreJsonFactory();
 //		JsonString jsString = factory.create(data);
@@ -208,10 +219,11 @@ public class MonitoringTab extends Panel {
 //		String data1 = d + ", \"label\": \"server data\", \"lines\": {\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"false\"";	//lines:{show:true, fill:true}, points:{show:true}, 	//formatDataForGraph("[[0,0], [10,30], [20,50]]");
 //		String data2 = data + ", \"label\": \"ramp function\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"clickable\":\"true\", \"hoverable\":\"true\", \"editable\":\"true\"";
 		
-		String data = chartdata + dataOptions;//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+		String data = chartdata + rampDataOptions;
+		//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 //		"\"clickable\":\"true\", \"editable\":\"true\""
 		
-		usersChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));
+		monRampChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));
 //		chart.setData("[{ \"data\": " + data1 + "}, { \"data\": " + data2 + " }]");	//("[{ data:[[0,0], [10,30], [20,50]], lines:{show:true}, points:{show:true}, hoverable:true, clickable:true }]");	//(formatDataForGraph(data));
 		// options
 		String options =
@@ -231,36 +243,66 @@ public class MonitoringTab extends Panel {
 //						"}" +
 					"}" +
 				"}";
-		usersChart.setOptions(options);
+		monRampChart.setOptions(options);
 		
-		flotLayout.addComponent(usersChart);
-		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
-		flotLayout.setExpandRatio(usersChart, 1);
-		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+		flotRampLayout.addComponent(monRampChart);
+		flotRampLayout.setComponentAlignment(monRampChart, Alignment.MIDDLE_LEFT);
+		flotRampLayout.setExpandRatio(monRampChart, 1);
+		System.out.println("Data from chart State:\n" + monRampChart.getData().toJson());
 	}
-	
-	
-	public void fetchNewData(int rounds) {
-		int y;
-		for (int i=0; i<rounds; i++) {
-			if (prevY <= 150) {
-				y = prevY + 10; 
-			} else {
-				y = prevY - 75; 
-			}
-			if (x<1)
-				usersChart.update(0, 0);			// update the js code to effect the chart 
+	public void buildAggChart(String chartdata) {
+		monAggChart = new FlotChart();
+		monAggChart.setWidth("90%");
+		monAggChart.setHeight("250px");
+		String data = chartdata + aggDataOptions;
+		monAggChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));		
+		// options
+		String options =
+				"{" + 
+					"\"legend\": { \"position\": \"nw\" }, " +
+					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"grid\": { " +
+						"\"clickable\": \"false\"," +
+						"\"hoverable\": \"true\"," +
+						"\"editable\":\"false\"," +
 
-			x += 1; 	
-
-			usersChart.addNewData(x, y);	// update the server side data
-			usersChart.update(x, y);			// update the js code to effect the chart 
-//			System.out.println(updatesChart.getData().toJson());
-	//		data.push([x, y]);
-			prevY = y;
-//			prevX = x;
-		}
+					"}" +
+				"}";
+		monAggChart.setOptions(options);
+		
+		flotAggregatedLayout.addComponent(monAggChart);
+		flotAggregatedLayout.setComponentAlignment(monAggChart, Alignment.MIDDLE_LEFT);
+		flotAggregatedLayout.setExpandRatio(monAggChart, 1);
+		System.out.println("Data from chart State:\n" + monAggChart.getData().toJson());
 	}
+	public void buildIndChart(String chartdata) {
+		monIndChart = new FlotChart();
+		monIndChart.setWidth("90%");
+		monIndChart.setHeight("250px");
+		String data = chartdata + indDataOptions;
+		monIndChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));		
+		// options
+		String options =
+				"{" + 
+					"\"legend\": { \"position\": \"nw\" }, " +
+					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"grid\": { " +
+						"\"clickable\": \"false\"," +
+						"\"hoverable\": \"true\"," +
+						"\"editable\":\"false\"," +
+
+					"}" +
+				"}";
+		monIndChart.setOptions(options);
+		
+		flotIndividualLayout.addComponent(monIndChart);
+		flotIndividualLayout.setComponentAlignment(monIndChart, Alignment.MIDDLE_LEFT);
+		flotIndividualLayout.setExpandRatio(monIndChart, 1);
+		System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
+	}
+
     
 	public void buildMbpetTerminalOutput(){
         panel = new Panel("Terminal style");
@@ -592,23 +634,6 @@ public class MonitoringTab extends Panel {
 //    	this.slave.setValue(fields[7]);
     }
     
-    int y, x, prevY = 0;
-	public void updateChart(int users) {
-		if (x<1){	//draw point (0,0) on graph
-			usersChart.update(0,0);			// update the js code to effect the chart 
-		}
-		x += 1; 	
-		y = users;
-		System.out.println("sent int:" + users);
-		System.out.println("New point:" + x + "," + users);
-
-		//TODO this first command is causing memory overload!
-		usersChart.addNewData(x, y);	// update the server side data
-		usersChart.update(x, y);			// update the js code to effect the chart 
-		System.out.println(usersChart.getData().toJson());
-//			data.push([x, y]);
-//			prevY = y;
-	}
 	
     public void addNewMessageComponent(String string) {
     	vert.addComponent(new Label(string));
@@ -617,25 +642,68 @@ public class MonitoringTab extends Panel {
 
     StringBuilder sb = new StringBuilder();
 	public void insertDataToEditor(String message) {
-//		vert.addComponent(new Label(message));
-		
         Label label = new Label("mbpet>" + message);
         label.addStyleName("tiny");
         label.addStyleName("terminal-font");
         terminallayout.addComponent(label);
 
-		
+//		vert.addComponent(new Label(message));
 //		sb.append("\n");
 //		sb.append(message);
 //		editor.setValue(sb.toString());
 	}
 
-	public void refreshChart(){		//FlotChart newChart
-		flotLayout.removeComponent(usersChart);
-		y = 0;
-		x = 0 ;
-		prevY = 0;
-		buildFlotChart("[[0,0]]");
+	
+    int yRamp, x, prevYRamp = 0;
+    int yAgg, prevYAgg = 0;
+    int yInd, prevYInd = 0;
+	public void updateCharts(int users) {	//,int aggResp, int indResp
+		if (x<1){	//draw point (0,0) on graph
+			monRampChart.update(0,0);			// update the js code to effect the chart 
+			monAggChart.update(0,0);
+			monIndChart.update(0,0);
+		}
+		x += 1; 	//increase time count by 1 second
+		
+		yRamp = users;
+		System.out.println("sent int:" + users);
+		System.out.println("New point:" + x + "," + users);
+
+		// update RAMP
+		monRampChart.addNewData(x, yRamp);		// update the server side data	- this first command WAS causing memory overload!
+		monRampChart.update(x, yRamp);			// update the js code to effect the chart 
+		System.out.println(monRampChart.getData().toJson());
+		
+		// update AGG
+		yAgg = users;
+		monAggChart.addNewData(x, yAgg);		// update the server side data	- this first command WAS causing memory overload!
+		monAggChart.update(x, yAgg);			// update the js code to effect the chart 
+		
+		// update IND
+		yInd = users;
+		monIndChart.addNewData(x, yInd);		// update the server side data	- this first command WAS causing memory overload!
+		monIndChart.update(x, yInd);			// update the js code to effect the chart 
+//			data.push([x, y]);
+//			prevY = y;
+	}
+	
+	
+	public void refreshCharts(){		//FlotChart newChart
+		
+		// RAMP chart
+		flotRampLayout.removeComponent(monRampChart);
+		yRamp=0; x=0; prevYRamp=0;
+		buildRampChart("[[0,0]]");
+		
+		// AGG chart
+		flotAggregatedLayout.removeComponent(monAggChart);
+		yAgg=0; x=0; prevYAgg=0;
+		buildAggChart("[[0,0]]");
+		
+		// IND chart
+		flotIndividualLayout.removeComponent(monIndChart);
+		yInd=0; x=0; prevYInd=0;
+		buildIndChart("[[0,0]]");
 		
 //		usersChart = new FlotChart();
 //		initChartData("[[0,0]]");
@@ -645,39 +713,67 @@ public class MonitoringTab extends Panel {
 ////				usersChart.update(x, y);		// update the js code to effect the chart 
 //		System.out.println(usersChart.getData().toJson());
 	}
-	public void resetChart() {
-		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]"); // update server side	
-//
-		y = 0;
-		x = 0 ;
-		prevY = 0;
-		
-		usersChart.reset("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");	// update the js code to effect the chart 
-//		usersChart.addNewData(x, y);	// update the server side data
-//		usersChart.update(x, y);		// update the js code to effect the chart 
-		System.out.println(usersChart.getData().toJson());
-		
-//		System.err.println("usersChart.getData()>" + usersChart.getData().toJson());
-//		if (!usersChart.getData().toJson().equals("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]")) {
-//			System.err.println("RESETTING FLOTCHART");
-//			FlotChart newchart = new FlotChart();
-//			flotLayout.replaceComponent(usersChart, newchart);			
-//			newchart = usersChart;
-//		}
-		
-//        currentReportsComponent = newReportsComponent;
-//        
-//		// flot chart
-////		firstbuttonAction();
-//		buildFlotChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
-//		flotLayout.addComponent(usersChart);
-//		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
-//		flotLayout.setExpandRatio(usersChart, 1);
-//		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
-		
-//		buildFlotChart("[[0,0]]");
-//		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");		
-	}
 	
+	
+	
+	
+	
+//	public void resetChart() {
+//		monRampChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]"); // update server side	
+////
+//		yRamp = 0;
+//		x = 0 ;
+//		prevYRamp = 0;
+//		
+//		monRampChart.reset("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");	// update the js code to effect the chart 
+////		usersChart.addNewData(x, y);	// update the server side data
+////		usersChart.update(x, y);		// update the js code to effect the chart 
+//		System.out.println(monRampChart.getData().toJson());
+//		
+////		System.err.println("usersChart.getData()>" + usersChart.getData().toJson());
+////		if (!usersChart.getData().toJson().equals("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]")) {
+////			System.err.println("RESETTING FLOTCHART");
+////			FlotChart newchart = new FlotChart();
+////			flotLayout.replaceComponent(usersChart, newchart);			
+////			newchart = usersChart;
+////		}
+//		
+////        currentReportsComponent = newReportsComponent;
+////        
+////		// flot chart
+//////		firstbuttonAction();
+////		buildFlotChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+////		flotLayout.addComponent(usersChart);
+////		flotLayout.setComponentAlignment(usersChart, Alignment.MIDDLE_LEFT);
+////		flotLayout.setExpandRatio(usersChart, 1);
+////		System.out.println("Data from chart State:\n" + usersChart.getData().toJson());
+//		
+////		buildFlotChart("[[0,0]]");
+////		usersChart.setData("[{ \"data\": " + "[[0,0]]" + dataOptions + " }]");		
+//	}
+	
+	
+	
+//	public void fetchNewData(int rounds) {
+//	int y;
+//	for (int i=0; i<rounds; i++) {
+//		if (prevY <= 150) {
+//			y = prevY + 10; 
+//		} else {
+//			y = prevY - 75; 
+//		}
+//		if (x<1)
+//			monRampChart.update(0, 0);			// update the js code to effect the chart 
+//
+//		x += 1; 	
+//
+//		monRampChart.addNewData(x, y);	// update the server side data
+//		monRampChart.update(x, y);			// update the js code to effect the chart 
+////		System.out.println(updatesChart.getData().toJson());
+////		data.push([x, y]);
+//		prevY = y;
+////		prevX = x;
+//	}
+//}
 	
 }

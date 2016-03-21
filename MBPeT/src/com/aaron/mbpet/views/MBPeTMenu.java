@@ -180,6 +180,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	private VerticalLayout menuButtons() {
 		final VerticalLayout buttons = new VerticalLayout();
 		buttons.setSpacing(false);
+		buttons.setMargin(false);
 		
 		// landing page button
 		@SuppressWarnings("serial")
@@ -198,7 +199,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		landingButton.setIcon(FontAwesome.HOME);
 //		landingButton.addStyleName("borderless");
 		buttons.addComponent(landingButton);
-		buttons.setComponentAlignment(landingButton, Alignment.MIDDLE_LEFT);
+//		buttons.setComponentAlignment(landingButton, Alignment.MIDDLE_LEFT);
 		
 		
 		// create SUT button
@@ -208,7 +209,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 //		createTestCase.addStyleName("tiny");
 		createTestCase.setIcon(FontAwesome.PLUS);
 		buttons.addComponent(createTestCase);
-		buttons.setComponentAlignment(createTestCase, Alignment.MIDDLE_LEFT);
+//		buttons.setComponentAlignment(createTestCase, Alignment.MIDDLE_LEFT);
 		
         // button listener
 		createTestCase.addClickListener(new ClickListener() {
@@ -234,6 +235,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 
 		
 		Label divider = new Label("<hr>", ContentMode.HTML);
+		divider.setHeight("5px");
 //		divider.addStyleName("menu-divider");
 		vc.addComponent(divider);
 		
