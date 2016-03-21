@@ -14,7 +14,10 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -871,6 +874,66 @@ public class DBuilderUtils implements Serializable {
 // 	        binder.clear();
  			
  			return editedmodel;
+	
+	}
+	
+	public Model commitNewModelToDB(Model model, String title, String dotSchema, TestSession parentsession) {
+		
+		this.currmodel = model;	//models.getItem(model.getId()).getEntity();
+        this.modelBeanItem = new BeanItem<Model>(currmodel);
+		
+        this.parentsession = parentsession;	//model.getParentsession();
+		this.parentcase = parentsession.getParentcase();	//model.getParentsut();
+		this.sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();
+		
+		// set edited fields
+        currmodel.setTitle(title);
+        currmodel.setDotschema(dotSchema);   
+        currmodel.setParentsession(this.parentsession);
+        currmodel.setParentsut(parentcase);
+        
+// 		Model editedmodel = null;
+    	Model queriedModel = null;
+
+ 			// 1. UPDATE container
+			models.addEntity(modelBeanItem.getBean());
+			
+			// 2. get id from db
+			EntityManager em = Persistence.createEntityManagerFactory("mbpet").createEntityManager();
+			Query query = em.createQuery(
+					"SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
+//        	queriedModel = (Model) query.setParameter("title", currmodel.getTitle()).getSingleResult();
+			query.setParameter("title", currmodel.getTitle());
+			query.setParameter("parentsession",currmodel.getParentsession());
+			queriedModel = (Model) query.getSingleResult();
+			System.out.println("the generated id is: "+ queriedModel.getId());
+			
+			
+			// 3. UPDATE parent Case and Session reference
+			this.parentsession.updateModelData(queriedModel);	//(models.getItem(currmodel.getId()).getEntity());
+			parentcase.updateModelData(queriedModel); //(models.getItem(currmodel.getId()).getEntity());
+// 				System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+
+        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+        	for (Model m : parentsession.getModels()) {
+            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+        	}
+        	
+			// 4. write model file to disk
+        	FileSystemUtils fileUtils = new FileSystemUtils();
+			fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+					parentcase.getOwner().getUsername(),
+					parentcase.getTitle(), 
+					this.parentsession.getTitle(),
+					this.parentsession.getParameters().getModels_folder(),
+					queriedModel);
+
+//			editedmodel = models.getItem(currmodel.getId()).getEntity();
+//	        System.out.println("Entity is now: " + editedmodel.getTitle());
+
+         	confirmNotification("Model '" + queriedModel.getTitle() + "'", "saved");
+ 			
+ 			return models.getItem(queriedModel.getId()).getEntity();
 	
 	}
 	

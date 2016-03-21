@@ -43,7 +43,7 @@ public class LandingPage extends VerticalLayout {	//implements View
 		HorizontalLayout hc = new HorizontalLayout();
 		hc.setWidth("100%");
 
-		Button createTestCase = new Button("create new Test Case");
+		Button createTestCase = new Button("create new SUT");
 		hc.addComponent(createTestCase);
 		
         // button listener

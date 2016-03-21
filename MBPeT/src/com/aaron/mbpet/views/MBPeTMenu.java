@@ -129,7 +129,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		VerticalLayout l = new VerticalLayout();
 		l.addStyleName("menu-title");
 		
-		Label title = new Label("MBPeT Design <b>Demo</b>", ContentMode.HTML);
+		Label title = new Label("MBPeT <b>Dashboard</b>", ContentMode.HTML);
 		title.addStyleName("h3");
 		title.addStyleName("menu-title");
 
@@ -201,8 +201,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		buttons.setComponentAlignment(landingButton, Alignment.MIDDLE_LEFT);
 		
 		
-		// create test case button
-		Button createTestCase = new Button("Create new test case");
+		// create SUT button
+		Button createTestCase = new Button("Create new SUT");
 		createTestCase.addStyleName("menu-button-left-align");
 		createTestCase.addStyleName("borderless-colored");
 //		createTestCase.addStyleName("tiny");
@@ -214,7 +214,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		createTestCase.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-		        // open window to create test case
+		        // open window to create SUT
 		        UI.getCurrent().addWindow(new TestCaseEditor(menutree));	//testcases        
 //		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree, testcases));
 			}
@@ -268,7 +268,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	        System.out.println(sessionuser.getId() + " -> " + sessionuser.getFirstname());
 	        if (sessionuser.getTestCases().size() > 0) {
 	        	
-	        	// load all test cases owned by user
+	        	// load all SUTs owned by user
 	        	for (TestCase testcase : sessionuser.getTestCases()) {
 	        		menutree.addItem(testcase.getId());
 	        		menutree.setItemCaption(testcase.getId(), testcase.getTitle());

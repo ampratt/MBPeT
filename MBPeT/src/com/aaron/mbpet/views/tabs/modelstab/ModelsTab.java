@@ -97,7 +97,7 @@ public class ModelsTab extends VerticalLayout {
 		editorLayout = new ModelAceEditorLayout(editor, "dot", modelsTabs, modelsTable, currsession);
 		diagramBuilder = new DiagramBuilder();
 		
-		diagramtab = new ModelDBuilderTab(editor, modelsTabs, editorLayout, modelsTable, diagramBuilder);
+		diagramtab = new ModelDBuilderTab(editor, modelsTabs, editorLayout, modelsTable, diagramBuilder, currsession);
 		acetab = new ModelTableAceTab(editor, modelsTabs, editorLayout, modelsTable, diagramtab, currsession);
 		editorLayout.setDBuilderTab(diagramtab);
 		

@@ -185,13 +185,10 @@ public class ModelTableAceTab extends Panel implements Button.ClickListener{
 		modelsTable.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
 		modelsTable.addStyleName(ValoTheme.TABLE_SMALL);
 //		modelsTable.addStyleName("background-white");
-		
 		modelsTable.setSelectable(true);
         modelsTable.setImmediate(true);
-        
         modelsTable.setVisibleColumns("title");
         modelsTable.setColumnHeaders(new String[] {"Model"});
-        
         modelsTable.addValueChangeListener(new ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {

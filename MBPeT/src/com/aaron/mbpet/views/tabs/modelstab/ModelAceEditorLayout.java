@@ -89,7 +89,7 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
         h.setWidth("100%");
         h.setSpacing(true);    
 
-        titleField = new TextField("Title:");
+        titleField = new TextField("");
         titleField.setWidth(11, Unit.EM);
         titleField.addStyleName("tiny");
         titleField.setImmediate(true);
@@ -378,16 +378,6 @@ public class ModelAceEditorLayout extends VerticalLayout implements Button.Click
 			toggleEditorFields(false);
 			setFieldsDataSource(null);
 		}
-
-	
-	
-	
-//		Notification not = new Notification("Click 'Save' to store cloned model!", Type.WARNING_MESSAGE);
-//		not.setPosition(Position.MIDDLE_RIGHT);
-//		not.setStyleName("success");
-//		not.show(Page.getCurrent());
-//		saveButton.setEnabled(true);
-//		saveButton.focus();
 	}
 
 	public void setDBuilderTab(ModelDBuilderTab diagramtab) {
