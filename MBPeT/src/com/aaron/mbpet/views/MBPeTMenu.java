@@ -38,6 +38,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractComponent;
@@ -403,6 +404,9 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	Object parent = target;
         	// if wasn't a parent item select, move up to the parent
         	if (menutree.isRoot(target)) {
+        		Notification not = new Notification("Only Test Sessions are cloneable.", Notification.Type.WARNING_MESSAGE);
+        		not.setPosition(Position.MIDDLE_LEFT);
+        		not.show(UI.getCurrent().getPage());
 //        		parent = menutree.getParent(target);
         	} else {      		
         		TestSession session = sessions.getItem(target).getEntity();	//.getBean();

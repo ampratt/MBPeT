@@ -112,9 +112,9 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
      */
     private String buildCaption() {
     	if (editmode) {
-    		return String.format("Edit Test Case: %s", 
+    		return String.format("Edit SUT: %s", 
     				testcase.getTitle());
-    	} else return "Create a new Test Case";
+    	} else return "Create a new target SUT";
 //    	if (!(personItem.getItemProperty("firstname").getValue() == null) ) {
 //    		return String.format("%s %s", personItem.getItemProperty("firstname")
 //    				.getValue(), personItem.getItemProperty("lastname").getValue());

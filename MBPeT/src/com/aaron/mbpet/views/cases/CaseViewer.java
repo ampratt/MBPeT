@@ -111,7 +111,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 //        contentPanels.setMargin(new MarginInfo(false, true, true, true));
         contentPanels.addStyleName("dashboard-panels");
         
-        Label label = new Label("Test Case Editing View");
+        Label label = new Label("SUT Home View");
         label.addStyleName(ValoTheme.LABEL_H2);
 	    label.addStyleName(ValoTheme.LABEL_COLORED);
 	    contentPanels.addComponent(label);

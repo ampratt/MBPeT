@@ -97,7 +97,7 @@ public class ReportWindow extends Window {
 //        WebBrowser browser = (WebBrowser)  Page.getCurrent().getWebBrowser();// getWindow().getTerminal();
 //        content.addComponent(new Label(browser.getBrowserApplication()));
         
-        file = getPdfReport(file);
+//        file = getPdfReport(file);
         if (file.getName().endsWith(".pdf")){		//(file.getName().endsWith("pdf")){
             setCaption(file.getName());
         	BrowserFrame browserframe = new BrowserFrame("", 
