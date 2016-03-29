@@ -6,6 +6,7 @@ import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.adapterstabs.AdaptersTab;
 import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
 import com.aaron.mbpet.views.tabs.parameterstab.ParametersTab;
+import com.aaron.mbpet.views.tabs.reportstab.ReportsTab;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
@@ -22,7 +23,6 @@ public class TabLayout extends TabSheet {
 //	ConfigurationTab configTab = new ConfigurationTab();
 	TabSheet confTabs;
 	public MonitoringTab monitoringTab;	// = new MonitoringTab();
-	ReportsTab reportsTab;	// = new ReportsTab();	//final
 	ModelsTab modelTab;// = new ModelsTab();
 	ParametersTab parametersTab;
 	AdaptersTab adapterTab;
@@ -30,7 +30,7 @@ public class TabLayout extends TabSheet {
 //	SettingsTab settings;// = new SettingsTab();
 	
 //	FlotChart usersChart;
-    private ReportsTab currentReportsComponent; 	//Field to store current component
+    private ReportsTab reportsTab; 	//Field to store current component
 	TestSession currsession;
 	
     public TabLayout() {
@@ -60,13 +60,13 @@ public class TabLayout extends TabSheet {
 //        addTab(reportsTab, "Reports");
 
         //during initialization
-        currentReportsComponent = new ReportsTab(currsession);
-        addTab(currentReportsComponent, "Reports");
+        reportsTab = new ReportsTab(currsession);
+        addTab(reportsTab, "Reports");
 
         addListener(new TabSheet.SelectedTabChangeListener() {
             @Override
             public void selectedTabChange(SelectedTabChangeEvent event) {
-                if (event.getTabSheet().getSelectedTab() == currentReportsComponent) {
+                if (event.getTabSheet().getSelectedTab() == reportsTab) {
                 	refreshReports();
                 }
             }
@@ -104,7 +104,10 @@ public class TabLayout extends TabSheet {
 	}
     
 	public void refreshReports(){
-		currentReportsComponent.refreshReportsInLayout();
+		// create any needed pdfs and copy any needed dir to webapp_reports dir
+		reportsTab.copyReportsDirs();		
+		
+//		reportsTab.refreshReportsInLayout();
 //    	ReportsTab newReportsComponent = new ReportsTab(currsession);
 //        replaceComponent(currentReportsComponent, newReportsComponent);
 //        currentReportsComponent = newReportsComponent;

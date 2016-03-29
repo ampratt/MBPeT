@@ -581,6 +581,14 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 						currSession.getTitle(), 
 						currentparams.getSettings_file());
 				
+				// create webapp_reports folder in reports_folder on disk
+//				fileUtils.createWebAppReportsFolder(
+//						currSession.getParentcase().getOwner().getUsername(),
+//						currSession.getParentcase().getTitle(), 
+//						currSession.getTitle(),
+//						currentparams.getTest_report_folder()
+//						);
+				
 				// write confirmation message
 		        Notification notification = new Notification("Parameters",Type.TRAY_NOTIFICATION);
 		        notification.setDescription("were edited");

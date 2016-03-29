@@ -177,7 +177,7 @@ public class ReportWindow extends Window {
 			System.out.println("no pdf. trying to create one...");
 			//if no file exists, then create the pdf
 			FileSystemUtils fileUtils = new FileSystemUtils();
-			pdf = fileUtils.generatePdfReport(reportsFolder, html);
+			pdf = fileUtils.generatePdfReport(reportsFolder, html); //TODO this method has changed slightly so that the reportsFolder should already be the final destination 
 		}
 		return pdf;
 	}

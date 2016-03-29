@@ -11,6 +11,7 @@ import org.vaadin.aceeditor.AceTheme;
 
 import com.aaron.mbpet.components.flot.FlotChart;
 import com.aaron.mbpet.services.AceUtils;
+import com.aaron.mbpet.views.tabs.reportstab.ReportsTab;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.data.Property;

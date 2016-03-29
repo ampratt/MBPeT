@@ -1,4 +1,4 @@
-package com.aaron.mbpet.views.tabs;
+package com.aaron.mbpet.views.tabs.reportstab;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,6 +17,12 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.ui.ReportWindow;
+import com.aaron.mbpet.views.LandingPage;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.FilesystemContainer;
+import com.vaadin.data.util.TextFileProperty;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.BrowserWindowOpener;
@@ -32,13 +38,16 @@ import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.ValoTheme;
 
 public class ReportsTab extends Panel {
 	
@@ -47,7 +56,16 @@ public class ReportsTab extends Panel {
 	CssLayout catalog;
 	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";	"C:/dev/mbpet/users/";
 	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();
-	String reportsFolder;
+	String reportsFolder, webapp_reports;
+	
+	// doclist viewer
+	FilesystemContainer docs;	// = new FilesystemContainer(new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports"));
+//	Table doclist = new Table();	
+//	TreeTableContainer doclist = new TreeTableContainer(docView);
+	TreeTable doclist = new TreeTable();
+	Panel docViewPanel;
+	Label docView = new Label("", ContentMode.HTML);
+	
 	
     public ReportsTab(TestSession currsession) {
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -67,18 +85,117 @@ public class ReportsTab extends Panel {
 						"/" + currsession.getParentcase().getTitle() + 
 						"/" + currsession.getTitle() +
 						"/" + currsession.getParameters().getTest_report_folder();	// "/"
-        
-		vert.addComponent(buildReportsCatalog());
+		webapp_reports = reportsFolder + "/webapp_reports";
+		// treetable viewer
+		vert.addComponent(buildDocListViewer());
+		
+		// old reports catalogue style
+//		vert.addComponent(buildReportsCatalog());
 
 		//		initReports();
 	}
     
+    	
+    public Component buildDocListViewer(){
+    	docs = new FilesystemContainer(new File(webapp_reports));// + "/webapp"));	//(new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports"));
+
+//		doclist.setContainerDataSource(docs);
+    	
+    	// docViewer panel 
+    	docViewPanel = new Panel();
+//    	docViewPanel.setHeight("100%");
+//    	docViewPanel.setWidth("100%");
+    	docViewPanel.setSizeFull();
+    	docViewPanel.addStyleName(ValoTheme.PANEL_BORDERLESS);
+//		addComponent(contentLayout);
+		
+		HorizontalSplitPanel split = new HorizontalSplitPanel();
+//		setContent(split);
+		split.addComponent(doclist);
+		split.addComponent(docViewPanel);	//(docView);
+		split.setSplitPosition(350.0f, Unit.PIXELS);
+		
+//    	FilesystemContainer container = new FilesystemContainer(new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports"));
+//      FilesystemContainer container = new FilesystemContainer(folder);
+
+      // Create a TreeTable bound to the container
+	//"test reports"
+    	doclist.setSizeFull();
+    	doclist.setImmediate(true);
+    	doclist.setSelectable(true);
+    	doclist.addStyleName(ValoTheme.TABLE_SMALL);
+    	doclist.setContainerDataSource(docs);
+      
+      // Set the row header icon by the file type
+    	doclist.setItemIconPropertyId(FilesystemContainer.PROPERTY_ICON);	//("Icon");	//
+
+      // Do not show the Icon column
+    	doclist.setVisibleColumns("Name");	//new Object[]{"Name", "Last Modified"});	//"Size",
+      // END-EXAMPLE: datamodel.container.filesystemcontainer.basic
+    	doclist.setColumnExpandRatio("Name", 1);
+//      layout.addComponent(treetable);
+      
+    	doclist.addValueChangeListener(new ValueChangeListener() {
+			public void valueChange(ValueChangeEvent event) {
+				File file = null;
+				Image image = null;
+				if (event.getProperty().getValue().toString().endsWith(".png")){
+					image = new Image("",  new FileResource(
+							new File(event.getProperty().getValue().toString() )));
+				} else {
+					file = new File(event.getProperty().getValue().toString());					
+				}
+				
+				if (!(file==null)){
+					if (file.getName().endsWith(".html") || file.getName().endsWith(".txt") 
+							|| file.getName().endsWith(".log")) {
+						docViewPanel.setContent(docView);
+			        	docView.setPropertyDataSource(new TextFileProperty(file));
+					} else if (file.getName().endsWith(".pdf")) {
+						BrowserFrame browserframe = new BrowserFrame();		//"", new FileResource(file));
+						browserframe.setSource(new FileResource(file));
+						browserframe.setWidth("100%");
+						browserframe.setHeight("835px");
+						VerticalLayout vl = new VerticalLayout();
+						vl.setHeight("840px"); vl.setMargin(false);
+						docViewPanel.setContent(vl);
+						vl.addComponent(browserframe);
+			        	vl.setExpandRatio(browserframe, 1);
+					}
+				}
+				if (!(image==null)) {
+					docViewPanel.setContent(image);
+				} 
+			}
+		});
+      
+      
+//		doclist.addValueChangeListener(new ValueChangeListener() {
+//			public void valueChange(ValueChangeEvent event) {
+//				docView.setPropertyDataSource(new TextFileProperty((File) event.getProperty().getValue()));
+//
+//			}
+//		});
+//		doclist.setSizeFull();
+//		doclist.setImmediate(true);
+//		doclist.setSelectable(true);
+    	
+    	return split;
+	}
+    
+	public void copyReportsDirs() {
+		FileSystemUtils fileUtils = new FileSystemUtils();
+		fileUtils.copyReportsToWebAppReportsFolder(reportsFolder);
+		
+	}
+	
+	
     public void refreshReportsInLayout(){
-    	vert.removeComponent(vert.getComponent(0));
-		vert.addComponent(buildReportsCatalog());    	
+//    	vert.removeComponent(vert.getComponent(0));
+//		vert.addComponent(buildReportsCatalog());    	
     }
     
-    	
+    
 	
 	
     private Component buildReportsCatalog() {
@@ -234,6 +351,8 @@ public class ReportsTab extends Panel {
 			}
 		}
 	}
+
+
 	
 //	public File getPdfReport(File html) {	//throws FileNotFoundException {
 //		File pdf = new File(reportsFolder + "/pdf/" + 

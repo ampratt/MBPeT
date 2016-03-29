@@ -1,7 +1,10 @@
 package com.aaron.mbpet.services;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -91,24 +94,46 @@ public class FileSystemUtils {
 			System.out.println("Reports Directory: " + file.getAbsolutePath());
 			
 			//create pdf dir
-			createPDFReportsDir(file.getAbsolutePath());
+			createWebAppReportsFolder(file.getAbsolutePath());
 		}
 	}
-	public void createPDFReportsDir(String reports_dir_path) {
-		if (!(new File(reports_dir_path + "/pdf").exists()) ) {
-			System.out.println("NO PDF DIR EXISTS...creating one");
+//	public void createPDFReportsDir(String reports_dir_path) {
+//		if (!(new File(reports_dir_path + "/pdf").exists()) ) {
+//			System.out.println("NO PDF DIR EXISTS...creating one");
+//			File file;
+//			boolean success = (
+//					file = new File(reports_dir_path + "/pdf")).mkdir();
+//			if (success) {
+//				grantPermissions(file);
+//				System.out.println("PDF Reports Directory: " + file.getAbsolutePath());
+//			}			
+//		}else System.out.println("PDF DIR ALREADY EXISTS");
+//
+//	}
+	public void createWebAppReportsFolder(String reports_dir_path) {
+		if (!(new File(reports_dir_path + "/webapp_reports").exists()) ) {
+			System.out.println("NO 'webapp_reports' DIR EXISTS...creating one");
 			File file;
 			boolean success = (
-					file = new File(reports_dir_path + "/pdf")).mkdir();
+					file = new File(reports_dir_path + "/webapp_reports")).mkdir();
 			if (success) {
 				grantPermissions(file);
-				System.out.println("PDF Reports Directory: " + file.getAbsolutePath());
+				System.out.println("webapp_reports Reports Directory: " + file.getAbsolutePath());
 			}			
-		}else System.out.println("PDF DIR ALREADY EXISTS");
-
+		}else System.out.println("webapp_reports DIR ALREADY EXISTS");
+		
 	}
-	
-	public File generatePdfReport(String reportsFolder, File html) {
+	public File createIndividualReportDir(String destinationFolder, String reportName) {
+		File file;
+		boolean success = (
+				file = new File(destinationFolder + "/" + reportName)).mkdir();
+		if (success) {
+			grantPermissions(file);
+			System.out.println("Directory: " + file.getAbsolutePath());
+		}
+		return file;
+	}
+	public File generatePdfReport(String destinationFolder, File html) {
 		File pdf = null;
 
 		try {
@@ -116,7 +141,7 @@ public class FileSystemUtils {
 			
 			String command = "wkhtmltopdf " + 
 					html.getAbsolutePath() + " " + 
-					reportsFolder + "/pdf/" + FilenameUtils.removeExtension(html.getName()) + ".pdf";
+					destinationFolder + FilenameUtils.removeExtension(html.getName()) + ".pdf";
 			//create pdf
 //			Runtime.getRuntime().exec(new String[] { //"cmd.exe", "/c", "echo windows doesn't make pdfs"});
 //							"/bin/bash", "-c", command });
@@ -143,13 +168,10 @@ public class FileSystemUtils {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}System.out.println("ExitValue: " + exitVal);  
-			
-			
-			
-			
+				
 			
 			//get pdf
-			pdf = new File(reportsFolder + "/pdf/" + 
+			pdf = new File(destinationFolder + 
 					FilenameUtils.removeExtension(html.getName()) + ".pdf" );
 			if (pdf.exists()) {
 				grantPermissions(pdf);
@@ -372,6 +394,104 @@ public class FileSystemUtils {
 			e.printStackTrace();
 		}
 	}
+
+
+	public void copyReportsToWebAppReportsFolder(String reportsFolder) {
+		File webapp_reports_folder = new File(reportsFolder + "/webapp_reports");
+		if (!webapp_reports_folder.isDirectory()) {
+			System.out.println("Somehow the webapp_reports dir didn't exist. Creating it now.");
+			createWebAppReportsFolder(reportsFolder);
+		}
+		
+		// all directories exist in original and webapp folders. if not, copy to webapp any missing reports
+		File[] webapp_directories = new File(webapp_reports_folder.getAbsolutePath()).listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
+		File[] original_directories = new File(reportsFolder).listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isDirectory() && (!file.getName().equals("webapp_reports"));
+            }
+        });
+		if (!(original_directories==null) && original_directories.length>0) {
+			Arrays.sort(original_directories);
+			Arrays.sort(webapp_directories);
+//	        for (int i=original_directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
+//	            System.out.println("finding html report - round:" + (i+1));
+//	            File dir = new File(original_directories[i].getAbsolutePath());
+//	            
+//	        }
+			// check if any report folders don't exist yet in webapp folder
+	        for (File dir : original_directories){
+	        	if (Arrays.asList(webapp_directories).contains(dir.getName())) {
+		            System.out.println(dir.getName() + "exists in webapp folder");
+	        	} else {
+	        		// 1. create new folder of the same name
+		            System.out.println("webapp_reports missing report directory:" + dir.getName());
+		            File newReportDir = createIndividualReportDir(webapp_reports_folder.getAbsolutePath(), dir.getName());
+
+		            // 2. generate pdf into new folder
+		            File[] singlereport = dir.listFiles(new FilenameFilter() {
+		           		public boolean accept(File dir, String name){
+		           			return name.endsWith(".html");
+		           	  	}
+		           	});
+		            File html = null;
+		           	try {
+		           		System.out.println("html report:" + singlereport[0]);
+		           		html = singlereport[0];           		
+		           	} catch (IndexOutOfBoundsException e) {
+		           		System.err.println(e + 
+		           				"\nThere was no html report in directory: " + dir.getAbsolutePath());
+		           	}
+		           	// create the actual pdf
+		            generatePdfReport(newReportDir.getAbsolutePath(), html);
+		            
+		            
+		            // 3. copy all report files to new dir
+		            copyIndividualReportFilesToWebAppFolder(dir.getAbsolutePath(), newReportDir.getAbsolutePath());
+	        	}
+
+	        }
+		}
+		
+	}
+
+	public void copyIndividualReportFilesToWebAppFolder(String sourceFolder, String destinationFolder){
+		//cp -R session_name_folder/* webapp_reports/session_name/
+		
+		try {
+			System.out.println("ATTEMPTING TO copy reports to webapp_reports");
+			
+			String command = "cp -R " + sourceFolder + "/* " + destinationFolder;
+	        ProcessBuilder pb = new ProcessBuilder(
+	        		"/bin/bash", "-c", command); //Unix commands
+//	        pb.directory(new File(usersBasepath + username + "/master"));		//("C:\\dev\\mbpet"));
+	        pb.redirectErrorStream(true);
+			final Process p = pb.start();				
+             
+			// any error our output
+            StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+            StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+            
+            // kick them off
+            outputGobbler.startPdfGobbler();
+            errorGobbler.startPdfGobbler();                        
+
+            // any error???
+            int exitVal = 0;
+			try {
+				exitVal = p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}System.out.println("ExitValue: " + exitVal);  
+		} catch (IOException e) {			
+			e.printStackTrace();
+//			System.out.println(e + "\nno pdf. trying to create one...");
+		}
+	}
+
 
 
 
