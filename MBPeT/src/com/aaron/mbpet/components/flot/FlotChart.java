@@ -41,9 +41,12 @@ import com.vaadin.ui.Notification.Type;
 public class FlotChart extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 2824489559972070152L;
+	
 	private JsonArray data;
 	private JsonArray seriesOptions;
 	private JsonObject options;
+	public int y, x, prevY = 0;
+
 	JsonFactory factory = new JreJsonFactory();
 	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
@@ -345,5 +348,22 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //        getState().series.add(pointList);
 //    }
 	
-
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public int getPrevY() {
+		return prevY;
+	}
+	public void setPrevY(int prevY) {
+		this.prevY = prevY;
+	}
 }

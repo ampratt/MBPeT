@@ -19,7 +19,7 @@ import com.vaadin.ui.UIDetachedException;
 public class SlaveUtils implements Runnable {
 
 	String command;
-	public int masterport;
+//	public int masterport;
 //	String usersBasepath = ((MbpetUI) UI.getCurrent()).getUsersBasepath();	//"C:\\dev\\mbpet\\users\\";
 	String mbpetBasepath = ((MbpetUI) UI.getCurrent()).getMbpetBasepath();	//"C:\\dev\\mbpet\\users\\";
 
@@ -28,7 +28,7 @@ public class SlaveUtils implements Runnable {
 	}
 	
 	
-	public void startSlave(final int masterport) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
+	public void startSlave(final int masterport, final String slaveOptions) {		//(final String command) {	//"mbpet_cli.exe test_project -b localhost:9999 -s"
 //	    	new Thread() {
 		new Thread(new Runnable() {
             @Override
@@ -37,7 +37,8 @@ public class SlaveUtils implements Runnable {
         		try {
         			command = "./mbpet_slave " + 
 							"127.0.0.1 -p " + 
-							masterport;
+							masterport +
+							" " + slaveOptions;
         	        ProcessBuilder pb = new ProcessBuilder(
 //        	        		"cmd.exe", "/c", command);	//Windows command
         	        		"/bin/bash", "-c", command);		//Unix command

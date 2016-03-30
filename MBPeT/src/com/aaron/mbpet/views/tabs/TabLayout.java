@@ -5,6 +5,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.adapterstabs.AdaptersTab;
 import com.aaron.mbpet.views.tabs.modelstab.ModelsTab;
+import com.aaron.mbpet.views.tabs.monitoringtab.MonitoringTab;
 import com.aaron.mbpet.views.tabs.parameterstab.ParametersTab;
 import com.aaron.mbpet.views.tabs.reportstab.ReportsTab;
 import com.vaadin.annotations.JavaScript;
@@ -46,6 +47,7 @@ public class TabLayout extends TabSheet {
         setHeight(100.0f, Unit.PERCENTAGE);
         addStyleName(ValoTheme.TABSHEET_FRAMED);
         addStyleName(ValoTheme.TABSHEET_EQUAL_WIDTH_TABS);
+        addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
 //        addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
  
         monitoringTab = new MonitoringTab();	//reportsTab

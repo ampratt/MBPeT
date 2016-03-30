@@ -1,33 +1,31 @@
 package com.aaron.mbpet.views.sessions;
 
+import java.util.List;
+
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.components.flot.FlotChart;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
-import com.aaron.mbpet.services.GenerateComboBoxContainer;
 import com.aaron.mbpet.services.KillMBPeTProcesses;
 import com.aaron.mbpet.services.MasterUtils;
-import com.aaron.mbpet.services.ProgressBarThread;
 import com.aaron.mbpet.services.ProgressBarWorker;
 import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
-import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.tabs.TabLayout;
+import com.aaron.mbpet.views.ui.TestSettingsWindow;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
-import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Tree;
@@ -45,7 +43,10 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
     UDPThreadWorker udpWorker;
     
-    private ComboBox slaveSelect;
+    public int slaveSelect = 1;
+    public String slaveOptions= "";
+    public List<Integer> actionIDsSelected;
+//    private ComboBox slaveSelect;
 //  private Button newSessionButton;
 //	private Button saveButton;
     public ProgressBarWorker progressThread;
@@ -65,6 +66,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	private SlaveUtils slaveUtils;
 	private MasterUtils masterUtils;
 	boolean testStopped = false;
+	private Button cogButton;
+	private Object actionSelectValue;
 	
 	public SessionViewer(String title, Tree tree) {
 		setSizeFull();
@@ -95,15 +98,17 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		topBar.setStyleName("topBar-layout-padding");
 		topBar.setWidth("100%");
 		topBar.setSpacing(true);
+		topBar.setMargin(false);
 		
 		pageTitle.addStyleName("test-case-title");
-		pageTitle.addStyleName("h2");
+		pageTitle.addStyleName(ValoTheme.LABEL_H2);
+//        pageTitle.addStyleName(ValoTheme.LABEL_NO_MARGIN);
 		
 		// spinner    		
 			spinner = new ProgressBar();
 	        spinner.setIndeterminate(true);
 	        spinner.setVisible(false);
-	        spinner.addStyleName("small");
+	        spinner.addStyleName("tiny");
 //	        spinner.setCaption("initiating slaves..");
 	        
 	        spinLabel = new Label("initializing test..");
@@ -120,7 +125,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //        progressbar.setEnabled(false);
         progressbar.setVisible(false);
         progressbar.setWidth("75px");
-        progressbar.addStyleName("small");
+        progressbar.addStyleName("tiny");
         
         progressstatus = new Label("0% done");
         progressstatus.setVisible(false); 
@@ -143,35 +148,44 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //		saveButton.setIcon(FontAwesome.SAVE);
 //		saveButton.setDescription("Save Settings and Parameters");
 		
-//        modeList = Arrays.asList(modes);
-        slaveSelect = new ComboBox();	//, modeList);
-        slaveSelect.setContainerDataSource(new GenerateComboBoxContainer().generateContainer(100));
-//        modeBox.setContainerDataSource(modes);
-//        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
-        slaveSelect.setWidth(5, Unit.EM);
-        slaveSelect.addStyleName("tiny");
-        slaveSelect.setFilteringMode(FilteringMode.CONTAINS);
-        slaveSelect.setImmediate(true);
-        slaveSelect.setNullSelectionAllowed(false);
-        slaveSelect.select(slaveSelect.getItemIds().iterator().next());
-//        slavesSelect.setValue(modeList.get(0));        
-        slaveSelect.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                Notification.show(slaveSelect.getValue().toString() + " slaves selected");
-                //event.getProperty().getValue().toString()
-
-            }
-        });
+////        modeList = Arrays.asList(modes);
+//        slaveSelect = new ComboBox();	//, modeList);
+//        slaveSelect.setContainerDataSource(new GenerateComboBoxContainer().generateContainer(100));
+////        modeBox.setContainerDataSource(modes);
+////        modeBox.setWidth(100.0f, Unit.PERCENTAGE);
+//        slaveSelect.setWidth(5, Unit.EM);
+//        slaveSelect.addStyleName("tiny");
+//        slaveSelect.setFilteringMode(FilteringMode.CONTAINS);
+//        slaveSelect.setImmediate(true);
+//        slaveSelect.setNullSelectionAllowed(false);
+//        slaveSelect.select(slaveSelect.getItemIds().iterator().next());
+////        slavesSelect.setValue(modeList.get(0));        
+//        slaveSelect.addValueChangeListener(new ValueChangeListener() {
+//            @Override
+//            public void valueChange(Property.ValueChangeEvent event) {
+//                Notification.show(slaveSelect.getValue().toString() + " slaves selected");
+//                //event.getProperty().getValue().toString()
+//
+//            }
+//        });
+//        
+//        Label slaveLabel = new Label("No. Slaves");
+//        slaveLabel.addStyleName("tiny");
+//        
+//        	VerticalLayout sl = new VerticalLayout();
+//        	sl.setMargin(false); sl.setSpacing(false);
+//        	sl.addStyleName("slave-select-padding");
+//        	sl.addComponents(slaveSelect, slaveLabel);
+//        	sl.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
         
-        Label slaveLabel = new Label("No. Slaves");
-        slaveLabel.addStyleName("tiny");
-        
-        	VerticalLayout sl = new VerticalLayout();
-        	sl.addStyleName("slave-select-padding");
-        	sl.addComponents(slaveSelect, slaveLabel);
-        	sl.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
-        
+		cogButton = new Button("", this);
+//		cogButton.addStyleName("tiny");
+		cogButton.addStyleName("borderless-colored");
+//		cogButton.addStyleName("blue-start");
+//    		cogButton.addStyleName("friendly");
+		cogButton.setIcon(FontAwesome.COG);
+		cogButton.setDescription("Configure extra test settings");
+		
 		startButton = new Button("", this);
 		startButton.addStyleName("tiny");
 //		startButton.addStyleName("friendly");
@@ -187,11 +201,12 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.setEnabled(false);
 
 		HorizontalLayout buttons = new HorizontalLayout();
+		buttons.setMargin(false);
 		buttons.setSpacing(true);
-		buttons.addComponents(vert, progressbar, progressstatus, sl, startButton, stopButton);	//saveButton newSessionButton 
+		buttons.addComponents(vert, progressbar, progressstatus, cogButton, startButton, stopButton);	//sl saveButton newSessionButton 
 		buttons.setComponentAlignment(progressbar, Alignment.MIDDLE_RIGHT);
 		buttons.setComponentAlignment(progressstatus, Alignment.MIDDLE_RIGHT);
-		buttons.setComponentAlignment(sl, Alignment.MIDDLE_RIGHT);
+		buttons.setComponentAlignment(cogButton, Alignment.MIDDLE_RIGHT);	//sl
 		buttons.setComponentAlignment(startButton, Alignment.MIDDLE_RIGHT);
 		buttons.setComponentAlignment(stopButton, Alignment.MIDDLE_RIGHT);
 		
@@ -225,7 +240,27 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			Notification.show("Your settings will be saved", Type.WARNING_MESSAGE);
 //
 //        } 
-        if (event.getButton() == startButton) {
+    	if (event.getButton() == cogButton) {
+    		final TestSettingsWindow settingswindow = new TestSettingsWindow(this, currsession.getParameters());
+//    		UI.getCurrent().addWindow(settingswindow);
+    		if (!settingswindow.isAttached()) {
+    			settingswindow.setPositionX(
+    					event.getClientX() - event.getRelativeX() - 300);
+    			settingswindow.setPositionY(
+    					event.getClientY() - event.getRelativeY() + 40);
+                getUI().addWindow(settingswindow);
+                settingswindow.focus();
+//                settingswindow.addBlurListener(new BlurListener() {
+//                    @Override
+//                    public void blur(BlurEvent event) {
+//                    	settingswindow.close();
+//                    }
+//                });
+            } else {
+            	settingswindow.close();
+            }
+    		
+    	} else if (event.getButton() == startButton) {
         	if (testStopped==true){
         		tabs.setSelectedTab(0);
         		tabs.setSelectedTab(1);
@@ -247,14 +282,16 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 				//TabLayout
 			
 			tabs.getMonitoringTab().generateSlaveMonitoringInfo(
-					(int) slaveSelect.getValue(), "Connecting");
+					slaveSelect, "Connecting");	//(int) slaveSelect.getValue()
 			
 //			volatile double current = 0.0;
 //			progressbar.setData(new Float(0.0));
 			
-			//set chart to [0,0]
-//			tabs.getMonitoringTab().resetChart();
+			// ready charts to [0,0]
+			tabs.getMonitoringTab().buildIndActionChartLayout(actionIDsSelected);	//(2);
 			tabs.getMonitoringTab().refreshCharts();
+//			tabs.getMonitoringTab().resetChart();
+
 //			// navigate to corresponding item
 //			getUI().getNavigator().navigateTo(MainView.NAME + 
 //									"/" + currsession.getParentcase().getTitle() + 
@@ -269,7 +306,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker(this);
 //			udpWorker.setTimeout(currsession.getParameters().getTest_duration()*1000);
-			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), (int) slaveSelect.getValue());
+			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), slaveSelect);	//(int) slaveSelect.getValue()
 //			int udpPort = udpWorker.getUDPPort();
 
 			// start mbpet MASTER
@@ -295,7 +332,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			masterUtils = new MasterUtils();		//mastercommand);
 //			int masterport = masterUtils.getAvailablePort();
 			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
-					slaveSelect.getValue().toString(), 
+					Integer.toString(slaveSelect), 	//slaveSelect.getValue().toString()
 					udpPort, 
 					currsession.getParentcase().getOwner().getUsername(), 
 					currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
@@ -311,8 +348,8 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 						
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
 			slaveUtils = new SlaveUtils();
-			for (int i=0; i<(Integer)slaveSelect.getValue(); i++){
-				slaveUtils.startSlave(masterPort);		//(slavecommand);
+			for (int i=0; i<slaveSelect; i++){	//(Integer)slaveSelect.getValue()
+				slaveUtils.startSlave(masterPort, slaveOptions);		//(slavecommand);
 				System.out.println((i+1) + " SLAVE STARTING");
 			}
 			//print SLAVE connecting info in terminal window...update UI thread-safely
@@ -422,8 +459,31 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.removeStyleName("danger");
 	}
 
+	public void setSlaveSelect(int noSlaves){
+		this.slaveSelect = noSlaves;
+	}
+	public int getSlaveSelect(){
+		return this.slaveSelect;
+	}
+	public void setSlaveOptions(String options){
+		this.slaveOptions = options;
+	}
+	public String getSlaveOptions(){
+		return this.slaveOptions;
+	}
+	public void setActionCharts(List<Integer> intIDList){
+		this.actionIDsSelected = intIDList;
+	}
+	public List<Integer> getActionCharts(){
+		return this.actionIDsSelected;
+	}
 
-
+	public void setActionSelectObject(Object value) {
+		this.actionSelectValue = value;
+	}
+	public Object getActionSelectObject(){
+		return this.actionSelectValue;
+	}
 
 //	public TabLayout getTabLayout() {
 //		return tabs;

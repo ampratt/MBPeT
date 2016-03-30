@@ -1,38 +1,36 @@
-package com.aaron.mbpet.views.tabs;
+package com.aaron.mbpet.views.tabs.monitoringtab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.AceTheme;
 
+import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.flot.FlotChart;
+import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.services.AceUtils;
 import com.aaron.mbpet.views.tabs.reportstab.ReportsTab;
+import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
-//import com.vaadin.tests.themes.valo.components.TestIcon;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+//import com.vaadin.tests.themes.valo.components.TestIcon;
 
 @JavaScript("http://cdn.alloyui.com/2.5.0/aui/aui-min.js")
 @StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
@@ -60,6 +58,8 @@ public class MonitoringTab extends Panel {
 	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
+	JPAContainer<TRT> trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
+
 	VerticalLayout terminallayout;
 	AceEditor editor;
 	private ComboBox themeBox;	
@@ -71,6 +71,8 @@ public class MonitoringTab extends Panel {
 	private Panel panel;
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
+	private VerticalLayout leftCharts;
+	private HorizontalLayout chartsHL;
 	
     public MonitoringTab() {	//ReportsTab reportsTab
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -82,7 +84,7 @@ public class MonitoringTab extends Panel {
         vert.addComponent(buildPanels());
 
 //        vert.addComponent(usersChart());
-        buildMonCharts();
+        buildMonitoringChartsLayouts();
 //        buildAggregatedChart();
 //        buildIndividualChart();
     }
@@ -91,14 +93,15 @@ public class MonitoringTab extends Panel {
     public HorizontalLayout buildPanels() {
     	HorizontalLayout row = new HorizontalLayout();
         //row.setStyleName("monitor-panels");
-        row.setMargin(new MarginInfo(true, true, false, true));
-        row.setSpacing(true);
+        row.setMargin(new MarginInfo(false, true, false, true));
+        row.setSpacing(false);
     	row.setWidth("100%");
 //    	addComponent(row);
         //TestIcon testIcon = new TestIcon(60);
 
         Panel panel = new Panel("Response Times");
         //panel.setIcon(testIcon.get());
+//        panel.addStyleName("color1");
         panel.setContent(responseTimes());
         row.addComponent(panel);
 
@@ -119,14 +122,28 @@ public class MonitoringTab extends Panel {
         return row;
     }
     
-    public void buildMonCharts() {
+    public void buildMonitoringChartsLayouts() {
+    	
+    	chartsHL = new HorizontalLayout();
+    	chartsHL.setMargin(false);
+    	chartsHL.setSpacing(false);
+    	chartsHL.setWidth("100%");
+    	vert.addComponent(chartsHL);
+    	
+    	leftCharts = new VerticalLayout();
+    	leftCharts.setMargin(false);
+    	leftCharts.setSpacing(false);
+    	leftCharts.setWidth("100%");
+    	chartsHL.addComponent(leftCharts);
+    	chartsHL.setExpandRatio(leftCharts, 2);
+    	
 	/**
 	 * RAMP CHART
 	 */
 		flotRampLayout = new HorizontalLayout();
 		flotRampLayout.setSpacing(false);
 		flotRampLayout.setWidth("100%");
-		vert.addComponent(flotRampLayout);
+		leftCharts.addComponent(flotRampLayout);
 		
 		// chart axis label
 		Label yLabel = new Label("Users");
@@ -142,8 +159,8 @@ public class MonitoringTab extends Panel {
 		Label xLabel = new Label("Time (Seconds)");
 		xLabel.addStyleName("tiny");
 		xLabel.setSizeUndefined();
-		vert.addComponent(xLabel);
-		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+		leftCharts.addComponent(xLabel);
+		leftCharts.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
 		
 //		firstbuttonAction();
 //		flotLayout.addComponent(usersChart);
@@ -161,7 +178,7 @@ public class MonitoringTab extends Panel {
 		flotAggregatedLayout = new HorizontalLayout();
 		flotAggregatedLayout.setSpacing(false);
 		flotAggregatedLayout.setWidth("100%");
-		vert.addComponent(flotAggregatedLayout);
+		leftCharts.addComponent(flotAggregatedLayout);
 		
 		// chart axis label
 		yLabel = new Label("Aggregated<br>Response Times", ContentMode.HTML);
@@ -173,42 +190,69 @@ public class MonitoringTab extends Panel {
 		// flot chart
 		buildAggChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
 	
-		// chart axis label
-		xLabel = new Label("Time (Seconds)");
-		xLabel.addStyleName("tiny");
-		xLabel.setSizeUndefined();
-		vert.addComponent(xLabel);
-		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+//		// chart axis label
+//		xLabel = new Label("Time (Seconds)");
+//		xLabel.addStyleName("tiny");
+//		xLabel.setSizeUndefined();
+//		leftCharts.addComponent(xLabel);
+//		leftCharts.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
 
-	/**
-	 * INDIVIDUAL RESPONSE CHART
-	 */
-		flotIndividualLayout = new HorizontalLayout();
-		flotIndividualLayout.setSpacing(false);
-		flotIndividualLayout.setWidth("100%");
-		vert.addComponent(flotIndividualLayout);
-		
-		// chart axis label
-		yLabel = new Label("Individual<br>Response Times", ContentMode.HTML);
-		yLabel.addStyleName("tiny");
-		yLabel.setWidth(4.5f, Unit.EM);
-		flotIndividualLayout.addComponent(yLabel);
-		flotIndividualLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
-		
-		// flot chart
-		buildIndChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
-	
-		// chart axis label
-		xLabel = new Label("Time (Seconds)");
-		xLabel.addStyleName("tiny");
-		xLabel.setSizeUndefined();
-		vert.addComponent(xLabel);
-		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+//	/**
+//	 * INDIVIDUAL RESPONSE CHART
+//	 */
+//		flotIndividualLayout = new HorizontalLayout();
+//		flotIndividualLayout.setSpacing(false);
+//		flotIndividualLayout.setWidth("100%");
+//		vert.addComponent(flotIndividualLayout);
+//		
+//		// chart axis label
+//		yLabel = new Label("Individual<br>Response Times", ContentMode.HTML);
+//		yLabel.addStyleName("tiny");
+//		yLabel.setWidth(4.5f, Unit.EM);
+//		flotIndividualLayout.addComponent(yLabel);
+//		flotIndividualLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+//		
+//		// flot chart
+//		buildIndChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
+//	
+//		// chart axis label
+//		xLabel = new Label("Time (Seconds)");
+//		xLabel.addStyleName("tiny");
+//		xLabel.setSizeUndefined();
+//		vert.addComponent(xLabel);
+//		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
+    }
+    
+    List<Component> actionLayouts = new ArrayList<Component>();
+	private VerticalLayout rightCharts;
+	boolean firstrun=true;
+    public void buildIndActionChartLayout(List<Integer> actionIDsSelected){ 
+    	if(!firstrun){
+    		actionLayouts.clear();
+    		chartsHL.removeComponent(rightCharts);
+    		
+    	}
+    	rightCharts = new VerticalLayout();
+    	rightCharts.setMargin(false);
+    	rightCharts.setSpacing(false);
+    	rightCharts.setWidth("100%");
+    	chartsHL.addComponent(rightCharts);
+    	chartsHL.setExpandRatio(rightCharts, 1);
+
+    	IndividualActionChartLayout indActionLayout;
+    	for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
+    		System.out.println("current action is:" + id);
+    		TRT trt = trtcontainer.getItem(id).getEntity();
+    		indActionLayout = new IndividualActionChartLayout(trt.getAction());	//(Integer.toString(i+1));
+    		actionLayouts.add(indActionLayout);
+    		rightCharts.addComponent(indActionLayout);
+    	}
+    	firstrun=false;
     }
     
 	public void buildRampChart(String chartdata) {
 		monRampChart = new FlotChart();
-		monRampChart.setWidth("90%");
+		monRampChart.setWidth("95%");
 		monRampChart.setHeight("250px");
 		
 //		JsonFactory factory = new JreJsonFactory();
@@ -253,8 +297,8 @@ public class MonitoringTab extends Panel {
 	}
 	public void buildAggChart(String chartdata) {
 		monAggChart = new FlotChart();
-		monAggChart.setWidth("90%");
-		monAggChart.setHeight("250px");
+		monAggChart.setWidth("95%");
+		monAggChart.setHeight("225px");
 		String data = chartdata + aggDataOptions;
 		monAggChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));		
 		// options
@@ -384,6 +428,11 @@ public class MonitoringTab extends Panel {
         vert.setMargin(true);
         vert.setHeight("6em");
         //vert.setWidth("8em");
+        
+//        Label header = new Label("<b>Response Times</b>", ContentMode.HTML);
+////        header.addStyleName("monitoringpanel-header");
+//        vert.addComponent(header);
+//        vert.setComponentAlignment(header, Alignment.TOP_CENTER);
              
         // panels for KPI updates
         HorizontalLayout row = new HorizontalLayout();
@@ -655,9 +704,10 @@ public class MonitoringTab extends Panel {
 	}
 
 	
-    int yRamp, x, prevYRamp = 0;
-    int yAgg, prevYAgg = 0;
-    int yInd, prevYInd = 0;
+//    int yRamp, x, prevYRamp = 0;
+//    int yAgg, prevYAgg = 0;
+//    int yInd, prevYInd = 0;
+	int x = 0;
 	public void updateCharts(int users) {	//,int aggResp, int indResp
 		if (x<1){	//draw point (0,0) on graph
 			monRampChart.update(0,0);			// update the js code to effect the chart 
@@ -666,26 +716,29 @@ public class MonitoringTab extends Panel {
 		}
 		x += 1; 	//increase time count by 1 second
 		
-		yRamp = users;
-		System.out.println("sent int:" + users);
-		System.out.println("New point:" + x + "," + users);
 
 		// update RAMP
-		monRampChart.addNewData(x, yRamp);		// update the server side data	- this first command WAS causing memory overload!
-		monRampChart.update(x, yRamp);			// update the js code to effect the chart 
+		monRampChart.setY(users);	//yRamp
+		System.out.println("sent int:" + users);
+		System.out.println("New point:" + x + "," + users);
+		monRampChart.addNewData(x, monRampChart.getY());		// update the server side data	- this first command WAS causing memory overload!
+		monRampChart.update(x, monRampChart.getY());			// update the js code to effect the chart 
 		System.out.println(monRampChart.getData().toJson());
 		
 		// update AGG
-		yAgg = users;
-		monAggChart.addNewData(x, yAgg);		// update the server side data	- this first command WAS causing memory overload!
-		monAggChart.update(x, yAgg);			// update the js code to effect the chart 
+		monAggChart.setY(users);	//yAgg
+		monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
+		monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
 		
 		// update IND
-		yInd = users;
-		monIndChart.addNewData(x, yInd);		// update the server side data	- this first command WAS causing memory overload!
-		monIndChart.update(x, yInd);			// update the js code to effect the chart 
-//			data.push([x, y]);
-//			prevY = y;
+		for(Component v : actionLayouts) {
+			((IndividualActionChartLayout) v).updateChart(x, users);	//monIndChart
+		}
+//		yInd = users;
+//		monIndChart.addNewData(x, yInd);		// update the server side data	- this first command WAS causing memory overload!
+//		monIndChart.update(x, yInd);			// update the js code to effect the chart 
+////			data.push([x, y]);
+////			prevY = y;
 	}
 	
 	
@@ -693,18 +746,22 @@ public class MonitoringTab extends Panel {
 		
 		// RAMP chart
 		flotRampLayout.removeComponent(monRampChart);
-		yRamp=0; x=0; prevYRamp=0;
+		monRampChart.setY(0); x=0; monRampChart.setPrevY(0);	//yRamp=0; x=0; prevYRamp=0;
 		buildRampChart("[[0,0]]");
 		
 		// AGG chart
 		flotAggregatedLayout.removeComponent(monAggChart);
-		yAgg=0; x=0; prevYAgg=0;
+		monAggChart.setY(0); x=0; monAggChart.setPrevY(0);	//yAgg=0; x=0; prevYAgg=0;
 		buildAggChart("[[0,0]]");
 		
 		// IND chart
-		flotIndividualLayout.removeComponent(monIndChart);
-		yInd=0; x=0; prevYInd=0;
-		buildIndChart("[[0,0]]");
+		for(Component v : actionLayouts) {
+			((IndividualActionChartLayout) v).rebuildChart();	//(monIndChart);
+		}
+//		flotIndividualLayout.removeComponent(monIndChart);
+//		yInd=0; x=0; prevYInd=0;
+//		buildIndChart("[[0,0]]");
+		
 		
 //		usersChart = new FlotChart();
 //		initChartData("[[0,0]]");
