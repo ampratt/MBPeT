@@ -240,12 +240,14 @@ public class MonitoringTab extends Panel {
     	chartsHL.setExpandRatio(rightCharts, 1);
 
     	IndividualActionChartLayout indActionLayout;
-    	for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
-    		System.out.println("current action is:" + id);
-    		TRT trt = trtcontainer.getItem(id).getEntity();
-    		indActionLayout = new IndividualActionChartLayout(trt.getAction());	//(Integer.toString(i+1));
-    		actionLayouts.add(indActionLayout);
-    		rightCharts.addComponent(indActionLayout);
+    	if (actionIDsSelected!=null){
+    		for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
+    			System.out.println("current action is:" + id);
+    			TRT trt = trtcontainer.getItem(id).getEntity();
+    			indActionLayout = new IndividualActionChartLayout(trt.getAction());	//(Integer.toString(i+1));
+    			actionLayouts.add(indActionLayout);
+    			rightCharts.addComponent(indActionLayout);
+    		}    		
     	}
     	firstrun=false;
     }
@@ -712,7 +714,10 @@ public class MonitoringTab extends Panel {
 		if (x<1){	//draw point (0,0) on graph
 			monRampChart.update(0,0);			// update the js code to effect the chart 
 			monAggChart.update(0,0);
-			monIndChart.update(0,0);
+//			monIndChart.update(0,0);
+			for(Component v : actionLayouts) {
+				((IndividualActionChartLayout) v).getChart().update(0, 0);	//monIndChart
+			}
 		}
 		x += 1; 	//increase time count by 1 second
 		

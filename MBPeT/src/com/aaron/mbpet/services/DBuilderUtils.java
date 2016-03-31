@@ -358,9 +358,11 @@ public class DBuilderUtils implements Serializable {
 //                xy = xy.replaceAll("[\\s]", "");
 //                writer.print("\t" + xy);// "}\n");	//mapper.writeValueAsString(nXy.get(n))
 //                writer.print("\n");
-                builder.append("\t" + xy).append(newline);
 //                builder.append("\n").append(newline);
 
+                // actually write the coord values
+//              builder.append("\t" + xy).append(newline);
+                builder.append(newline);
                 System.out.println("XY values: " + xy);		// for testing
             }            
             

@@ -139,7 +139,8 @@ public class ReportsTab extends Panel {
 			public void valueChange(ValueChangeEvent event) {
 				File file = null;
 				Image image = null;
-				if (event.getProperty().getValue().toString().endsWith(".png")){
+				if (event.getProperty().getValue().toString()!=null && 
+						event.getProperty().getValue().toString().endsWith(".png")){
 					image = new Image("",  new FileResource(
 							new File(event.getProperty().getValue().toString() )));
 				} else {

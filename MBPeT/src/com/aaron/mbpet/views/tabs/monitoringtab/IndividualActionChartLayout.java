@@ -109,4 +109,8 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		monIndChart.addNewData(x, y);		// update the server side data	- this first command WAS causing memory overload!
 		monIndChart.update(x, y);		
 	}
+	
+	public FlotChart getChart(){
+		return monIndChart;
+	}
 }

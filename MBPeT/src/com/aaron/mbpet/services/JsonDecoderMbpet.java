@@ -179,15 +179,15 @@ public class JsonDecoderMbpet {
      		keyvalues[2] = String.valueOf(throughput);		//(String)summaryObject.get("throughput");
      		keyvalues[3] = String.valueOf(success);		//(String)summaryObject.get("throughput");
      		keyvalues[4] = String.valueOf(error_count);	//(String)summaryObject.get("throughput");
-     		if (net_send_total < 10000) {
-     			keyvalues[5] = String.valueOf(df.format(net_send_total) + " KB");
-     		} else {
-     			keyvalues[5] = String.valueOf(df.format(net_send_total/1000) + " MB");
+     		if (net_send_total < 1048576) {	// 1024B in K; orig>10000
+     			keyvalues[5] = String.valueOf(df.format(net_send_total/1024) + " KB");
+     		} else {	//1MB = 1,048,576 bytes
+     			keyvalues[5] = String.valueOf(df.format(net_send_total/1048576) + " MB");
  			}
-     		if (net_recv_total < 10000) {
-     			keyvalues[6] = String.valueOf(df.format(net_recv_total) + " KB");
+     		if (net_recv_total < 1048576) {
+     			keyvalues[6] = String.valueOf(df.format(net_recv_total/1024) + " KB");
      		} else {
-     			keyvalues[6] = String.valueOf(df.format(net_recv_total/1000) + " MB");
+     			keyvalues[6] = String.valueOf(df.format(net_recv_total/1048576) + " MB");
  			}
 			keyvalues[7] = String.valueOf(target_user);
 //     		keyvalues[7] = slave_name;
