@@ -1,7 +1,9 @@
 package com.aaron.mbpet.views.tabs.monitoringtab;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.vaadin.aceeditor.AceEditor;
@@ -10,6 +12,7 @@ import org.vaadin.aceeditor.AceTheme;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.components.flot.FlotChart;
+import com.aaron.mbpet.domain.ActionResponse;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.services.AceUtils;
 import com.aaron.mbpet.views.tabs.reportstab.ReportsTab;
@@ -44,7 +47,7 @@ public class MonitoringTab extends Panel {
 	public Label success;
 	public Label error_count;
 	public Label targetuser;
-	public Label averageresponse;
+	public Label aggregatedResponse;
 	public Label minmaxresponse;
 	public Label slave;
 	public Label slavelabel;
@@ -54,8 +57,8 @@ public class MonitoringTab extends Panel {
 	public FlotChart monRampChart;
 	public FlotChart monAggChart;
 	public FlotChart monIndChart;
-	String rampDataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
-	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String rampDataOptions = ", \"label\": \"virtual users\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 	JPAContainer<TRT> trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
@@ -99,11 +102,11 @@ public class MonitoringTab extends Panel {
 //    	addComponent(row);
         //TestIcon testIcon = new TestIcon(60);
 
-        Panel panel = new Panel("Response Times");
-        //panel.setIcon(testIcon.get());
-//        panel.addStyleName("color1");
-        panel.setContent(responseTimes());
-        row.addComponent(panel);
+//        Panel panel = new Panel("Average Response Times");
+//        //panel.setIcon(testIcon.get());
+////        panel.addStyleName("color1");
+//        panel.setContent(responseTimes());
+//        row.addComponent(panel);
 
         panel = new Panel("Response Counts");
         panel.setContent(responseCounts());
@@ -226,7 +229,7 @@ public class MonitoringTab extends Panel {
     List<Component> actionLayouts = new ArrayList<Component>();
 	private VerticalLayout rightCharts;
 	boolean firstrun=true;
-    public void buildIndActionChartLayout(List<Integer> actionIDsSelected){ 
+    public void buildIndActionChartLayout(List<TRT> actionsSelected){ 	//List<Integer>
     	if(!firstrun){
     		actionLayouts.clear();
     		chartsHL.removeComponent(rightCharts);
@@ -240,20 +243,29 @@ public class MonitoringTab extends Panel {
     	chartsHL.setExpandRatio(rightCharts, 1);
 
     	IndividualActionChartLayout indActionLayout;
-    	if (actionIDsSelected!=null){
-    		for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
-    			System.out.println("current action is:" + id);
-    			TRT trt = trtcontainer.getItem(id).getEntity();
-    			indActionLayout = new IndividualActionChartLayout(trt.getAction());	//(Integer.toString(i+1));
+    	if (actionsSelected!=null){
+    		for(TRT action : actionsSelected){	//for (int i=0; i<actionsSelected; i++){
+    			System.out.println("current action is:" + action);
+    			indActionLayout = new IndividualActionChartLayout(action.getAction());	//(Integer.toString(i+1));
     			actionLayouts.add(indActionLayout);
     			rightCharts.addComponent(indActionLayout);
     		}    		
     	}
+//    	IndividualActionChartLayout indActionLayout;
+//    	if (actionIDsSelected!=null){
+//    		for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
+//    			System.out.println("current action is:" + id);
+//    			TRT trt = trtcontainer.getItem(id).getEntity();
+//    			indActionLayout = new IndividualActionChartLayout(trt.getAction());	//(Integer.toString(i+1));
+//    			actionLayouts.add(indActionLayout);
+//    			rightCharts.addComponent(indActionLayout);
+//    		}    		
+//    	}
     	firstrun=false;
     }
     
 	public void buildRampChart(String chartdata) {
-		monRampChart = new FlotChart();
+		monRampChart = new FlotChart("Virtual Users");
 		monRampChart.setWidth("95%");
 		monRampChart.setHeight("250px");
 		
@@ -276,7 +288,7 @@ public class MonitoringTab extends Panel {
 		String options =
 				"{" + 
 					//"series: { lines: {show: true}, points: {show: true} }" +
-//					"\"crosshair\": {\"mode\": \"x\"}, " +
+					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
 					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
@@ -298,7 +310,7 @@ public class MonitoringTab extends Panel {
 		System.out.println("Data from chart State:\n" + monRampChart.getData().toJson());
 	}
 	public void buildAggChart(String chartdata) {
-		monAggChart = new FlotChart();
+		monAggChart = new FlotChart("Aggregated Response Time");
 		monAggChart.setWidth("95%");
 		monAggChart.setHeight("225px");
 		String data = chartdata + aggDataOptions;
@@ -306,6 +318,7 @@ public class MonitoringTab extends Panel {
 		// options
 		String options =
 				"{" + 
+					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
 					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
@@ -324,7 +337,7 @@ public class MonitoringTab extends Panel {
 		System.out.println("Data from chart State:\n" + monAggChart.getData().toJson());
 	}
 	public void buildIndChart(String chartdata) {
-		monIndChart = new FlotChart();
+		monIndChart = new FlotChart("Individual Action Response");
 		monIndChart.setWidth("90%");
 		monIndChart.setHeight("250px");
 		String data = chartdata + indDataOptions;
@@ -332,6 +345,7 @@ public class MonitoringTab extends Panel {
 		// options
 		String options =
 				"{" + 
+					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
 					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
@@ -442,17 +456,17 @@ public class MonitoringTab extends Panel {
         //layout.setSpacing(true);
         //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
         
-        Label responseTimesLabel = new Label("Average");
+        Label responseTimesLabel = new Label("Aggregated");
         responseTimesLabel.addStyleName("small");
         
-        averageresponse = new Label();
-        averageresponse.setSizeUndefined();
-        averageresponse.addStyleName("bold");
-        averageresponse.addStyleName("small");
+        aggregatedResponse = new Label();
+        aggregatedResponse.setSizeUndefined();
+        aggregatedResponse.addStyleName("bold");
+        aggregatedResponse.addStyleName("small");
         
-        row.addComponents(responseTimesLabel, averageresponse);
+        row.addComponents(responseTimesLabel, aggregatedResponse);
         row.setComponentAlignment(responseTimesLabel, Alignment.MIDDLE_LEFT);
-        row.setComponentAlignment(averageresponse, Alignment.MIDDLE_RIGHT);
+        row.setComponentAlignment(aggregatedResponse, Alignment.MIDDLE_RIGHT);
 //        row.setExpandRatio(responseTimesLabel, 1);
 //        row.setExpandRatio(averageresponse, 2);
         vert.addComponent(row);
@@ -675,7 +689,7 @@ public class MonitoringTab extends Panel {
     public void updateFields(String[] fields) {
     //(String averageresponse, String minmaxresponse, String sent, String received, String throughput, String targetuser, String slave ) {
     	
-    	this.averageresponse.setValue(fields[0]);
+//    	this.aggregatedResponse.setValue(fields[0]);
     	this.minmaxresponse.setValue(fields[1]);
     	this.throughput.setValue(fields[2]);
     	this.success.setValue(fields[3]);
@@ -710,13 +724,14 @@ public class MonitoringTab extends Panel {
 //    int yAgg, prevYAgg = 0;
 //    int yInd, prevYInd = 0;
 	int x = 0;
-	public void updateCharts(int users) {	//,int aggResp, int indResp
+	DecimalFormat df = new DecimalFormat("#.##");
+	public void updateCharts(int users, HashSet<ActionResponse> responseset) {	//,int aggResp, int indResp
 		if (x<1){	//draw point (0,0) on graph
 			monRampChart.update(0,0);			// update the js code to effect the chart 
 			monAggChart.update(0,0);
 //			monIndChart.update(0,0);
-			for(Component v : actionLayouts) {
-				((IndividualActionChartLayout) v).getChart().update(0, 0);	//monIndChart
+			for(Component c : actionLayouts) {
+				((IndividualActionChartLayout) c).getChart().update(0, 0);	//monIndChart
 			}
 		}
 		x += 1; 	//increase time count by 1 second
@@ -730,15 +745,42 @@ public class MonitoringTab extends Panel {
 		monRampChart.update(x, monRampChart.getY());			// update the js code to effect the chart 
 		System.out.println(monRampChart.getData().toJson());
 		
-		// update AGG
-		monAggChart.setY(users);	//yAgg
-		monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
-		monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
 		
-		// update IND
-		for(Component v : actionLayouts) {
-			((IndividualActionChartLayout) v).updateChart(x, users);	//monIndChart
+		// update AGG and IND responses
+		System.out.println("HashSet of Responses is:" + responseset);
+		for(ActionResponse act : responseset){
+			if(act.getTitle().contains("Aggregated Response Time")){
+				if(act.getTotalResponseTime() == 0){
+					// update AGG
+					monAggChart.setY(0.0);	//yAgg
+					monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
+					monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
+					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );					
+				} else {
+					monAggChart.setY(Double.parseDouble(df.format(act.getAverage())) );	//yAgg
+					monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
+					monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
+					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
+				}
+			} else {
+				// update IND action response
+				for(Component c : actionLayouts) {
+//					IndividualActionChartLayout cl = (IndividualActionChartLayout) c;
+					if(((IndividualActionChartLayout) c).getTitle().equals(act.getTitle())){
+						((IndividualActionChartLayout) c).updateChart(x, act.getCurrentResponseTime());	//monIndChart						
+					}
+				}
+			}
 		}
+//		// update AGG
+//		monAggChart.setY(users);	//yAgg
+//		monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
+//		monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
+//		
+//		// update IND
+//		for(Component v : actionLayouts) {
+//			((IndividualActionChartLayout) v).updateChart(x, users);	//monIndChart
+//		}
 //		yInd = users;
 //		monIndChart.addNewData(x, yInd);		// update the server side data	- this first command WAS causing memory overload!
 //		monIndChart.update(x, yInd);			// update the js code to effect the chart 

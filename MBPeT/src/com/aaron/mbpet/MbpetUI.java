@@ -1,14 +1,12 @@
 package com.aaron.mbpet;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.logging.Level;
 
-import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import com.aaron.mbpet.domain.ActionResponse;
 import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.AdapterXML;
 import com.aaron.mbpet.domain.Model;
@@ -17,18 +15,14 @@ import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.services.DemoDataGenerator;
 import com.aaron.mbpet.services.PushLabelUpdater;
 import com.aaron.mbpet.services.PushMasterUpdater;
-import com.aaron.mbpet.services.UDPServer;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.RegistrationView;
 import com.aaron.mbpet.views.sessions.SessionViewer;
-import com.aaron.mbpet.views.tabs.TabLayout;
 import com.aaron.mbpet.views.tabs.monitoringtab.MonitoringTab;
-import com.fasterxml.jackson.databind.AnnotationIntrospector.ReferenceProperty.Type;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.annotations.JavaScript;
@@ -36,7 +30,6 @@ import com.vaadin.annotations.Push;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.Item;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ClientConnector;
@@ -44,10 +37,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.Position;
-import com.vaadin.shared.communication.PushMode;
-import com.vaadin.shared.ui.ui.NotificationRole;
 import com.vaadin.ui.ConnectorTracker;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -233,7 +223,8 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 	  }
 
 		@Override
-		public void updateMonitoringFields(final String[] values, final int numslaves, final String[] slaveresults, final SessionViewer sessionViewer) {	//, final double current
+		public void updateMonitoringFields(final String[] values, final int numslaves, 
+				final String[] slaveresults, final HashSet<ActionResponse> responseset, final SessionViewer sessionViewer) {	//, final double current
 		    access(new Runnable() {
 		        @Override
 		        public void run() {
@@ -241,7 +232,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.updateFields(values);
 		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
-		        	montab.updateCharts(Integer.parseInt(values[7]));
+		        	montab.updateCharts(Integer.parseInt(values[7]), responseset);
 		        }
 		    });
 		}

@@ -191,7 +191,7 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 		    	String nospace = items[i].replaceAll("\\s","");
 		    	intIDList.add(Integer.parseInt(nospace));
 		    }
-		    sessionViewer.setActionCharts(intIDList);
+		    sessionViewer.setINDActionIDsToMonitor(intIDList);
 //			System.out.println("int list is now:" + intIDList);
 //		    for(int i : intIDList) {
 //				System.out.println("each list entry:" + i);

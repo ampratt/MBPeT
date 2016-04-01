@@ -43,7 +43,7 @@ public class UDPThreadWorker {
                     double current = 0.0;
             		try {
 
-            			JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet();
+            			JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sessionViewer);
             			
             			// create datagram socket at port num
 //            			serverSocket = new DatagramSocket(9999);
@@ -124,7 +124,12 @@ public class UDPThreadWorker {
             		        	   
                 		           // update monitoring tab fields - thread-safely	           
 //                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", current);
-            		        	   updater.updateMonitoringFields(results, numslaves, slaveresults, sessionViewer);
+            		        	   updater.updateMonitoringFields(
+            		        			   results, 
+            		        			   numslaves, 
+            		        			   slaveresults,
+            		        			   jsonDecoder.getAggregatedResponse(sentence.trim()),
+            		        			   sessionViewer);
             		        	   System.out.println("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
             		        	   
 //            		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
@@ -149,7 +154,7 @@ public class UDPThreadWorker {
             		                   }
             		               });
 	        		               // 2. Inform that we have stopped running
-                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
+//                		           updater.printNewestMessage("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n", sessionViewer);
             		        	   updater.printFinalMessage("\nTest Session is finished!", numslaves, sessionViewer);
 	        	        	       
             		        	   // create pdf report

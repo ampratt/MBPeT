@@ -1,8 +1,10 @@
 package com.aaron.mbpet.views.sessions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
+import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.KillMBPeTProcesses;
@@ -12,6 +14,7 @@ import com.aaron.mbpet.services.SlaveUtils;
 import com.aaron.mbpet.services.UDPThreadWorker;
 import com.aaron.mbpet.ui.MasterTerminalWindow;
 import com.aaron.mbpet.views.tabs.TabLayout;
+import com.aaron.mbpet.views.tabs.monitoringtab.IndividualActionChartLayout;
 import com.aaron.mbpet.views.ui.TestSettingsWindow;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.event.FieldEvents.BlurEvent;
@@ -26,6 +29,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Tree;
@@ -40,6 +44,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     JPAContainer<TestCase> testcases;
     JPAContainer<TestSession> sessions;
     public TestSession currsession;
+	JPAContainer<TRT> trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 
     UDPThreadWorker udpWorker;
     
@@ -288,7 +293,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			progressbar.setData(new Float(0.0));
 			
 			// ready charts to [0,0]
-			tabs.getMonitoringTab().buildIndActionChartLayout(actionIDsSelected);	//(2);
+			tabs.getMonitoringTab().buildIndActionChartLayout(getINDActionsBeingMonitored());	//(actionIDsSelected);	//(2);
 			tabs.getMonitoringTab().refreshCharts();
 //			tabs.getMonitoringTab().resetChart();
 
@@ -471,10 +476,10 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	public String getSlaveOptions(){
 		return this.slaveOptions;
 	}
-	public void setActionCharts(List<Integer> intIDList){
+	public void setINDActionIDsToMonitor(List<Integer> intIDList){
 		this.actionIDsSelected = intIDList;
 	}
-	public List<Integer> getActionCharts(){
+	public List<Integer> getINDActionIDsBeingMonitored(){
 		return this.actionIDsSelected;
 	}
 
@@ -483,6 +488,17 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 	}
 	public Object getActionSelectObject(){
 		return this.actionSelectValue;
+	}
+	
+	public List<TRT> getINDActionsBeingMonitored(){
+		List<TRT> actionsMonitoredList = new ArrayList<TRT>();
+    	if (actionIDsSelected!=null){
+    		for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
+    			System.out.println("current action is:" + id);
+    			actionsMonitoredList.add(trtcontainer.getItem(id).getEntity());
+    		}    		
+    	}
+		return actionsMonitoredList;
 	}
 
 //	public TabLayout getTabLayout() {

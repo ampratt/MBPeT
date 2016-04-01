@@ -36,7 +36,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		buildIndChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
 
 		// chart axis label
-		Label yLabel = new Label(title + " search google(car)", ContentMode.HTML);
+		Label yLabel = new Label(title.replaceAll("_", " "), ContentMode.HTML);
 		yLabel.addStyleName("tiny");
 		yLabel.setWidth(4.5f, Unit.EM);
 		addComponent(yLabel);
@@ -54,14 +54,15 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 	}
 
 	public void buildIndChart(String chartdata) {
-		monIndChart = new FlotChart();
+		monIndChart = new FlotChart(title);
 		monIndChart.setWidth("100%");
 		monIndChart.setHeight("150px");
 		String data = chartdata + indDataOptions;
 		monIndChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));		
 		// options
 		String options =
-				"{" + 
+				"{" +
+					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
 					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
@@ -104,7 +105,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		buildIndChart("[[0,0]]");		
 	}
 
-	public void updateChart(int x, int y) {	//(FlotChart monIndChart) {
+	public void updateChart(int x, double y) {	//(FlotChart monIndChart) {
 		monIndChart.setY(y);	//yInd = users;
 		monIndChart.addNewData(x, y);		// update the server side data	- this first command WAS causing memory overload!
 		monIndChart.update(x, y);		

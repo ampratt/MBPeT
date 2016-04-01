@@ -4,23 +4,53 @@ import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import com.aaron.mbpet.domain.ActionResponse;
 //import org.json.simple.JSONArray;
 //import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser;
 //import org.json.simple.parser.ParseException;
+import com.aaron.mbpet.domain.TRT;
+import com.aaron.mbpet.views.sessions.SessionViewer;
+import com.aaron.mbpet.views.tabs.monitoringtab.IndividualActionChartLayout;
 
 
 public class JsonDecoderMbpet {
 
+	SessionViewer sessionViewer;
+	ActionResponse aggRespTime = new ActionResponse("Aggregated Response Time");
+	HashSet<ActionResponse> responseset = new HashSet<ActionResponse>();
+//	List<TRT> trtsMonitoring;
+
+	public JsonDecoderMbpet(SessionViewer sessionViewer) {
+		this.sessionViewer = sessionViewer;
+		
+//		trtsMonitoring = new ArrayList<TRT>();
+		ActionResponse indActionResponse;
+		if (sessionViewer.getINDActionsBeingMonitored()!=null){
+    		for(TRT trt : sessionViewer.getINDActionsBeingMonitored()){	//for (int i=0; i<actionsSelected; i++){
+    			System.out.println("current action is:" + trt);
+//    			trtsMonitoring.add(trt);
+    			
+    			// create ActionResponse for every TRT being monitored and add it to the HashSet
+    			indActionResponse = new ActionResponse(trt.getAction());
+    			responseset.add(indActionResponse);
+    		}
+    	}
+    	// add aggregated action response to set
+		responseset.add(aggRespTime);
+//		if (!responseset.contains(aggRespTime)) responseset.add(aggRespTime);
+
+	}
 	public JsonDecoderMbpet() {
 		// TODO Auto-generated constructor stub
-	}
-	
+	}	
 	
 	public JsonDecoderMbpet(String update){
 //		  JSONParser parser = new JSONParser();
@@ -209,6 +239,61 @@ public class JsonDecoderMbpet {
       }
 
 		return keyvalues;
+	}
+
+//	ActionResponse aggRespTime = new ActionResponse("Aggregated Response Time");
+//	HashSet<ActionResponse> responseset = new HashSet<ActionResponse>();
+	public HashSet<ActionResponse> getAggregatedResponse(String update) {
+		JSONTokener tokener; //= new JSONTokener(update);
+	    JSONObject jsonObject;// = null;
+		try{
+			tokener = new JSONTokener(update);
+			jsonObject = new JSONObject(tokener);
+
+	       	JSONObject valuesObject = (JSONObject) jsonObject.get("values");
+	       	JSONArray resp;
+	       	// decompose internal JSON objects
+       		if (valuesObject.has("resp") ) {
+       			resp = (JSONArray) valuesObject.get("resp");
+
+       			// add number of responses received to aggregated
+       			System.out.println("ADDING TO TOTAL RESPONSE COUNT:" + resp.length());
+       			aggRespTime.addToTotalResponseCount(resp.length());
+       			
+       			// loop through ind. reponses
+       			JSONObject currresponse;
+       			for (int i=0; i<resp.length(); i++){
+       				currresponse = (JSONObject) resp.getJSONObject(i);
+       				// add response value to aggregated counter
+       				aggRespTime.addToTotalResponseTime((Double)currresponse.get("val"));
+       				
+       				// add value to individual response time
+       				for (ActionResponse act : responseset){
+       					String acttitle = act.getTitle();
+   		       			if(act.getTitle().contains("("))
+   		       				acttitle = act.getTitle().substring(0, act.getTitle().indexOf("("));
+   		       			if( acttitle.equals(currresponse.get("action")) ){
+       						act.addToTotalResponseCount(1);	// add one more response count
+       						act.addToTotalResponseTime((Double)currresponse.get("val")); //add response time to total value
+       		       			act.setCurrentResponseTime((Double)currresponse.get("val")); //set current time for chart
+       		       			act.calculateAverage();
+       		       			System.out.println("Actions compared:" + currresponse.get("action") + " - " + acttitle);
+       		       			System.out.println("RECEIVED ACT RESPONSE:" + act.getTitle() + " " + act.getCurrentResponseTime());
+//       						if (!responseset.contains(currresponse)) responseset.add(aggRespTime);
+      		       			break;       					
+       					}
+       				}     				
+//       				ActionResponse aggRespTime = new ActionResponse("Aggregated Response Time");
+       			}
+       			/// set average after adding all counts and response values
+       			aggRespTime.calculateAverage();
+//       			if (!responseset.contains(aggRespTime)) responseset.add(aggRespTime);
+       		}
+	       	
+		} catch (JSONException e) {
+          e.printStackTrace();
+      }
+		return responseset;
 	}
 
 	

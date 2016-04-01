@@ -45,11 +45,12 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	private JsonArray data;
 	private JsonArray seriesOptions;
 	private JsonObject options;
-	public int y, x, prevY = 0;
-
+	public int x = 0;
+	public double y, prevY = 0;
+	String title = "";
 	JsonFactory factory = new JreJsonFactory();
-	String dataOptions = ", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
-
+	String dataOptions = ", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+//\"label\": \"active users\", 
 	FlotUtils flotUtils;	// = new FlotUtils();
 
 //	private JsonArray data;
@@ -59,6 +60,12 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	@SuppressWarnings("serial")
 	public FlotChart() {
 		flotUtils = new FlotUtils();
+		registerFunctions();
+    }
+	@SuppressWarnings("serial")
+	public FlotChart(String title) {
+		flotUtils = new FlotUtils();
+		this.title = title;
 		registerFunctions();
     }
 	@SuppressWarnings("serial")
@@ -173,7 +180,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //	public void update() {
 //		callFunction("update");
 //	}
-	public void update(int x, int y) {
+	public void update(int x, double y) {
 		callFunction("update", x, y);
 		System.out.println("called -> 'udpate(x,y) ...updating the javascript code affecting the chart");
 	}
@@ -244,7 +251,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //		data.put(source);
 //		setData(data);
 //	}
-	public void addNewData(int x, int y) {
+	public void addNewData(int x, double y) {
 		System.out.println("\ncalled -> 'addNewData()");
 
 		String newData = "[" + x +"," + y + "]";
@@ -348,11 +355,11 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //        getState().series.add(pointList);
 //    }
 	
-	public int getY() {
+	public double getY() {
 		return y;
 	}
-	public void setY(int y) {
-		this.y = y;
+	public void setY(double d) {
+		this.y = d;
 	}
 	public int getX() {
 		return x;
@@ -360,10 +367,10 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	public void setX(int x) {
 		this.x = x;
 	}
-	public int getPrevY() {
+	public double getPrevY() {
 		return prevY;
 	}
-	public void setPrevY(int prevY) {
+	public void setPrevY(double prevY) {
 		this.prevY = prevY;
 	}
 }
