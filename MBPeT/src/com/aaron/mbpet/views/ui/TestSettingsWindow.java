@@ -37,12 +37,12 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class TestSettingsWindow extends Window implements Button.ClickListener{
 
-	private VerticalLayout vert;
+	private HorizontalLayout mainlayout;
 	private ComboBox slaveSelect;
-	private HorizontalLayout hl;
-	private TextField slaveOptions;
-	private Button saveButton;
 	public TwinColSelect actionSelect;
+	private TextField slaveOptions;
+	private TextField masterOptions;
+	private Button saveButton;
 	JPAContainer<TRT> trtcontainer;
 	SessionViewer sessionViewer;
 	Parameters params;
@@ -50,32 +50,32 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 	//	List<TRT> trtList;
 	
 	public TestSettingsWindow(SessionViewer sessionViewer, Parameters params) {
+		super("Configure optional test settings"); // Set window caption
 		this.sessionViewer = sessionViewer;
 		trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 		this.params = params;
 //		this.trtList = trtList;
 		
-//        super("Create new Instance of " + stripExcess(parentCase)); // Set window caption
 //        parentCase = stripExcess(parentCase);
 //        center();
 //		setPositionY(event.getClientY() - event.getRelativeY() + 40);
         setResizable(false);
         setClosable(true);
-        setModal(false);
-        setDraggable(false);
+        setModal(true);
+        setDraggable(true);
         setCloseShortcut(KeyCode.ESCAPE, null);
-        setHeight("325px");
+//        setHeight("325px");
         
-        vert = new VerticalLayout();
-        vert.setMargin(true);
-        vert.setSpacing(true);
+        mainlayout = new HorizontalLayout();
+        mainlayout.setMargin(true);
+        mainlayout.setSpacing(true);
 //        vert.setHeight("400px");
 //        vert.setSizeFull();
       
-        Label title = new Label("Configure optional test settings");
-        title.addStyleName(ValoTheme.LABEL_H3);
-        title.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-        vert.addComponent(title);
+//        Label title = new Label("Configure optional test settings");
+//        title.addStyleName(ValoTheme.LABEL_H3);
+//        title.addStyleName(ValoTheme.LABEL_NO_MARGIN);
+//        mainlayout.addComponent(title);
 
 //        Label hr = new Label("<hr>",ContentMode.HTML);
 //        hr.addStyleName(ValoTheme.LABEL_NO_MARGIN);
@@ -83,7 +83,7 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 
         //twin col ACTION select for which charts to display
         filterTRTsByParameter(params);
-        actionSelect = new TwinColSelect("Display Actions in live monitoring chart");
+        actionSelect = new TwinColSelect("Choose individual Actions to monitor in real-time");
         actionSelect.setContainerDataSource(trtcontainer);
         actionSelect.setItemCaptionPropertyId("action");
 //        actionSelect.setPropertyDataSource(new Object[] {"action"});
@@ -117,17 +117,31 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 //        	}        	
         	actionSelect.setValue(sessionViewer.getActionSelectObject());	//(new HashSet<String>(trtlist));	//("Venus", "Earth", "Mars")));
         }
-        vert.addComponent(actionSelect);
-        
+        mainlayout.addComponent(actionSelect);
 //        vert.addComponent(hr);
 
         
-        hl = new HorizontalLayout();
-        hl.setMargin(new MarginInfo(true, false, false, false));
+        // MASTER AND SLAVE OPTIONS
+        VerticalLayout rightVert = new VerticalLayout();
+        rightVert.setMargin(new MarginInfo(false, false, true, true));
+        rightVert.setSpacing(true);
+        mainlayout.addComponent(rightVert);
+        
+        //slave
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.setMargin(false);
         hl.setSpacing(true);
         hl.setWidth("97%");
         
-        
+		slaveOptions = new TextField();
+		slaveOptions.addStyleName("tiny");
+		slaveOptions.setImmediate(true);
+		slaveOptions.setInputPrompt("e.g. -r 20");
+		slaveOptions.setCaption("Optional slave arguments");
+		if (!sessionViewer.getSlaveOptions().equals("")){
+			slaveOptions.setValue(sessionViewer.getSlaveOptions());
+		}
+		
         slaveSelect = new ComboBox("No. Slaves");	//, modeList);
         slaveSelect.setContainerDataSource(new GenerateComboBoxContainer().generateContainer(100));
         slaveSelect.setWidth(5, Unit.EM);
@@ -136,7 +150,7 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
         slaveSelect.setImmediate(true);
         slaveSelect.setNullSelectionAllowed(false);
 //        slaveSelect.select(slaveSelect.getItemIds().iterator().next());
-        slaveSelect.select(sessionViewer.getSlaveSelect());
+        slaveSelect.select(sessionViewer.getNumSlaves());
         slaveSelect.focus();
 //        slaveSelect.addValueChangeListener(new ValueChangeListener() {
 //            @Override
@@ -145,14 +159,24 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 //                //event.getProperty().getValue().toString()
 //            }
 //        });
+		
+		hl.addComponents(slaveOptions, slaveSelect);
+		rightVert.addComponent(hl);
+
+		
+		//master and save button
+        hl = new HorizontalLayout();
+        hl.setMargin(new MarginInfo(true, false, false, false));
+        hl.setSpacing(true);
+        hl.setWidth("97%");
         
-		slaveOptions = new TextField();
-		slaveOptions.addStyleName("tiny");
-		slaveOptions.setImmediate(true);
-		slaveOptions.setInputPrompt("e.g. -s -p 10");
-		slaveOptions.setCaption("Optional slave arguments");
-		if (!sessionViewer.getSlaveOptions().equals("")){
-			slaveOptions.setValue(sessionViewer.getSlaveOptions());
+		masterOptions = new TextField();
+		masterOptions.addStyleName("tiny");
+		masterOptions.setImmediate(true);
+		masterOptions.setInputPrompt("e.g. -u RESOURCE_UTILIZATION_THRESHOLD");
+		masterOptions.setCaption("Optional master arguments");
+		if (!sessionViewer.getMasterOptions().equals("")){
+			masterOptions.setValue(sessionViewer.getMasterOptions());
 		}
 		
 		saveButton = new Button("Save", this);
@@ -164,20 +188,20 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 //		saveButton.setIcon(FontAwesome.PLAY);
 //		saveButton.setDescription("Run Test Session");
 		
-		hl.addComponents(slaveSelect, slaveOptions, saveButton);
+		hl.addComponents(masterOptions, saveButton);
 		hl.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
 		hl.setExpandRatio(saveButton, 1);
-        
-		vert.addComponent(hl);
+		rightVert.addComponent(hl);
 		
-        setContent(vert);
+        setContent(mainlayout);
 	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == saveButton){
-			sessionViewer.setSlaveSelect((Integer)slaveSelect.getValue());
+			sessionViewer.setNumSlaves((Integer)slaveSelect.getValue());
 			sessionViewer.setSlaveOptions(slaveOptions.getValue());
+			sessionViewer.setMasterOptions(masterOptions.getValue());
 			
 			sessionViewer.setActionSelectObject(actionSelect.getValue());
 			String idString = String.valueOf(actionSelect.getValue());
@@ -187,9 +211,11 @@ public class TestSettingsWindow extends Window implements Button.ClickListener{
 			//		    List<String> idList = new ArrayList<String>(Arrays.asList(items));
 			//		    System.out.println(idList);
 		    List<Integer> intIDList = new ArrayList<Integer>();
-		    for(int i = 0 ; i<items.length ; i++) {
-		    	String nospace = items[i].replaceAll("\\s","");
-		    	intIDList.add(Integer.parseInt(nospace));
+		    if (!idString.equals("")){
+		    	for(int i = 0 ; i<items.length ; i++) {
+		    		String nospace = items[i].replaceAll("\\s","");
+		    		intIDList.add(Integer.parseInt(nospace));
+		    	}		    	
 		    }
 		    sessionViewer.setINDActionIDsToMonitor(intIDList);
 //			System.out.println("int list is now:" + intIDList);

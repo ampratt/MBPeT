@@ -22,6 +22,9 @@ window.com_aaron_mbpet_components_flot_FlotChart = function() {
 		p;
 	}
 	
+	function secondFormatter(v, axis) {
+		return v.toFixed(axis.tickDecimals) + "s";
+	}
 	
 	/*
 	 * edit points

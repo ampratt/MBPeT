@@ -16,7 +16,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 
 	public IndividualActionChartLayout(String title){
 		this.title = title;
-		indDataOptions = ", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+		indDataOptions = ", \"color\": \"rgb(203, 75, 75)\", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 		initLayout();
 	}
@@ -61,18 +61,19 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		monIndChart.setData("[{ \"data\": " + data + " }]");	//(formatDataForGraph(data));		
 		// options
 		String options =
-				"{" +
+			"{" +
+				"\"series\": { lines: {\"fill\": \"true\", \"fillColor\": \"rgb(203, 75, 75)\"}},"	+	//, points: {show: true} }" +
 					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"color\": \"rgb(203, 75, 75)\", \"minTickSize\": \"0.5\", \"tickDecimals\": \"1\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 						"\"clickable\": \"false\"," +
 						"\"hoverable\": \"true\"," +
 						"\"editable\":\"false\"," +
 
 					"}" +
-				"}";
+			"}";
 		monIndChart.setOptions(options);
 		
 		addComponentAsFirst(monIndChart);

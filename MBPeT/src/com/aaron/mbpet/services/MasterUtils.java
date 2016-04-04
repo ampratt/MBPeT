@@ -61,7 +61,7 @@ public class MasterUtils implements Runnable {
 	public void startMasterStreamGobbler(final MbpetUI mbpetUI, final MasterTerminalWindow masterTerminalWindow, 
 										final SessionViewer sessionViewer,
 										final String numSlaves, final int udpPort, 
-										final String username, final TestSession currsession) {		//(final String command) {
+										final String username, final TestSession currsession, final String masterOptions) {		//(final String command) {
 		new Thread(new Runnable(){
 			@Override
 			public void run() {
@@ -69,18 +69,19 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					command = "mbpet_cli.exe" +	//"./mbpet_cli" +	//
+					command = "./mbpet_cli" +	//"mbpet_cli.exe" +
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
 							" -p " + getAvailablePort() +
 							" -b localhost:" + udpPort + 
-							" -s";
+							" -s" +
+							" " + masterOptions;
 //					setCommand(c);
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
         	        ProcessBuilder pb = new ProcessBuilder(
-        	        		"cmd.exe", "/c", command); //Windows commands
-//        	        		"/bin/bash", "-c", command); //Unix commands
+//        	        		"cmd.exe", "/c", command); //Windows commands
+        	        		"/bin/bash", "-c", command); //Unix commands
 //        	        		command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999

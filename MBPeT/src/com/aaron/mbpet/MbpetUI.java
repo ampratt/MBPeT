@@ -232,7 +232,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	MonitoringTab montab = sessionViewer.tabs.getMonitoringTab();
 		        	montab.updateFields(values);
 		        	montab.updateSlaveMonitoringInfo(numslaves, slaveresults);
-		        	montab.updateCharts(Integer.parseInt(values[7]), responseset);
+		        	montab.updateChartsAndPanels(Integer.parseInt(values[7]), responseset);
 		        }
 		    });
 		}
@@ -365,14 +365,14 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 		
 		public String getUsersBasepath() {
-			return usersBasepathWindows;	//Windows;
+			return usersBasepathUnix;	//Windows;
 		}
 		public String getMbpetBasepath() {
-			return mbpetBasepathWindows;	//Windows;
+			return mbpetBasepathUnix;	//Windows;
 		}		
 		
 		public String getWebContent() {
-			return webContentWindows;	//Windows;
+			return webContentUnix;	//Windows;
 		}
 		
 //		  // return the current application instance

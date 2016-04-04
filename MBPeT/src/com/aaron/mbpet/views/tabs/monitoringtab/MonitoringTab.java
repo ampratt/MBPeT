@@ -39,7 +39,10 @@ import com.vaadin.ui.VerticalLayout;
 @StyleSheet("http://cdn.alloyui.com/2.5.0/aui-css/css/bootstrap.min.css")
 public class MonitoringTab extends Panel {
 
+	HorizontalLayout firstLayoutHL = new HorizontalLayout();
 	VerticalLayout vert = new VerticalLayout();
+	VerticalLayout rightvert = new VerticalLayout();
+	public VerticalLayout responsePanelVert;
 	private VerticalLayout slavevert;
 	public Label sentdata;
 	public Label receiveddata;
@@ -57,7 +60,7 @@ public class MonitoringTab extends Panel {
 	public FlotChart monRampChart;
 	public FlotChart monAggChart;
 	public FlotChart monIndChart;
-	String rampDataOptions = ", \"label\": \"virtual users\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String rampDataOptions = ", \"color\": \"rgb(77, 167, 77)\", \"label\": \"virtual users\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
@@ -75,14 +78,22 @@ public class MonitoringTab extends Panel {
 //	public static ProgressBar progressbar;
 //	public static Label progressstatus;
 	private VerticalLayout leftCharts;
-	private HorizontalLayout chartsHL;
+//	private HorizontalLayout chartsHL;
 	
     public MonitoringTab() {	//ReportsTab reportsTab
     	//setHeight(100.0f, Unit.PERCENTAGE);
         setSizeFull();
-		setContent(vert);
+		setContent(firstLayoutHL);	//(vert);
+		firstLayoutHL.setWidth("100%");
+		firstLayoutHL.addComponent(vert);
+		firstLayoutHL.addComponent(rightvert); //right side action panel and charts 
+		firstLayoutHL.setExpandRatio(vert, 7);
+		firstLayoutHL.setExpandRatio(rightvert, 3);
 		
-        vert.setMargin(true);
+		rightvert.setMargin(new MarginInfo(true, true, false, false));
+		rightvert.setSpacing(true);
+		
+        vert.setMargin(new MarginInfo(true, false, true, true));	//	(true);
         vert.setSpacing(true);  
         vert.addComponent(buildPanels());
 
@@ -96,49 +107,51 @@ public class MonitoringTab extends Panel {
     public HorizontalLayout buildPanels() {
     	HorizontalLayout row = new HorizontalLayout();
         //row.setStyleName("monitor-panels");
-        row.setMargin(new MarginInfo(false, true, false, true));
+        row.setMargin(false);	//(new MarginInfo(false, false, false, false));
         row.setSpacing(false);
     	row.setWidth("100%");
 //    	addComponent(row);
         //TestIcon testIcon = new TestIcon(60);
 
-//        Panel panel = new Panel("Average Response Times");
-//        //panel.setIcon(testIcon.get());
-////        panel.addStyleName("color1");
-//        panel.setContent(responseTimes());
-//        row.addComponent(panel);
+    	Panel panel = new Panel("Slaves");
+        panel.setContent(slavePanelContent());
+        row.addComponent(panel);
+        
+        
+        panel = new Panel("Bandwidth");
+        panel.setContent(bandwidthContent());
+        row.addComponent(panel);
 
         panel = new Panel("Response Counts");
         panel.setContent(responseCounts());
         panel.setSizeFull();
         row.addComponent(panel);
         
-        panel = new Panel("Bandwidth");
-        panel.setContent(bandwidthContent());
-        row.addComponent(panel);
-        
-        panel = new Panel("Slaves");
-        panel.setContent(slavePanelContent());
-        row.addComponent(panel);
+        panel = new Panel("Average Response Times");
+        //panel.setIcon(testIcon.get());
+//        panel.addStyleName("color1");
+        responsePanelVert = new VerticalLayout();
+        responsePanelVert.setMargin(true);
+        panel.setContent(responsePanelVert);	//responseTimes());
+        rightvert.addComponent(panel);
 
-//        vert.setComponentAlignment(row, Alignment.TOP_CENTER);	//this
         return row;
     }
     
     public void buildMonitoringChartsLayouts() {
     	
-    	chartsHL = new HorizontalLayout();
-    	chartsHL.setMargin(false);
-    	chartsHL.setSpacing(false);
-    	chartsHL.setWidth("100%");
-    	vert.addComponent(chartsHL);
+//    	chartsHL = new HorizontalLayout();
+//    	chartsHL.setMargin(false);
+//    	chartsHL.setSpacing(false);
+//    	chartsHL.setWidth("100%");
+//    	vert.addComponent(chartsHL);
     	
     	leftCharts = new VerticalLayout();
     	leftCharts.setMargin(false);
     	leftCharts.setSpacing(false);
     	leftCharts.setWidth("100%");
-    	chartsHL.addComponent(leftCharts);
-    	chartsHL.setExpandRatio(leftCharts, 2);
+    	vert.addComponent(leftCharts);
+    	vert.setExpandRatio(leftCharts, 2);
     	
 	/**
 	 * RAMP CHART
@@ -225,30 +238,59 @@ public class MonitoringTab extends Panel {
 //		vert.addComponent(xLabel);
 //		vert.setComponentAlignment(xLabel, Alignment.TOP_CENTER);
     }
+
     
-    List<Component> actionLayouts = new ArrayList<Component>();
+    List<Component> actionChartLayouts = new ArrayList<Component>();
+    List<Component> actionPanelLayouts = new ArrayList<Component>();
+    LabelDataPair aggLabelDataPair;
 	private VerticalLayout rightCharts;
+	public VerticalLayout panelIndResponses;
 	boolean firstrun=true;
-    public void buildIndActionChartLayout(List<TRT> actionsSelected){ 	//List<Integer>
+    public void buildIndActionChartAndPanelLayout(List<TRT> actionsSelected){ 	//List<Integer>
     	if(!firstrun){
-    		actionLayouts.clear();
-    		chartsHL.removeComponent(rightCharts);
+    		// charts ind actions
+    		actionChartLayouts.clear();
+    		rightvert.removeComponent(rightCharts); //chartsHL
     		
+    		// panel ind actions
+    		actionPanelLayouts.clear();
+    		responsePanelVert.removeAllComponents();
+//    		responsePanelVert.removeComponent(aggLabelDataPair);
+//            responsePanelVert.removeComponent(panelIndResponses);
     	}
+    	//charts
     	rightCharts = new VerticalLayout();
     	rightCharts.setMargin(false);
     	rightCharts.setSpacing(false);
     	rightCharts.setWidth("100%");
-    	chartsHL.addComponent(rightCharts);
-    	chartsHL.setExpandRatio(rightCharts, 1);
+    	rightvert.addComponent(rightCharts);
+    	rightvert.setExpandRatio(rightCharts, 1);
 
+    	//panel
+    	panelIndResponses = new VerticalLayout();
+//    	panelIndResponses.setMargin(false);
+//    	panelIndResponses.setSpacing(false);
+//    	panelIndResponses.setWidth("100%");
+    	aggLabelDataPair = new LabelDataPair("Aggregated");
+    	responsePanelVert.addComponent(aggLabelDataPair);
+    	responsePanelVert.addComponent(panelIndResponses);
+    	responsePanelVert.setExpandRatio(panelIndResponses, 1);
+        actionPanelLayouts.add(aggLabelDataPair);
+    	
     	IndividualActionChartLayout indActionLayout;
+    	LabelDataPair lableDataPair;
     	if (actionsSelected!=null){
     		for(TRT action : actionsSelected){	//for (int i=0; i<actionsSelected; i++){
     			System.out.println("current action is:" + action);
+    			//chart
     			indActionLayout = new IndividualActionChartLayout(action.getAction());	//(Integer.toString(i+1));
-    			actionLayouts.add(indActionLayout);
+    			actionChartLayouts.add(indActionLayout);
     			rightCharts.addComponent(indActionLayout);
+    			
+    			//panel
+    			lableDataPair = new LabelDataPair(action.getAction());
+    			actionPanelLayouts.add(lableDataPair);
+    			panelIndResponses.addComponent(lableDataPair);
     		}    		
     	}
 //    	IndividualActionChartLayout indActionLayout;
@@ -263,6 +305,7 @@ public class MonitoringTab extends Panel {
 //    	}
     	firstrun=false;
     }
+
     
 	public void buildRampChart(String chartdata) {
 		monRampChart = new FlotChart("Virtual Users");
@@ -287,11 +330,11 @@ public class MonitoringTab extends Panel {
 		// options
 		String options =
 				"{" + 
-					//"series: { lines: {show: true}, points: {show: true} }" +
+					"\"series\": { lines: {\"fill\": \"true\", \"fillColor\": \"rgb(77, 167, 77)\"}},"	+	//, points: {show: true} }" +
 					"\"crosshair\": {\"mode\": \"x\"}, " +
-					"\"legend\": { \"position\": \"nw\" }, " +
-					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+//					"\"legend\": { \"position\": \"nw\" }, " +
+					"\"xaxis\": { \"position\": \"bottom\", \"color\": \"rgb(77, 167, 77)\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
+					"\"yaxis\": { \"position\": \"left\", \"color\": \"rgb(77, 167, 77)\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 //						"\"margin\": { \"top\":\"5\", \"left\":\"10\", \"bottom\":\"15\", \"right\":\"20\" }," +
 						"\"clickable\": \"false\"," +
@@ -318,10 +361,11 @@ public class MonitoringTab extends Panel {
 		// options
 		String options =
 				"{" + 
+					"\"series\": { lines: {\"fill\": \"true\"}},"	+	//, points: {show: true} }" +
 					"\"crosshair\": {\"mode\": \"x\"}, " +
-					"\"legend\": { \"position\": \"nw\" }, " +
+//					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"minTickSize\": \"0.4\", \"tickDecimals\": \"1\", \"tickFormatter\": \"secondFormatter\"}, " +	//, \"tickDecimals\": \"0\" \"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 						"\"clickable\": \"false\"," +
 						"\"hoverable\": \"true\"," +
@@ -439,57 +483,61 @@ public class MonitoringTab extends Panel {
 	}
 	
     private Component responseTimes() {
-        VerticalLayout vert = new VerticalLayout();
+        responsePanelVert = new VerticalLayout();
         //vert.setSizeFull();
-        vert.setMargin(true);
-        vert.setHeight("6em");
+        responsePanelVert.setMargin(true);
+//        vert.setHeight("6em");
         //vert.setWidth("8em");
+//        LabelDataPair aggLabelDataPair = new LabelDataPair("Aggregated");
+//        responsePanelVert.addComponent(aggLabelDataPair);
+//        actionPanelLayouts.add(aggLabelDataPair);
         
 //        Label header = new Label("<b>Response Times</b>", ContentMode.HTML);
 ////        header.addStyleName("monitoringpanel-header");
 //        vert.addComponent(header);
 //        vert.setComponentAlignment(header, Alignment.TOP_CENTER);
              
-        // panels for KPI updates
-        HorizontalLayout row = new HorizontalLayout();
-        row.setWidth("100%");
-        //layout.setSpacing(true);
-        //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
-        
-        Label responseTimesLabel = new Label("Aggregated");
-        responseTimesLabel.addStyleName("small");
-        
-        aggregatedResponse = new Label();
-        aggregatedResponse.setSizeUndefined();
-        aggregatedResponse.addStyleName("bold");
-        aggregatedResponse.addStyleName("small");
-        
-        row.addComponents(responseTimesLabel, aggregatedResponse);
-        row.setComponentAlignment(responseTimesLabel, Alignment.MIDDLE_LEFT);
-        row.setComponentAlignment(aggregatedResponse, Alignment.MIDDLE_RIGHT);
-//        row.setExpandRatio(responseTimesLabel, 1);
-//        row.setExpandRatio(averageresponse, 2);
-        vert.addComponent(row);
+        // aggregated
+//        HorizontalLayout row = new HorizontalLayout();
+//        row.setWidth("100%");
+//        //layout.setSpacing(true);
+//        //Label content = new Label("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
+//        
+//        Label responseTimesLabel = new Label("Aggregated");
+//        responseTimesLabel.addStyleName("small");
+//        
+//        aggregatedResponse = new Label();
+//        aggregatedResponse.setSizeUndefined();
+//        aggregatedResponse.addStyleName("bold");
+//        aggregatedResponse.addStyleName("small");
+//        
+//        row.addComponents(responseTimesLabel, aggregatedResponse);
+//        row.setComponentAlignment(responseTimesLabel, Alignment.MIDDLE_LEFT);
+//        row.setComponentAlignment(aggregatedResponse, Alignment.MIDDLE_RIGHT);
+////        row.setExpandRatio(responseTimesLabel, 1);
+////        row.setExpandRatio(averageresponse, 2);
+//        vert.addComponent(new LabelDataPair("Aggregated"));
 
-        row = new HorizontalLayout();
-        row.setWidth("100%");
         
-        responseTimesLabel = new Label("Min/Max");
-        responseTimesLabel.addStyleName("small");
+//        row = new HorizontalLayout();
+//        row.setWidth("100%");
+//        
+//        responseTimesLabel = new Label("Min/Max");
+//        responseTimesLabel.addStyleName("small");
+//        
+//        minmaxresponse = new Label();
+//        minmaxresponse.setSizeUndefined();
+//        minmaxresponse.addStyleName("bold");
+//        minmaxresponse.addStyleName("small");
+//        
+//        row.addComponents(responseTimesLabel, minmaxresponse);
+//        row.setComponentAlignment(responseTimesLabel, Alignment.MIDDLE_LEFT);
+//        row.setComponentAlignment(minmaxresponse, Alignment.MIDDLE_RIGHT);
+////        row.setExpandRatio(responseTimesLabel, 1);
+////        row.setExpandRatio(minmaxresponse, 2);
+//        vert.addComponent(row);
         
-        minmaxresponse = new Label();
-        minmaxresponse.setSizeUndefined();
-        minmaxresponse.addStyleName("bold");
-        minmaxresponse.addStyleName("small");
-        
-        row.addComponents(responseTimesLabel, minmaxresponse);
-        row.setComponentAlignment(responseTimesLabel, Alignment.MIDDLE_LEFT);
-        row.setComponentAlignment(minmaxresponse, Alignment.MIDDLE_RIGHT);
-//        row.setExpandRatio(responseTimesLabel, 1);
-//        row.setExpandRatio(minmaxresponse, 2);
-        vert.addComponent(row);
-        
-        return vert;
+        return responsePanelVert;
     }
     
     private Component responseCounts() {
@@ -661,7 +709,7 @@ public class MonitoringTab extends Panel {
     	slavevert.removeAllComponents();
     	
     	for (int i=1; i<numslaves+1; i++) {
-    		Label slave = new Label("Slave " + i + " - <b>" + status + "</b>", ContentMode.HTML);	//statuses[i]);  
+    		Label slave = new Label("Slave" + i + " - <b>" + status + "</b>", ContentMode.HTML);	//statuses[i]);  
     		slave.addStyleName("small");
     		slavevert.addComponent(slave);        	
       	}    
@@ -675,22 +723,30 @@ public class MonitoringTab extends Panel {
 //    		HorizontalLayout row = new HorizontalLayout();
 //    		row.setWidth("100%");
     		
-    		Label slave;
+    		Label slave = null;
     		if (slaveresults[i].contains(String.valueOf(i+1)))
     			slave = new Label(slaveresults[i] + " - <b>Generating</b>", ContentMode.HTML);	//statuses[i]);  "Slave " + (i) + " - <b>" + slaveresults[i] + "</b>"
-			else 
-				slave = new Label("Slave " + (i+1) + " - <b>Connected</b>", ContentMode.HTML);	//statuses[i]);
+//			else 
+//				slave = new Label("Slave" + (i+1) + " - <b>Connected</b>", ContentMode.HTML);	//statuses[i]);
+    		slave.addStyleName("small");
+    		slavevert.addComponent(slave);        	
+      	}    
+    }
+    public void disconnectSlaveMonitoringInfo(int numslaves) {
+    	slavevert.removeAllComponents();
+    	
+    	for (int i=1; i<numslaves+1; i++) {
+    		Label slave = new Label("Slave" + i + " - <b>" + "Disconnected" + "</b>", ContentMode.HTML);	//statuses[i]);  
     		slave.addStyleName("small");
     		slavevert.addComponent(slave);        	
       	}    
     }
     
-    
     public void updateFields(String[] fields) {
     //(String averageresponse, String minmaxresponse, String sent, String received, String throughput, String targetuser, String slave ) {
     	
 //    	this.aggregatedResponse.setValue(fields[0]);
-    	this.minmaxresponse.setValue(fields[1]);
+//    	this.minmaxresponse.setValue(fields[1]);
     	this.throughput.setValue(fields[2]);
     	this.success.setValue(fields[3]);
     	this.error_count.setValue(fields[4]);
@@ -725,12 +781,12 @@ public class MonitoringTab extends Panel {
 //    int yInd, prevYInd = 0;
 	int x = 0;
 	DecimalFormat df = new DecimalFormat("#.##");
-	public void updateCharts(int users, HashSet<ActionResponse> responseset) {	//,int aggResp, int indResp
+	public void updateChartsAndPanels(int users, HashSet<ActionResponse> responseset) {	//,int aggResp, int indResp
 		if (x<1){	//draw point (0,0) on graph
 			monRampChart.update(0,0);			// update the js code to effect the chart 
 			monAggChart.update(0,0);
 //			monIndChart.update(0,0);
-			for(Component c : actionLayouts) {
+			for(Component c : actionChartLayouts) {
 				((IndividualActionChartLayout) c).getChart().update(0, 0);	//monIndChart
 			}
 		}
@@ -755,20 +811,53 @@ public class MonitoringTab extends Panel {
 					monAggChart.setY(0.0);	//yAgg
 					monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
 					monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
-					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );					
+					//panel
+//					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
+					for (Component c : actionPanelLayouts){
+						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
+						if(((LabelDataPair) c).getName().contains("Aggregated")){
+							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
+							break;
+						}		
+					}
 				} else {
 					monAggChart.setY(Double.parseDouble(df.format(act.getAverage())) );	//yAgg
 					monAggChart.addNewData(x, monAggChart.getY());		// update the server side data	- this first command WAS causing memory overload!
 					monAggChart.update(x, monAggChart.getY());			// update the js code to effect the chart 
-					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
+					//panel
+//					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
+					// update panel labels
+					for (Component c : actionPanelLayouts){
+						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
+						if(((LabelDataPair) c).getName().contains("Aggregated")){
+							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
+							break;
+						}		
+					}
 				}
 			} else {
-				// update IND action response
-				for(Component c : actionLayouts) {
+				// update IND action response charts
+				for(Component c : actionChartLayouts) {
 //					IndividualActionChartLayout cl = (IndividualActionChartLayout) c;
 					if(((IndividualActionChartLayout) c).getTitle().equals(act.getTitle())){
 						((IndividualActionChartLayout) c).updateChart(x, act.getCurrentResponseTime());	//monIndChart						
 					}
+//					if(((IndividualActionChartLayout) c).getTitle().equals(act.getTitle())){
+//						((IndividualActionChartLayout) c).updateChart(x, act.getCurrentResponseTime());	//monIndChart						
+//					}
+//					if(((LabelDataPair) c).getName().equals(act.getTitle())){
+//						((LabelDataPair) c).setDataValue(String.valueOf(act.getAverage()) + " s" );	//monIndChart						
+//					}
+				}
+				// update panel labels
+				for (Component c : actionPanelLayouts){
+					System.out.println("Panel action names:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
+					if(((LabelDataPair) c).getName().equals(act.getTitle())){
+						((LabelDataPair) c).setDataValue(df.format(act.getAverage()) + " s" );		//String.valueOf(act.getAverage()) + " s" );	//monIndChart						
+					}		
+//					if (){
+//						this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
+//					}
 				}
 			}
 		}
@@ -802,7 +891,7 @@ public class MonitoringTab extends Panel {
 		buildAggChart("[[0,0]]");
 		
 		// IND chart
-		for(Component v : actionLayouts) {
+		for(Component v : actionChartLayouts) {
 			((IndividualActionChartLayout) v).rebuildChart();	//(monIndChart);
 		}
 //		flotIndividualLayout.removeComponent(monIndChart);

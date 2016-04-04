@@ -48,8 +48,9 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 
     UDPThreadWorker udpWorker;
     
-    public int slaveSelect = 1;
-    public String slaveOptions= "";
+    public int slavesSelected = 1;
+    public String slaveOptions = "";
+	private String masterOptions = "";
     public List<Integer> actionIDsSelected;
 //    private ComboBox slaveSelect;
 //  private Button newSessionButton;
@@ -250,7 +251,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //    		UI.getCurrent().addWindow(settingswindow);
     		if (!settingswindow.isAttached()) {
     			settingswindow.setPositionX(
-    					event.getClientX() - event.getRelativeX() - 300);
+    					event.getClientX() - event.getRelativeX() - 600);
     			settingswindow.setPositionY(
     					event.getClientY() - event.getRelativeY() + 40);
                 getUI().addWindow(settingswindow);
@@ -284,16 +285,14 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// set display values to 0
 			tabs.getMonitoringTab().updateFields(
 					new String[]{"0 ms","0 ms","0","0","0","0 KB","0 KB","0"});	//,""});
-				//TabLayout
-			
 			tabs.getMonitoringTab().generateSlaveMonitoringInfo(
-					slaveSelect, "Connecting");	//(int) slaveSelect.getValue()
+					slavesSelected, "Connecting");	//(int) slaveSelect.getValue()
 			
 //			volatile double current = 0.0;
 //			progressbar.setData(new Float(0.0));
 			
 			// ready charts to [0,0]
-			tabs.getMonitoringTab().buildIndActionChartLayout(getINDActionsBeingMonitored());	//(actionIDsSelected);	//(2);
+			tabs.getMonitoringTab().buildIndActionChartAndPanelLayout(getINDActionsBeingMonitored());	//(actionIDsSelected);	//(2);
 			tabs.getMonitoringTab().refreshCharts();
 //			tabs.getMonitoringTab().resetChart();
 
@@ -311,7 +310,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start receiving UDP messages
 			udpWorker = new UDPThreadWorker(this);
 //			udpWorker.setTimeout(currsession.getParameters().getTest_duration()*1000);
-			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), slaveSelect);	//(int) slaveSelect.getValue()
+			udpWorker.fetchAndUpdateDataWith((MbpetUI) UI.getCurrent(), slavesSelected);	//(int) slaveSelect.getValue()
 //			int udpPort = udpWorker.getUDPPort();
 
 			// start mbpet MASTER
@@ -337,10 +336,11 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			masterUtils = new MasterUtils();		//mastercommand);
 //			int masterport = masterUtils.getAvailablePort();
 			masterUtils.startMasterStreamGobbler((MbpetUI) UI.getCurrent(), masterTerminalWindow, this,
-					Integer.toString(slaveSelect), 	//slaveSelect.getValue().toString()
+					Integer.toString(slavesSelected), 	//slaveSelect.getValue().toString()
 					udpPort, 
 					currsession.getParentcase().getOwner().getUsername(), 
-					currsession);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
+					currsession,
+					masterOptions);	//(mastercommand);	//(mastercommand);		//startMaster2(mastercommand);
 //			masterUtils.startMaster(slaveSelect.getValue().toString(), udpPort, currsession.getParentcase().getOwner().getUsername(), currsession);	//(mastercommand);
 
             
@@ -353,7 +353,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 						
 			System.out.println("master port --being sent to slave-- is: " + masterPort);
 			slaveUtils = new SlaveUtils();
-			for (int i=0; i<slaveSelect; i++){	//(Integer)slaveSelect.getValue()
+			for (int i=0; i<slavesSelected; i++){	//(Integer)slaveSelect.getValue()
 				slaveUtils.startSlave(masterPort, slaveOptions);		//(slavecommand);
 				System.out.println((i+1) + " SLAVE STARTING");
 			}
@@ -384,11 +384,12 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     		
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
-//			killer.pkillLinuxProcess(masterUtils.getCommand());
-//			killer.pkillLinuxProcess(slaveUtils.getCommand());
-			killer.killWindowsProcess(masterPort);
+			killer.pkillLinuxProcess(masterUtils.getCommand());
+			killer.pkillLinuxProcess(slaveUtils.getCommand());
+//			killer.killWindowsProcess(masterPort);
 //			killer.fuserKillLinuxProcess(masterPort);
 			
+			tabs.getMonitoringTab().disconnectSlaveMonitoringInfo(getNumSlaves());
 			resetStartStopButton();
 			testStopped = true;
         }
@@ -464,18 +465,27 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		stopButton.removeStyleName("danger");
 	}
 
-	public void setSlaveSelect(int noSlaves){
-		this.slaveSelect = noSlaves;
+	public void setNumSlaves(int noSlaves){
+		this.slavesSelected = noSlaves;
 	}
-	public int getSlaveSelect(){
-		return this.slaveSelect;
+	public int getNumSlaves(){
+		return this.slavesSelected;
 	}
+	
 	public void setSlaveOptions(String options){
 		this.slaveOptions = options;
 	}
 	public String getSlaveOptions(){
 		return this.slaveOptions;
 	}
+	
+	public void setMasterOptions(String options){
+		this.masterOptions = options;
+	}
+	public String getMasterOptions(){
+		return this.masterOptions;
+	}
+	
 	public void setINDActionIDsToMonitor(List<Integer> intIDList){
 		this.actionIDsSelected = intIDList;
 	}

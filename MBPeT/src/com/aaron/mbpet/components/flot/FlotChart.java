@@ -80,7 +80,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
         	@Override
             public void onPlotClick(int seriesIndex, int dataIndex, JsonArray datapoint) {
                 Notification notification = new Notification("");
-                notification.setDescription("\nRamp value: " + datapoint.toJson());
+                notification.setDescription("\nData point value: " + datapoint.toJson());
 //                notification.setHtmlContentAllowed(true);
                 notification.setStyleName("dark small");		//("tray dark small closable login-help");
                 notification.setPosition(Position.BOTTOM_CENTER);
