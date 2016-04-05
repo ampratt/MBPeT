@@ -69,7 +69,7 @@ public class TabLayout extends TabSheet {
             @Override
             public void selectedTabChange(SelectedTabChangeEvent event) {
                 if (event.getTabSheet().getSelectedTab() == reportsTab) {
-                	refreshReports();
+                	copyAndRefreshReports();
                 }
             }
         });
@@ -105,9 +105,10 @@ public class TabLayout extends TabSheet {
 		this.monitoringTab = monitoringTab;
 	}
     
-	public void refreshReports(){
+	public void copyAndRefreshReports(){
 		// create any needed pdfs and copy any needed dir to webapp_reports dir
-		reportsTab.copyReportsDirs();		
+		reportsTab.copyReportsDirs();	
+		reportsTab.refreshDocListContainer();
 		
 //		reportsTab.refreshReportsInLayout();
 //    	ReportsTab newReportsComponent = new ReportsTab(currsession);

@@ -162,7 +162,7 @@ public class UDPThreadWorker {
             		        	   
 	        	                   // navigate to reports
 	        	                   if (navToReports) {
-	        	                	   sessionViewer.tabs.refreshReports();
+	        	                	   sessionViewer.tabs.copyAndRefreshReports();
 	        	                	   sessionViewer.tabs.setSelectedTab(2);
 	        	                   }
 	          		               // Update the UI thread-safely
@@ -186,7 +186,8 @@ public class UDPThreadWorker {
 //            	                    serverSocket.close();
 //            		           }
             		        	   
-            		        	   
+            		           receiveBuffer = null;
+            		           receivePacket = null;
             		           x++;
             				}
             	            catch (SocketTimeoutException e) {

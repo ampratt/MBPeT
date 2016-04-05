@@ -66,7 +66,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 					"\"crosshair\": {\"mode\": \"x\"}, " +
 					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"color\": \"rgb(203, 75, 75)\", \"minTickSize\": \"0.5\", \"tickDecimals\": \"1\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"color\": \"rgb(203, 75, 75)\", \"minTickSize\": \"0.2\", \"tickDecimals\": \"1\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 						"\"clickable\": \"false\"," +
 						"\"hoverable\": \"true\"," +

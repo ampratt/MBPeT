@@ -17,6 +17,8 @@ public interface PushLabelUpdater {
 
     void printFinalMessage(String message, final int numslaves, SessionViewer sessionViewer);
 
+//	void printNextMasterOutput(StringBuilder message, MasterTerminalWindow masterWindow);
+
 //    void printNextInput(String message, MasterTerminalWindow masterWindow);	//SessionViewer sessionViewer); //, double current);
 
     

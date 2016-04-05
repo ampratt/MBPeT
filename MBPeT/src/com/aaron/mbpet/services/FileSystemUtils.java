@@ -141,11 +141,11 @@ public class FileSystemUtils {
 			
 			String command = "wkhtmltopdf " + 
 					html.getAbsolutePath() + " " + 
-					destinationFolder + FilenameUtils.removeExtension(html.getName()) + ".pdf";
+					destinationFolder + "/" + FilenameUtils.removeExtension(html.getName()) + ".pdf";
 			//create pdf
 //			Runtime.getRuntime().exec(new String[] { //"cmd.exe", "/c", "echo windows doesn't make pdfs"});
 //							"/bin/bash", "-c", command });
-			System.out.println("ATTEMPTING TO CREATE pdf report of: " + html.getName());
+			System.out.println("ATTEMPTING TO CREATE pdf report command: " + command);
 
 	        ProcessBuilder pb = new ProcessBuilder(
 	        		"/bin/bash", "-c", command); //Unix commands

@@ -37,6 +37,7 @@ public class OptimizedConnectorBundleLoaderFactory extends
             eagerConnectors.add(com.vaadin.client.ui.image.ImageConnector.class.getName());
             eagerConnectors.add(com.vaadin.client.ui.browserframe.BrowserFrameConnector.class.getName());
             eagerConnectors.add(com.vaadin.client.ui.progressindicator.ProgressBarConnector.class.getName());
+            eagerConnectors.add(com.vaadin.client.ui.treetable.TreeTableConnector.class.getName());
     }
 
     @Override

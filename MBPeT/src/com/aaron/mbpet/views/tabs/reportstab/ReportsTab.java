@@ -98,8 +98,8 @@ public class ReportsTab extends Panel {
     	
     public Component buildDocListViewer(){
     	docs = new FilesystemContainer(new File(webapp_reports));// + "/webapp"));	//(new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports"));
+//    	doclist.setContainerDataSource(docs);
 
-//		doclist.setContainerDataSource(docs);
     	
     	// docViewer panel 
     	docViewPanel = new Panel();
@@ -130,7 +130,8 @@ public class ReportsTab extends Panel {
     	doclist.setItemIconPropertyId(FilesystemContainer.PROPERTY_ICON);	//("Icon");	//
 
       // Do not show the Icon column
-    	doclist.setVisibleColumns("Name");	//new Object[]{"Name", "Last Modified"});	//"Size",
+    	doclist.setVisibleColumns("Name");	//"Size", "Name");	//
+//    	doclist.setColumnHeaders(new String[] {"Name"});
       // END-EXAMPLE: datamodel.container.filesystemcontainer.basic
     	doclist.setColumnExpandRatio("Name", 1);
 //      layout.addComponent(treetable);
@@ -191,7 +192,11 @@ public class ReportsTab extends Panel {
 	}
 	
 	
-    public void refreshReportsInLayout(){
+    public void refreshDocListContainer(){
+    	docs = new FilesystemContainer(new File(webapp_reports));
+		doclist.setContainerDataSource(docs);
+    	doclist.setVisibleColumns("Name");	//"Size", "Name");	//
+
 //    	vert.removeComponent(vert.getComponent(0));
 //		vert.addComponent(buildReportsCatalog());    	
     }

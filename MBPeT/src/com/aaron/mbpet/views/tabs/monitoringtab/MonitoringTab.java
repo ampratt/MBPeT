@@ -365,7 +365,7 @@ public class MonitoringTab extends Panel {
 					"\"crosshair\": {\"mode\": \"x\"}, " +
 //					"\"legend\": { \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"minTickSize\": \"0.4\", \"tickDecimals\": \"1\", \"tickFormatter\": \"secondFormatter\"}, " +	//, \"tickDecimals\": \"0\" \"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"minTickSize\": \"0.2\", \"tickDecimals\": \"1\", \"tickFormatter\": \"secondFormatter\"}, " +	//, \"tickDecimals\": \"0\" \"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 						"\"clickable\": \"false\"," +
 						"\"hoverable\": \"true\"," +

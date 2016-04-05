@@ -51,7 +51,7 @@ public class StreamGobbler {	//extends Thread {
 		             String line=null;
 		             while ( (line = br.readLine()) != null) {
 //		            	 updater.printNextInput(line, masterTerminalWindow);	//masterTerminalWindow);	
-		             	updater.printNextMasterOutput("mbpet>" + line, masterTerminalWindow);	//masterTerminalWindow);	
+		             	updater.printNextMasterOutput(new StringBuilder("mbpet>" + line), masterTerminalWindow);	//masterTerminalWindow);	
 		//                 System.out.println(type + ">" + line);
 		             }
 		         } catch (IOException ioe) {

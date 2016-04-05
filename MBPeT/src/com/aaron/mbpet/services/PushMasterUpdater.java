@@ -5,6 +5,8 @@ import com.aaron.mbpet.views.sessions.SessionViewer;
 
 public interface PushMasterUpdater {
 		
-    void printNextMasterOutput(String message, MasterTerminalWindow masterWindow); //, double current);
+//    void printNextMasterOutput(String message, MasterTerminalWindow masterWindow); //, double current);
+
+	void printNextMasterOutput(StringBuilder message, MasterTerminalWindow masterWindow);
     
 }

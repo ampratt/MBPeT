@@ -84,7 +84,7 @@ public class StreamGobbler2 {	//extends Thread {
 		                     public void run() {
 		                    	 String prefix = "mbpet>";
 //		                    	 if (type.equals("ERROR")) prefix = "mbpet-ERROR>";
-		                    	 masterTerminalWindow.insertDataToEditor(prefix + output);
+		                    	 masterTerminalWindow.insertDataToEditor(new StringBuilder(prefix + output));
 		                     }
 		                 });
 		                 
@@ -122,7 +122,7 @@ public class StreamGobbler2 {	//extends Thread {
 		                     public void run() {
 		                    	 String prefix = "mbpet>";
 		                    	 if (type.equals("ERROR")) prefix = "mbpet-ERROR>";
-		                    	 masterTerminalWindow.insertDataToEditor(prefix + output);
+		                    	 masterTerminalWindow.insertDataToEditor(new StringBuilder(prefix + output));
 		                     }
 		                 });
 //		             	updater.printNextMasterOutput("mbpet>" + line, masterTerminalWindow);	//masterTerminalWindow);	

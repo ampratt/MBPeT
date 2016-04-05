@@ -56,14 +56,20 @@ public class MasterTerminalWindow extends Window {
 	    setResizable(true);
 	    setClosable(true);
 	    setCloseShortcut(KeyCode.ESCAPE, null);
-	    setHeight(30, Unit.EM);	//(40.0f, Unit.PERCENTAGE);
-	    setWidth(30, Unit.EM);
-	    setPosition(1, 1);
+	    setWidth(25, Unit.EM);
+	    setHeight(300, Unit.PIXELS);	//(40.0f, Unit.PERCENTAGE);
+
+
+		//	    Window parentWindow = ((Window) getWindow().getParent());
+	    int posY = (int) (UI.getCurrent().getPage().getBrowserWindowHeight() - this.getHeight());
+//	    Float posY = posY - this.getHeight();
+//	    System.out.println("Browser height:sub-window height" + UI.getCurrent().getPage().getBrowserWindowHeight() + " : " + this.getHeight());
+	    setPosition(1, posY);	//1);
 	//      setContent(buildWindowContent(tree, "New Instance"));
       
   	
         layout = new VerticalLayout();
-        layout.setMargin(true);
+        layout.setMargin(false);
         layout.setHeight("100%");
 //      content.setSizeFull();
       
@@ -187,12 +193,19 @@ public class MasterTerminalWindow extends Window {
 
 
     StringBuilder sb = new StringBuilder();
-	public void insertDataToEditor(String message) {
+	public void insertDataToEditor(StringBuilder message) {	//String
 //		vert.addComponent(new Label(message));
 
+//		System.out.println("## ACE EDITOR CURSOR POSITION BEFORE UPDATE ## > " + editor.getCursorPosition());
+		if (editor.getCursorPosition() > 7000){
+			// erase old data and write message at line 1
+			System.out.println("Ace Editor resetting at position > " + editor.getCursorPosition());
+			sb = new StringBuilder();
+			editor.setValue(sb.toString());
+		} 
 		// add new content
 		sb.append("\n");
-		sb.append(message);
+		sb.append(message.toString());
 		editor.setValue(sb.toString());
 		
 		//navigate to bottom of terminal

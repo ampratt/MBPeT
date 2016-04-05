@@ -328,7 +328,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                	masterTerminalWindow.insertDataToEditor("udp_client>listening on port " + udpPort + "\n");
+                	masterTerminalWindow.insertDataToEditor(new StringBuilder("udp_client>listening on port " + udpPort + "\n"));
                 }
             });
 			
@@ -361,7 +361,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			UI.getCurrent().access(new Runnable() {
 				@Override
 				public void run() {
-					masterTerminalWindow.insertDataToEditor("\nmbpet>initializing slave(s) on port " + masterPort + "\n");
+					masterTerminalWindow.insertDataToEditor(new StringBuilder("\nmbpet>initializing slave(s) on port " + masterPort + "\n"));
 				}
 			});
 

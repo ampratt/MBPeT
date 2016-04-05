@@ -50,7 +50,8 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
     String[] themes = {"ambiance", "chrome", "clouds", "cobalt", "dreamweaver", "eclipse", "github", "terminal", "twilight", "xcode"};
 
 //    String testDir = "C:/dev/git/alternate/mbpet/MBPeT/WebContent/META-INF/output/settings.py";
-    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+//    String basepath = "C:/dev/git/alternate/mbpet/MBPeT/WebContent";	//VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    String basepath = ((MbpetUI) UI.getCurrent()).getWebContent();
     String defaultsettingsfile = basepath + "/WEB-INF/tmp/settings.py";
     String prevModelsFolder;
     String prevReportsFolder;

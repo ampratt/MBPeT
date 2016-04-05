@@ -37,6 +37,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.Position;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -268,8 +269,9 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		        	montab.generateSlaveMonitoringInfo(numslaves, "Disconnected");
 //		        	montab.addNewMessageComponent(message);
 		        	//show notification
-		        	Notification notification = new Notification("Test Successfully Completed!", "Master Test Report was generated and is available on Reports Tab.");//, Notification.Type.	//HUMANIZED_MESSAGE);
-		            notification.setStyleName("system success");
+		        	Notification notification = new Notification("Test Successfully Completed!<br>Master Test Report was generated and is available on Reports Tab.");//, Notification.Type.	//HUMANIZED_MESSAGE);
+		            notification.setHtmlContentAllowed(true);
+		        	notification.setStyleName("system success");
 		            notification.setPosition(Position.TOP_RIGHT);
 		            notification.setDelayMsec(5000);
 		            notification.show(Page.getCurrent());
@@ -278,7 +280,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
 		}
 	    
 		@Override
-		public void printNextMasterOutput(final String message, final MasterTerminalWindow masterWindow) {	//final SessionViewer sessionViewer ){
+		public void printNextMasterOutput(final StringBuilder message, final MasterTerminalWindow masterWindow) {	//final SessionViewer sessionViewer ){
 		    access(new Runnable() {
 		        @Override
 		        public void run() {

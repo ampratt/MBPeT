@@ -85,7 +85,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 	
 	private void init(Parameters parentparameters, Table table) {
 		center();
-		setResizable(false);
+		setResizable(true);
 		setClosable(true);
 		setModal(false);
 

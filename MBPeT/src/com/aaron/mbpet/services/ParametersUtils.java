@@ -104,89 +104,90 @@ public class ParametersUtils {
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
 			
-			if (line.contains("dstat_mode") && line.contains("=") ) {
+			if (line.contains("dstat_mode") && line.contains("=") && !(line.startsWith("#")) ) {
 				if (line.startsWith("#"))
 					currparams.setDstat_mode(null);
-				else
+				else if(line.startsWith("dstat_mode"))
 					currparams.setDstat_mode(getDstatInfo(line));
 				
-			} else if (line.contains("host") && line.contains("=")) {
+			} else if (line.contains("host") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setHost(null);
-				else
+				else if(line.startsWith("host"))
 					currparams.setHost(getQuotedDataInfo(line, "\"", "host"));
 				
-			} else if (line.contains("username") && line.contains("=")) {
+			} else if (line.contains("username") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setUsername(null);
-				else
+				else if(line.startsWith("username"))
 					currparams.setUsername(getQuotedDataInfo(line, "'", "username"));
 				
-			} else if (line.contains("password") && line.contains("=")) {
+			} else if (line.contains("password") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setPassword(null);
-				else
+				else if(line.startsWith("password"))
 					currparams.setPassword(getQuotedDataInfo(line, "'", "password"));
 				
-			} else if (line.contains("user_types") && line.contains("=")) {
+			} else if (line.contains("user_types") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setUser_types(null);
-				else
+				else if(line.startsWith("user_types"))
 					currparams.setUser_types(getQuotedDataInfo(line, "\"", "user_types"));
 				
-			} else if (line.contains("models_folder") && line.contains("=")) {
+			} else if (line.contains("models_folder") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setModels_folder(null);
-				else
+				else if(line.startsWith("models_folder"))
 					currparams.setModels_folder(getQuotedDataInfo(line, "\"", "models_folder"));
 				
-			} else if (line.contains("test_report_folder") && line.contains("=")) {
+			} else if (line.contains("test_report_folder") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setTest_report_folder(null);
-				else
+				else if(line.startsWith("test_report_folder"))
 					currparams.setTest_report_folder(getQuotedDataInfo(line, "\"", "test_report_folder"));
 				
-			} else if (line.contains("ip") && line.contains("=")) {
-				System.out.println("## handling IP now ##");
+			} else if (line.contains("ip") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setIp(null);
-				else
+				else if(line.startsWith("ip")){
+					System.out.println("## handling IP now ##");
 					currparams.setIp(getQuotedDataInfo(line, "\"", "ip"));
+				}
 								
-			} else if ( (line.contains("test_duration") && line.contains("=")) && !(line.contains("E.g."))  ) {
+			} else if ( (line.contains("test_duration") && line.contains("=") && !(line.startsWith("#"))) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setTest_duration(0);
-				else
+				else if(line.startsWith("test_duration"))
 					currparams.setTest_duration(getIntegerInfo(line));
 								
 			} else if ( line.contains("ramp_list") && line.contains("=") && !(line.contains("#ramp_list")) ) {
 				if (line.startsWith("#"))
 					currparams.setRamp_list("[(0, 0)]");
-				else
+				else if(line.startsWith("ramp_list"))
 					currparams.setRamp_list(getRampListInfo(line));
 				
 			} else if ( (line.contains("interval") && line.contains("=")) && !(line.contains("E.g.")) && !(line.startsWith("#")) ) {
 				if (line.startsWith("#"))
 					currparams.setMonitoring_interval(0);
-				else
+				else if(line.startsWith("interval"))
 					currparams.setMonitoring_interval(getIntegerInfo(line));
 				
 			} else if ( (line.contains("mean_user_think_time") && line.contains("=")) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setMean_user_think_time(0);
-				else
+				else if(line.startsWith("mean_user_think_time"))
 					currparams.setMean_user_think_time(getIntegerInfo(line));
 								
 			} else if ( (line.contains("standard_deviation") && line.contains("=")) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setStandard_deviation(0.0);
-				else
+				else if(line.startsWith("standard_deviation"))
 					currparams.setStandard_deviation(getDoubleInfo(line));
 												
-			} else if ( (line.contains("TargetResponseTime") && line.contains("=")) && !(line.contains("E.g."))  ) {
-				if (line.startsWith("#"))
-					currparams.setTarget_response_times(null);
-				else
+			} else if ( line.startsWith("TargetResponseTime") ){	//(line.contains("TargetResponseTime") && line.contains("=")) && !(line.startsWith("E.g."))  ) {
+//				if (line.startsWith("#")){}
+////					currparams.setTarget_response_times(null);
+//				else if(line.startsWith("TargetResponseTime"))
 					getTRTListFromString(line);
 
 			} else {
@@ -484,7 +485,8 @@ public class ParametersUtils {
 	 * 	 else (next is '}') then : finish read
 	 */
 	public static void getTRTListFromString(String line){	//List<TRT> list  (Parameters currparams) {
-//		String result = "";
+		System.out.println("#Getting TRTs");
+		//		String result = "";
 		StringTokenizer stk = new StringTokenizer(line, "=");
 		stk.nextToken();	// token before '='
 		String afterequals = stk.nextToken();
@@ -571,7 +573,7 @@ public class ParametersUtils {
 		// get Action
 		Scanner scan = new Scanner(singleTRT).useDelimiter("'");
 		String result = scan.next();
-		System.out.println("first scan result - >" + result);
+		System.out.println("action scan result - >" + result);
 		trt.setAction(result);
 		
 		// get Average
