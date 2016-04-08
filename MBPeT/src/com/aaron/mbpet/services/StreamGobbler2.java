@@ -48,16 +48,17 @@ public class StreamGobbler2 {	//extends Thread {
 		             while ( (line = br.readLine()) != null) {
 		            	 final String output = line;
 		            	 
-	            		 System.out.println("searching for timestamp in..."+line);
+//	            		 System.out.println("searching for timestamp in..."+line);
 	            		 Scanner sc = new Scanner(line);
 	            		 String one = "", two = "";
 	            		 if (sc.hasNext()) one = sc.next();
 	            		 if (sc.hasNext()) {two = sc.next();
-	            		 System.out.println("first two words: " + one + " " + two); }
+//	            		 System.out.println("first two words: " + one + " " + two); 
+	            		 }
 	            		 
 	            		 if ((one.equals("Time")) && (two.equals("Left:")) ){
 //		            	 if(containsExactPhrase(line, "Left:")){
-		            		 System.out.println("line contained 'Time Left:'");
+//		            		 System.out.println("line contained 'Time Left:'");
 //		            		 timestamp = sc.nextInt();
 		            	 
 				            	 // start progressbar
@@ -152,7 +153,7 @@ public class StreamGobbler2 {	//extends Thread {
 //		                    	 masterTerminalWindow.insertDataToEditor("mbpet>" + output);
 //		                     }
 //		                 });
-		                 System.out.println("SLAVE" + type + ">" + line);
+//		                 System.out.println("SLAVE" + type + ">" + line);
 //		             	updater.printNextMasterOutput("mbpet>" + line, masterTerminalWindow);	//masterTerminalWindow);	
 		//                 System.out.println(type + ">" + line);
 		             }
@@ -166,7 +167,7 @@ public class StreamGobbler2 {	//extends Thread {
     Pattern p;
     Matcher m;
 	private boolean containsExactPhrase(String fullString, String word){
-		System.out.println("line searched: " + fullString);
+//		System.out.println("line searched: " + fullString);
 
 	    String pattern = ".*\\b"+word+"\\b.*";
 	    p = Pattern.compile(pattern);

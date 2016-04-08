@@ -281,7 +281,7 @@ public class MonitoringTab extends Panel {
     	LabelDataPair lableDataPair;
     	if (actionsSelected!=null){
     		for(TRT action : actionsSelected){	//for (int i=0; i<actionsSelected; i++){
-    			System.out.println("current action is:" + action);
+//    			System.out.println("current action is:" + action);
     			//chart
     			indActionLayout = new IndividualActionChartLayout(action.getAction());	//(Integer.toString(i+1));
     			actionChartLayouts.add(indActionLayout);
@@ -795,8 +795,8 @@ public class MonitoringTab extends Panel {
 
 		// update RAMP
 		monRampChart.setY(users);	//yRamp
-		System.out.println("sent int:" + users);
-		System.out.println("New point:" + x + "," + users);
+//		System.out.println("sent int:" + users);
+//		System.out.println("New point:" + x + "," + users);
 		monRampChart.addNewData(x, monRampChart.getY());		// update the server side data	- this first command WAS causing memory overload!
 		monRampChart.update(x, monRampChart.getY());			// update the js code to effect the chart 
 		System.out.println(monRampChart.getData().toJson());
@@ -851,7 +851,7 @@ public class MonitoringTab extends Panel {
 				}
 				// update panel labels
 				for (Component c : actionPanelLayouts){
-					System.out.println("Panel action names:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
+//					System.out.println("Panel action names:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
 					if(((LabelDataPair) c).getName().equals(act.getTitle())){
 						((LabelDataPair) c).setDataValue(df.format(act.getAverage()) + " s" );		//String.valueOf(act.getAverage()) + " s" );	//monIndChart						
 					}		

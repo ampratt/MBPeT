@@ -13,7 +13,7 @@ public class LabelDataPair extends HorizontalLayout {
         setWidth("100%");
         //layout.setSpacing(true);
 
-        name = new Label(labelname);	//("Aggregated");
+        name = new Label(shortenLabelName(labelname));	//("Aggregated");
         name.addStyleName("small");
         
         value = new Label("-");
@@ -25,7 +25,7 @@ public class LabelDataPair extends HorizontalLayout {
         setComponentAlignment(name, Alignment.MIDDLE_LEFT);
         setComponentAlignment(value, Alignment.MIDDLE_RIGHT);
 	}
-	
+
 	public void setDataValue(String labelvalue){
 		value.setValue(labelvalue);
 	}
@@ -33,4 +33,9 @@ public class LabelDataPair extends HorizontalLayout {
 		return name.getValue();
 	}
 	
+	private String shortenLabelName(String labelname) {
+		if (labelname.length() >= 20){
+			return (new StringBuilder(labelname.substring(0, 20) + "..)")).toString();
+		} else return labelname;
+	}
 }

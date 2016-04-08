@@ -446,7 +446,11 @@ public class FileSystemUtils {
 		           				"\nThere was no html report in directory: " + dir.getAbsolutePath());
 		           	}
 		           	// create the actual pdf
-		            generatePdfReport(newReportDir.getAbsolutePath(), html);
+		            try {
+						generatePdfReport(newReportDir.getAbsolutePath(), html);
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
 		            
 		            
 		            // 3. copy all report files to new dir

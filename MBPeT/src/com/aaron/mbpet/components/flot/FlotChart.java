@@ -108,8 +108,8 @@ public class FlotChart extends AbstractJavaScriptComponent {
 				flotUtils.triggerDataUpdate();
 
 			    //FOR TESTING - update chart state
-			    System.out.println("newData: " + newData.toJson());				
-			    System.out.println("newData from getData(Flot): " + getData().toJson());				
+//			    System.out.println("newData: " + newData.toJson());				
+//			    System.out.println("newData from getData(Flot): " + getData().toJson());				
 			}
         });
         
@@ -125,8 +125,9 @@ public class FlotChart extends AbstractJavaScriptComponent {
 				Notification.show("from registerRpc");
 
 			    //FOR TESTING - update chart state
-			    System.out.println("newData: " + newData);				
-			    System.out.println("newData from getData(Flot): " + getData());				}
+//			    System.out.println("newData: " + newData);				
+//			    System.out.println("newData from getData(Flot): " + getData());				
+			}
 		});
         
         addFunction("onDataUpdate", new JavaScriptFunction() {
@@ -182,11 +183,11 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //	}
 	public void update(int x, double y) {
 		callFunction("update", x, y);
-		System.out.println("called -> 'udpate(x,y) ...updating the javascript code affecting the chart");
+//		System.out.println("called -> 'udpate(x,y) ...updating the javascript code affecting the chart");
 	}
 	public void reset(String newdata) {
 		callFunction("reset", newdata);
-		System.out.println("called -> 'reset(newdata) ...updating the javascript code affecting the chart");
+//		System.out.println("called -> 'reset(newdata) ...updating the javascript code affecting the chart");
 	}
 	
 	public void getCurrentData() {
@@ -222,13 +223,13 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	public void setData(String source) {
 //		JsonArray data;	//JsonArray data;
 		try {
-			System.out.println("STRING Source:\n" + source);
+//			System.out.println("STRING Source:\n" + source);
 //			source = source.substring(1, source.length() - 1);
 //			System.out.println("JSON Source:\n" + source);
 			
 //			data = new JreJsonArray(source) ;	//JsonArray(source);
 			data = factory.parse(source);
-			System.out.println("JSON parsed:\n" + data.toJson());
+//			System.out.println("JSON parsed:\n" + data.toJson());
 //			this.data = data;
 			getState().setData(data);
 		} catch (JsonException e) {	//JsonException
@@ -252,14 +253,14 @@ public class FlotChart extends AbstractJavaScriptComponent {
 //		setData(data);
 //	}
 	public void addNewData(int x, double y) {
-		System.out.println("\ncalled -> 'addNewData()");
+//		System.out.println("\ncalled -> 'addNewData()");
 
 		String newData = "[" + x +"," + y + "]";
 		
 		// JSON data must be manually formatted to add the new data inside the correct brackets
-		System.out.println("data before update: " + data.toJson());
+//		System.out.println("data before update: " + data.toJson());
 		setData( addNewDataToJson(newData) );		// data.put(newData);
-		System.out.println("data after update:  " + data.toJson());
+//		System.out.println("data after update:  " + data.toJson());
 		
 		// call js connector update function
 //		update(x, y);		
@@ -273,7 +274,7 @@ public class FlotChart extends AbstractJavaScriptComponent {
 			System.out.println("JSON Options:\n" + opt);
 			
 			options = factory.parse(opt);	//new JSONObject(opt);
-			System.out.println("JSON parsed:\n" + options.toJson());
+//			System.out.println("JSON parsed:\n" + options.toJson());
 
 			getState().setOptions(options);
 		} catch (JsonException e) {
@@ -307,27 +308,27 @@ public class FlotChart extends AbstractJavaScriptComponent {
 	
 	public String addNewDataToJson(String newData) {
 		// get current data
-		System.out.println("data->" + data.toJson());
+//		System.out.println("data->" + data.toJson());
 
 		JsonArray jarray = factory.parse(data.toJson());
 		JsonObject obj = jarray.get(0);
 		JsonArray dataArray = factory.parse(obj.get("data").toJson());
 		String d = dataArray.toJson();
-		System.out.println("data->" + d);
+//		System.out.println("data->" + d);
 			
 		
 		// remove outer right brackets - ']}]'
 		String formatted = d.substring(0, d.length() - 1);
-		System.out.println("deFormatted: " + formatted);
+//		System.out.println("deFormatted: " + formatted);
 		
 		// add newData and reformat finished data
 		formatted = new StringBuilder().append(formatted).append(","+ newData).append("]").toString();
-		System.out.println("formatted: " + formatted);
+//		System.out.println("formatted: " + formatted);
 
 		String jdata = "[{ \"data\": " + formatted + dataOptions + " }]";
 				//", \"label\": \"active users\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 				//"\"clickable\":\"true\", \"editable\":\"true\""
-		System.out.println("jdata: " + jdata);
+//		System.out.println("jdata: " + jdata);
 
 //		usersChart.setData("[{ \"data\": " + jdata + " }]");
 

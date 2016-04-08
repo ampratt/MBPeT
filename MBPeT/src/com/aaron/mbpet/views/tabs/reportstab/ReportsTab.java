@@ -187,7 +187,11 @@ public class ReportsTab extends Panel {
     
 	public void copyReportsDirs() {
 		FileSystemUtils fileUtils = new FileSystemUtils();
-		fileUtils.copyReportsToWebAppReportsFolder(reportsFolder);
+		try {
+			fileUtils.copyReportsToWebAppReportsFolder(reportsFolder);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
