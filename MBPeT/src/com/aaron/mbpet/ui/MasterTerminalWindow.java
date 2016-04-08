@@ -132,6 +132,7 @@ public class MasterTerminalWindow extends Window {
 		editor.setMode(AceMode.python);
 		editor.setTheme(AceTheme.twilight);	
 		editor.setWordWrap(true);
+		editor.setShowGutter(false);
 //				setEditorMode(fileFormat);
 //				editor.setUseWorker(true);
 //				editor.setWordWrap(false);

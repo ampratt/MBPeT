@@ -21,14 +21,14 @@ import com.aaron.mbpet.views.sessions.SessionViewer;
 import com.aaron.mbpet.views.tabs.monitoringtab.IndividualActionChartLayout;
 
 
-public class JsonDecoderMbpet {
+public class JsonProcessor {
 
 	SessionViewer sessionViewer;
 	ActionResponse aggRespTime = new ActionResponse("Aggregated Response Time");
 	HashSet<ActionResponse> responseset = new HashSet<ActionResponse>();
 //	List<TRT> trtsMonitoring;
 
-	public JsonDecoderMbpet(SessionViewer sessionViewer) {
+	public JsonProcessor(SessionViewer sessionViewer) {
 		this.sessionViewer = sessionViewer;
 		
 //		trtsMonitoring = new ArrayList<TRT>();
@@ -48,11 +48,11 @@ public class JsonDecoderMbpet {
 //		if (!responseset.contains(aggRespTime)) responseset.add(aggRespTime);
 
 	}
-	public JsonDecoderMbpet() {
+	public JsonProcessor() {
 		// TODO Auto-generated constructor stub
 	}	
 	
-	public JsonDecoderMbpet(String update){
+	public JsonProcessor(String update){
 //		  JSONParser parser = new JSONParser();
 //		  
 //		    try{

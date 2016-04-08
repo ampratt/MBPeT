@@ -21,7 +21,7 @@ public class UDPServer {
         double current = 0.0;
         
 		try {
-			JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet();
+			JsonProcessor jsonDecoder = new JsonProcessor();
 			
 			// create datagram socket at port num
 			DatagramSocket serverSocket = new DatagramSocket(9999);

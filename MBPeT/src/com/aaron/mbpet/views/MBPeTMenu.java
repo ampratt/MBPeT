@@ -395,14 +395,14 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
     	        		menutree, 
     	        		target, 
     	        		testcases.getItem(menutree.getParent(target)).getEntity()));	//testcases
-        		
+        	//edit suts	
         	} else if (menutree.isRoot(target)){
     	        UI.getCurrent().addWindow(new TestCaseEditor(menutree, target));	//testcases.getItem(parent).getEntity()        		
         	}
         	
         } else if (action == ACTION_CLONE) {
         	Object parent = target;
-        	// if wasn't a parent item select, move up to the parent
+        	// SUTs cannot be cloned
         	if (menutree.isRoot(target)) {
         		Notification not = new Notification("Only Test Sessions are cloneable.", Notification.Type.WARNING_MESSAGE);
         		not.setPosition(Position.MIDDLE_LEFT);
@@ -416,7 +416,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         				testcases.getItem(menutree.getParent(target)).getEntity(),//session.getParentcase(),
 //        				sessionsTable,
         				true)
-        				);        		
+				);        		
         	}
  
         } else if (action == ACTION_DELETE) {

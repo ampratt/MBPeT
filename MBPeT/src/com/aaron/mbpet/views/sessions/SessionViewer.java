@@ -316,7 +316,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start mbpet MASTER
 			udpPort=0;
 			while (!(udpWorker.getUDPPort() > 0)) {
-				System.out.print("waiting udp port selection...");
+				System.out.println("waiting udp port selection...");
 			}udpPort = udpWorker.getUDPPort();
 			System.out.println("\nudp port selected..." + udpPort);
 			
@@ -384,9 +384,9 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
     		
 			// stop mbpet MASTER and SLAVE
 			KillMBPeTProcesses killer = new KillMBPeTProcesses();
-			killer.pkillLinuxProcess(masterUtils.getCommand());
-			killer.pkillLinuxProcess(slaveUtils.getCommand());
-//			killer.killWindowsProcess(masterPort);
+//			killer.pkillLinuxProcess(masterUtils.getCommand());
+//			killer.pkillLinuxProcess(slaveUtils.getCommand());
+			killer.killWindowsProcess(masterPort);
 //			killer.fuserKillLinuxProcess(masterPort);
 			
 			tabs.getMonitoringTab().disconnectSlaveMonitoringInfo(getNumSlaves());

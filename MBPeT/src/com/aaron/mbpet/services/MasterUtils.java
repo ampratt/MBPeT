@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+
+import org.apache.commons.io.FilenameUtils;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TestSession;
@@ -69,10 +72,10 @@ public class MasterUtils implements Runnable {
 //					String testpath = usersBasepath + "apratt\\yaas\\y1";
 //					String mastercommand = "mbpet_cli.exe " +
 //							testpath + " " + 1 + " -p " + masterport + " -b localhost:" + udpPort + " -s";
-					command = "./mbpet_cli" +	//"mbpet_cli.exe" +	//
+					command = "mbpet_cli.exe" +	//"./mbpet_cli" +	//
 		    				" " + getTestDir(currsession) +		//"test_project " +
 							" " + numSlaves + 
-							" -p " + getAvailablePort() +
+							" -p " + getAvailablePort() +	//getAvailablePort() +
 							" -b localhost:" + udpPort + 
 							" -s" +
 							" " + masterOptions;
@@ -80,8 +83,8 @@ public class MasterUtils implements Runnable {
 //					ProcessBuilder pb = new ProcessBuilder(command);
         			System.out.println("master command: " + command);
         	        ProcessBuilder pb = new ProcessBuilder(
-//        	        		"cmd.exe", "/c", command); //Windows commands
-        	        		"/bin/bash", "-c", command); //Unix commands
+        	        		"cmd.exe", "/c", command); //Windows commands
+//        	        		"/bin/bash", "-c", command); //Unix commands
 //        	        		command);
 //        	        		"mbpet_cli.exe test_project -b localhost:9999 -s");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
 //        	        		"mbpet_cli.exe", "test_project", "-b", "localhost:9999");	//c:\\dev\\mbpet\\mbpet_cli.exe c:\\dev\\mbpet\\test_project -b localhost:9999
@@ -93,7 +96,7 @@ public class MasterUtils implements Runnable {
 					
         	        //close socket to free up port #
     				ss.close();		//System.out.println(srv.getLocalPort());
-//    				ss = null;
+    				ss = null;
     				
         			final Process p = pb.start();
 					System.out.println("### Running master command: " + command);
@@ -146,12 +149,20 @@ public class MasterUtils implements Runnable {
     }
 	
 	ServerSocket ss = null;
+	private boolean portInUse;	
+	/***
+	 * Works on Windows, not Linux
+	 * @return
+	 */
 	public int getAvailablePort() {
 		int openport = 0;
 	    for (int port=6000; port<7000; port++) {		//(int port : ports)
 			try {
 				System.out.println("\nTrying port: " + port);
-				ss = new ServerSocket(port);	//port	//System.out.println("socket open on port " + port);
+//				if (new ServerSocket(port).isBound()){
+//					System.out.println("PORT (" + port + ") is bound");
+//				}
+				ss = new ServerSocket(0);	//port	//System.out.println("socket open on port " + port);
 //				ss.close();		//System.out.println(srv.getLocalPort());
 //				ss = null;			//System.out.println("socket closed on port " + port);
 //				openport = port;
@@ -167,7 +178,118 @@ public class MasterUtils implements Runnable {
 		setMasterPort(ss.getLocalPort());
 	    return ss.getLocalPort();
 	}
+	
+	private StringBuilder netstatOutput;
+	public int getAvailablePortNetstat() {
+		int openport = 0;
+		runNetstat();
+//		System.out.println("searching netstat output: " + netstatOutput.toString());
 
+		for (int port=6000; port<7000; port++) {		//(int port : ports)
+			try {
+				System.out.println("Trying port: " + port);
+				if (netstatOutput.toString().contains("0.0.0.0:"+port)){			//( foundPortInNetstat(port) ){ 	// false == not found == we can use it
+					System.out.println("\nport " + port + " not available.");
+					continue;
+				} else {
+					System.out.println("port not found = should be free");
+					ss = new ServerSocket(port);	//port	//System.out.println("socket open on port " + port);
+					if (ss.isBound()){
+						System.out.println("PORT (" + port + ") is now bound");
+					}
+
+					break;
+				}
+			} catch (IOException e) {
+				System.out.println(e);
+				continue;	//return false;
+			}
+	    }
+		System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
+		setMasterPort(ss.getLocalPort());
+	    return ss.getLocalPort();
+	}
+	
+	public StringBuilder runNetstat(){	//found in netstat == cannot be used now
+//		boolean portavailable = true;
+		try {
+			String command = "netstat -an";	
+	        ProcessBuilder pb = new ProcessBuilder(
+	        		"cmd.exe", "/c", command); //Windows commands
+//	        		"/bin/bash", "-c", command); //Unix commands
+	        pb.redirectErrorStream(true);
+			Process p = pb.start();
+				
+//			setPortInUse(false);
+			
+			// any error our output
+	        StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+	        StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+	        
+	        // kick them off
+	        outputGobbler.getNetstatOutput(this);
+	        errorGobbler.getNetstatOutput(this);                       
+	
+	        // any error???
+	        int exitVal = 0;
+			try {
+				exitVal = p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}System.out.println("ExitValue: " + exitVal); 
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}	
+		
+		return getNetstatOutput();
+	}
+	
+	public void setNetstatOutput(StringBuilder output){
+		this.netstatOutput = output;
+	}
+	public StringBuilder getNetstatOutput(){
+		return netstatOutput;
+	}	
+	
+	public boolean foundPortInNetstat(int port){	//found in netstat == cannot be used now
+//		boolean portavailable = true;
+		try {
+			String command = "netstat -an";	
+	        ProcessBuilder pb = new ProcessBuilder(
+	        		"cmd.exe", "/c", command); //Windows commands
+	//        		"/bin/bash", "-c", command); //Unix commands
+	        pb.redirectErrorStream(true);
+			Process p = pb.start();
+				
+			setPortInUse(false);
+			
+			// any error our output
+	        StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+	        StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+	        
+	        // kick them off
+	        outputGobbler.startNetstatGobbler(this, port);
+	        errorGobbler.startNetstatGobbler(this, port);                       
+	
+	        // any error???
+	        int exitVal = 0;
+			try {
+				exitVal = p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}System.out.println("ExitValue: " + exitVal); 
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}	
+		
+		return portInUse;
+	}
+
+	public void setPortInUse(boolean result) {
+		this.portInUse = result;
+	}
+	
+	
 	public void setMasterPort(int port) {
 		this.masterPort = port;
 		System.out.println("Master port set to: " + masterPort);
@@ -427,6 +549,7 @@ public class MasterUtils implements Runnable {
 		    }
 		    return pid;
 		  }
+
 	
 	
 }

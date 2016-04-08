@@ -43,7 +43,7 @@ public class UDPThreadWorker {
                     double current = 0.0;
             		try {
 
-            			JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sessionViewer);
+            			JsonProcessor jsonDecoder = new JsonProcessor(sessionViewer);
             			
             			// create datagram socket at port num
 //            			serverSocket = new DatagramSocket(9999);

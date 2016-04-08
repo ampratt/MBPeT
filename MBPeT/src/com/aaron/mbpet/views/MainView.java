@@ -108,7 +108,7 @@ public class MainView extends HorizontalLayout implements View {
     	
        	if (event.getParameters().equals("landingPage")
     			|| event.getParameters() == null || event.getParameters().isEmpty()) {
-       		contentLayout.setContent(new LandingPage(tree));
+       		contentLayout.setContent(new LandingPage(tree, sessionuser));
             
               return;
         } else if (event.getParameters().contains("sut=")){	//! "/"
