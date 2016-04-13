@@ -60,9 +60,9 @@ public class MonitoringTab extends Panel {
 	public FlotChart monRampChart;
 	public FlotChart monAggChart;
 	public FlotChart monIndChart;
-	String rampDataOptions = ", \"color\": \"rgb(77, 167, 77)\", \"label\": \"virtual users\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
-	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
-	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	String rampDataOptions = ", \"color\": \"rgb(77, 167, 77)\", \"label\": \"virtual users\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"hoverable\":\"true\" ";	//\"points\":{\"show\":\"true\"},
+	String aggDataOptions = ", \"label\": \"aggregated response times\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"hoverable\":\"true\" ";	// \"points\":{\"show\":\"true\"},
+	String indDataOptions = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";	// \"points\":{\"show\":\"true\"},
 
 	JPAContainer<TRT> trtcontainer = ((MbpetUI) UI.getCurrent()).getTrtcontainer();
 
@@ -814,8 +814,8 @@ public class MonitoringTab extends Panel {
 					//panel
 //					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
 					for (Component c : actionPanelLayouts){
-						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
-						if(((LabelDataPair) c).getName().contains("Aggregated")){
+						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
+						if(((LabelDataPair) c).getNameUnShortened().contains("Aggregated")){
 							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
 							break;
 						}		
@@ -828,8 +828,8 @@ public class MonitoringTab extends Panel {
 //					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
 					// update panel labels
 					for (Component c : actionPanelLayouts){
-						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
-						if(((LabelDataPair) c).getName().contains("Aggregated")){
+						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
+						if(((LabelDataPair) c).getNameUnShortened().contains("Aggregated")){
 							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
 							break;
 						}		
@@ -852,7 +852,7 @@ public class MonitoringTab extends Panel {
 				// update panel labels
 				for (Component c : actionPanelLayouts){
 //					System.out.println("Panel action names:" + ((LabelDataPair) c).getName() + " - " + act.getTitle());
-					if(((LabelDataPair) c).getName().equals(act.getTitle())){
+					if(((LabelDataPair) c).getNameUnShortened().equals(act.getTitle())){
 						((LabelDataPair) c).setDataValue(df.format(act.getAverage()) + " s" );		//String.valueOf(act.getAverage()) + " s" );	//monIndChart						
 					}		
 //					if (){

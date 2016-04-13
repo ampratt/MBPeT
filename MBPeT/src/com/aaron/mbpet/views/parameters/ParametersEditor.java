@@ -225,8 +225,8 @@ public class ParametersEditor {
 
 					// 1 UPDATE container
 					parameters.addEntity(beanItem.getBean());
-					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
+//					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
 
 					// 2 UPDATE parentcase reference
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
@@ -255,8 +255,8 @@ public class ParametersEditor {
 			        
 					// 1 UPDATE container
 					parameters.addEntity(beanItem.getBean());
-					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
+//					System.out.println("Parameters are now: " + parameters.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + parameters.getItem(beanItem.getBean().getId()).getEntity().getSettings_file());
 
 					// 2 UPDATE parentcase reference
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());

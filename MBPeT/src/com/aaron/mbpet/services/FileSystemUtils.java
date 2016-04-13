@@ -14,6 +14,7 @@ import org.eclipse.persistence.internal.sessions.remote.SequencingFunctionCall.G
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Model;
+import com.aaron.mbpet.domain.TestSession;
 import com.vaadin.ui.UI;
 
 public class FileSystemUtils {
@@ -494,6 +495,26 @@ public class FileSystemUtils {
 			e.printStackTrace();
 //			System.out.println(e + "\nno pdf. trying to create one...");
 		}
+	}
+
+	public void cleanDumpDir(TestSession currsession) {
+		// TODO delete single file from disk
+		try {    		
+			FileUtils.deleteDirectory(	//cleanDirectory(
+					new File(usersBasepath + 
+							currsession.getParentcase().getOwner().getUsername() + 
+		    				"/master/dump/"));
+//    		File file = new File(usersBasepath + currsession.getParentcase().getOwner().getUsername() + 
+//    				"/master/dump/");
+//    		if(file.delete()){
+//    			System.out.println(file.getName() + " is deleted!");
+//    		}else{
+//    			System.out.println("Deleting DUMP operation is failed.");
+//    		}
+    	}catch(Exception e){    		
+    		e.printStackTrace();
+    	}
+	
 	}
 
 

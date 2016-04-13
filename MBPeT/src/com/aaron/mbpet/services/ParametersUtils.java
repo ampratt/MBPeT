@@ -1,5 +1,6 @@
 package com.aaron.mbpet.services;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Parameters;
@@ -104,49 +109,49 @@ public class ParametersUtils {
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
 			
-			if (line.contains("dstat_mode") && line.contains("=") && !(line.startsWith("#")) ) {
+			if (line.startsWith("dstat_mode") && line.contains("=")) {	//(line.contains("dstat_mode") && line.contains("=") && !(line.startsWith("#")) ) {
 				if (line.startsWith("#"))
 					currparams.setDstat_mode(null);
 				else if(line.startsWith("dstat_mode"))
 					currparams.setDstat_mode(getDstatInfo(line));
 				
-			} else if (line.contains("host") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("host") && line.contains("=")) {	//(line.contains("host") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setHost(null);
 				else if(line.startsWith("host"))
 					currparams.setHost(getQuotedDataInfo(line, "\"", "host"));
 				
-			} else if (line.contains("username") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("username")){	//(line.contains("username") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setUsername(null);
 				else if(line.startsWith("username"))
 					currparams.setUsername(getQuotedDataInfo(line, "'", "username"));
 				
-			} else if (line.contains("password") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("password")){	//(line.contains("password") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setPassword(null);
 				else if(line.startsWith("password"))
 					currparams.setPassword(getQuotedDataInfo(line, "'", "password"));
 				
-			} else if (line.contains("user_types") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("user_types") && line.contains("=")) {	//(line.contains("user_types") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setUser_types(null);
 				else if(line.startsWith("user_types"))
 					currparams.setUser_types(getQuotedDataInfo(line, "\"", "user_types"));
 				
-			} else if (line.contains("models_folder") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("models_folder") && line.contains("=")) {	//(line.contains("models_folder") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setModels_folder(null);
 				else if(line.startsWith("models_folder"))
 					currparams.setModels_folder(getQuotedDataInfo(line, "\"", "models_folder"));
 				
-			} else if (line.contains("test_report_folder") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("test_report_folder") && line.contains("=")) {	//(line.contains("test_report_folder") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setTest_report_folder(null);
 				else if(line.startsWith("test_report_folder"))
 					currparams.setTest_report_folder(getQuotedDataInfo(line, "\"", "test_report_folder"));
 				
-			} else if (line.contains("ip") && line.contains("=") && !(line.startsWith("#"))) {
+			} else if (line.startsWith("ip") && line.contains("=")) {	//(line.contains("ip") && line.contains("=") && !(line.startsWith("#"))) {
 				if (line.startsWith("#"))
 					currparams.setIp(null);
 				else if(line.startsWith("ip")){
@@ -154,42 +159,45 @@ public class ParametersUtils {
 					currparams.setIp(getQuotedDataInfo(line, "\"", "ip"));
 				}
 								
-			} else if ( (line.contains("test_duration") && line.contains("=") && !(line.startsWith("#"))) && !(line.contains("E.g."))  ) {
+			} else if (line.startsWith("test_duration") && line.contains("=")) {	//( (line.contains("test_duration") && line.contains("=") && !(line.startsWith("#"))) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setTest_duration(0);
 				else if(line.startsWith("test_duration"))
 					currparams.setTest_duration(getIntegerInfo(line));
 								
-			} else if ( line.contains("ramp_list") && line.contains("=") && !(line.contains("#ramp_list")) ) {
+			} else if (line.startsWith("ramp_list") && line.contains("=")) {	//( line.contains("ramp_list") && line.contains("=") && !(line.contains("#ramp_list")) ) {
 				if (line.startsWith("#"))
 					currparams.setRamp_list("[(0, 0)]");
 				else if(line.startsWith("ramp_list"))
 					currparams.setRamp_list(getRampListInfo(line));
 				
-			} else if ( (line.contains("interval") && line.contains("=")) && !(line.contains("E.g.")) && !(line.startsWith("#")) ) {
+			}  else if ( line.contains("TargetResponseTime")){	//(line.contains("TargetResponseTime") && line.contains("=")) && !(line.startsWith("E.g."))  ) {
+//				if ((!(line.startsWith("#")) || !(line.startsWith("E.g.")) ) && (new String("T").equals(line.charAt(0))) ){
+				if (line.startsWith("TargetResponseTime")){
+////			currparams.setTarget_response_times(null);
+		//		else if(line.startsWith("TargetResponseTime"))
+					System.out.println("CHECKING TRTs");
+					getTRTListFromString(line);
+//					getTRTListFromJSONString(line);
+				}
+			} else if (line.startsWith("interval") && line.contains("=")) {	//( (line.contains("interval") && line.contains("=")) && !(line.contains("E.g.")) && !(line.startsWith("#")) ) {
 				if (line.startsWith("#"))
 					currparams.setMonitoring_interval(0);
 				else if(line.startsWith("interval"))
 					currparams.setMonitoring_interval(getIntegerInfo(line));
 				
-			} else if ( (line.contains("mean_user_think_time") && line.contains("=")) && !(line.contains("E.g."))  ) {
+			} else if (line.startsWith("mean_user_think_time") && line.contains("=")) {	//( (line.contains("mean_user_think_time") && line.contains("=")) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setMean_user_think_time(0);
 				else if(line.startsWith("mean_user_think_time"))
 					currparams.setMean_user_think_time(getIntegerInfo(line));
 								
-			} else if ( (line.contains("standard_deviation") && line.contains("=")) && !(line.contains("E.g."))  ) {
+			} else if (line.startsWith("standard_deviation") && line.contains("=")) {	//( (line.contains("standard_deviation") && line.contains("=")) && !(line.contains("E.g."))  ) {
 				if (line.startsWith("#"))
 					currparams.setStandard_deviation(0.0);
 				else if(line.startsWith("standard_deviation"))
 					currparams.setStandard_deviation(getDoubleInfo(line));
 												
-			} else if ( line.startsWith("TargetResponseTime") ){	//(line.contains("TargetResponseTime") && line.contains("=")) && !(line.startsWith("E.g."))  ) {
-//				if (line.startsWith("#")){}
-////					currparams.setTarget_response_times(null);
-//				else if(line.startsWith("TargetResponseTime"))
-					getTRTListFromString(line);
-
 			} else {
 			}
 		}
@@ -566,6 +574,35 @@ public class ParametersUtils {
 		
 //		return result;
 	}
+	
+	public static void getTRTListFromJSONString(String line){
+		//get just json
+		System.out.println("targetresponsetime :" +line );
+		String json = line.substring(line.indexOf('{'), line.length());
+		
+		JSONTokener tokener; //= new JSONTokener(update);
+	    JSONObject jsonObject;// = null;
+		List<Double> resplist = new ArrayList<Double>();
+		DecimalFormat df = new DecimalFormat("#.##");
+		try {
+			tokener = new JSONTokener(json);
+			jsonObject = new JSONObject(tokener);
+			
+	       	// full JSON object
+			for(int i = 0; i<jsonObject.names().length(); i++){
+			    System.out.println("key = " + jsonObject.names().getString(i) + " value = " + jsonObject.get(jsonObject.names().getString(i)));
+			}
+////	       	double timestamp = (Double) jsonObject.get("timestamp");
+//	       	JSONObject summaryObject = (JSONObject) jsonObject.get("summary");
+//	       	JSONObject valuesObject = (JSONObject) jsonObject.get("values");
+//	       	target_user = jsonObject.getInt("target_user");
+//	       	slave_name = (String) jsonObject.get("slave_name");
+	       	
+		} catch (JSONException e) {
+	          e.printStackTrace();
+		}
+	}
+
 
 	public static TRT getTRTFromString(String singleTRT) {
 		TRT trt = new TRT();

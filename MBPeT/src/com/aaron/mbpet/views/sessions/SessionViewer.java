@@ -7,6 +7,7 @@ import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
+import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.KillMBPeTProcesses;
 import com.aaron.mbpet.services.MasterUtils;
 import com.aaron.mbpet.services.ProgressBarWorker;
@@ -314,6 +315,10 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //			int udpPort = udpWorker.getUDPPort();
 
 			// start mbpet MASTER
+				//clean up dump dir
+				FileSystemUtils fileUtils = new FileSystemUtils();
+				fileUtils.cleanDumpDir(currsession);
+				
 			udpPort=0;
 			while (!(udpWorker.getUDPPort() > 0)) {
 				System.out.println("waiting udp port selection...");

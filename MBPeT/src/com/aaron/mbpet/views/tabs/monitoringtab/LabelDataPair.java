@@ -6,13 +6,14 @@ import com.vaadin.ui.Label;
 
 public class LabelDataPair extends HorizontalLayout {
 
+	String actionname;
 	Label name;
 	Label value;
 	
 	public LabelDataPair(String labelname){
         setWidth("100%");
         //layout.setSpacing(true);
-
+        actionname = labelname;
         name = new Label(shortenLabelName(labelname));	//("Aggregated");
         name.addStyleName("small");
         
@@ -29,9 +30,12 @@ public class LabelDataPair extends HorizontalLayout {
 	public void setDataValue(String labelvalue){
 		value.setValue(labelvalue);
 	}
-	public String getName(){
-		return name.getValue();
+	public String getNameUnShortened(){
+		return actionname;	//name.getValue();
 	}
+//	public String getName(){
+//		return name.getValue();
+//	}	
 	
 	private String shortenLabelName(String labelname) {
 		if (labelname.length() >= 20){

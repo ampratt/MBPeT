@@ -16,7 +16,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 
 	public IndividualActionChartLayout(String title){
 		this.title = title;
-		indDataOptions = ", \"color\": \"rgb(203, 75, 75)\", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+		indDataOptions = ", \"color\": \"rgb(203, 75, 75)\", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
 
 		initLayout();
 	}

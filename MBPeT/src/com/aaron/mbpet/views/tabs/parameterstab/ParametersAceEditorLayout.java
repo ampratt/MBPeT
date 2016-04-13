@@ -203,11 +203,11 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
-			String s = editor.getValue();
+//			String s = editor.getValue();
 //			saveToFile(s, testDir);	//+aceOutFileField.getValue());
 			
 			// commit settings file from Ace
-			new ParametersEditor(currentparams, currsession, s);
+			new ParametersEditor(currentparams, currsession, editor.getValue());
 			currentparams = parameters.getItem(currentparams.getId()).getEntity();
 			
 			// commit individual field, parsed from ace
@@ -220,7 +220,6 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 
 			// edit models directory name
       	  	FileSystemUtils fileUtils = new FileSystemUtils();
-
 			System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
 			if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
 				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
