@@ -7,16 +7,17 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class IndividualActionChartLayout extends HorizontalLayout {
+public class IndividualActionChartLayout extends VerticalLayout {
 
 	public String title;
 	private HorizontalLayout flotIndividualLayout;
 	private FlotChart monIndChart;
 	String indDataOptions;	// = ", \"label\": \"individual response times\", \"lines\":{\"show\":\"true\"}, \"points\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+	private Label chartTitle;
 
 	public IndividualActionChartLayout(String title){
 		this.title = title;
-		indDataOptions = ", \"color\": \"rgb(203, 75, 75)\", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\"}, \"hoverable\":\"true\" ";
+		indDataOptions = ", \"color\": \"rgb(203, 75, 75)\", \"label\": \"" + title + "\", \"lines\":{\"show\":\"true\", \"fill\":\"true\"}, \"hoverable\":\"true\" ";
 
 		initLayout();
 	}
@@ -32,21 +33,31 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		setSpacing(false);
 		setWidth("100%");
 		
+		chartTitle = new Label("<b>" + title + "</b>", ContentMode.HTML);
+		chartTitle.addStyleName("tiny");
+		addComponent(chartTitle);
+		setComponentAlignment(chartTitle, Alignment.BOTTOM_CENTER);
+		
+		flotIndividualLayout = new HorizontalLayout();
+		flotIndividualLayout.setWidth("100%");
+		flotIndividualLayout.setSpacing(false);
+		addComponent(flotIndividualLayout);
+		
 		// flot chart
 		buildIndChart("[[0,0]]");	//(FlotUtils.formatRampToFlot(rampValue));
 
 		// chart axis label
-		Label yLabel = new Label(title.replaceAll("_", " "), ContentMode.HTML);
+		Label yLabel = new Label(" (sec)");	//(title.replaceAll("_", " "), ContentMode.HTML);
 		yLabel.addStyleName("tiny");
 		yLabel.setWidth(4.5f, Unit.EM);
-		addComponent(yLabel);
-		setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
+		flotIndividualLayout.addComponent(yLabel);
+		flotIndividualLayout.setComponentAlignment(yLabel, Alignment.MIDDLE_RIGHT);
 		
 		
-		// chart axis label
-		Label xLabel = new Label("Time (Seconds)");
-		xLabel.addStyleName("tiny");
-		xLabel.setSizeUndefined();
+//		// chart axis label
+//		Label xLabel = new Label("Time (Seconds)");
+//		xLabel.addStyleName("tiny");
+//		xLabel.setSizeUndefined();
 		
 //		addComponent(flotIndividualLayout);
 //		addComponent(xLabel);
@@ -62,11 +73,11 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 		// options
 		String options =
 			"{" +
-				"\"series\": { lines: {\"fill\": \"true\", \"fillColor\": \"rgb(203, 75, 75)\"}},"	+	//, points: {show: true} }" +
+				"\"series\": { lines:{\"fill\":\"true\", \"fillColor\":\"rgb(203, 75, 75)\"}},"	+	//, points: {show: true} }" +
 					"\"crosshair\": {\"mode\": \"x\"}, " +
-					"\"legend\": { \"position\": \"nw\" }, " +
+					"\"legend\": { \"show\":\"true\", \"position\": \"nw\" }, " +
 					"\"xaxis\": { \"position\": \"bottom\", \"min\":0, \"tickDecimals\": \"0\"}, " +	//, \"axisLabel\": \"x label\"}], " +
-					"\"yaxis\": { \"position\": \"left\", \"min\":0, \"color\": \"rgb(203, 75, 75)\", \"minTickSize\": \"0.2\", \"tickDecimals\": \"1\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
+					"\"yaxis\": { \"position\": \"right\", \"min\":0, \"color\": \"rgb(203, 75, 75)\", \"minTickSize\": \"0.2\", \"tickDecimals\": \"1\"}, " +	//\"axisLabel\": \"y label\", \"position\": \"left\",  'ms'}], " +
 					"\"grid\": { " +
 						"\"clickable\": \"false\"," +
 						"\"hoverable\": \"true\"," +
@@ -76,9 +87,9 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 			"}";
 		monIndChart.setOptions(options);
 		
-		addComponentAsFirst(monIndChart);
-		setComponentAlignment(monIndChart, Alignment.MIDDLE_LEFT);
-		setExpandRatio(monIndChart, 1);
+		flotIndividualLayout.addComponentAsFirst(monIndChart);
+		flotIndividualLayout.setComponentAlignment(monIndChart, Alignment.MIDDLE_LEFT);
+		flotIndividualLayout.setExpandRatio(monIndChart, 1);
 		System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
 		
 //		// chart axis label
@@ -101,7 +112,7 @@ public class IndividualActionChartLayout extends HorizontalLayout {
 	}
 
 	public void rebuildChart(){	//(FlotChart monIndChart) {
-		removeComponent(monIndChart);
+		flotIndividualLayout.removeComponent(monIndChart);
 		monIndChart.setY(0); monIndChart.setX(0); monIndChart.setPrevY(0);	//yInd=0; x=0; prevYInd=0;
 		buildIndChart("[[0,0]]");		
 	}

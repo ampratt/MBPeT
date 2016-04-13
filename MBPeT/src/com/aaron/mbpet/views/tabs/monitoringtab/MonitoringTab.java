@@ -42,7 +42,7 @@ public class MonitoringTab extends Panel {
 	HorizontalLayout firstLayoutHL = new HorizontalLayout();
 	VerticalLayout vert = new VerticalLayout();
 	VerticalLayout rightvert = new VerticalLayout();
-	public VerticalLayout responsePanelVert;
+	public VerticalLayout responsePanelInnerVert;
 	private VerticalLayout slavevert;
 	public Label sentdata;
 	public Label receiveddata;
@@ -79,6 +79,7 @@ public class MonitoringTab extends Panel {
 //	public static Label progressstatus;
 	private VerticalLayout leftCharts;
 //	private HorizontalLayout chartsHL;
+	private VerticalLayout rightvertPanel;
 	
     public MonitoringTab() {	//ReportsTab reportsTab
     	//setHeight(100.0f, Unit.PERCENTAGE);
@@ -90,7 +91,7 @@ public class MonitoringTab extends Panel {
 		firstLayoutHL.setExpandRatio(vert, 7);
 		firstLayoutHL.setExpandRatio(rightvert, 3);
 		
-		rightvert.setMargin(new MarginInfo(true, true, false, false));
+		rightvert.setMargin(new MarginInfo(true, false, false, false));
 		rightvert.setSpacing(true);
 		
         vert.setMargin(new MarginInfo(true, false, true, true));	//	(true);
@@ -127,13 +128,17 @@ public class MonitoringTab extends Panel {
         panel.setSizeFull();
         row.addComponent(panel);
         
+        rightvertPanel = new VerticalLayout();
+        rightvertPanel.setSpacing(false);
+        rightvertPanel.setMargin(new MarginInfo(false, true, false, false));
         panel = new Panel("Average Response Times");
         //panel.setIcon(testIcon.get());
 //        panel.addStyleName("color1");
-        responsePanelVert = new VerticalLayout();
-        responsePanelVert.setMargin(true);
-        panel.setContent(responsePanelVert);	//responseTimes());
-        rightvert.addComponent(panel);
+        responsePanelInnerVert = new VerticalLayout();
+        responsePanelInnerVert.setMargin(true);
+        panel.setContent(responsePanelInnerVert);	//responseTimes());
+        rightvertPanel.addComponent(panel);
+        rightvert.addComponent(rightvertPanel);
 
         return row;
     }
@@ -162,7 +167,7 @@ public class MonitoringTab extends Panel {
 		leftCharts.addComponent(flotRampLayout);
 		
 		// chart axis label
-		Label yLabel = new Label("Users");
+		Label yLabel = new Label("<b>Users</b>", ContentMode.HTML);
 		yLabel.addStyleName("tiny");
 		yLabel.setWidth(4.5f, Unit.EM);
 		flotRampLayout.addComponent(yLabel);
@@ -197,7 +202,7 @@ public class MonitoringTab extends Panel {
 		leftCharts.addComponent(flotAggregatedLayout);
 		
 		// chart axis label
-		yLabel = new Label("Aggregated<br>Response Times", ContentMode.HTML);
+		yLabel = new Label("<b>Aggregated<br>Response Times</b>", ContentMode.HTML);
 		yLabel.addStyleName("tiny");
 		yLabel.setWidth(4.5f, Unit.EM);
 		flotAggregatedLayout.addComponent(yLabel);
@@ -248,34 +253,34 @@ public class MonitoringTab extends Panel {
 	boolean firstrun=true;
     public void buildIndActionChartAndPanelLayout(List<TRT> actionsSelected){ 	//List<Integer>
     	if(!firstrun){
+    		// panel ind actions
+    		actionPanelLayouts.clear();
+    		responsePanelInnerVert.removeAllComponents();
+//    		responsePanelVert.removeComponent(aggLabelDataPair);
+//            responsePanelVert.removeComponent(panelIndResponses);
+
     		// charts ind actions
     		actionChartLayouts.clear();
     		rightvert.removeComponent(rightCharts); //chartsHL
-    		
-    		// panel ind actions
-    		actionPanelLayouts.clear();
-    		responsePanelVert.removeAllComponents();
-//    		responsePanelVert.removeComponent(aggLabelDataPair);
-//            responsePanelVert.removeComponent(panelIndResponses);
     	}
-    	//charts
-    	rightCharts = new VerticalLayout();
-    	rightCharts.setMargin(false);
-    	rightCharts.setSpacing(false);
-    	rightCharts.setWidth("100%");
-    	rightvert.addComponent(rightCharts);
-    	rightvert.setExpandRatio(rightCharts, 1);
-
     	//panel
     	panelIndResponses = new VerticalLayout();
 //    	panelIndResponses.setMargin(false);
 //    	panelIndResponses.setSpacing(false);
 //    	panelIndResponses.setWidth("100%");
     	aggLabelDataPair = new LabelDataPair("Aggregated");
-    	responsePanelVert.addComponent(aggLabelDataPair);
-    	responsePanelVert.addComponent(panelIndResponses);
-    	responsePanelVert.setExpandRatio(panelIndResponses, 1);
+    	responsePanelInnerVert.addComponent(aggLabelDataPair);
+    	responsePanelInnerVert.addComponent(panelIndResponses);
+    	responsePanelInnerVert.setExpandRatio(panelIndResponses, 1);
         actionPanelLayouts.add(aggLabelDataPair);
+
+        //charts
+        rightCharts = new VerticalLayout();
+        rightCharts.setMargin(false);
+        rightCharts.setSpacing(false);
+        rightCharts.setWidth("100%");
+        rightvert.addComponent(rightCharts);
+        rightvert.setExpandRatio(rightCharts, 1);
     	
     	IndividualActionChartLayout indActionLayout;
     	LabelDataPair lableDataPair;
@@ -483,9 +488,9 @@ public class MonitoringTab extends Panel {
 	}
 	
     private Component responseTimes() {
-        responsePanelVert = new VerticalLayout();
+        responsePanelInnerVert = new VerticalLayout();
         //vert.setSizeFull();
-        responsePanelVert.setMargin(true);
+        responsePanelInnerVert.setMargin(true);
 //        vert.setHeight("6em");
         //vert.setWidth("8em");
 //        LabelDataPair aggLabelDataPair = new LabelDataPair("Aggregated");
@@ -537,7 +542,7 @@ public class MonitoringTab extends Panel {
 ////        row.setExpandRatio(minmaxresponse, 2);
 //        vert.addComponent(row);
         
-        return responsePanelVert;
+        return responsePanelInnerVert;
     }
     
     private Component responseCounts() {

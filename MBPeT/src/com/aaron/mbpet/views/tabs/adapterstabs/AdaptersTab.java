@@ -2,6 +2,7 @@ package com.aaron.mbpet.views.tabs.adapterstabs;
 
 import com.aaron.mbpet.domain.TestSession;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.themes.ValoTheme;
 
 public class AdaptersTab extends TabSheet {   
@@ -31,6 +32,20 @@ public class AdaptersTab extends TabSheet {
         addTab(pythonTab, "Python Adapter");
         addTab(xmlTab, "XML Adapter");
 
+        addListener(new TabSheet.SelectedTabChangeListener() {
+            @Override
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+                if (event.getTabSheet().getSelectedTab() == pythonTab) {
+                	//focus on editor
+                	pythonTab.editor.focus();
+                	pythonTab.editor.setCursorPosition(0);
+                }
+                if (event.getTabSheet().getSelectedTab() == xmlTab) {
+                	xmlTab.editor.focus();
+                	xmlTab.editor.setCursorPosition(0);                
+                }
+            }
+        });
 //        VerticalLayout configTab = new VerticalLayout();
 //        configTab.setHeight("100%");
 ////        configTab.addComponent(buildConfigTabs());
