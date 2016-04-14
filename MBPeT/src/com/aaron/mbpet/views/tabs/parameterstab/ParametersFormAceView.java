@@ -56,7 +56,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 
 	FieldGroup binder = new FieldGroup();
 	private ParametersForm parametersForm;
-	private TRTForm TRTForm;
+//	private TRTForm TRTForm;
 	String prevModelsFolder;
 	String prevReportsFolder;
 	
@@ -70,7 +70,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 	
     // Ace Editor elements
 	AceEditor editor;	// = new AceEditor();
-	private Table trtTable;
+	public Table trtTable;
 	public ParametersAceEditorLayout editorLayout;
 	
 	public ParametersFormAceView(TestSession currSession){
@@ -315,9 +315,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 
 
 	private Component buildTRTTable() {
-		filterTRTByParameters();
+//		filterTRTByParameters();
 		trtTable = new Table();
-		trtTable.setContainerDataSource(trtcontainer);
+//		trtTable.setContainerDataSource(trtcontainer);
 		trtTable.setWidth("97%");
 		trtTable.setPageLength(5);
 //		modelsTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -329,12 +329,14 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		trtTable.setSelectable(true);
         trtTable.setImmediate(true);
         
-        trtTable.setVisibleColumns("action", "average", "max");
-        trtTable.setColumnHeaders(new String[] {"Action", "Average", "Max"});
-        trtTable.setColumnExpandRatio("action", 3);
-        trtTable.setColumnExpandRatio("average", 1);
-        trtTable.setColumnExpandRatio("max", 1);
-//        trtTable.setColumnWidth("max", 20);
+        wireupTRTTable();
+        
+//        trtTable.setVisibleColumns("action", "average", "max");
+//        trtTable.setColumnHeaders(new String[] {"Action", "Average", "Max"});
+//        trtTable.setColumnExpandRatio("action", 3);
+//        trtTable.setColumnExpandRatio("average", 1);
+//        trtTable.setColumnExpandRatio("max", 1);
+////        trtTable.setColumnWidth("max", 20);
  
         //handle selections
         trtTable.addValueChangeListener(new ValueChangeListener() {
@@ -632,13 +634,26 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
     	parameterscontainer.addContainerFilter(casefilter);
     }
 	
-    private void filterTRTByParameters() {
+    public void filterTRTByParameters() {
     	trtcontainer.removeAllContainerFilters();
 //    	Equal ownerfilter = new Equal("parentcase", getTestCaseByTitle());//  ("parentcase", getTestCaseByTitle(), true, false);
     	Equal paramfilter = new Equal("parentparameter", currentparams);//  ("parentcase", getTestCaseByTitle(), true, false);
     	
     	trtcontainer.addContainerFilter(paramfilter);
     }
+
+	public void wireupTRTTable() {
+//		trtTable.markAsDirty();
+		filterTRTByParameters();
+		trtTable.setContainerDataSource(trtcontainer);	
+		
+        trtTable.setVisibleColumns("action", "average", "max");
+        trtTable.setColumnHeaders(new String[] {"Action", "Average", "Max"});
+        trtTable.setColumnExpandRatio("action", 3);
+        trtTable.setColumnExpandRatio("average", 1);
+        trtTable.setColumnExpandRatio("max", 1);
+//        trtTable.setColumnWidth("max", 20);
+	}
     
     
 //    public void saveParameters() {

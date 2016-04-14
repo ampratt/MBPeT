@@ -1,5 +1,6 @@
 package com.aaron.mbpet.services;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -414,6 +415,82 @@ public class ModelUtils {
 			return editedmodel;
 
 	    }
+	
+	
+	public void createUploadedModel(File file, TestSession currsession) {
+		models = ((MbpetUI) UI.getCurrent()).getModels();
+		currmodel = new Model(); 
+		modelBeanItem = new BeanItem<Model>(currmodel);
+		
+//        sessions = MBPeTMenu.sessions;
+		parentsession = currsession;
+		parentcase = testcases.getItem(parentsession.getParentcase().getId()).getEntity(); 	//parentsession.getParentcase();
+
+	        String name=file.getName();
+			if (name.indexOf(".") > 0)
+			    name = name.substring(0, name.lastIndexOf("."));
+	        System.out.println("model name without extension - " + name);
+		currmodel.setTitle(name);
+		currmodel.setDotschema(getUploadedModel(file));
+		currmodel.setParentsession(parentsession);
+		currmodel.setParentsut(parentcase);
+		
+		Model queriedModel = null;
+		try {
+			// CREATE new Model
+	    	System.out.println("Saving uploaded model to disk: " + currmodel.getTitle()); // testing purposes
+
+	    	System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
+	    	for (Model m : currmodel.getParentsession().getModels()) {
+	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+	    	}
+	    	
+    		// 1. ADD to container
+			models.addEntity(modelBeanItem.getBean()); //jpa container	
+			
+			// 2A. get model back from db with generated ID field
+			EntityManager em = Persistence.createEntityManagerFactory("mbpet").createEntityManager();
+			Query query = em.createQuery(
+					"SELECT OBJECT(m) FROM Model m WHERE m.title = :title AND m.parentsession = :parentsession");
+//            	queriedModel = (Model) query.setParameter("title", currmodel.getTitle()).getSingleResult();
+			query.setParameter("title", currmodel.getTitle());
+			query.setParameter("parentsession", parentsession);
+			queriedModel = (Model) query.getSingleResult();
+			System.out.println("the generated id is: "+ queriedModel.getId());
+			
+			// 2B. update parent Case to add Session to testCase List<Session> sessions
+			parentsession.addModel(queriedModel);
+			parentcase.addModel(queriedModel);
+			
+        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+        	for (Model m : parentsession.getModels()) {
+            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+        	}
+        	
+			// 3. write model file to disk
+			fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
+					parentcase.getOwner().getUsername(),
+					parentcase.getTitle(), 
+					parentsession.getTitle(),
+					parentsession.getParameters().getModels_folder(),
+					queriedModel);
+			
+//			confirmNotification("Model '" + queriedModel.getTitle()+ "'", "saved");
+
+	
+		} catch (NonUniqueResultException e) {
+			e.printStackTrace();
+//			Notification.show("'Title' must be a unique name.\n'" +
+//								currmodel.getTitle() +	//queriedModel.getTitle() + 
+//								"' already exists.\n\nPlease try again.", Type.WARNING_MESSAGE);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+//			if (currmodel.getTitle() == null)
+//					Notification.show("'Title' field cannot be empty.", Type.ERROR_MESSAGE);
+		}
+	}
+	
+	
 
 		@SuppressWarnings("resource")
 		private String getDefaultModel(String title) {
@@ -437,6 +514,26 @@ public class ModelUtils {
 			return builder.toString();
 		}
 		
+		@SuppressWarnings("resource")
+		private String getUploadedModel(File modelFile) {
+//			String modelFile = defaultModelsDir + title + ".gv";
+			System.out.println("Model FILE : " + modelFile);
+
+			StringBuilder builder = new StringBuilder();
+			Scanner scan = null;
+			try {
+				scan = new Scanner(new FileReader(modelFile));
+				while (scan.hasNextLine()) {		
+					builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
+				}	
+				System.out.println(builder.toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			return builder.toString();
+		}
+	
 		
 		private void confirmNotification(String deletedItem, String message) {
 	        // welcome notification

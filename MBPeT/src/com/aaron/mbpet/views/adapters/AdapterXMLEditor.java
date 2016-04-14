@@ -51,13 +51,27 @@ public class AdapterXMLEditor {
 
 		this.currentAdapterXML = new AdapterXML(); 
 		this.currentAdapterXML.setOwnersession(this.ownersession);
-		this.currentAdapterXML.setAdapterXML_file(getDefaultSettings());
+		this.currentAdapterXML.setAdapterXML_file(getDefaultAdapterXML());
 //		this.currentParams.setSettings_file("Fill in AdapterXML for Test Session '" + parentsession.getTitle() + "'");
 		this.beanItem = new BeanItem<AdapterXML>(currentAdapterXML);
 
         saveAdapterXML();
 	}
+	/*
+	 * Create new AdapterXML
+	 */
+	public AdapterXMLEditor(TestSession ownersession, File uploadedSessionFile) {		//JPAContainer<TestCase> container
+		createmode = true;
+		this.ownersession = ownersession;
 
+		this.currentAdapterXML = new AdapterXML(); 
+		this.currentAdapterXML.setOwnersession(this.ownersession);
+		this.currentAdapterXML.setAdapterXML_file(getUploadedAdapterXML(uploadedSessionFile));
+
+		this.beanItem = new BeanItem<AdapterXML>(currentAdapterXML);
+
+        saveAdapterXML();
+	}
 	/*
 	 * Edit Mode
 	 */
@@ -244,7 +258,7 @@ public class AdapterXMLEditor {
     }
 	
 
-	private String getDefaultSettings(){
+	private String getDefaultAdapterXML(){
 //		InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/output/Adapter_default.py");
 		String BASEDIR;
 	    if (VaadinService.getCurrent() != null) {
@@ -270,25 +284,26 @@ public class AdapterXMLEditor {
 		}
 		
 		return sb.toString();
-		
-		
-//	    File file = new File(inStream);
-//	    StringBuilder fileContents = new StringBuilder((int)file.length());
-//	    Scanner scanner = new Scanner(file);
-//	    String lineSeparator = System.getProperty("line.separator");
-//
-//	    try {
-//	        while(scanner.hasNextLine()) {        
-//	            fileContents.append(scanner.nextLine() + lineSeparator);
-//	        }
-//	        return fileContents.toString();
-//	    } finally {
-//	        scanner.close();
-//	    }
-
-
 	}
 	
+	private String getUploadedAdapterXML(File uploadedSessionFile){
+
+	    String lineSeparator = System.getProperty("line.separator");
+
+		Scanner scan = null;
+		try {
+			scan = new Scanner(new File(uploadedSessionFile + "/adapter.xml"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		StringBuilder sb = new StringBuilder();
+
+		while (scan.hasNextLine()){
+		   sb.append(scan.nextLine()).append(lineSeparator);
+		}
+		
+		return sb.toString();
+	}
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification

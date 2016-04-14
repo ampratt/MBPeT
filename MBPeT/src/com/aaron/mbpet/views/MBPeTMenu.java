@@ -1,52 +1,31 @@
 package com.aaron.mbpet.views;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.aaron.mbpet.MbpetUI;
-import com.aaron.mbpet.domain.Model;
-import com.aaron.mbpet.domain.Parameters;
-import com.aaron.mbpet.domain.TRT;
 import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
-import com.aaron.mbpet.services.ExampleUtil;
-import com.aaron.mbpet.services.HierarchicalDepartmentContainer;
 import com.aaron.mbpet.ui.ConfirmDeleteMenuItemWindow;
-import com.aaron.mbpet.ui.NewUseCaseInstanceWindow;
-import com.aaron.mbpet.views.cases.CreateTestCaseWindow;
+import com.aaron.mbpet.ui.ZipUploadWindow;
 import com.aaron.mbpet.views.cases.TestCaseEditor;
 import com.aaron.mbpet.views.sessions.TestSessionEditor;
 import com.aaron.mbpet.views.users.UserEditor;
 import com.vaadin.event.Action;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Position;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
@@ -59,16 +38,14 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.themes.ValoTheme;
 
 public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	
 //    public static final String NAME = "MBPeT";
 	private Panel mainPanel;
 	VerticalLayout menuLayout = new VerticalLayout();
-	private Tree menutree;
 	MenuBar userMenu;
+	private Tree menutree;
 	
 	private JPAContainer<User> persons;
 	private JPAContainer<TestCase> testcases;
@@ -218,6 +195,30 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			public void buttonClick(ClickEvent event) {
 		        // open window to create SUT
 		        UI.getCurrent().addWindow(new TestCaseEditor(menutree));	//testcases        
+//		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree, testcases));
+			}
+		});
+		
+		//upload zip button
+		Button uploadZipButton = new Button("Upload Project Zip");
+		uploadZipButton.addStyleName("menu-button-left-align");
+		uploadZipButton.addStyleName("borderless-colored");
+//		uploadZipButton.addStyleName("tiny");
+		uploadZipButton.setIcon(FontAwesome.UPLOAD);
+		buttons.addComponent(uploadZipButton);
+//		buttons.setComponentAlignment(createTestCase, Alignment.MIDDLE_LEFT);
+		
+        // button listener
+		uploadZipButton.addClickListener(new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+		        // open window to create SUT
+				if (sessionuser.getTestCases().isEmpty() || sessionuser.getTestCases() == null){
+					Notification.show("Please create a target SUT before uploading a Test Project!", 
+							Notification.Type.WARNING_MESSAGE);
+				} else{
+					UI.getCurrent().addWindow(new ZipUploadWindow(sessionuser, menutree));	//testcases        					
+				}
 //		        UI.getCurrent().addWindow(new CreateTestCaseWindow(menutree, testcases));
 			}
 		});

@@ -11,8 +11,10 @@ import javax.persistence.Query;
 import com.aaron.mbpet.MbpetUI;
 import com.aaron.mbpet.domain.Adapter;
 import com.aaron.mbpet.domain.Adapter;
+import com.aaron.mbpet.domain.Parameters;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.FileSystemUtils;
+import com.aaron.mbpet.services.ParametersUtils;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
@@ -50,13 +52,27 @@ public class AdapterEditor {
 
 		this.currentAdapter = new Adapter(); 
 		this.currentAdapter.setOwnersession(this.ownersession);
-		this.currentAdapter.setAdapter_file(getDefaultSettings());
+		this.currentAdapter.setAdapter_file(getDefaultAdapter());
 //		this.currentParams.setSettings_file("Fill in Adapter for Test Session '" + parentsession.getTitle() + "'");
 		this.beanItem = new BeanItem<Adapter>(currentAdapter);
 
         saveAdapter();
 	}
+	/*
+	 * Create uploaded Adapter
+	 */
+	public AdapterEditor(TestSession ownersession, File uploadSessionFile) {		//JPAContainer<TestCase> container
+		createmode = true;
+		this.ownersession = ownersession;
 
+		this.currentAdapter = new Adapter(); 
+		this.currentAdapter.setOwnersession(this.ownersession);
+		this.currentAdapter.setAdapter_file(getUploadedAdapterPY(uploadSessionFile));		
+		
+		this.beanItem = new BeanItem<Adapter>(currentAdapter);
+
+        saveAdapter();
+	}
 	/*
 	 * Edit Mode
 	 */
@@ -266,7 +282,7 @@ public class AdapterEditor {
     }
 	
 
-	private String getDefaultSettings(){
+	private String getDefaultAdapter(){
 //		InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/output/Adapter_default.py");
 		String BASEDIR;
 	    if (VaadinService.getCurrent() != null) {
@@ -310,6 +326,23 @@ public class AdapterEditor {
 
 	}
 	
+	private String getUploadedAdapterPY(File uploadSessionFile){
+	    String lineSeparator = System.getProperty("line.separator");
+
+		Scanner scan = null;
+		try {
+			scan = new Scanner(new File(uploadSessionFile + "/adapter.py"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		StringBuilder sb = new StringBuilder();
+
+		while (scan.hasNextLine()){
+		   sb.append(scan.nextLine()).append(lineSeparator);
+		}
+		
+		return sb.toString();
+	}
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification

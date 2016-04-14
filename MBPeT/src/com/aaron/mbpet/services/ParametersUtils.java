@@ -501,8 +501,10 @@ public class ParametersUtils {
 		List<TRT> newtrtlist = new ArrayList<TRT>();
 		
 		List<TRT> prevtrtlist = new ArrayList<TRT>();
-		for ( TRT t : currParams.getTarget_response_times()){
-			prevtrtlist.add(t);
+		if (!(currParams.getTarget_response_times() == null) ){
+			for ( TRT t : currParams.getTarget_response_times()){
+				prevtrtlist.add(t);
+			}			
 		}
 		
 		
@@ -519,10 +521,12 @@ public class ParametersUtils {
 					}
 					singleResult = singleResult.substring(singleResult.indexOf("'"));
 					System.out.println("first token - > " + singleResult);
-					TRT trt = getTRTFromString(singleResult);
+//					TRT trt = getTRTFromString(singleResult);
+//					// write the trt to db
+//					trt = commitTRTtoDB(trt);					
 					
 					// write the trt to db
-					trt = commitTRTtoDB(trt);					
+					TRT trt = commitTRTtoDB(getTRTFromString(singleResult));
 					
 					// add to list of trt's
 					newtrtlist.add(trt);
@@ -636,6 +640,10 @@ public class ParametersUtils {
 	}
 	
 	private static TRT commitTRTtoDB(TRT trt) {
+		//add to container
+		trtcontainer.addEntity(trt);
+
+		//get id from db
 		EntityManager em = Persistence.createEntityManagerFactory("mbpet")
 				.createEntityManager();
 		Query query = em.createQuery("SELECT OBJECT(t) FROM TRT t WHERE t.action = :action AND t.parentparameter = :parentparameter");
@@ -656,6 +664,10 @@ public class ParametersUtils {
 //			trt = trtcontainer.getItem(queriedTRT.getId()).getEntity();
 			System.out.println("the generated id is: " + queriedTRT.getId());
 
+			// update parent Parameters to add TRT to List<TRT> trt
+			currParams.addTRT(queriedTRT);
+			parameterscontainer.addEntity(currParams);
+			
 //			return queriedTRT;
 	
 		} catch (NoResultException e) {

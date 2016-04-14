@@ -16,6 +16,7 @@ import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.services.AceUtils;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ParametersUtils;
+import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.parameters.ParametersEditor;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Property;
@@ -31,6 +32,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
@@ -174,7 +176,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 //			editor.setModePath("/static/ace");
 //			editor.setWorkerPath("/static/ace");
 		editor.setWidth("100%");
-		editor.setHeight("425px");
+		editor.setHeight("800px");
 		editor.setReadOnly(false); 
 //		setEditorMode(fileFormat);
 		editor.setMode(AceMode.python);
@@ -216,6 +218,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 			// update Form view
 			formAceView.bindFormtoBean(currentparams);
 //			for (Object pid : beanItem.getItemPropertyIds()) {beanItem.getItemProperty(pid).setValue(currParameters)}	        
+			formAceView.wireupTRTTable();		
 			saveButton.setEnabled(false);
 
 			// edit models directory name
@@ -255,6 +258,12 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 					currentparams.getSettings_file());
 			
 //			Notification.show(s, Type.WARNING_MESSAGE);
+			
+			
+//			UI.getCurrent().getNavigator()
+//			.navigateTo(MainView.NAME + "/" + 
+//				currsession.getParentcase().getTitle() + "/" + 
+//					currsession.getTitle() + "-id=" + currsession.getId());
         }
 
     }

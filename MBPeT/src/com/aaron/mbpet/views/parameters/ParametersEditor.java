@@ -23,6 +23,7 @@ import com.aaron.mbpet.domain.TestCase;
 import com.aaron.mbpet.domain.TestSession;
 import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.FileSystemUtils;
+import com.aaron.mbpet.services.ParametersUtils;
 import com.aaron.mbpet.views.LoginView;
 import com.aaron.mbpet.views.MainView;
 import com.aaron.mbpet.views.cases.TestCaseForm;
@@ -82,6 +83,7 @@ public class ParametersEditor {
 	private boolean formEdit = false;
 	private boolean createmode = false;
 	String prevModelsFolder;
+	private boolean uploadmode = false;
 	
 	/*
 	 * Create new Parameters
@@ -107,7 +109,25 @@ public class ParametersEditor {
 
         saveParameters();
 	}
+	/*
+	 * create uploaded parameters
+	 */
+	public ParametersEditor(TestSession parentsession, File uploadSessionFile) {		//JPAContainer<TestCase> container
+		createmode = true;
+		uploadmode  = true;
+		this.parentsession = parentsession;
 
+		this.currentParams = new Parameters(); 
+		this.currentParams.setOwnersession(this.parentsession);
+		this.currentParams.setSettings_file(getUploadedSettings(uploadSessionFile));
+		
+//		// commit individual field, parsed from ace
+//		ParametersUtils.commitAceParamData(currentParams, currentParams.getSettings_file());
+
+		this.beanItem = new BeanItem<Parameters>(currentParams);
+
+        saveParameters();
+	}
 	/*
 	 * Edit Mode
 	 */
@@ -194,6 +214,8 @@ public class ParametersEditor {
 		            // Option 2. serialize blob to db
 //		            DbUtils.commitUpdateToDb(currentParams.getSettings_file(), queriedParams, "settings_file");
 
+
+		            
 		            // 3. update parent Session to link Parameters
               	  	parentsession.setParameters(p);	//parameters.getItem(queriedParams.getId()).getEntity()
               	  	sessions.addEntity(parentsession);
@@ -221,6 +243,11 @@ public class ParametersEditor {
 							parentsession.getTitle(), 
 							currentParams.getTest_report_folder());
 					
+					
+//	            	if(uploadmode){
+//	            		// commit individual field, parsed from ace
+//	            		ParametersUtils.commitAceParamData(currentParams, currentParams.getSettings_file());
+//	            	}
 				} else if (editmode == true && formEdit==false){
 
 					// 1 UPDATE container
@@ -383,6 +410,23 @@ public class ParametersEditor {
 
 	}
 	
+	private String getUploadedSettings(File uploadSessionFile){
+	    String lineSeparator = System.getProperty("line.separator");
+
+		Scanner scan = null;
+		try {
+			scan = new Scanner(new File(uploadSessionFile + "/settings.py"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		StringBuilder sb = new StringBuilder();
+
+		while (scan.hasNextLine()){
+		   sb.append(scan.nextLine()).append(lineSeparator);
+		}
+		
+		return sb.toString();
+	}
 	
 	private void confirmNotification(String deletedItem, String message) {
         // welcome notification

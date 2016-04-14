@@ -41,7 +41,17 @@ public class FileSystemUtils {
 		} else
 			System.err.println("user directory not created!");
 	}
-	
+	public void createUploadsDir(String username) {
+		// Create one directory
+		File file;
+		boolean success = (file = new File(usersBasepath + username + "/uploads")).mkdir();
+//		File file = new File(usersBasepath + username);
+		if (file.exists()){	//if (success) {
+			grantPermissions(file);
+			System.out.println("Directory: " + file.getAbsolutePath() + " created");
+		} else
+			System.err.println("uploads directory not created!");
+	}
 //	public void createUserReportDir(String username) {
 //		File file;
 //		boolean success = (file = new File(webContent + "/VAADIN/users_reports/" + username)).mkdir();
