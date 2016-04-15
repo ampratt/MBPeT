@@ -30,8 +30,8 @@ public class ProgressBarThread extends Thread {
     
     @Override
     public void run() {
-    	System.out.println("test duration is " + String.valueOf(testduration));
-    	System.out.println("increase amount is " + String.valueOf(increaseAmount));
+    	//System.out.println("test duration is " + String.valueOf(testduration));
+    	//System.out.println("increase amount is " + String.valueOf(increaseAmount));
         // Count up until 1.0 is reached
         while (current < 1.0 && stopFlag==false) {
             current += increaseAmount;	//0.05;

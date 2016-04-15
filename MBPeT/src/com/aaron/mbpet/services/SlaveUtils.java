@@ -147,7 +147,7 @@ public class SlaveUtils implements Runnable {
 		        		"dir & echo example of & echo working dir");
 	        pb.directory(new File(mbpetBasepath + "/slave"));	//("C:\\dev\\mbpet\\slave"));
 	
-			System.out.println("Run echo command");
+			//System.out.println("Run echo command");
 //				pb.redirectErrorStream(true);
 			p = pb.start();
 

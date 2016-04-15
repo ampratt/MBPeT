@@ -127,7 +127,7 @@ public class RampTab extends VerticalLayout {
 	
 	public String formatDataForGraph(String input) {
 		String formatted = new StringBuilder().append("[").append(input).append("]").toString();
-		System.out.println(formatted);
+		//System.out.println(formatted);
 		return formatted;
 		
 	}
@@ -136,7 +136,7 @@ public class RampTab extends VerticalLayout {
 		//String formatted = new StringBuilder().append("[").append(input).append("]").toString();	
 		//String formatted = StringUtils.substringBetween(graphData, "[", "]");
 		String formatted = graphData.substring(1, graphData.length() - 1);
-		System.out.println(formatted);
+		//System.out.println(formatted);
 		return formatted;	
 	}
 	

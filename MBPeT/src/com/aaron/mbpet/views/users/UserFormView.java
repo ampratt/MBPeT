@@ -295,7 +295,7 @@ public class UserFormView extends HorizontalLayout implements Button.ClickListen
             public void buttonClick(ClickEvent event) {
                 UI.getCurrent().addWindow(
                         new UserEditor(table.getItem(table.getValue()), "Edit User Account", true));
-                System.out.println("EDITED PERSON: " + persons.getItem(table.getValue()));
+                //System.out.println("EDITED PERSON: " + persons.getItem(table.getValue()));
 
             }
         });

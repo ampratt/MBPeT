@@ -160,7 +160,7 @@ public class MasterUtils implements Runnable {
 		int openport = 0;
 	    for (int port=6000; port<7000; port++) {		//(int port : ports)
 			try {
-				System.out.println("\nTrying port: " + port);
+//				System.out.println("\nTrying port: " + port);
 //				if (new ServerSocket(port).isBound()){
 //					System.out.println("PORT (" + port + ") is bound");
 //				}
@@ -176,7 +176,7 @@ public class MasterUtils implements Runnable {
 				continue;	//return false;
 			}
 	    }
-		System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
+		//System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
 		setMasterPort(ss.getLocalPort());
 	    return ss.getLocalPort();
 	}
@@ -189,12 +189,12 @@ public class MasterUtils implements Runnable {
 
 		for (int port=6000; port<7000; port++) {		//(int port : ports)
 			try {
-				System.out.println("Trying port: " + port);
+				//System.out.println("Trying port: " + port);
 				if (netstatOutput.toString().contains("0.0.0.0:"+port)){			//( foundPortInNetstat(port) ){ 	// false == not found == we can use it
-					System.out.println("\nport " + port + " not available.");
+					//System.out.println("\nport " + port + " not available.");
 					continue;
 				} else {
-					System.out.println("port not found = should be free");
+					//System.out.println("port not found = should be free");
 					ss = new ServerSocket(port);	//port	//System.out.println("socket open on port " + port);
 					if (ss.isBound()){
 						System.out.println("PORT (" + port + ") is now bound");
@@ -207,7 +207,7 @@ public class MasterUtils implements Runnable {
 				continue;	//return false;
 			}
 	    }
-		System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
+		//System.out.println("\nReturning port [" + ss.getLocalPort() + "] for master use");
 		setMasterPort(ss.getLocalPort());
 	    return ss.getLocalPort();
 	}

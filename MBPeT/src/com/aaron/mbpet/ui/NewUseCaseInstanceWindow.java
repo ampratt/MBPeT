@@ -98,7 +98,7 @@ public class NewUseCaseInstanceWindow extends Window {
 //	                	Tree tree = MBPeTMenu.tree;
 	
 	                	// get parent from tree
-	                	System.out.println(tree.getItem(parentCase));
+	                	//System.out.println(tree.getItem(parentCase));
 	                	
 	                    // Create new item
 	                    final Object[] itemId = new Object[] {name.getValue()};
@@ -168,7 +168,7 @@ public class NewUseCaseInstanceWindow extends Window {
         	if (input.contains("/")) {
         		formatted = input.substring(0, input.indexOf("/"));        		
         	}
-        	System.out.println("FORMATTED: " + formatted);
+        	//System.out.println("FORMATTED: " + formatted);
         	
         	return formatted;
 		}

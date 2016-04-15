@@ -258,20 +258,20 @@ public class LoginView extends VerticalLayout  implements View, Button.ClickList
         	BeanItem<User> personItemById = new BeanItem<User>((User) queryByUsername.getSingleResult());	
         	VaadinSession.getCurrent().setAttribute("sessionUserItem", personItemById);
         	
-        	System.out.println("the query gave this: " +
-        			personById + "\n" + personById.getUsername() +
-    				"\n" + personById.getFirstname() +
-    				"\n" + personById.getLastname());
+//        	System.out.println("the query gave this: " +
+//        			personById + "\n" + personById.getUsername() +
+//    				"\n" + personById.getFirstname() +
+//    				"\n" + personById.getLastname());
         	
-        	System.out.println("session user object: " + VaadinSession.getCurrent()
-        													.getAttribute("sessionUser").toString());
+//        	System.out.println("session user object: " + VaadinSession.getCurrent()
+//        													.getAttribute("sessionUser").toString());
        	
             // Store the current username in the service session
         	VaadinSession.getCurrent().setAttribute("user", usernameStr);
 
         	// set user objects in MbpetUI
         	User su = (User) VaadinSession.getCurrent().getAttribute("sessionUser");
-        	System.out.println("session user: " + su.getId());
+        	//System.out.println("session user: " + su.getId());
         	((MbpetUI) UI.getCurrent()).setSessionUser(persons.getItem(su.getId()).getEntity());	//sessionuser = 
 //        	sessionUserItem = (Item) VaadinSession.getCurrent().getAttribute("sessionUserItem");
         	

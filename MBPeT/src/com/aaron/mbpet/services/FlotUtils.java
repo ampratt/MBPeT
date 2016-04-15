@@ -23,7 +23,7 @@ public final class FlotUtils {
 		if (ramp !=null){
 			formatted = ramp.replace("(", "[");
 			formatted = formatted.replace(")", "]");
-			System.out.println("formatted ->" + formatted);
+			//System.out.println("formatted ->" + formatted);
 			
 		}
 
@@ -38,11 +38,11 @@ public final class FlotUtils {
 		String formatted = "";
 		if (flot !=null){
 			formatted = flot.substring(1, flot.length()-1);
-				System.out.println("Substring ->" + formatted);
+				//System.out.println("Substring ->" + formatted);
 			formatted = formatted.replace("[", "(");
 			formatted = formatted.replace("]", ")");
 			formatted = "[" + formatted + "]";
-				System.out.println("formatted ->" + formatted);
+				//System.out.println("formatted ->" + formatted);
 		}
 		
 		return formatted;

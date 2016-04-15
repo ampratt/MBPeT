@@ -35,7 +35,7 @@ public class JsonProcessor {
 		ActionResponse indActionResponse;
 		if (sessionViewer.getINDActionsBeingMonitored()!=null){
     		for(TRT trt : sessionViewer.getINDActionsBeingMonitored()){	//for (int i=0; i<actionsSelected; i++){
-    			System.out.println("current action is:" + trt);
+    			//System.out.println("current action is:" + trt);
 //    			trtsMonitoring.add(trt);
     			
     			// create ActionResponse for every TRT being monitored and add it to the HashSet
@@ -257,7 +257,7 @@ public class JsonProcessor {
        			resp = (JSONArray) valuesObject.get("resp");
 
        			// add number of responses received to aggregated
-       			System.out.println("ADDING TO TOTAL RESPONSE COUNT:" + resp.length());
+       			//System.out.println("ADDING TO TOTAL RESPONSE COUNT:" + resp.length());
        			aggRespTime.addToTotalResponseCount(resp.length());
        			
        			// loop through ind. reponses
@@ -277,8 +277,8 @@ public class JsonProcessor {
        						act.addToTotalResponseTime((Double)currresponse.get("val")); //add response time to total value
        		       			act.setCurrentResponseTime((Double)currresponse.get("val")); //set current time for chart
        		       			act.calculateAverage();
-       		       			System.out.println("Actions compared:" + currresponse.get("action") + " - " + acttitle);
-       		       			System.out.println("RECEIVED ACT RESPONSE:" + act.getTitle() + " " + act.getCurrentResponseTime());
+       		       			//System.out.println("Actions compared:" + currresponse.get("action") + " - " + acttitle);
+       		       			//System.out.println("RECEIVED ACT RESPONSE:" + act.getTitle() + " " + act.getCurrentResponseTime());
 //       						if (!responseset.contains(currresponse)) responseset.add(aggRespTime);
       		       			break;       					
        					}
@@ -316,7 +316,7 @@ public class JsonProcessor {
        			slave_name = (String) jsonObject.get("slave_name");
        		for (int i=0; i<slavearray.length; i++){
        			slavearray[i] = slave_name;       			
-       			System.out.println("SLAVE ARRAY " + (i+1) + ": " + slavearray[i]);
+       			//System.out.println("SLAVE ARRAY " + (i+1) + ": " + slavearray[i]);
        		}
 //	       	slavearray[1] = "";
 //	       	for (int i=0; i<numslaves; i++) {

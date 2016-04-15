@@ -229,15 +229,15 @@ public class ReportsTab extends Panel {
 	     SimpleDateFormat outputFT = new SimpleDateFormat ("dd.MM.yyyy, hh:mm a"); 
 	
 	      String input = reportname.substring(pos, reportname.length()-5); 
-	      System.out.print(input + " Parses as "); 
+	      //System.out.print(input + " Parses as "); 
 	      Date t = null; 
 	
 	      try { 
 	          t = inputFT.parse(input); 
-	          System.out.println(t); 
-	          System.out.println("my format is: " + outputFT.format(t));
+	          //System.out.println(t); 
+	          //System.out.println("my format is: " + outputFT.format(t));
 	      } catch (ParseException e) { 
-	          System.out.println("Unparseable using " + inputFT); 
+	          //System.out.println("Unparseable using " + inputFT); 
 	      }
 	      
 		String formatted = "Test Report<br><span>" + outputFT.format(t) + "</span>"; //5=.html
@@ -262,7 +262,7 @@ public class ReportsTab extends Panel {
         });
 		if (!(directories==null) && directories.length>0) {
 
-	        System.out.println("directories with reports:" + directories.length);
+	        //System.out.println("directories with reports:" + directories.length);
 	        File[] singlereport = null;
 	//        File[] reports = null;
 	        List<File> reportlist = new ArrayList<File>();
@@ -270,7 +270,7 @@ public class ReportsTab extends Panel {
 	        
 	        // retrieve individual html reports and add them to List
 	        for (int i=directories.length-1; i>=0; i--) {			//(int i=0; i<directories.length; i++) {
-	            System.out.println("finding html report - round:" + (i+1));
+	            //System.out.println("finding html report - round:" + (i+1));
 	        	String currentpath = directories[i].getAbsolutePath();
 	           	File dir = new File(currentpath);
 	
@@ -280,7 +280,7 @@ public class ReportsTab extends Panel {
 	           	  	}
 	           	});
 	           	try {
-	           		System.out.println("singlereport:" + singlereport[0]);
+	           		//System.out.println("singlereport:" + singlereport[0]);
 	           		reportlist.add(singlereport[0]);           		
 	           	} catch (IndexOutOfBoundsException e) {
 	           		System.err.println(e + 
@@ -290,7 +290,7 @@ public class ReportsTab extends Panel {
 	        
 	        //display thumbnail for all files in List
 	        try {
-	        	System.out.println("reports files:" + reportlist.size());
+	        	//System.out.println("reports files:" + reportlist.size());
 	        	boolean newest = true;
 				for (final File html : reportlist){			//(final Movie movie : DashboardUI.getDataProvider().getMovies()) {
 					VerticalLayout frame = new VerticalLayout();

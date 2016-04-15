@@ -173,7 +173,7 @@ public class StreamGobbler2 {	//extends Thread {
 	    p = Pattern.compile(pattern);
 	    m = p.matcher(fullString);
 	    
-	    System.out.println("found Left:? >" + m.find());
+	    //System.out.println("found Left:? >" + m.find());
 
 	    return m.find();
 	}

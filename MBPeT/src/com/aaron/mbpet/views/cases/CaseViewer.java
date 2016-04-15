@@ -211,7 +211,7 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 		if (title.contains("/")) {
 			title = title.substring(0, title.indexOf("/")); 
 		}
-		System.out.println("the parses test case title is: " + title);
+//		System.out.println("the parsed test case title is: " + title);
 		
 		// add created item to tree (after retrieving db generated id)
         EntityManager em = Persistence.createEntityManagerFactory("mbpet")
@@ -222,8 +222,8 @@ public class CaseViewer extends Panel implements Button.ClickListener {	//implem
 //        query.setParameter("title", newsession.getTitle());
         TestCase queriedCase = 
         		(TestCase) query.setParameter("title", title).getSingleResult();
-        System.out.println("retrieved TC fro db is : " 
-        				+  queriedCase.getId() + " - " + queriedCase.getTitle());
+//        System.out.println("retrieved TC fro db is : " 
+//        				+  queriedCase.getId() + " - " + queriedCase.getTitle());
 			            
 		return testcases.getItem(queriedCase.getId()).getEntity();
 		

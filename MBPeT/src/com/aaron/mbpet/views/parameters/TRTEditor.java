@@ -181,7 +181,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 						// check SESSION title doesnt exist for THIS SESSION
 						int id =0;
 						id = beanItem.getBean().getId();	//testsession.getId();
-						System.out.println("parentparams.getTarget_response_times() : " + parentparams.getTarget_response_times());
+						//System.out.println("parentparams.getTarget_response_times() : " + parentparams.getTarget_response_times());
 						if (currTrt.getAction()==null || currTrt.getAction().equals("")) {
 							binder.discard();
 							titleOK = false;
@@ -192,8 +192,8 @@ public class TRTEditor extends Window implements Button.ClickListener {
 						} else {
 							
 							for (TRT t : parentparams.getTarget_response_times()) {	//sessions.getItemIds()
-							System.out.println("Existing action -> new action : " + t.getAction() + "->" + currTrt.getAction());
-							System.out.println("Existing id -> new id : " + t.getId() + "->" + id);
+							//System.out.println("Existing action -> new action : " + t.getAction() + "->" + currTrt.getAction());
+							//System.out.println("Existing id -> new id : " + t.getId() + "->" + id);
 								if (t.getAction().equals(currTrt.getAction()) && !(t.getId()==id) ) {	
 									currTrt.setAction(prevTitle);
 									if (editmode == true) {
@@ -209,7 +209,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 						
 						
 						if (titleOK == true) {
-							System.out.println("TITLE WAS FINE. EDITING");
+							//System.out.println("TITLE WAS FINE. EDITING");
 							
 							// add NEW bean object to db through jpa container
 							if (editmode == false) {
@@ -222,13 +222,13 @@ public class TRTEditor extends Window implements Button.ClickListener {
 										.createEntityManager();
 								Query query = em.createQuery("SELECT OBJECT(t) FROM TRT t WHERE t.action = :action AND t.parentparameter = :parentparameter");
 								//		            query.setParameter("title", newsession.getTitle());
-								System.out.println("THE ENTERED VARIABLES: " + currTrt.getAction() + " " + currTrt.getAverage() + " " + beanItem.getBean().getMax());
+								//System.out.println("THE ENTERED VARIABLES: " + currTrt.getAction() + " " + currTrt.getAverage() + " " + beanItem.getBean().getMax());
 								query.setParameter("action", currTrt.getAction());
 								query.setParameter("parentparameter", currTrt.getParentparameter()); //MainView.sessionUser
 								List<TRT> results = query.getResultList(); // getSingleResult();	//(TRT) 
-								System.out.println("result list size: " + results.size());
+								//System.out.println("result list size: " + results.size());
 								queriedTRT = results.get(results.size()-1);
-								System.out.println("the generated id is: " + queriedTRT.getId());
+//								System.out.println("the generated id is: " + queriedTRT.getId());
 								id = queriedTRT.getId(); // here is the id we need for tree
 								
 
@@ -240,12 +240,12 @@ public class TRTEditor extends Window implements Button.ClickListener {
 								// 4. UPDATE grid
 			              	  	
 								
-								System.out.println("WHAT IS NEW LIST OF TRTs: "
-												+ parentparams.getTarget_response_times()); // testing purposes
-								for (TRT s : parentparams.getTarget_response_times()) {
-									System.out.println(s.getId() + " - "
-											+ s.getAction()); // testing purposes	            		
-								}
+//								System.out.println("WHAT IS NEW LIST OF TRTs: "
+//												+ parentparams.getTarget_response_times()); // testing purposes
+//								for (TRT s : parentparams.getTarget_response_times()) {
+//									System.out.println(s.getId() + " - "
+//											+ s.getAction()); // testing purposes	            		
+//								}
 									
 				            	
 							} else if (editmode == true){
@@ -254,11 +254,11 @@ public class TRTEditor extends Window implements Button.ClickListener {
 								
 			              	  	//1 UPDATE parentparameters reference
 								parentparams.updateTRTData(trtcontainer.getItem(currTrt.getId()).getEntity());
-								System.out.println("TRT is now: " + currTrt.getAction());
+								//System.out.println("TRT is now: " + currTrt.getAction());
 	
 								// 2 UPDATE container
 								trtcontainer.addEntity(beanItem.getBean());
-								System.out.println("Entity is now: " + trtcontainer.getItem(currTrt.getId()).getEntity().getAction());
+								//System.out.println("Entity is now: " + trtcontainer.getItem(currTrt.getId()).getEntity().getAction());
 	
 								// 3 UPDATE tree title
 //			              	  	tree.setItemCaption(currTrt.getId(), trtcontainer.getItem(currTrt.getId()).getEntity().getAction());
@@ -286,7 +286,7 @@ public class TRTEditor extends Window implements Button.ClickListener {
 		            	
 			            // title already existed	
 						} else {
-							System.out.println("title was NOT fine.");
+							//System.out.println("title was NOT fine.");
 //							testsession = sessions.getItem(id).getEntity();
 //							System.out.println("db session is: " + testsession.getId() + " " + testsession.getTitle());
 

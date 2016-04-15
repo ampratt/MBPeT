@@ -91,12 +91,12 @@ public class ModelUtils {
 		Model queriedModel = null;
 		try {
 			// CREATE new Model
-	    	System.out.println("Saving default model to disk: " + title); // testing purposes
+	    	//System.out.println("Saving default model to disk: " + title); // testing purposes
 
-	    	System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
-	    	for (Model m : currmodel.getParentsession().getModels()) {
-	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-	    	}
+	    	//System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
+//	    	for (Model m : currmodel.getParentsession().getModels()) {
+//	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//	    	}
 	    	
     		// 1. ADD to container
 			models.addEntity(modelBeanItem.getBean()); //jpa container	
@@ -109,16 +109,16 @@ public class ModelUtils {
 			query.setParameter("title", title);
 			query.setParameter("parentsession", parentsession);
 			queriedModel = (Model) query.getSingleResult();
-			System.out.println("the generated id is: "+ queriedModel.getId());
+			//System.out.println("the generated id is: "+ queriedModel.getId());
 			
 			// 2B. update parent Case to add Session to testCase List<Session> sessions
 			parentsession.addModel(queriedModel);
 			parentcase.addModel(queriedModel);
 			
-        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
-        	for (Model m : parentsession.getModels()) {
-            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-        	}
+//        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+//        	for (Model m : parentsession.getModels()) {
+//            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//        	}
         	
 			// 3. write model file to disk
 			fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
@@ -166,24 +166,24 @@ public class ModelUtils {
 				// 1. commit the fieldgroup
 				binder.commit();
 
-		    	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
-		    	for (Model m : currmodel.getParentsession().getModels()) {
-		        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-		    	}
+//		    	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
+//		    	for (Model m : currmodel.getParentsession().getModels()) {
+//		        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//		    	}
 		    	
 				// check Model title doesnt exist for THIS SESSION
 				int id =0;
 				boolean titleOK = true;
 				id = modelBeanItem.getBean().getId();	//testsession.getId();
-				System.out.println("desired session and its Models : " + currmodel.getParentsession() + " - " + currmodel.getParentsession().getModels());	//sessions.getItem(currmodel.getParentsession().getId()).getEntity().getModels());
+				//System.out.println("desired session and its Models : " + currmodel.getParentsession() + " - " + currmodel.getParentsession().getModels());	//sessions.getItem(currmodel.getParentsession().getId()).getEntity().getModels());
 				
 
 				// compare title against those in desired target session
 				for (Model m : parentsession.getModels()) {	//currmodel.getParentsession()  sessions.getItemIds()
 					
-					System.out.println("Existing title -> new title : " + m.getTitle() + "->" + currmodel.getTitle());
-					System.out.println("Existing id -> new id : " + m.getId() + "->" + id);
-					System.out.println("Existing p.session -> attempted new p.session : " + m.getParentsession().getTitle() + "->" + currmodel.getParentsession().getTitle());
+					//System.out.println("Existing title -> new title : " + m.getTitle() + "->" + currmodel.getTitle());
+					//System.out.println("Existing id -> new id : " + m.getId() + "->" + id);
+					//System.out.println("Existing p.session -> attempted new p.session : " + m.getParentsession().getTitle() + "->" + currmodel.getParentsession().getTitle());
 					
 					if ( m.getTitle().equals(currmodel.getTitle().trim()) 
 							&& !(m.getId()==id)) {					//&& !(m.getId()==id)
@@ -198,7 +198,7 @@ public class ModelUtils {
 
 				
             	if (titleOK == true) {
-					System.out.println("title was OK.");
+					//System.out.println("title was OK.");
 
 					checkTitles();
 					
@@ -218,17 +218,17 @@ public class ModelUtils {
 					query.setParameter("title", currmodel.getTitle());
 					query.setParameter("parentsession",currmodel.getParentsession());
 					queriedModel = (Model) query.getSingleResult();
-					System.out.println("the generated id is: "+ queriedModel.getId());
+					//System.out.println("the generated id is: "+ queriedModel.getId());
 					
 					// 3. update parent Case to add Session to testCase List<Session> sessions
 					parentsession.addModel(queriedModel);
 					parentcase.addModel(queriedModel);
-					System.out.println("WHAT IS NEW LIST OF MODELS: "+ parentsession.getModels()); // testing purposes
+					//System.out.println("WHAT IS NEW LIST OF MODELS: "+ parentsession.getModels()); // testing purposes
 					
-	            	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
-	            	for (Model m : parentsession.getModels()) {
-		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-	            	}
+//	            	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+//	            	for (Model m : parentsession.getModels()) {
+//		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//	            	}
 	            	
 					// 4. write model file to disk
 					fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
@@ -241,7 +241,7 @@ public class ModelUtils {
 					confirmNotification("Model '" + queriedModel.getTitle()+ "'", "saved");
 					
 				} else {
-					System.out.println("title was NOT fine.");
+					//System.out.println("title was NOT fine.");
 					binder.discard();
 					Notification.show("The title '" + wrongTitle + "' already exists for this Session. Please rename this model.", Type.ERROR_MESSAGE);	//testsession.getTitle()
 //					UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
@@ -290,7 +290,7 @@ public class ModelUtils {
 		parentcase = testcases.getItem(currmodel.getParentsut().getId()).getEntity(); 	//parentsession.getParentcase();
 
 		prevTitle = currmodel.getTitle();
-		System.out.println("prevTitle: " + prevTitle);
+		//System.out.println("prevTitle: " + prevTitle);
 	
 		binder = fieldbinder;
     	
@@ -301,25 +301,25 @@ public class ModelUtils {
 				// 1. commit the fieldgroup
 				binder.commit();
 
-		    	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
-		    	for (Model m : currmodel.getParentsession().getModels()) {
-		        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-		    	}
+//		    	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
+//		    	for (Model m : currmodel.getParentsession().getModels()) {
+//		        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//		    	}
 		    	
 				// check Model title doesnt exist for THIS SESSION
 				int id =0;
 				boolean titleOK = true;
 				id = modelBeanItem.getBean().getId();	//testsession.getId();
-				System.out.println("desired session and its Models : " + currmodel.getParentsession() + " - " + currmodel.getParentsession().getModels());	//sessions.getItem(currmodel.getParentsession().getId()).getEntity().getModels());
+				//System.out.println("desired session and its Models : " + currmodel.getParentsession() + " - " + currmodel.getParentsession().getModels());	//sessions.getItem(currmodel.getParentsession().getId()).getEntity().getModels());
 				
 				// compare title against those in desired target session
 				for (Model m : parentsession.getModels()) {	//sessions.getItemIds()
-					System.out.println("Existing title -> new title : " + m.getTitle() + "->" + currmodel.getTitle());
-					System.out.println("Existing id -> new id : " + m.getId() + "->" + id);
-					System.out.println("Existing p.session -> attempted new p.session : " + m.getParentsession().getTitle() + "->" + currmodel.getParentsession().getTitle());
+					//System.out.println("Existing title -> new title : " + m.getTitle() + "->" + currmodel.getTitle());
+					//System.out.println("Existing id -> new id : " + m.getId() + "->" + id);
+					//System.out.println("Existing p.session -> attempted new p.session : " + m.getParentsession().getTitle() + "->" + currmodel.getParentsession().getTitle());
 					
 					if (m.getTitle().equals(currmodel.getTitle().trim()) && m.getId()!=id ) {	
-						System.out.println("NOT ALLOWED...resetting model" );
+						//System.out.println("NOT ALLOWED...resetting model" );
 						currmodel.setTitle(prevTitle);
 						models.addEntity(currmodel);
 						
@@ -336,7 +336,7 @@ public class ModelUtils {
 					
 					// 3 UPDATE container
 					models.addEntity(modelBeanItem.getBean());
-					System.out.println("Entity is now: " + models.getItem(currmodel.getId()).getEntity().getTitle());
+					//System.out.println("Entity is now: " + models.getItem(currmodel.getId()).getEntity().getTitle());
 
               	  	// 1.1 UPDATE parent Session reference
 					parentsession.updateModelData(models.getItem(currmodel.getId()).getEntity());
@@ -357,10 +357,10 @@ public class ModelUtils {
 //					models.addEntity(modelBeanItem.getBean());
 //					System.out.println("Entity is now: " + editedmodel.getTitle());
 					
-	            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
-	            	for (Model m : currmodel.getParentsession().getModels()) {
-		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-	            	}
+//	            	System.out.println("WHAT IS NEW LIST OF SESSIONS: " + currmodel.getParentsession().getModels()); // testing purposes
+//	            	for (Model m : currmodel.getParentsession().getModels()) {
+//		            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//	            	}
 	            	
 					// 4. write model file to disk
 	            		// 4.1 first delete old file is it doesn't match the file name
@@ -383,7 +383,7 @@ public class ModelUtils {
 					confirmNotification("Model '" + editedmodel.getTitle() + "'", "saved");					
 				
 				} else {
-					System.out.println("title was NOT fine.");
+					//System.out.println("title was NOT fine.");
 					binder.discard();
 					Notification.show("The title '" + wrongTitle + "' already exists for this Session. Please rename this model.", Type.ERROR_MESSAGE);	//testsession.getTitle()
 //					UI.getCurrent().addWindow(new ModelEditor(parentsession, parentcase));
@@ -429,7 +429,7 @@ public class ModelUtils {
 	        String name=file.getName();
 			if (name.indexOf(".") > 0)
 			    name = name.substring(0, name.lastIndexOf("."));
-	        System.out.println("model name without extension - " + name);
+	        //System.out.println("model name without extension - " + name);
 		currmodel.setTitle(name);
 		currmodel.setDotschema(getUploadedModel(file));
 		currmodel.setParentsession(parentsession);
@@ -438,12 +438,12 @@ public class ModelUtils {
 		Model queriedModel = null;
 		try {
 			// CREATE new Model
-	    	System.out.println("Saving uploaded model to disk: " + currmodel.getTitle()); // testing purposes
+	    	//System.out.println("Saving uploaded model to disk: " + currmodel.getTitle()); // testing purposes
 
-	    	System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
-	    	for (Model m : currmodel.getParentsession().getModels()) {
-	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-	    	}
+//	    	System.out.println("WHAT IS NEW LIST OF Models: " + currmodel.getParentsession().getModels()); // testing purposes
+//	    	for (Model m : currmodel.getParentsession().getModels()) {
+//	        	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//	    	}
 	    	
     		// 1. ADD to container
 			models.addEntity(modelBeanItem.getBean()); //jpa container	
@@ -456,16 +456,16 @@ public class ModelUtils {
 			query.setParameter("title", currmodel.getTitle());
 			query.setParameter("parentsession", parentsession);
 			queriedModel = (Model) query.getSingleResult();
-			System.out.println("the generated id is: "+ queriedModel.getId());
+			//System.out.println("the generated id is: "+ queriedModel.getId());
 			
 			// 2B. update parent Case to add Session to testCase List<Session> sessions
 			parentsession.addModel(queriedModel);
 			parentcase.addModel(queriedModel);
 			
-        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
-        	for (Model m : parentsession.getModels()) {
-            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
-        	}
+//        	System.out.println("WHAT IS NEW LIST OF MODELS: " + parentsession.getModels()); // testing purposes
+//        	for (Model m : parentsession.getModels()) {
+//            	System.out.println(m.getId() + " - " + m.getTitle()); // testing purposes	            		
+//        	}
         	
 			// 3. write model file to disk
 			fileUtils.writeModelToDisk(	//username, sut, session, settings_file)
@@ -495,7 +495,7 @@ public class ModelUtils {
 		@SuppressWarnings("resource")
 		private String getDefaultModel(String title) {
 			String modelFile = defaultModelsDir + title + ".gv";
-			System.out.println("Model default FILE : " + modelFile);
+			//System.out.println("Model default FILE : " + modelFile);
 
 			StringBuilder builder = new StringBuilder();
 			Scanner scan = null;
@@ -517,7 +517,7 @@ public class ModelUtils {
 		@SuppressWarnings("resource")
 		private String getUploadedModel(File modelFile) {
 //			String modelFile = defaultModelsDir + title + ".gv";
-			System.out.println("Model FILE : " + modelFile);
+			//System.out.println("Model FILE : " + modelFile);
 
 			StringBuilder builder = new StringBuilder();
 			Scanner scan = null;
@@ -526,7 +526,7 @@ public class ModelUtils {
 				while (scan.hasNextLine()) {		
 					builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
 				}	
-				System.out.println(builder.toString());
+				//System.out.println(builder.toString());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -560,7 +560,7 @@ public class ModelUtils {
 				// get first line
 				String[] lines = editorvalue.split("\n"); 
 				firstline = lines[0];
-				System.out.println("firstline is: " + lines[0]);
+				//System.out.println("firstline is: " + lines[0]);
 				
 //				// replace title in first line
 				String[] words = lines[0].split(" ");

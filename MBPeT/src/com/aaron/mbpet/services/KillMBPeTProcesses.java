@@ -81,7 +81,7 @@ public class KillMBPeTProcesses {
 	 String line;
 	 while ((line = reader.readLine()) != null) {
 		  if (line.contains(port)) {
-			  System.out.println(line);
+			  //System.out.println(line);
 			  return true;
 		  }
 	 }
@@ -96,7 +96,7 @@ public class KillMBPeTProcesses {
 		 String line;
 		 while ((line = reader.readLine()) != null) {
 			  if (line.contains(serviceName)) {
-				  System.out.println(line);
+				  //System.out.println(line);
 				  return true;
 			  }
 		 }

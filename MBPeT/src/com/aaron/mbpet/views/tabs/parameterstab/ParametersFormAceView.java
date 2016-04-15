@@ -250,10 +250,10 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 		for (Object propertyId : binder.getBoundPropertyIds()) {
 			if ("dstat_mode".equals(propertyId)) {
 				ComboBox combo = (ComboBox) binder.getField(propertyId);
-				System.out.println("property was dstat");
+				//System.out.println("property was dstat");
 				if (combo.getValue() == null) {
 					combo.select("None");
-					System.out.println("attempted to set null value to None");
+					//System.out.println("attempted to set null value to None");
 				}
 			} else if ("models_folder".equals(propertyId)) {
 				this.prevModelsFolder = binder.getField(propertyId).getValue().toString();
@@ -348,7 +348,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 					
 				    // Get selection from the selection model
 					selectedTRT = trtcontainer.getItem(event.getProperty().getValue()).getEntity();
-				    System.out.println("SELECTED: " + selectedTRT.getAction());
+				    //System.out.println("SELECTED: " + selectedTRT.getAction());
 //				    Notification.show("Selected " + selectedTRT.getAction() );
 				    
 				} else {
@@ -509,9 +509,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //				currentparams.addTRT(trtcontainer.getItem(id).getEntity());
 			}
 			currentparams.setTarget_response_times(trtList);
-			System.out.println("PARAM TRTs before commit:");
+			//System.out.println("PARAM TRTs before commit:");
 			for (TRT trt : currentparams.getTarget_response_times()){
-				System.out.println(trt.getAction());
+				//System.out.println(trt.getAction());
 
 			}
 //			TRTForm.toggleValidationMessages(true);
@@ -522,7 +522,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				// 1 UPDATE container
 				parameterscontainer.addEntity(beanItem.getBean());
 				this.currentparams = parameterscontainer.getItem(beanItem.getBean().getId()).getEntity();
-//				System.out.println("Parameters are now: " + currentparams.getId() 
+//				//System.out.println("Parameters are now: " + currentparams.getId() 
 //									+ " " + currentparams.getSettings_file());
 				
 				// 2 UPDATE parentcase reference
@@ -530,9 +530,9 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 //				System.out.println("Session's Params are now: " + currsession.getParameters().getId() + " " + currsession.getParameters().getSettings_file());
 				
 				currentparams.setTarget_response_times(trtList);
-				System.out.println("PARAM TRTs after commit:");
+				//System.out.println("PARAM TRTs after commit:");
 				for (TRT trt : currentparams.getTarget_response_times()){
-					System.out.println(trt.getAction());
+					//System.out.println(trt.getAction());
 
 				}
 				// insert form data into settings file
@@ -547,7 +547,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				// edit models directory name
           	  	FileSystemUtils fileUtils = new FileSystemUtils();
 
-				System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
+				//System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
 				if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
 					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 							currSession.getParentcase().getOwner().getUsername(),
@@ -562,7 +562,7 @@ public class ParametersFormAceView extends HorizontalSplitPanel implements Compo
 				}
 				
 				// edit reports directory name
-				System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
+				//System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
 				if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
 					fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 							currSession.getParentcase().getOwner().getUsername(),

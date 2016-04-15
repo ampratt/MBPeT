@@ -72,17 +72,17 @@ public class Unzip {
           byte[] buffer = new byte[1024];
           int bytesRead = 0;
           
-          System.out.println("zipfile path>" + filefile.getAbsolutePath());
+//          System.out.println("zipfile path>" + filefile.getAbsolutePath());
           filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));	//File.separator
-          System.out.println("trying to create file at dir>" + filePath);
+//          System.out.println("trying to create file at dir>" + filePath);
           f = new File(filePath + File.separator + entry.getName());
           
           if (entry.isDirectory()) {
             f.mkdirs();
-            	System.out.println("created directory:" + f + " which is a directory");
+//            	System.out.println("created directory:" + f + " which is a directory");
 		    	if (firstdir){
 		    		newHomeDir = new File(f.getAbsolutePath());        		  
-		        	System.out.println("SET PROJECT DIR UNZIPPED TO:" + newHomeDir);
+//		        	System.out.println("SET PROJECT DIR UNZIPPED TO:" + newHomeDir);
 		    		firstdir = false;
 		    	}
             continue;
@@ -91,7 +91,7 @@ public class Unzip {
             f.createNewFile();
           }
           if(f.isFile())
-        	  System.out.println("created file:" + f + " which is a file");
+//        	  System.out.println("created file:" + f + " which is a file");
           
           fos = new FileOutputStream(f);
     

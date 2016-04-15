@@ -321,7 +321,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 				
 			udpPort=0;
 			while (!(udpWorker.getUDPPort() > 0)) {
-				System.out.println("waiting udp port selection...");
+				//System.out.println("waiting udp port selection...");
 			}udpPort = udpWorker.getUDPPort();
 			System.out.println("\nudp port selected..." + udpPort);
 			
@@ -352,7 +352,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 			// start mbpet SLAVE
 			masterPort=0;
 			while (!(masterUtils.getMasterPort() > 0)) {
-				System.out.print("waiting master port selection...");
+				//System.out.print("waiting master port selection...");
 			}masterPort = masterUtils.getMasterPort();
 			System.out.println("\nmaster port selected..." + masterPort);
 						
@@ -444,7 +444,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 //		if (input.contains("#")) {
 //			title = input.substring((input.indexOf("#")+1), input.length()); 
 //		}
-		System.out.println("the parsed page title is: " + title);
+		//System.out.println("the parsed page title is: " + title);
 		
 		return title;
 	}
@@ -454,12 +454,12 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		if (input.contains("id=")) {
 			parsed = input.substring((input.indexOf("=")+1), input.length()); 
 		}
-		System.out.println("the parsed test session ID is: " + parsed);
+		//System.out.println("the parsed test session ID is: " + parsed);
 		
 		int id = Integer.parseInt(parsed);
 //		currsession = sessions.getItem(id).getEntity();
 //		
-//        System.out.println("retrieved SESSION fro db is :  - " + currsession.getTitle());
+//        //System.out.println("retrieved SESSION fro db is :  - " + currsession.getTitle());
 		
 		return sessions.getItem(id).getEntity();
 	}
@@ -509,7 +509,7 @@ public class SessionViewer extends VerticalLayout implements Button.ClickListene
 		List<TRT> actionsMonitoredList = new ArrayList<TRT>();
     	if (actionIDsSelected!=null){
     		for(int id : actionIDsSelected){	//for (int i=0; i<actionsSelected; i++){
-    			System.out.println("current action is:" + id);
+    			//System.out.println("current action is:" + id);
     			actionsMonitoredList.add(trtcontainer.getItem(id).getEntity());
     		}    		
     	}

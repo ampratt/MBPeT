@@ -208,7 +208,7 @@ public class ParametersEditor {
 		        		);
 		            queriedParams = (Parameters) query.setParameter("ownersession", currentParams.getOwnersession()).getSingleResult();
 		            Parameters p = parameters.getItem(queriedParams.getId()).getEntity();
-		            System.out.println("the generated id is: " + p.getId());
+		            //System.out.println("the generated id is: " + p.getId());
 		            id = queriedParams.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -257,10 +257,10 @@ public class ParametersEditor {
 
 					// 2 UPDATE parentcase reference
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
-					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
+					//System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
 
 					// edit models directory name
-					System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
+					//System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
 					if (!prevModelsFolder.equals(currentParams.getModels_folder())) {
 						new FileSystemUtils().renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 								parentsession.getParentcase().getOwner().getUsername(),
@@ -287,10 +287,10 @@ public class ParametersEditor {
 
 					// 2 UPDATE parentcase reference
 					parentsession.setParameters(parameters.getItem(currentParams.getId()).getEntity());
-					System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
+					//System.out.println("Session's Params are now: " + parentsession.getParameters().getId() + " " + parentsession.getParameters().getSettings_file());
 
 					// edit models directory name
-					System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
+					//System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentParams.getModels_folder());
 					if (!prevModelsFolder.equals(currentParams.getModels_folder())) {
 						new FileSystemUtils().renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 								parentsession.getParentcase().getOwner().getUsername(),
@@ -313,7 +313,7 @@ public class ParametersEditor {
 		        		);
 		            queriedParams = (Parameters) query.setParameter("ownersession", currentParams.getOwnersession()).getSingleResult();
 		            Parameters p = parameters.getItem(queriedParams.getId()).getEntity();
-		            System.out.println("the generated id is: " + p.getId() + " with parent session: " + p.getOwnersession().getId());
+		            //System.out.println("the generated id is: " + p.getId() + " with parent session: " + p.getOwnersession().getId());
 		            id = queriedParams.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -324,19 +324,18 @@ public class ParametersEditor {
               	  	sessions.addEntity(parentsession);
 				}
 
-				System.out.println("\n\nALL TEST SESSIONS AND THEIR PARAMS");
-				for (Object o : sessions.getItemIds()) {
-					TestSession s = sessions.getItem(o).getEntity();
-					if (s.getParameters() != null) {
-						System.out.println(s.getId() + " " + s.getParameters().getId());						
-					}
-				}
-				System.out.println("\n\nALL PARAMETERS IN CONTAINER");
-				for (Object o : parameters.getItemIds()) {
-					Parameters p = parameters.getItem(o).getEntity();
-					System.out.println("parameter: " + p.getId() + " -> owner: " + p.getOwnersession());						
-
-				}
+//				System.out.println("\n\nALL TEST SESSIONS AND THEIR PARAMS");
+//				for (Object o : sessions.getItemIds()) {
+//					TestSession s = sessions.getItem(o).getEntity();
+//					if (s.getParameters() != null) {
+//						System.out.println(s.getId() + " " + s.getParameters().getId());						
+//					}
+//				}
+//				System.out.println("\n\nALL PARAMETERS IN CONTAINER");
+//				for (Object o : parameters.getItemIds()) {
+//					Parameters p = parameters.getItem(o).getEntity();
+//					System.out.println("parameter: " + p.getId() + " -> owner: " + p.getOwnersession());						
+//				}
             	
 //		            	if (clonemode == true) {
 //		            		confirmNotification(sessions.getItem(id).getEntity().getTitle(), "was created");
@@ -374,7 +373,7 @@ public class ParametersEditor {
 	    } else {
 	        BASEDIR = "WebContent";
 	    }
-	    System.out.println("BASEDIR ->" + BASEDIR);
+	    //System.out.println("BASEDIR ->" + BASEDIR);
 	    BASEDIR+="/META-INF/output/parameters_default.py";	
 	    String lineSeparator = System.getProperty("line.separator");
 

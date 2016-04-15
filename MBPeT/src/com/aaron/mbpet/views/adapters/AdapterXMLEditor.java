@@ -137,7 +137,7 @@ public class AdapterXMLEditor {
 		        		);
 		            queriedAdapterXML = (AdapterXML) query.setParameter("ownersession", currentAdapterXML.getOwnersession()).getSingleResult();
 		            AdapterXML a = adaptersxmlcontainer.getItem(queriedAdapterXML.getId()).getEntity();
-		            System.out.println("the generated id is: " + a.getId());
+		            //System.out.println("the generated id is: " + a.getId());
 		            id = queriedAdapterXML.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -160,12 +160,12 @@ public class AdapterXMLEditor {
 
 					// 1 UPDATE container
 					adaptersxmlcontainer.addEntity(beanItem.getBean());
-					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
+//					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
 
 					// 2 UPDATE parentcase reference
 					ownersession.setAdapterXML(adaptersxmlcontainer.getItem(currentAdapterXML.getId()).getEntity());
-					System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
+					//System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
 
 					// write AdapterXML file to disk
 					fileUtils.writeAdapterToDisk(	//username, sut, session, settings_file)
@@ -184,12 +184,12 @@ public class AdapterXMLEditor {
 			        
 					// 1 UPDATE container
 			        adaptersxmlcontainer.addEntity(beanItem.getBean());
-					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
+//					System.out.println("AdapterXML is now: " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + adaptersxmlcontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapterXML_file());
 
 					// 2 UPDATE parentcase reference
 					ownersession.setAdapterXML(adaptersxmlcontainer.getItem(currentAdapterXML.getId()).getEntity());
-					System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
+//					System.out.println("Session's AdapterXML is now: " + ownersession.getAdapterXML().getId() + " " + ownersession.getAdapterXML().getAdapterXML_file());
 
 				}
 				else if (clonemode==true) {
@@ -205,7 +205,7 @@ public class AdapterXMLEditor {
 		        		);
 		            queriedAdapterXML = (AdapterXML) query.setParameter("ownersession", currentAdapterXML.getOwnersession()).getSingleResult();
 		            AdapterXML a = adaptersxmlcontainer.getItem(queriedAdapterXML.getId()).getEntity();
-		            System.out.println("the generated id is: " + a.getId() + " with parent session: " + a.getOwnersession().getId());
+		            //System.out.println("the generated id is: " + a.getId() + " with parent session: " + a.getOwnersession().getId());
 		            id = queriedAdapterXML.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -216,19 +216,18 @@ public class AdapterXMLEditor {
               	  	sessions.addEntity(ownersession);
 				}
 
-				System.out.println("\n\nALL TEST SESSIONS AND THEIR AdapterXMLs");
-				for (Object o : sessions.getItemIds()) {
-					TestSession s = sessions.getItem(o).getEntity();
-					if (s.getAdapterXML() != null) {
-						System.out.println(s.getId() + " " + s.getAdapterXML().getId());						
-					}
-				}
-				System.out.println("\n\nALL AdapterXMLs IN CONTAINER");
-				for (Object o : adaptersxmlcontainer.getItemIds()) {
-					AdapterXML a = adaptersxmlcontainer.getItem(o).getEntity();
-					System.out.println("AdapterXML: " + a.getId() + " -> owner: " + a.getOwnersession());						
-
-				}
+//				System.out.println("\n\nALL TEST SESSIONS AND THEIR AdapterXMLs");
+//				for (Object o : sessions.getItemIds()) {
+//					TestSession s = sessions.getItem(o).getEntity();
+//					if (s.getAdapterXML() != null) {
+//						System.out.println(s.getId() + " " + s.getAdapterXML().getId());						
+//					}
+//				}
+//				System.out.println("\n\nALL AdapterXMLs IN CONTAINER");
+//				for (Object o : adaptersxmlcontainer.getItemIds()) {
+//					AdapterXML a = adaptersxmlcontainer.getItem(o).getEntity();
+//					System.out.println("AdapterXML: " + a.getId() + " -> owner: " + a.getOwnersession());						
+//				}
             	
 //		            	if (clonemode == true) {
 //		            		confirmNotification(sessions.getItem(id).getEntity().getTitle(), "was created");
@@ -266,7 +265,7 @@ public class AdapterXMLEditor {
 	    } else {
 	        BASEDIR = "WebContent";
 	    }
-	    System.out.println("BASEDIR ->" + BASEDIR);
+	    //System.out.println("BASEDIR ->" + BASEDIR);
 	    BASEDIR+="/WEB-INF/tmp/adapter_default.xml";	
 //	    BASEDIR+="/META-INF/output/adapter_default.py";	
 	    String lineSeparator = System.getProperty("line.separator");

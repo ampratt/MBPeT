@@ -180,7 +180,7 @@ public class AdapterXMLTab extends Panel implements Button.ClickListener {
     
     
     private void loadExampleSettings() {
-		System.out.println("SETTINGS FILE : " + defaultAdapterXMLFile);
+		//System.out.println("SETTINGS FILE : " + defaultAdapterXMLFile);
 
 		StringBuilder builder = new StringBuilder();
 		Scanner scan = null;
@@ -189,7 +189,7 @@ public class AdapterXMLTab extends Panel implements Button.ClickListener {
 			while (scan.hasNextLine()) {		
 				builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
 			}	
-			System.out.println(builder.toString());
+			//System.out.println(builder.toString());
 			editor.setValue(builder.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

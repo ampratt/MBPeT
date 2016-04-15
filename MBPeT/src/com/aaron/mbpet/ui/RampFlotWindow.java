@@ -212,10 +212,10 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 //						Notification.show(formatDataFromGraph("this is the data now in the chart: " + chart.getData().toString()));
 				
 				JsonArray jarray = factory.parse(chart.getData().toJson());
-					System.out.println(jarray + "-" + jarray.toJson());
+					//System.out.println(jarray + "-" + jarray.toJson());
 				JsonObject obj = jarray.get(0);
 				JsonArray dataArray = factory.parse(obj.get("data").toJson());
-					System.out.println("data->" + dataArray.toJson());
+					//System.out.println("data->" + dataArray.toJson());
 					
 //				for (int i = 0; i < dataArray.length(); i++) {
 //					JsonArray array = dataArray.get(i);
@@ -333,21 +333,21 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 			JsonArray jarray = factory.parse(chart.getData().toJson());
 			JsonObject obj = jarray.get(0);
 			JsonArray dataArray = factory.parse(obj.get("data").toJson());
-				System.out.println("current data->" + dataArray.toJson());
+				//System.out.println("current data->" + dataArray.toJson());
 			
 			// get last data point array
 			JsonArray lastSet = dataArray.getArray(dataArray.length()-1);
-			System.out.println("last data point->" + lastSet.toJson());
+			//System.out.println("last data point->" + lastSet.toJson());
 
 			String arrayString = dataArray.toJson();
-			System.out.println("array string->" + arrayString);
+			//System.out.println("array string->" + arrayString);
 			
 			int x = (int) lastSet.getNumber(0) +10;
 			int y = (int) lastSet.getNumber(1) +5;
 					
 			String newRamp = arrayString.substring(0, arrayString.length()-1) +
 							",[" + x + "," + y + "]]";
-				System.out.println("new ramp string->" + newRamp);
+				//System.out.println("new ramp string->" + newRamp);
 
 //			JsonArray newPoint = factory.createArray();
 //			JsonArray newRamp = dataArray. set(dataArray.length(), );	//dataArray.getArray(dataArray.length()-1);
@@ -369,7 +369,7 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 //				layout.addComponent(new Label("this is the chart options JSON: " + chart.getOptions().toString()));
 		// update label
 		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
-		System.out.println("Data from chart State:\n" + chart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + chart.getData().toJson());
 		rampValue = flotUtils.formatFlotToRamp(chart.getData().toJson());
 	}
 	
@@ -386,17 +386,17 @@ public class RampFlotWindow extends Window implements Button.ClickListener {
 		// update label
 		inputField.setValue(rampValue);	//(obj.get("data").toJson()));		//("[[0,0],[19.33,19.93],[33.16,24.39],[49.66,102.45],[76.33,13.23]]");		//("[[0,0], [10,30], [20,50],[50,70],[60,0]]");
 		currentData.setValue("Data from chart State:\n" + chart.getData().toJson());	//toString());	//current.setValue("Graph data is: " + flot.getData());
-		System.out.println("Data from chart State:\n" + chart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + chart.getData().toJson());
 	}
 	
 	
 	
 	public void updateDataInField() {
 		JsonArray jarray = factory.parse(chart.getData().toJson());
-			System.out.println(jarray + "-" + jarray.toJson());
+			//System.out.println(jarray + "-" + jarray.toJson());
 		JsonObject obj = jarray.get(0);
 		JsonArray dataArray = factory.parse(obj.get("data").toJson());
-			System.out.println("DROP TRIGGERED UPDATE->" + dataArray.toJson());
+			//System.out.println("DROP TRIGGERED UPDATE->" + dataArray.toJson());
 		
 //			inputField.setValue(dataArray.toJson()); 
 		rampValue = flotUtils.formatFlotToRamp(dataArray.toJson());

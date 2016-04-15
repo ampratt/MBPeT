@@ -200,7 +200,7 @@ public class MasterTerminalWindow extends Window {
 //		System.out.println("## ACE EDITOR CURSOR POSITION BEFORE UPDATE ## > " + editor.getCursorPosition());
 		if (editor.getCursorPosition() > 1500 ){	//7000
 			// erase old data and write message at line 1
-			System.out.println("Ace Editor resetting at position > " + editor.getCursorPosition());
+			//System.out.println("Ace Editor resetting at position > " + editor.getCursorPosition());
 			sb = new StringBuilder();
 			editor.setValue(sb.toString());
 		} 

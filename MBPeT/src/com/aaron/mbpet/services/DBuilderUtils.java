@@ -137,7 +137,7 @@ public class DBuilderUtils implements Serializable {
 			// get state and transition data for each node
 			nRename.add(name);
 			nodes.get(n).setName(String.valueOf(name));
-			System.out.println("nodes.get(n) " + nodes.get(n).getName());
+			//System.out.println("nodes.get(n) " + nodes.get(n).getName());
 //			System.out.println("node: " + nodes.get(n) + " is named: " + nRename.get(n));
 			name +=1;
 		}
@@ -155,24 +155,24 @@ public class DBuilderUtils implements Serializable {
 		// rewrite transition default names to numbers
 		for (Transition t: nTransitions) {	//int n=0; n<nTransitions.size(); n++
 			if (!t.getSource().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
-				System.out.println("t.get(n).getSource() was: " + t.getSource() + "->" + t.getTarget());
+				//System.out.println("t.get(n).getSource() was: " + t.getSource() + "->" + t.getTarget());
 
 				//replace auto-gen value with correct int
 				if ( oldNNames.contains(t.getSource()) ) {
 					int index = oldNNames.indexOf(t.getSource());
 					t.setSource(newNNames.get(index));
-					System.out.println("\nSOURCE\noldNNames at index: " + index + " is " + oldNNames.get(index) +
-										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
+					//System.out.println("\nSOURCE\noldNNames at index: " + index + " is " + oldNNames.get(index) +
+//										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
 				}
 			}
 			if (!t.getTarget().matches("\\d+")) {		//( StringUtils.isNumeric(t.get(n).getSource()) ) {
-				System.out.println("t.get(n).getTarget() was: " + t.getSource() + "->" + t.getTarget());
+				//System.out.println("t.get(n).getTarget() was: " + t.getSource() + "->" + t.getTarget());
 				//replace auto-gen value with correct int
 				if ( oldNNames.contains(t.getTarget()) ) {
 					int index = oldNNames.indexOf(t.getTarget());
 					t.setTarget(newNNames.get(index));
-					System.out.println("\nTARGET\noldNNames at index: " + index + " is " + oldNNames.get(index) +
-										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
+					//System.out.println("\nTARGET\noldNNames at index: " + index + " is " + oldNNames.get(index) +
+//										"\nnewNName at index: " + index + " is " + newNNames.get(index) );
 				}
 			}	
 		}

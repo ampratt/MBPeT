@@ -156,7 +156,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 	
 
 	private AceEditor buildAceEditor() {
-		System.out.println("SETTINGS FILE : " + defaultsettingsfile);
+		//System.out.println("SETTINGS FILE : " + defaultsettingsfile);
 		// Ace Editor
 		try {
 			if (currentparams.getSettings_file() == null) {
@@ -223,7 +223,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 
 			// edit models directory name
       	  	FileSystemUtils fileUtils = new FileSystemUtils();
-			System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
+			//System.out.println("prevModelsFolder->" + prevModelsFolder + " and current folder->" +currentparams.getModels_folder());
 			if (!prevModelsFolder.equals(currentparams.getModels_folder())) {
 				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 						currsession.getParentcase().getOwner().getUsername(),
@@ -237,7 +237,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 			}
 			
 			// edit reports directory name
-			System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
+			//System.out.println("prevReportsFolder->" + prevReportsFolder + " and current folder->" +currentparams.getTest_report_folder());
 			if (!prevReportsFolder.equals(currentparams.getTest_report_folder())) {
 				fileUtils.renameModelsDir(	//username, sut, session, prevModelsDir, newModelsDir)
 						currsession.getParentcase().getOwner().getUsername(),
@@ -397,7 +397,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 
 	
     private void loadExampleSettings() {
-		System.out.println("SETTINGS FILE : " + defaultsettingsfile);
+		//System.out.println("SETTINGS FILE : " + defaultsettingsfile);
 
 		StringBuilder builder = new StringBuilder();
 		Scanner scan = null;
@@ -406,7 +406,7 @@ public class ParametersAceEditorLayout extends VerticalLayout implements Button.
 			while (scan.hasNextLine()) {		
 				builder.append(scan.nextLine()).append(System.getProperty("line.separator"));
 			}	
-			System.out.println(builder.toString());
+			//System.out.println(builder.toString());
 			editor.setValue(builder.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

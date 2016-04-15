@@ -126,7 +126,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		sessions = ((MbpetUI) UI.getCurrent()).getTestsessions();	//JPAContainerFactory.make(TestSession.class, MbpetUI.PERSISTENCE_UNIT);	//container;
 		this.testsession = sessions.getItem(testsessionid).getEntity();
 		this.newSessionItem = new BeanItem<TestSession>(testsession);
-		System.out.println("this session id is: " + testsessionid + " " + testsession.getTitle());
+		//System.out.println("this session id is: " + testsessionid + " " + testsession.getTitle());
 		
 		prevTitle = testsession.getTitle();
 		
@@ -172,8 +172,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		this.testsession = new TestSession();
 		testsession.setTitle("(clone) " + subject.getTitle());
 		
-		System.out.println("parentcase.getSessions() : " + parentcase.getSessions());
-		System.out.println("subjects parent.getSessions() : " + subject.getParentcase().getSessions());
+		//System.out.println("parentcase.getSessions() : " + parentcase.getSessions());
+		//System.out.println("subjects parent.getSessions() : " + subject.getParentcase().getSessions());
 		testsession.setParentcase(parentcase); //subject.getParentcase()
 
 		//		clone.setParameters(testsession.getParameters());
@@ -294,10 +294,10 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 						int id =0;
 						boolean titleOK = true;
 						id = newSessionItem.getBean().getId();	//testsession.getId();
-						System.out.println("parentCase.getSessions() : " + parentcase.getSessions());
+						//System.out.println("parentCase.getSessions() : " + parentcase.getSessions());
 						for (TestSession s : parentcase.getSessions()) {	//sessions.getItemIds()
-							System.out.println("Existing title -> new title : " + s.getTitle() + "->" + testsession.getTitle());
-							System.out.println("Existing id -> new id : " + s.getId() + "->" + id);
+							//System.out.println("Existing title -> new title : " + s.getTitle() + "->" + testsession.getTitle());
+							//System.out.println("Existing id -> new id : " + s.getId() + "->" + id);
 							if (s.getTitle().equals(testsession.getTitle()) && !(s.getId()==id) ) {	
 								testsession.setTitle(prevTitle);
 								if (clonemode != true && editmode == true) {
@@ -312,7 +312,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 						
 						
 						if (titleOK == true) {
-							System.out.println("TITLE WAS FINE. EDITING");
+							//System.out.println("TITLE WAS FINE. EDITING");
 							
 							// add NEW bean object to db through jpa container
 							if (editmode == false && (clonemode == false)) {
@@ -329,7 +329,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 									query.setParameter("parentcase",testsession.getParentcase()); //MainView.sessionUser
 									queriedSession = (TestSession) query.getSingleResult();
 									//				            queriedSession = (TestSession) query.setParameter("title", testsession.getTitle()).getSingleResult();
-									System.out.println("the generated id is: " + queriedSession.getId());
+									//System.out.println("the generated id is: " + queriedSession.getId());
 									id = queriedSession.getId(); // here is the id we need for tree
 									
 									// create session directory for test and reports
@@ -372,12 +372,12 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 									//              	  	listofsessions.add(queriedSession);		//sessions.getItem(id).getEntity()
 									//              	  	parentCase.setSessions(listofsessions);
 									
-									System.out.println("WHAT IS NEW LIST OF SESSIONS: "
-													+ parentcase.getSessions()); // testing purposes
-									for (TestSession s : parentcase.getSessions()) {
-										System.out.println(s.getId() + " - "
-												+ s.getTitle()); // testing purposes	            		
-									}
+//									System.out.println("WHAT IS NEW LIST OF SESSIONS: "
+//													+ parentcase.getSessions()); // testing purposes
+//									for (TestSession s : parentcase.getSessions()) {
+//										System.out.println(s.getId() + " - "
+//												+ s.getTitle()); // testing purposes	            		
+//									}
 									
 	
 				            	
@@ -390,11 +390,11 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 			              	  	//1 UPDATE parentcase reference
 								parentcase.updateSessionData(sessions.getItem(testsession.getId()).getEntity());
 								
-								System.out.println("Test session is now: " + testsession.getTitle());
+								//System.out.println("Test session is now: " + testsession.getTitle());
 	
 								// 2 UPDATE container
 								sessions.addEntity(newSessionItem.getBean());
-								System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
+								//System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
 	
 								// 3 UPDATE tree title
 			              	  	tree.setItemCaption(testsession.getId(), sessions.getItem(testsession.getId()).getEntity().getTitle());
@@ -417,15 +417,15 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 								}								
 								
 //			              	  	// update parameters and adapter ?
-			              	  	System.out.println("Sessions' params's session title: " + testsession.getParameters().getOwnersession().getTitle());
-		              	  		System.out.println("Sessions' adapter session title: " + testsession.getAdapter().getOwnersession().getTitle());
-		              	  		System.out.println("Sessions' adapterXML session title: " + testsession.getAdapterXML().getOwnersession().getTitle());
+			              	  	//System.out.println("Sessions' params's session title: " + testsession.getParameters().getOwnersession().getTitle());
+		              	  		//System.out.println("Sessions' adapter session title: " + testsession.getAdapter().getOwnersession().getTitle());
+		              	  		//System.out.println("Sessions' adapterXML session title: " + testsession.getAdapterXML().getOwnersession().getTitle());
 
 			              	  	id = testsession.getId();
 	
 							} else if (clonemode == true){
 								// CLONE 
-					           System.out.println("\n\nWE ARE IN CLONE MODE!!!!!!!!!\n\n");
+					           //System.out.println("\n\nWE ARE IN CLONE MODE!!!!!!!!!\n\n");
 	
 	//							TestSession clone = newSessionItem.getBean();
 //								// 1 commit the fieldgroup
@@ -441,7 +441,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					        		    "SELECT OBJECT(t) FROM TestSession t WHERE t.title = :title");
 			//		            query.setParameter("title", newsession.getTitle());
 					            queriedSession = (TestSession) query.setParameter("title", testsession.getTitle()).getSingleResult();
-					            System.out.println("the generated id is: " + queriedSession.getId());
+					            //System.out.println("the generated id is: " + queriedSession.getId());
 					            id = queriedSession.getId();	// here is the id we need for tree
 					            
 					            // 4 clone models
@@ -459,7 +459,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 						            query2.setParameter("title", newmodel.getTitle());
 						            query2.setParameter("parentsession", queriedSession);
 						            Model queriedModel = (Model) query2.getSingleResult();
-						            System.out.println("the generated MODEL id is: " + queriedModel.getId() + " of session ->" + queriedSession.getId());
+						            //System.out.println("the generated MODEL id is: " + queriedModel.getId() + " of session ->" + queriedSession.getId());
 				        			
 						            // update parent Case to add Session to testCase List<Session> sessions
 						            parentcase.addModel(queriedModel);
@@ -481,8 +481,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            if (!(subject.getParameters().getSettings_file() == null) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
 					            	cloneParams = subject.getParameters().getSettings_file();
 					            }
-					            System.out.println("\n\n the cloned parameters are:\n" + 
-					            		cloneParams + "\n\n");
+//					            System.out.println("\n\n the cloned parameters are:\n" + 
+//					            		cloneParams + "\n\n");
 					            new ParametersEditor(queriedSession, cloneParams);
 	
 					            // 6 clone adapter.py
@@ -491,8 +491,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		|| !(subject.getAdapter().getAdapter_file().equals("")) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
 					            	cloneAdapter = subject.getAdapter().getAdapter_file();
 					            }
-					            System.out.println("\n\n the cloned adapter is:\n" + 
-					            		cloneAdapter + "\n\n");
+//					            System.out.println("\n\n the cloned adapter is:\n" + 
+//					            		cloneAdapter + "\n\n");
 					            new AdapterEditor(queriedSession, cloneAdapter);
 			        			
 					            // 7 clone adapter.xml
@@ -501,8 +501,8 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 					            		|| !(subject.getAdapterXML().getAdapterXML_file().equals("")) ) {	//|| !(testsession.getParameters().getSettings_file().equals(""))
 					            	cloneAdapterXML = subject.getAdapterXML().getAdapterXML_file();
 					            }
-					            System.out.println("\n\n the cloned adapterXML is:\n" + 
-					            		cloneAdapterXML + "\n\n");
+//					            System.out.println("\n\n the cloned adapterXML is:\n" + 
+//					            		cloneAdapterXML + "\n\n");
 					            new AdapterXMLEditor(queriedSession, cloneAdapterXML);
 					            
 					            
@@ -593,7 +593,7 @@ public class TestSessionEditor extends Window implements Button.ClickListener {
 		            	
 			            // title already existed	
 						} else {
-							System.out.println("title was NOT fine.");
+							//System.out.println("title was NOT fine.");
 //							testsession = sessions.getItem(id).getEntity();
 //							System.out.println("db session is: " + testsession.getId() + " " + testsession.getTitle());
 

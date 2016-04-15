@@ -26,8 +26,8 @@ public class ProgressBarWorker {
     	this.testduration = testduration;	// + 8;
     	this.increaseAmount = (1.0 / (this.testduration));	//(1.0 / (this.testduration/3));
 
-    	System.out.println("test duration is " + String.valueOf(testduration));
-    	System.out.println("increase amount is " + String.valueOf(increaseAmount));
+    	//System.out.println("test duration is " + String.valueOf(testduration));
+    	//System.out.println("increase amount is " + String.valueOf(increaseAmount));
     }
     
     public void increaseProgressBar() {
@@ -76,7 +76,7 @@ public class ProgressBarWorker {
 		                    }
 		                }
 		            });
-	    			System.out.println("progressThread terminated!");
+	    			//System.out.println("progressThread terminated!");
 		        }
 		        
 		        

@@ -414,7 +414,7 @@ public class FileSystemUtils {
 				// grant permissions to dir and all sub dirs
 //				grantPermissions(file);
 //				grantPermissionsRecursive(file);
-				System.out.println("copied master to user dir");
+				//System.out.println("copied master to user dir");
 			}
 			else
 				System.err.println("failed to copy master to user dir");
@@ -476,7 +476,7 @@ public class FileSystemUtils {
 			// check if any report folders don't exist yet in webapp folder
 	        for (File dir : original_directories){
 	        	if (Arrays.asList(webapp_directories).contains(dir.getName())) {
-		            System.out.println(dir.getName() + "exists in webapp folder");
+		            //System.out.println(dir.getName() + "exists in webapp folder");
 	        	} else {
 	        		// 1. create new folder of the same name
 		            System.out.println("webapp_reports missing report directory:" + dir.getName());
@@ -490,7 +490,7 @@ public class FileSystemUtils {
 		           	});
 		            File html = null;
 		           	try {
-		           		System.out.println("html report:" + singlereport[0]);
+		           		//System.out.println("html report:" + singlereport[0]);
 		           		html = singlereport[0];           		
 		           	} catch (IndexOutOfBoundsException e) {
 		           		System.err.println(e + 

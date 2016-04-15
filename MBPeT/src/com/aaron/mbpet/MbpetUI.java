@@ -151,7 +151,7 @@ public class MbpetUI extends UI implements PushLabelUpdater, PushMasterUpdater	{
                 if (!isLoggedIn && !isLoginView && !isRegistrationView) {
                     // Redirect to login view always if a user has not yet
                     // logged in
-                	System.out.println("ELSE IF-request view was: " + event.getViewName());
+                	//System.out.println("ELSE IF-request view was: " + event.getViewName());
                     getNavigator().navigateTo(LoginView.NAME);
                     return false;
 

@@ -68,7 +68,7 @@ public class UDPThreadWorker {
             				
             			boolean firstMessage = true;
 //            			ds.setSoTimeout(getTimout());   //50000 set the timeout in millisecounds.  
-            		    System.out.println("UDP Timeout set: " + getTimout());
+            		    //System.out.println("UDP Timeout set: " + getTimout());
             			
             			String sentence;
             			byte[] receiveBuffer;	// byte[] sendBuffer;	// = new byte[5120];
@@ -88,7 +88,7 @@ public class UDPThreadWorker {
             				   // create space for received datagram
             		    	   receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
             		    	   // receive datagram
-            		    	   System.out.println("Waiting for datagram packet...");
+            		    	   //System.out.println("Waiting for datagram packet...");
             		    	   ds.receive(receivePacket);
             		    	   
             		    	   sentence = new String(receivePacket.getData());
@@ -97,9 +97,10 @@ public class UDPThreadWorker {
             		    	   IPAddress = receivePacket.getAddress();
             		    	   port = receivePacket.getPort();
             		    	   
-            		    	   System.out.println("== RECEIVED message from client ==");
-            		    	   System.out.println("From: " + IPAddress + ":" + port);
-            		           System.out.println("ORIGINAL message: \n" + sentence.trim() + "\n");	//new JsonDecoderMbpet(sentence.trim()));// + );
+            		    	   //print these to see json format of udp packes
+//            		    	   System.out.println("== RECEIVED message from client ==");
+//            		    	   System.out.println("From: " + IPAddress + ":" + port);
+//            		           System.out.println("ORIGINAL message: \n" + sentence.trim() + "\n");	//new JsonDecoderMbpet(sentence.trim()));// + );
 //            		           System.out.println("\nMessage: \n" + jsonDecoder.getMessage(sentence.trim()));	//new JsonDecoderMbpet(sentence.trim()));// + );
             		//           JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sentence);
             		           
@@ -130,7 +131,7 @@ public class UDPThreadWorker {
             		        			   slaveresults,
             		        			   jsonDecoder.getAggregatedResponse(sentence.trim()),
             		        			   sessionViewer);
-            		        	   System.out.println("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
+            		        	   //System.out.println("MESSAGE #" + x + "\n" + sentence.trim() + "\n\n");
             		        	   
 //            		        	   updater.printNewestMessage("\nMESSAGE #" + x + " VALUES:\n" + 
 //            		        			   "average - " + results[0] + 
@@ -193,7 +194,7 @@ public class UDPThreadWorker {
             	            catch (SocketTimeoutException e) {
             	                // timeout exception.
             	                System.out.println("UDP Timeout reached!!! " + e);
-                                updater.printFinalMessage("\nUDP Timeout reached!!!", numslaves, sessionViewer);
+//                                updater.printFinalMessage("\nUDP Timeout reached!!!", numslaves, sessionViewer);
             	                ds.close();
             	                sessionViewer.progressThread.endThread();
             	            } 
@@ -227,7 +228,7 @@ public class UDPThreadWorker {
             		// THIS STOPS THE PROGRESSBAR!!!
             		if (stopFlag) {
             			sessionViewer.progressThread.endThread();
-            			System.out.println("progressThread terminated!");
+            			//System.out.println("progressThread terminated!");
             		}
             		
             		
@@ -255,7 +256,7 @@ public class UDPThreadWorker {
 		int openport = 0;
 		for (int port=9999; port<11000; port++) {		//(int port : ports)
 			try {
-				System.out.println("\nTrying port: " + port);
+				//System.out.println("\nTrying port: " + port);
 				tempds = new DatagramSocket(port);	//System.out.println("socket open on port " + port);
 //				setUDPPort(ds.getLocalPort());
 //				ss.close();		//System.out.println(srv.getLocalPort());

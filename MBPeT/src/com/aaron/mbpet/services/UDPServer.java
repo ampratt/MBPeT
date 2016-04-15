@@ -40,7 +40,7 @@ public class UDPServer {
 				// create space for received datagram
 		    	   DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
 		    	   // receive datagram
-		    	   System.out.println("Waiting for datagram packet...");
+		    	   //System.out.println("Waiting for datagram packet...");
 		    	   serverSocket.receive(receivePacket);
 		    	   
 		    	   sentence = new String(receivePacket.getData());
@@ -49,9 +49,10 @@ public class UDPServer {
 		    	   InetAddress IPAddress = receivePacket.getAddress();
 		    	   int port = receivePacket.getPort();
 		    	   
-		    	   System.out.println("== RECEIVED message from client ==");
-		    	   System.out.println("From: " + IPAddress + ":" + port);
-		           System.out.println("ORIGINAL message: \n" + sentence.trim() + "\n");	//new JsonDecoderMbpet(sentence.trim()));// + );
+		    	   // print these to debug incoming udp packets json format
+//		    	   System.out.println("== RECEIVED message from client ==");
+//		    	   System.out.println("From: " + IPAddress + ":" + port);
+//		           System.out.println("ORIGINAL message: \n" + sentence.trim() + "\n");	//new JsonDecoderMbpet(sentence.trim()));// + );
 //		           System.out.println("\nMessage: \n" + jsonDecoder.getMessage(sentence.trim()));	//new JsonDecoderMbpet(sentence.trim()));// + );
 		//           JsonDecoderMbpet jsonDecoder = new JsonDecoderMbpet(sentence);
 		           

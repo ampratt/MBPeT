@@ -161,7 +161,7 @@ public class AdapterEditor {
 		        		);
 		            queriedAdapter = (Adapter) query.setParameter("ownersession", currentAdapter.getOwnersession()).getSingleResult();
 		            Adapter a = adapterscontainer.getItem(queriedAdapter.getId()).getEntity();
-		            System.out.println("the generated id is: " + a.getId());
+		            //System.out.println("the generated id is: " + a.getId());
 		            id = queriedAdapter.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -184,12 +184,12 @@ public class AdapterEditor {
 
 					// 1 UPDATE container
 					adapterscontainer.addEntity(beanItem.getBean());
-					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
+//					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
 
 					// 2 UPDATE parentcase reference
 					ownersession.setAdapter(adapterscontainer.getItem(currentAdapter.getId()).getEntity());
-					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
+					//System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
 
 					// write adapter file to disk
 					fileUtils.writeAdapterToDisk(	//username, sut, session, settings_file)
@@ -208,12 +208,12 @@ public class AdapterEditor {
 			        
 					// 1 UPDATE container
 					adapterscontainer.addEntity(beanItem.getBean());
-					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
-							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
+//					System.out.println("Adapter is now: " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getId() 
+//							+ " " + adapterscontainer.getItem(beanItem.getBean().getId()).getEntity().getAdapter_file());
 
 					// 2 UPDATE parentcase reference
 					ownersession.setAdapter(adapterscontainer.getItem(currentAdapter.getId()).getEntity());
-					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
+//					System.out.println("Session's Adapter is now: " + ownersession.getAdapter().getId() + " " + ownersession.getAdapter().getAdapter_file());
 
 				}
 				else if (clonemode==true) {
@@ -229,7 +229,7 @@ public class AdapterEditor {
 		        		);
 		            queriedAdapter = (Adapter) query.setParameter("ownersession", currentAdapter.getOwnersession()).getSingleResult();
 		            Adapter a = adapterscontainer.getItem(queriedAdapter.getId()).getEntity();
-		            System.out.println("the generated id is: " + a.getId() + " with parent session: " + a.getOwnersession().getId());
+		            //System.out.println("the generated id is: " + a.getId() + " with parent session: " + a.getOwnersession().getId());
 		            id = queriedAdapter.getId();
               	  	
 		            // Option 2. serialize blob to db
@@ -240,19 +240,19 @@ public class AdapterEditor {
               	  	sessions.addEntity(ownersession);
 				}
 
-				System.out.println("\n\nALL TEST SESSIONS AND THEIR Adapters");
-				for (Object o : sessions.getItemIds()) {
-					TestSession s = sessions.getItem(o).getEntity();
-					if (s.getAdapter() != null) {
-						System.out.println(s.getId() + " " + s.getAdapter().getId());						
-					}
-				}
-				System.out.println("\n\nALL Adapters IN CONTAINER");
-				for (Object o : adapterscontainer.getItemIds()) {
-					Adapter a = adapterscontainer.getItem(o).getEntity();
-					System.out.println("adapter: " + a.getId() + " -> owner: " + a.getOwnersession());						
-
-				}
+				// TESTING???
+//				System.out.println("\n\nALL TEST SESSIONS AND THEIR Adapters");
+//				for (Object o : sessions.getItemIds()) {
+//					TestSession s = sessions.getItem(o).getEntity();
+//					if (s.getAdapter() != null) {
+//						System.out.println(s.getId() + " " + s.getAdapter().getId());						
+//					}
+//				}
+//				System.out.println("\n\nALL Adapters IN CONTAINER");
+//				for (Object o : adapterscontainer.getItemIds()) {
+//					Adapter a = adapterscontainer.getItem(o).getEntity();
+//					System.out.println("adapter: " + a.getId() + " -> owner: " + a.getOwnersession());						
+//				}
             	
 //		            	if (clonemode == true) {
 //		            		confirmNotification(sessions.getItem(id).getEntity().getTitle(), "was created");
@@ -290,7 +290,7 @@ public class AdapterEditor {
 	    } else {
 	        BASEDIR = "WebContent";
 	    }
-	    System.out.println("BASEDIR ->" + BASEDIR);
+	    //System.out.println("BASEDIR ->" + BASEDIR);
 	    BASEDIR+="/META-INF/output/adapter_default.py";	
 	    String lineSeparator = System.getProperty("line.separator");
 

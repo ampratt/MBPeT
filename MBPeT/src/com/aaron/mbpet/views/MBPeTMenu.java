@@ -149,7 +149,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 		user.addItem("Sign Out", menuCommand);
 		
 		List<MenuItem> mitems = userMenu.getItems();
-		System.out.println("USER MENU ITEM: " + mitems.get(0).getText()); 	//getItems().toString());
+		//System.out.println("USER MENU ITEM: " + mitems.get(0).getText()); 	//getItems().toString());
 		
 		return userMenu;
 	}
@@ -269,7 +269,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 			//	        TestSession session = sessions.getItem(sessids).getEntity();
 	        
 	        // check if owner has existing cases
-	        System.out.println(sessionuser.getId() + " -> " + sessionuser.getFirstname());
+	        //System.out.println(sessionuser.getId() + " -> " + sessionuser.getFirstname());
 	        if (sessionuser.getTestCases().size() > 0) {
 	        	
 	        	// load all SUTs owned by user
@@ -278,8 +278,8 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	        		menutree.setItemCaption(testcase.getId(), testcase.getTitle());
 	        		
 	        		// load any child sessions
-	        		System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
-	        		System.out.println("GetSESSIONS: " + testcase.getSessions());
+	        		//System.out.println("GetSESSIONS size: " + testcase.getSessions().size());
+	        		//System.out.println("GetSESSIONS: " + testcase.getSessions());
 	        		if ( testcase.getSessions().size() > 0 ){	// matchingsessions.isEmpty() 
 //	            	 menutree.setChildrenAllowed(testcase, false);
 	        			// fill the subtree with sessions
@@ -291,7 +291,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	        			}
 	        			Collections.sort(sortedids);
 	        			Collections.reverse(sortedids);
-	        			System.out.println("SORTED ID's: " + sortedids);
+	        			//System.out.println("SORTED ID's: " + sortedids);
 	        			for (Object id : sortedids) {	//testcase.getSessions()	matchingsessions
 	        				Object sessionid = sessions.getItem(id).getEntity().getId();
 	        				menutree.addItem(sessionid);
@@ -310,7 +310,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 				@Override
 				public void itemClick(ItemClickEvent event) {
 	            	Object id = event.getItemId();
-	            	System.out.println("this is the current ITEM selection: " + id.toString());
+	            	//System.out.println("this is the current ITEM selection: " + id.toString());
 	            	
 	            	// get path to navigate to
 	            	String path = "";
@@ -318,12 +318,12 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            	if ( menutree.isRoot(id) ){
 //	            		TestCase caseEntity = testcases.getItem(id).getEntity();
 	            		path = testcases.getItem(id).getEntity().getTitle() + "-sut=" + testcases.getItem(id).getEntity().getId();		//getTestcases()		caseEntity.getTitle();
-	            		System.out.println("this is the current ENTITY (CASE) selection's title: " + testcases.getItem(id).getEntity().getTitle());
+	            		//System.out.println("this is the current ENTITY (CASE) selection's title: " + testcases.getItem(id).getEntity().getTitle());
 	            		
 	            	} else {	// a child (Session) was selected
 	            		// get selected child
 //	            		path = sessions.getItem(id).getEntity().getTitle();
-	            		System.out.println("this is the current ENTITY (SESSION) selection's title: " + sessions.getItem(id).getEntity().getTitle());
+	            		//System.out.println("this is the current ENTITY (SESSION) selection's title: " + sessions.getItem(id).getEntity().getTitle());
 	            		
 	            		// get parent (CASE) for path
 	            		Object pid = menutree.getParent(id);
@@ -333,7 +333,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
 	            				sessions.getItem(id).getEntity().getTitle() + "id=" + sessions.getItem(id).getEntity().getId();
 	            	}
 
-					System.out.println("path is : " + path);
+					//System.out.println("path is : " + path);
 					
 					// navigate to corresponding item
 					getUI()
@@ -379,7 +379,7 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
         	if (!menutree.isRoot(target)) {
         		parent = menutree.getParent(target);
         	}
-        	System.out.println("parent is " + parent);
+        	//System.out.println("parent is " + parent);
 	        // open window to create TestSession
 	        UI.getCurrent().addWindow(new TestSessionEditor(menutree, testcases.getItem(parent).getEntity(), false));	//testcases
 
@@ -542,10 +542,10 @@ public class MBPeTMenu extends CustomComponent implements Action.Handler{
             VaadinSession.getCurrent().close();
             
             // TESTING
-            System.out.println("-- Session Cookies --");
-            System.out.println("sessionuser " + VaadinSession.getCurrent().getAttribute("sessionUser"));
-            System.out.println("sessionuseritem " + VaadinSession.getCurrent().getAttribute("sessionUserItem"));
-            System.out.println("user " + VaadinSession.getCurrent().getAttribute("user"));
+//            System.out.println("-- Session Cookies --");
+//            System.out.println("sessionuser " + VaadinSession.getCurrent().getAttribute("sessionUser"));
+//            System.out.println("sessionuseritem " + VaadinSession.getCurrent().getAttribute("sessionUserItem"));
+//            System.out.println("user " + VaadinSession.getCurrent().getAttribute("user"));
         } catch (Exception ex) {
             System.out.println(ex);
         }

@@ -41,7 +41,7 @@ public class ParametersUtils {
 		currParams = currparams;
 		builder = new StringBuilder();
 		Scanner sc = new Scanner(editor);
-		System.out.println("==SCANNING SETTINGS==");
+		//System.out.println("==SCANNING SETTINGS==");
 
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
@@ -68,7 +68,7 @@ public class ParametersUtils {
 				writeQuotedDataInfo(line, "\"", currParams.getTest_report_folder());
 
 			} else if (line.contains("ip") && line.contains("=")) {
-				System.out.println("## handling IP now ##");
+				//System.out.println("## handling IP now ##");
 				writeQuotedDataInfo(line, "\"", currParams.getIp());
 				
 			} else if ( (line.contains("test_duration") && line.contains("=")) && !(line.contains("E.g."))  ) {
@@ -89,7 +89,7 @@ public class ParametersUtils {
 			} else if ( (line.contains("TargetResponseTime") && line.contains("=")) && !(line.contains("E.g."))  ) {
 				String rtimes = writeTRTListToString(currParams.getTarget_response_times());
 				builder.append("TargetResponseTime = " + rtimes).append(newline);
-				System.out.println(rtimes);
+				//System.out.println(rtimes);
 				
 			} else {
 				builder.append(line).append(newline);				
@@ -104,7 +104,7 @@ public class ParametersUtils {
 	public static Parameters commitAceParamData(Parameters currparams, String editor){
 		currParams = currparams;
 		Scanner sc = new Scanner(editor);
-		System.out.println("==Getting Ace Parameter Data==");
+		//System.out.println("==Getting Ace Parameter Data==");
 
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
@@ -155,7 +155,7 @@ public class ParametersUtils {
 				if (line.startsWith("#"))
 					currparams.setIp(null);
 				else if(line.startsWith("ip")){
-					System.out.println("## handling IP now ##");
+					//System.out.println("## handling IP now ##");
 					currparams.setIp(getQuotedDataInfo(line, "\"", "ip"));
 				}
 								
@@ -176,7 +176,7 @@ public class ParametersUtils {
 				if (line.startsWith("TargetResponseTime")){
 ////			currparams.setTarget_response_times(null);
 		//		else if(line.startsWith("TargetResponseTime"))
-					System.out.println("CHECKING TRTs");
+					//System.out.println("CHECKING TRTs");
 					getTRTListFromString(line);
 //					getTRTListFromJSONString(line);
 				}
@@ -216,7 +216,7 @@ public class ParametersUtils {
 	 * WRITE DATA TO ACE EDITOR
 	 */
 	private static void writeQuotedDataInfo(String line, String quoteType, String formData) {
-		System.out.println("the current line is: " + line);
+		//System.out.println("the current line is: " + line);
 		StringTokenizer stk = new StringTokenizer(line, "=");
 		String pre = stk.nextToken();
 		if(!(formData==null)){
@@ -226,21 +226,21 @@ public class ParametersUtils {
 			formData="";
 		builder.append(pre + "= ");
 		String afterequals = stk.nextToken();
-		System.out.println("afterequals: " + afterequals);
+		//System.out.println("afterequals: " + afterequals);
 
 		Scanner lineScanner = new Scanner(afterequals); //(line)
 		while (lineScanner.hasNext()) {
 			String next = lineScanner.next();
-			System.out.println("linescanner.next: " + next);
+			//System.out.println("linescanner.next: " + next);
 
 			stk = new StringTokenizer(next, quoteType);		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
 			if (line.contains(quoteType)) {
 				if (stk.hasMoreTokens()) {
 					String nt = stk.nextToken();
-					System.out.println("next token: " + nt);
+					//System.out.println("next token: " + nt);
 					
 //					String str = stk.nextToken();
-					System.out.println(next + " stk-> " + nt);						
+					//System.out.println(next + " stk-> " + nt);						
 					if ( next.equals(quoteType + nt + quoteType) ){
 						builder.append(quoteType + formData + quoteType).append(space);						
 					} else 
@@ -386,7 +386,7 @@ public class ParametersUtils {
 			}
 			lineScanner.close();			
 		}
-		System.out.println("RESULT -> " + result);
+		//System.out.println("RESULT -> " + result);
 		return result;
 	}
 	
@@ -396,7 +396,7 @@ public class ParametersUtils {
 		StringTokenizer stk = new StringTokenizer(line, "=");
 		stk.nextToken();	// token before '='
 		String afterequals = stk.nextToken().trim();
-		System.out.println("afterequals -> " + afterequals);
+		//System.out.println("afterequals -> " + afterequals);
 
 //		if (afterequals == null) {
 //		} else if (afterequals.contains(quoteType)) {
@@ -404,23 +404,23 @@ public class ParametersUtils {
 			stk = new StringTokenizer(afterequals, quoteType);		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
 			try {
 				String str = stk.nextToken();
-				System.out.println("first token -> -" + str + "-");
+				//System.out.println("first token -> -" + str + "-");
 				if (!str.equals(" ")) {
 					String s = str.trim();
 					if (!s.startsWith("#")){
 						result = s;
-						System.out.println("first Token - result -> -" + result + "-");						
+						//System.out.println("first Token - result -> -" + result + "-");						
 					} else {
 						result = "";
-						System.out.println("first Token - result -> -" + result + "-");												
+						//System.out.println("first Token - result -> -" + result + "-");												
 					}
 //					result = str;	//stk.nextToken();
 				} else if (str.equals("") || str.equals(" ")) {
 					result = "";
-					System.out.println("result -> " + result);
+					//System.out.println("result -> " + result);
 				} else {
 					result = stk.nextToken();
-					System.out.println("second Token - result -> " + result);
+					//System.out.println("second Token - result -> " + result);
 				}
 			} catch (NoSuchElementException e) {
 				e.printStackTrace();
@@ -430,7 +430,7 @@ public class ParametersUtils {
 
 			}
 		}
-		System.out.println("RESULT -> " + result);
+		//System.out.println("RESULT -> " + result);
 		
 		return result;
 	}
@@ -447,7 +447,7 @@ public class ParametersUtils {
 			result = lineScanner.nextInt();
 		}
 		lineScanner.close();
-		System.out.println("RESULT -> " + result);
+		//System.out.println("RESULT -> " + result);
 
 		return result;
 	}
@@ -463,7 +463,7 @@ public class ParametersUtils {
 			result = lineScanner.nextDouble();
 		}
 		lineScanner.close();
-		System.out.println("RESULT -> " + result);
+		//System.out.println("RESULT -> " + result);
 
 		return result;
 	}
@@ -480,7 +480,7 @@ public class ParametersUtils {
 //			stk = new StringTokenizer(afterequals, "]");		//			Scanner hostsc = new Scanner(line).useDelimiter("'[^']*'");
 //			result = stk.nextToken() + "]";
 		}
-		System.out.println("RESULT -> " + result);
+		//System.out.println("RESULT -> " + result);
 
 		return result;
 	}
@@ -493,7 +493,7 @@ public class ParametersUtils {
 	 * 	 else (next is '}') then : finish read
 	 */
 	public static void getTRTListFromString(String line){	//List<TRT> list  (Parameters currparams) {
-		System.out.println("#Getting TRTs");
+		//System.out.println("#Getting TRTs");
 		//		String result = "";
 		StringTokenizer stk = new StringTokenizer(line, "=");
 		stk.nextToken();	// token before '='
@@ -516,11 +516,11 @@ public class ParametersUtils {
 				while (stk.hasMoreTokens()) {
 					String singleResult = stk.nextToken() + "}";
 					if (!singleResult.contains("'")) {
-						System.out.println("singleResult - > " + singleResult);						
+						//System.out.println("singleResult - > " + singleResult);						
 						break;
 					}
 					singleResult = singleResult.substring(singleResult.indexOf("'"));
-					System.out.println("first token - > " + singleResult);
+					//System.out.println("first token - > " + singleResult);
 //					TRT trt = getTRTFromString(singleResult);
 //					// write the trt to db
 //					trt = commitTRTtoDB(trt);					
@@ -534,11 +534,11 @@ public class ParametersUtils {
 				
 				// remove any leftover trt's that weren't in the ace editor
 						// TESTING
-						System.out.println("WHAT IS PREV LIST OF TRTs: "
-						+ currParams.getTarget_response_times()); // testing purposes
-						for (TRT s : currParams.getTarget_response_times()) {
-							System.out.println(s.getId() + " - " + s.getAction()); // testing purposes	            		
-						}
+//						System.out.println("WHAT IS PREV LIST OF TRTs: "
+//						+ currParams.getTarget_response_times()); // testing purposes
+//						for (TRT s : currParams.getTarget_response_times()) {
+//							System.out.println(s.getId() + " - " + s.getAction()); // testing purposes	            		
+//						}
 
 				  // Get an iterator.
 				  Iterator<TRT> ite = prevtrtlist.iterator();
@@ -560,11 +560,11 @@ public class ParametersUtils {
 						}
 				  }
 				  		// TESTING
-						System.out.println("WHAT IS NEW LIST OF TRTs: "
-								+ currParams.getTarget_response_times()); // testing purposes
-						for (TRT s : currParams.getTarget_response_times()) {
-							System.out.println(s.getId() + " - " + s.getAction()); // testing purposes	            		
-						}
+//						System.out.println("WHAT IS NEW LIST OF TRTs: "
+//								+ currParams.getTarget_response_times()); // testing purposes
+//						for (TRT s : currParams.getTarget_response_times()) {
+//							System.out.println(s.getId() + " - " + s.getAction()); // testing purposes	            		
+//						}
 				
 			} catch (NoSuchElementException e) {
 				e.printStackTrace();
@@ -581,7 +581,7 @@ public class ParametersUtils {
 	
 	public static void getTRTListFromJSONString(String line){
 		//get just json
-		System.out.println("targetresponsetime :" +line );
+		//System.out.println("targetresponsetime :" +line );
 		String json = line.substring(line.indexOf('{'), line.length());
 		
 		JSONTokener tokener; //= new JSONTokener(update);
@@ -594,7 +594,7 @@ public class ParametersUtils {
 			
 	       	// full JSON object
 			for(int i = 0; i<jsonObject.names().length(); i++){
-			    System.out.println("key = " + jsonObject.names().getString(i) + " value = " + jsonObject.get(jsonObject.names().getString(i)));
+			    //System.out.println("key = " + jsonObject.names().getString(i) + " value = " + jsonObject.get(jsonObject.names().getString(i)));
 			}
 ////	       	double timestamp = (Double) jsonObject.get("timestamp");
 //	       	JSONObject summaryObject = (JSONObject) jsonObject.get("summary");
@@ -614,7 +614,7 @@ public class ParametersUtils {
 		// get Action
 		Scanner scan = new Scanner(singleTRT).useDelimiter("'");
 		String result = scan.next();
-		System.out.println("action scan result - >" + result);
+		//System.out.println("action scan result - >" + result);
 		trt.setAction(result);
 		
 		// get Average
@@ -623,7 +623,7 @@ public class ParametersUtils {
 		String regex = restofline.split("[\\:\\,]")[2];
 		double dub = Double.parseDouble(regex);
 		trt.setAverage(dub);			
-		System.out.println("average scan result - >" + String.valueOf(dub));
+		//System.out.println("average scan result - >" + String.valueOf(dub));
 
 		// get Max
 //		System.out.println(restofline.split("[\\:\\}]")[1]);
@@ -631,7 +631,7 @@ public class ParametersUtils {
 		regex = restofline.split("[\\:\\}]")[3];
 		dub = Double.parseDouble(regex);
 		trt.setMax(dub);			
-		System.out.println("max scan result - >" + String.valueOf(dub));
+		//System.out.println("max scan result - >" + String.valueOf(dub));
 
 		// 1. set parent params
 		trt.setParentparameter(currParams);
@@ -662,7 +662,7 @@ public class ParametersUtils {
 //			System.out.println("the generated id is: " + queriedTRT.getId());
 			
 //			trt = trtcontainer.getItem(queriedTRT.getId()).getEntity();
-			System.out.println("the generated id is: " + queriedTRT.getId());
+			//System.out.println("the generated id is: " + queriedTRT.getId());
 
 			// update parent Parameters to add TRT to List<TRT> trt
 			currParams.addTRT(queriedTRT);
@@ -680,21 +680,21 @@ public class ParametersUtils {
 
 			// 2. retrieving db generated id
 			List<TRT> results = query.getResultList(); // getSingleResult();	//(TRT) 
-			System.out.println("result list size: " + results.size());
+			//System.out.println("result list size: " + results.size());
 			queriedTRT = results.get(results.size()-1);
-			System.out.println("the generated id is: " + queriedTRT.getId());
+			//System.out.println("the generated id is: " + queriedTRT.getId());
 			int id = queriedTRT.getId(); // here is the id we need for tree
 			
 			// 3. update parent Parameters to add TRT to List<TRT> trt
 			currParams.addTRT(queriedTRT);
 			parameterscontainer.addEntity(currParams);
 						
-			System.out.println("WHAT IS NEW LIST OF TRTs: "
-							+ currParams.getTarget_response_times()); // testing purposes
-			for (TRT s : currParams.getTarget_response_times()) {
-				System.out.println(s.getId() + " - "
-						+ s.getAction()); // testing purposes	            		
-			}
+//			System.out.println("WHAT IS NEW LIST OF TRTs: "
+//							+ currParams.getTarget_response_times()); // testing purposes
+//			for (TRT s : currParams.getTarget_response_times()) {
+//				System.out.println(s.getId() + " - "
+//						+ s.getAction()); // testing purposes	            		
+//			}
 //			return queriedTRT;
 
 			

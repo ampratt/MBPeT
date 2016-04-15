@@ -355,7 +355,7 @@ public class MonitoringTab extends Panel {
 		flotRampLayout.addComponent(monRampChart);
 		flotRampLayout.setComponentAlignment(monRampChart, Alignment.MIDDLE_LEFT);
 		flotRampLayout.setExpandRatio(monRampChart, 1);
-		System.out.println("Data from chart State:\n" + monRampChart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + monRampChart.getData().toJson());
 	}
 	public void buildAggChart(String chartdata) {
 		monAggChart = new FlotChart("Aggregated Response Time");
@@ -383,7 +383,7 @@ public class MonitoringTab extends Panel {
 		flotAggregatedLayout.addComponent(monAggChart);
 		flotAggregatedLayout.setComponentAlignment(monAggChart, Alignment.MIDDLE_LEFT);
 		flotAggregatedLayout.setExpandRatio(monAggChart, 1);
-		System.out.println("Data from chart State:\n" + monAggChart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + monAggChart.getData().toJson());
 	}
 	public void buildIndChart(String chartdata) {
 		monIndChart = new FlotChart("Individual Action Response");
@@ -410,7 +410,7 @@ public class MonitoringTab extends Panel {
 		flotIndividualLayout.addComponent(monIndChart);
 		flotIndividualLayout.setComponentAlignment(monIndChart, Alignment.MIDDLE_LEFT);
 		flotIndividualLayout.setExpandRatio(monIndChart, 1);
-		System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
 	}
 
     
@@ -804,11 +804,11 @@ public class MonitoringTab extends Panel {
 //		System.out.println("New point:" + x + "," + users);
 		monRampChart.addNewData(x, monRampChart.getY());		// update the server side data	- this first command WAS causing memory overload!
 		monRampChart.update(x, monRampChart.getY());			// update the js code to effect the chart 
-		System.out.println(monRampChart.getData().toJson());
+		//System.out.println(monRampChart.getData().toJson());
 		
 		
 		// update AGG and IND responses
-		System.out.println("HashSet of Responses is:" + responseset);
+		//System.out.println("HashSet of Responses is:" + responseset);
 		for(ActionResponse act : responseset){
 			if(act.getTitle().contains("Aggregated Response Time")){
 				if(act.getTotalResponseTime() == 0){
@@ -819,7 +819,7 @@ public class MonitoringTab extends Panel {
 					//panel
 //					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
 					for (Component c : actionPanelLayouts){
-						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
+						//System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
 						if(((LabelDataPair) c).getNameUnShortened().contains("Aggregated")){
 							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
 							break;
@@ -833,7 +833,7 @@ public class MonitoringTab extends Panel {
 //					this.aggregatedResponse.setValue( String.valueOf(monAggChart.getY()) + " s" );
 					// update panel labels
 					for (Component c : actionPanelLayouts){
-						System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
+						//System.out.println("trying to match aggregated:" + ((LabelDataPair) c).getNameUnShortened() + " - " + act.getTitle());
 						if(((LabelDataPair) c).getNameUnShortened().contains("Aggregated")){
 							((LabelDataPair) c).setDataValue(String.valueOf(monAggChart.getY()) + " s" );	//monIndChart						
 							break;

@@ -90,7 +90,7 @@ public class IndividualActionChartLayout extends VerticalLayout {
 		flotIndividualLayout.addComponentAsFirst(monIndChart);
 		flotIndividualLayout.setComponentAlignment(monIndChart, Alignment.MIDDLE_LEFT);
 		flotIndividualLayout.setExpandRatio(monIndChart, 1);
-		System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
+		//System.out.println("Data from chart State:\n" + monIndChart.getData().toJson());
 		
 //		// chart axis label
 //		Label yLabel = new Label(title + " search google(car)", ContentMode.HTML);

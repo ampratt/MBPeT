@@ -183,10 +183,10 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 					int id =0;
 					boolean titleOK = true;
 					id = newCaseItem.getBean().getId();	//testsession.getId();
-					System.out.println("User.getCases() : " + sessionUser.getTestCases());
+					//System.out.println("User.getCases() : " + sessionUser.getTestCases());
 					for (TestCase c : sessionUser.getTestCases()) {	//sessions.getItemIds()
-						System.out.println("Existing title -> new title : " + c.getTitle() + "->" + testcase.getTitle());
-						System.out.println("Existing id -> new id : " + c.getId() + "->" + id);
+						//System.out.println("Existing title -> new title : " + c.getTitle() + "->" + testcase.getTitle());
+						//System.out.println("Existing id -> new id : " + c.getId() + "->" + id);
 						if (c.getTitle().equals(testcase.getTitle()) && !(c.getId()==id) ) {	
 							testcase.setTitle(prevTitle );
 							if (editmode == true)
@@ -216,8 +216,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 									testcase.getOwner()); //sessionUser
 							TestCase queriedcase = (TestCase) queryByTestCaseName
 									.getSingleResult();
-							System.out.println("the generated id is: "
-									+ queriedcase.getId());
+//							System.out.println("the generated id is: " + queriedcase.getId());
 							id = queriedcase.getId(); // here is the id we need for tree
 
 							// add to tree
@@ -235,12 +234,12 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 
 							// TESTING
 							//list all Cases
-							System.out.println("\nWHAT IS NEW LIST OF CASES: "
-									+ sessionUser.getTestCases()); // testing purposes
-							for (TestCase c : sessionUser.getTestCases()) {
-								System.out.println(c.getId() + " - "
-										+ c.getTitle()); // testing purposes	            		
-							}
+//							System.out.println("\nWHAT IS NEW LIST OF CASES: "
+//									+ sessionUser.getTestCases()); // testing purposes
+//							for (TestCase c : sessionUser.getTestCases()) {
+//								System.out.println(c.getId() + " - "
+//										+ c.getTitle()); // testing purposes	            		
+//							}
 
 							// nav to created test case
 							getUI().getNavigator().navigateTo(
@@ -249,24 +248,22 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 											+ testcases.getItem(id).getEntity()
 													.getTitle() + "-sut=" + id);
 						} else {
-							System.out
-									.println("\nWHAT IS NEW LIST OF CASES (before update): "
-											+ sessionUser.getTestCases()); // testing purposes
+//							System.out.println("\nWHAT IS NEW LIST OF CASES (before update): "
+//											+ sessionUser.getTestCases()); // testing purposes
 
 							//1 UPDATE user's reference ???
 							sessionUser.updateCaseData(testcases.getItem(
 									testcase.getId()).getEntity());
-							System.out.println("Test Case is now: "
-									+ testcase.getTitle());
+//							System.out.println("Test Case is now: " + testcase.getTitle());
 							//						System.out.println("Entity is now: " + sessions.getItem(testsession.getId()).getEntity().getTitle());
 
 							// 2 UPDATE container
 							testcases.addEntity(newCaseItem.getBean());
 							testcase = testcases.getItem(testcase.getId())
 									.getEntity();
-							System.out.println("Entity is now: "
-									+ testcases.getItem(testcase.getId())
-											.getEntity().getTitle());
+//							System.out.println("Entity is now: "
+//									+ testcases.getItem(testcase.getId())
+//											.getEntity().getTitle());
 
 							// 3 UPDATE tree title
 							tree.setItemCaption(testcase.getId(), testcases
@@ -286,20 +283,20 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 							
 							// TESTING
 							//list all Cases
-							System.out.println("\nWHAT IS NEW LIST OF CASES: "
-									+ sessionUser.getTestCases()); // testing purposes
-							for (TestCase c : sessionUser.getTestCases()) {
-								System.out.println(c.getId() + " - "
-										+ c.getTitle()); // testing purposes	            		
-							}
+//							System.out.println("\nWHAT IS NEW LIST OF CASES: "
+//									+ sessionUser.getTestCases()); // testing purposes
+//							for (TestCase c : sessionUser.getTestCases()) {
+//								System.out.println(c.getId() + " - "
+//										+ c.getTitle()); // testing purposes	            		
+//							}
 
-							System.out.println("\nTHE CASE's list of sessions with their reference to case: "
-											+ testcase.getSessions()); // testing purposes
-							for (TestSession s : testcase.getSessions()) {
-								System.out.println(s.getId() + " - "
-										+ s.getTitle() + " - to parent -> "
-										+ s.getParentcase().getTitle()); // testing purposes	            		
-							}
+//							System.out.println("\nTHE CASE's list of sessions with their reference to case: "
+//											+ testcase.getSessions()); // testing purposes
+//							for (TestSession s : testcase.getSessions()) {
+//								System.out.println(s.getId() + " - "
+//										+ s.getTitle() + " - to parent -> "
+//										+ s.getParentcase().getTitle()); // testing purposes	            		
+//							}
 
 							// nav to created test case
 							getUI().getNavigator().navigateTo(
@@ -310,7 +307,7 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 						
 					 // title already existed	
 					} else {
-						System.out.println("title was NOT fine.");
+						//System.out.println("title was NOT fine.");
 	//					testsession = sessions.getItem(id).getEntity();
 	//					System.out.println("db session is: " + testsession.getId() + " " + testsession.getTitle());
 	
@@ -353,8 +350,8 @@ public class TestCaseEditor extends Window implements Button.ClickListener {
 	
 	    public void setTreeItemsExpanded() {
 	        // Expand whole tree
-	    	System.out.println(tree.getItemIds());
-	    	System.out.println(tree.rootItemIds());
+	    	//System.out.println(tree.getItemIds());
+	    	//System.out.println(tree.rootItemIds());
 		    for (final Object id : tree.rootItemIds()) {
 		    	tree.expandItemsRecursively(id);
 		    	tree.setChildrenAllowed(id, true);

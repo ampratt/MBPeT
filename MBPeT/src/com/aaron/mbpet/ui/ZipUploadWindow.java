@@ -183,8 +183,8 @@ public class ZipUploadWindow extends Window {
 		
 		//populate combobox
 		for (Object id : sutcontainer.getItemIds()) {
-			System.out.println("SUT-Parent: " + sutcontainer.getItem(id).getEntity().getTitle() +
-					sutcontainer.getItem(id).getEntity().getOwner());
+			//System.out.println("SUT-Parent: " + sutcontainer.getItem(id).getEntity().getTitle() +
+//					sutcontainer.getItem(id).getEntity().getOwner());
 			
 			Object itemId = ic.addItem();
 			Item item = ic.getItem(itemId);
@@ -211,14 +211,14 @@ public class ZipUploadWindow extends Window {
 			public void valueChange(ValueChangeEvent event) {
 //				Notification.show("selected: " + event.getProperty().getValue().toString());
 //				System.out.println("binder field value: " + binder.getField("parentsession").getValue().toString());
-				System.out.println("combobox value: " + sutCombobox.getValue().toString());
+				//System.out.println("combobox value: " + sutCombobox.getValue().toString());
 
 //				Item item = ic.getItem(binder.getField("parentsession").getValue());
 				Object capid = sutCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
 				Item item = ic.getItem(capid);
-				System.out.println("sutCombobox prop id(sut): " + item.getItemProperty("id").getValue().toString());
+				//System.out.println("sutCombobox prop id(sut): " + item.getItemProperty("id").getValue().toString());
 				parentSUT = sutcontainer.getItem(item.getItemProperty("id").getValue()).getEntity();
-				System.out.println(parentSUT.getTitle());	// setValue(parentsession);
+				//System.out.println(parentSUT.getTitle());	// setValue(parentsession);
 				//TODO - this needs to be added
 				parentSutpath = usersBasePath + curruser.getUsername() + "/" + parentSUT.getTitle() + "/";
 //				uploader.setParentSUT(parentSUT);
@@ -277,7 +277,7 @@ public class ZipUploadWindow extends Window {
 		        // get selected SUT
 				Object capid = sutCombobox.getValue();// ic.getItem(binder.getField("parentsession").getValue());
 				Item item = ic.getItem(capid);
-				System.out.println("sutCombobox prop id(sut): " + item.getItemProperty("id").getValue().toString());
+				//System.out.println("sutCombobox prop id(sut): " + item.getItemProperty("id").getValue().toString());
 				parentSUT = sutcontainer.getItem(item.getItemProperty("id").getValue()).getEntity();
 				
 		        try {
@@ -310,7 +310,7 @@ public class ZipUploadWindow extends Window {
 		    	// unzip the upload dir
 				Unzip unzipper = new Unzip(file);
 				File unzippedProjectDir = unzipper.unzipFileIntoDirectory();
-				System.out.println("the unzipped test project dir is>" + unzippedProjectDir);
+//				System.out.println("the unzipped test project dir is>" + unzippedProjectDir);
 
 				//CREATE SESSION
 				ZippedSessionCreator sessionCreator = new ZippedSessionCreator(unzippedProjectDir, curruser, parentSUT, tree);
