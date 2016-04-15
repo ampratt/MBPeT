@@ -113,7 +113,7 @@ public class ReportsTab extends Panel {
 //		setContent(split);
 		split.addComponent(doclist);
 		split.addComponent(docViewPanel);	//(docView);
-		split.setSplitPosition(350.0f, Unit.PIXELS);
+		split.setSplitPosition(375.0f, Unit.PIXELS);
 		
 //    	FilesystemContainer container = new FilesystemContainer(new File("C:/dev/mbpet/users/apratt/yaas/y1/test_reports"));
 //      FilesystemContainer container = new FilesystemContainer(folder);

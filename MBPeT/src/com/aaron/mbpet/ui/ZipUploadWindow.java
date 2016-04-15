@@ -15,6 +15,7 @@ import com.aaron.mbpet.domain.User;
 import com.aaron.mbpet.services.FileSystemUtils;
 import com.aaron.mbpet.services.ModelUtils;
 import com.aaron.mbpet.services.Unzip;
+import com.aaron.mbpet.services.ZippedSessionCreator;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -93,6 +94,10 @@ public class ZipUploadWindow extends Window {
 		setClosable(true);
 //		setModal(true);
         setSizeUndefined();
+        
+//		// delete unzipped tmp project folder in uploads
+//		FileSystemUtils fileUtils = new FileSystemUtils();
+//    	fileUtils.deleteUploadsDirContent(curruser.getUsername());
         
         setContent(buildContent()); //ManualLayoutDesign
 //        setCaption(buildCaption());
@@ -265,7 +270,7 @@ public class ZipUploadWindow extends Window {
 		    public File file;	    
 			
 			// upload the file to destination of username/selected SUT
-		    public OutputStream receiveUpload(String filename, String mimeType) {
+		    public OutputStream receiveUpload(String filename, String mimeType) {		    	
 		        // Create upload stream
 		        FileOutputStream fos = null; // Output stream to write to
 		        
@@ -310,8 +315,16 @@ public class ZipUploadWindow extends Window {
 				//CREATE SESSION
 				ZippedSessionCreator sessionCreator = new ZippedSessionCreator(unzippedProjectDir, curruser, parentSUT, tree);
 
+				// delete unzipped tmp project folder in uploads
+//				unzipper.deleteUnzippedProjectDir(unzippedProjectDir);
+				
 				confirmNotification("The project <b>" + unzippedProjectDir.getName() + "</b> added to SUT: <b>" + parentSUT.getTitle() + "</b>");
-		    	close();
+		    	
+				// delete unzipped tmp project folder in uploads
+				FileSystemUtils fileUtils = new FileSystemUtils();
+		    	fileUtils.deleteUploadsDirContent(curruser.getUsername());
+
+				close();
 		    }
 		};
 		

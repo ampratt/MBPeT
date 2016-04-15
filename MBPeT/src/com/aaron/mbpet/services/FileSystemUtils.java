@@ -353,6 +353,46 @@ public class FileSystemUtils {
 			e.printStackTrace();
 		}
 	}
+	
+    public void deleteUploadsDirContent(final String username){	//(File dir){
+    	new Thread(new Runnable(){
+			@Override
+			public void run() {
+		
+		        //DELETE project folder in uploads dir
+				try {
+					String uploadsDir = usersBasepath + username + "/uploads/*";
+					System.out.println("Trying to delete anything left in:" + uploadsDir);	// + dir.getAbsolutePath());
+					
+					String command = "rm -rf " + uploadsDir;	// + "/* " + destinationFolder;
+			        ProcessBuilder pb = new ProcessBuilder(
+			        		"/bin/bash", "-c", command); //Unix commands
+		//	        pb.directory(new File(usersBasepath + username + "/master"));		//("C:\\dev\\mbpet"));
+			        pb.redirectErrorStream(true);
+					final Process p = pb.start();				
+		             
+					// any error our output
+		            StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+		            StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+		            
+		            // kick them off
+		            outputGobbler.startPdfGobbler();
+		            errorGobbler.startPdfGobbler();                        
+		
+		            // any error???
+		            int exitVal = 0;
+					try {
+						exitVal = p.waitFor();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}System.out.println("ExitValue: " + exitVal);  
+				} catch (IOException e) {			
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+    }
 
 	
 	/**
